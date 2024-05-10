@@ -26,6 +26,9 @@ public static class Vector3Extensions
     /// <returns></returns>
     public static Vector3 DirectionTo(this Vector3 source, Vector3 destination)
     {
+        Debug.Log("Source: " + source);
+        Debug.Log("DESTIONATION: " + destination);
+        Debug.Log("Result: " + (source - destination));
         return Vector3.Normalize(destination - source);
     }
 

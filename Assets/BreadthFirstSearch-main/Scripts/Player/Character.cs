@@ -110,7 +110,16 @@ public class Character : MonoBehaviour
     void MoveAndRotate(Vector3 origin, Vector3 destination, float duration)
     {
         transform.position = Vector3.Lerp(origin, destination, duration);
-        transform.rotation = Quaternion.LookRotation(origin.DirectionTo(destination).Flat(), Vector3.up);
+
+        float angle = Vector3.Angle(transform.forward, destination - transform.forward);
+        if(Mathf.Abs(angle) <= 0.5f)
+        {
+            transform.LookAt(destination);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(destination - origin), Time.deltaTime * 5.0f);
+        }
     }
 
     //Plants the character down onto the tile they are overtop of
