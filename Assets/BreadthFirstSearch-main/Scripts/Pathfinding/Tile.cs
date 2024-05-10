@@ -1,69 +1,104 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
-public enum TileColor { Green, Highlighted };
 
 public class Tile : MonoBehaviour
 {
-    #region member fields
-    public Tile parent;
-    public Tile connectedTile; // Can manually set another tile to be connected
-    public Character occupyingCharacter;
-    public float cost;
+    #region Enums
 
-    [SerializeField]
-    GameObject GreenChild, WhiteChild;
+    public enum TileMaterial
+    {
+        baseMaterial,
+        highlight,
+        frontier
+    }
 
-    [SerializeField]
-    bool debug; // Turns on debug arrow
-
-    // public properties for Pathfinder and Mouse interaction script to access the state of the tile
-    public bool Occupied { get; set; } = false;
-    public bool InFrontier { get; set; } = false;
-    public bool CanBeReached { get { return !Occupied && InFrontier; } }
     #endregion
 
-    /// <summary>
-    /// Changes color of the tile by activating child-objects of different colors
-    /// </summary>
-    /// <param name="col"></param>
-    public void SetColor(TileColor col)
+    #region Variables
+
+    [Header("Tile Information:")]
+    [SerializeField] public TileSO tileData;
+    [HideInInspector] public float cost = 1f;
+
+    [Header("Tile Materials:")]
+    [SerializeField] private Material baseMaterial;
+    [SerializeField] private Material highlightMaterial;
+    [SerializeField] private Material reachableMaterial;
+
+    [Header("Connected Tile (Can be NULL):")]
+    public Tile connectedTile;
+
+    [HideInInspector] public Tile parentTile;
+    [HideInInspector] public Character characterOnTile;
+
+    [HideInInspector] public bool tileOccupied = false;
+    [HideInInspector] public bool inFrontier = false;
+
+    [HideInInspector] public bool Reachable { get { return !tileOccupied && inFrontier; } }
+
+    private Renderer tileRenderer;
+
+    #endregion
+
+    #region UnityMethods
+
+    void Start()
+    {
+        Debug.Assert(tileData != null, $"{gameObject.name} doesn't have a TileSO provided");
+
+        Debug.Assert(baseMaterial != null, $"{gameObject.name} doesn't have a BaseMaterial provided");
+
+        Debug.Assert(highlightMaterial != null, $"{gameObject.name} doesn't have a HighlightMaterial provided");
+
+        Debug.Assert(reachableMaterial != null, $"{gameObject.name} doesn't have a ReachableMaterial provided");
+
+        tileRenderer = GetComponent<Renderer>();
+    }
+
+    void Update()
     {
 
-        ClearColor();
+    }
 
-        switch (col)
+    #endregion
+
+    #region CustomMethods
+
+    //Changes the material applied to the Tile
+    public void ChangeTileColor(TileMaterial tileMat)
+    {
+        switch (tileMat)
         {
-            case TileColor.Green:
-                GreenChild.SetActive(true);
-                DebugWithArrow();
+            case TileMaterial.baseMaterial:
+                tileRenderer.material = baseMaterial;
                 break;
-            case TileColor.Highlighted:
-                WhiteChild.SetActive(true);
+            case TileMaterial.highlight:
+                tileRenderer.material = highlightMaterial;
                 break;
-            default:
+            case TileMaterial.frontier:
+                tileRenderer.material = reachableMaterial;
                 break;
         }
     }
 
-    void DebugWithArrow()
+    //Called when a Character enters a tile
+    public void OnTileEnter()
     {
-        Transform childArrow = GreenChild.transform.GetChild(0);
-
-        if (!debug) 
-            childArrow.gameObject.SetActive(false);
-
-        if(childArrow != null && parent != null)
-            childArrow.rotation = Quaternion.LookRotation(parent.transform.position - transform.position, Vector3.up);
+        Debug.Log("++WE ENTERED A TILE++");
     }
 
-    /// <summary>
-    /// Deactivates all children, removing all color
-    /// </summary>
-    public void ClearColor()
+    //Called when a Character stays on a tile
+    public void OnTileStay()
     {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(false);
-        }
+        Debug.Log("**WE ARE STAYING ON A TILE**");
     }
+
+    //Called when a Character is leaving a tile
+    public void OnTileExit()
+    {
+        Debug.Log("--WE EXITED A TILE--");
+    }
+
+    #endregion
 }

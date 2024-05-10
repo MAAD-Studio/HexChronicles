@@ -1,38 +1,56 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class PathIllustrator : MonoBehaviour
 {
-    private const float LineHeightOffset = 0.33f;
-    LineRenderer line;
+    #region Variables
 
-    private void Start()
+    private const float heightOffset = 0.33f;
+    LineRenderer lineRenderer;
+
+    #endregion
+
+    #region UnityMethods
+
+    void Start()
     {
-        line = GetComponent<LineRenderer>();
+        lineRenderer = GetComponent<LineRenderer>();
+        Debug.Assert(lineRenderer != null, $"{gameObject.name}'s PathIllustrator couldn't find the LineRenderer component.");
     }
 
-    public void IllustratePath(Path path)
-    {
-        line.positionCount = path.tilesInPath.Length;
+    #endregion
 
-        for (int i = 0; i < path.tilesInPath.Length; i++)
+    #region BreadthFirstMethods
+
+    //Illustrates the path provided with a line
+    public void IllustratePath(Tile[] path)
+    {
+        lineRenderer.positionCount = path.Length;
+
+        for (int i = 0; i < path.Length; i++)
         {
-            Transform tileTransform = path.tilesInPath[i].transform;
-            line.SetPosition(i, tileTransform.position.With(y: tileTransform.position.y + LineHeightOffset));
+            Vector3 tileTranform = path[i].transform.position;
+            tileTranform.y += heightOffset;
+            lineRenderer.SetPosition(i, tileTranform);
         }
     }
 
-    public void IllustrateFrontier(Frontier frontier)
+    //Illustrates the frontier provided by changing the material of the tiles in the frontier
+    public void IllustrateFrontier(List<Tile> frontier)
     {
-        foreach (Tile item in frontier.tiles)
+        foreach (Tile tile in frontier)
         {
-            item.SetColor(TileColor.Green);
+            tile.ChangeTileColor(Tile.TileMaterial.frontier);
         }
     }
 
-    public void Clear()
+    //Clears any active line illustrations
+    public void ClearIllustrations()
     {
-        line.positionCount = 0;
+        lineRenderer.positionCount = 0;
     }
 
+    #endregion
 }

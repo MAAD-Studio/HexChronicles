@@ -1,172 +1,173 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [RequireComponent(typeof(PathIllustrator))]
 public class Pathfinder : MonoBehaviour
 {
-    #region member fields
-    PathIllustrator illustrator;
-    [SerializeField]
-    LayerMask tileMask;
+    #region Variables
 
-    Frontier currentFrontier = new Frontier();
+    [SerializeField] private LayerMask tileLayer;
+    private PathIllustrator illustrator;
+    private List<Tile> frontier = new List<Tile>();
+
     #endregion
 
-    private void Start()
+    #region UnityMethods
+
+    void Start()
     {
-        if (illustrator == null)
-            illustrator = GetComponent<PathIllustrator>();
+        illustrator = GetComponent<PathIllustrator>();
+        Debug.Assert(illustrator != null, "PathFinder can't find the PathIllustrator component");
     }
 
-    /// <summary>
-    /// Main pathfinding function, marks tiles as being in frontier, while keeping a copy of the frontier
-    /// in "currentFrontier" for later clearing
-    /// </summary>
-    /// <param name="character"></param>
+    #endregion
+
+    #region BreadthFirstMethods
+
+    //BreadthFirst searches for what tiles the character can reach
     public void FindPaths(Character character)
     {
-        ResetPathfinder();
+        ResetPathFinder();
 
-        // When the character is selected, put that character's tile in a queue with a cost of 0
-        // openSet contains all tiles that are in the frontier
-        Queue<Tile> openSet = new Queue<Tile>();
-        openSet.Enqueue(character.characterTile);
+        //Grabs and sets the origin tile
+        Queue<Tile> openTiles = new Queue<Tile>();
+        openTiles.Enqueue(character.characterTile);
         character.characterTile.cost = 0;
 
-        // While there are tiles to explore,
-        // take the next tile from the queue and add it to the frontier
-        while (openSet.Count > 0) 
+        //While we have tiles to investigate
+        while (openTiles.Count > 0)
         {
-            Tile currentTile = openSet.Dequeue();
+            Tile currentTile = openTiles.Dequeue();
 
-            // For each neighboring tile, their cost is the current cost + 1
-            // Then add them to the openSet queue to be explored next
+            //Checks every adjacent tile to the current tile we are investigating
             foreach (Tile adjacentTile in FindAdjacentTiles(currentTile))
             {
-                if (openSet.Contains(adjacentTile))
+                //If the adjacent tile hsa already been added to the list of tile to check ignore it
+                if (openTiles.Contains(adjacentTile))
+                {
                     continue;
+                }
 
-                adjacentTile.cost = currentTile.cost + 1;
+                adjacentTile.cost = currentTile.cost + adjacentTile.tileData.tileCost;
 
-                if (!IsValidTile(adjacentTile, character.movedata.MaxMove))
-                    continue;
-
-                adjacentTile.parent = currentTile;
-
-                openSet.Enqueue(adjacentTile);
-                AddTileToFrontier(adjacentTile);
+                //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
+                if (IsValidTile(adjacentTile, character.moveDistance))
+                {
+                    adjacentTile.parentTile = currentTile;
+                    openTiles.Enqueue(adjacentTile);
+                    AddTileToFrontier(adjacentTile);
+                }
             }
         }
-        // Now the openSet has been fully explored or reach the maximum length,
-        // highlight all frontier tiles in green and store it for future use
-        illustrator.IllustrateFrontier(currentFrontier);
+
+        //Once we confirm what tiles can be reached we illustrate them
+        illustrator.IllustrateFrontier(frontier);
     }
 
-    bool IsValidTile(Tile tile, int maxcost)
+    //Checks if a tile is valid for reaching
+    bool IsValidTile(Tile tile, int maxCost)
     {
-        bool valid = false;
-
-        if (!currentFrontier.tiles.Contains(tile) && tile.cost <= maxcost)
-            valid = true;
-
-        return valid;
+        if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
+        {
+            return true;
+        }
+        return false;
     }
 
+    //Adds a tile into the frontier
     void AddTileToFrontier(Tile tile)
     {
-        tile.InFrontier = true;
-        currentFrontier.tiles.Add(tile);
+        tile.inFrontier = true;
+        frontier.Add(tile);
     }
 
-    /// <summary>
-    /// Returns a list of all neighboring hexagonal tiles and ladders
-    /// </summary>
-    /// <param name="origin"></param>
-    /// <returns></returns>
+    //Finds any tiles adjacent to the current tile
     private List<Tile> FindAdjacentTiles(Tile origin)
     {
-        List<Tile> tiles = new List<Tile>();
+        List<Tile> adjacentTiles = new List<Tile>();
+
         Vector3 direction = Vector3.forward;
         float rayLength = 50f;
         float rayHeightOffset = 1f;
 
-        //Rotate a raycast in 60 degree steps and find all adjacent tiles
+        //Checks in all 6 direction for an adjacent tile
         for (int i = 0; i < 6; i++)
         {
             direction = Quaternion.Euler(0f, 60f, 0f) * direction;
 
-            Vector3 aboveTilePos = (origin.transform.position + direction).With(y: origin.transform.position.y + rayHeightOffset);
+            Vector3 aboveTilePos = origin.transform.position + direction;
+            aboveTilePos.y += rayHeightOffset;
 
-            if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileMask))
+            //If we hit a tile we add it to the list of adjacents
+            if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
-                if (hitTile.Occupied == false)
-                    tiles.Add(hitTile);
+                if (!hitTile.tileOccupied)
+                {
+                    adjacentTiles.Add(hitTile);
+                }
             }
         }
 
+        //Checks if a tile was specially connected to the current tile, if so it is added to the list of adjacent tiles
         if (origin.connectedTile != null)
-            tiles.Add(origin.connectedTile);
+        {
+            adjacentTiles.Add(origin.connectedTile);
+        }
 
-        return tiles;
+        return adjacentTiles;
     }
 
-    /// <summary>
-    /// Called by Interact.cs to create a path between two tiles on the grid 
-    /// </summary>
-    /// <param name="dest"></param>
-    /// <param name="source"></param>
-    /// <returns></returns>
-    public Path PathBetween(Tile dest, Tile source)
+    //Creates and illustrates the path between two points
+    public Tile[] PathBetween(Tile dest, Tile source)
     {
-        Path path = MakePath(dest, source);
+        Tile[] path = MakePath(dest, source);
         illustrator.IllustratePath(path);
         return path;
     }
 
-    /// <summary>
-    /// Creates a path between two tiles
-    /// </summary>
-    /// <param name="destination"></param>
-    /// <param name="origin"></param>
-    /// <returns></returns>
-    // <Function>
-    // This is the path that are anticipated while hovering cursor over a tile
-    private Path MakePath(Tile destination, Tile origin) 
+    //Makes the path between two points
+    private Tile[] MakePath(Tile destination, Tile origin)
     {
         List<Tile> tiles = new List<Tile>();
         Tile current = destination;
 
-        // Starting from the destination point, trace back to the origin, add each tile to a list
-        // As long as it's not reaching the origin, keep tracing the current tile's parent
         while (current != origin)
         {
             tiles.Add(current);
-            if (current.parent != null)
-                current = current.parent;
+            if (current.parentTile != null)
+            {
+                current = current.parentTile;
+            }
             else
+            {
                 break;
+            }
         }
 
         tiles.Add(origin);
-        tiles.Reverse(); // Reverse the list of tiles so that the origin is the first element
-        // Generate a Path from this list
-        Path path = new Path();
-        path.tilesInPath = tiles.ToArray();
+        tiles.Reverse();
+
+        Tile[] path = tiles.ToArray();
 
         return path;
     }
 
-    public void ResetPathfinder()
+    //Resets any pathing information
+    public void ResetPathFinder()
     {
-        illustrator.Clear();
+        illustrator.ClearIllustrations();
 
-        foreach (Tile item in currentFrontier.tiles)
+        foreach (Tile tile in frontier)
         {
-            item.InFrontier = false;
-            item.ClearColor();
+            tile.inFrontier = false;
+            tile.ChangeTileColor(Tile.TileMaterial.baseMaterial);
         }
 
-        currentFrontier.tiles.Clear();
+        frontier.Clear();
     }
+
+    #endregion
 }
