@@ -2,35 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Camera), typeof(Pathfinder))]
-public class TileInteractor : MonoBehaviour
+public class PlayerTurn : StateInterface<TurnManager>
 {
     #region Variables
 
-    [SerializeField] private LayerMask tileLayer;
-
-    private Camera mainCam;
     private Tile currentTile;
     private Character selectedCharacter;
-    private Pathfinder pathfinder;
 
     #endregion
 
-    #region UnityMethods
+    #region StateInterfaceMethods
 
-    void Start()
+    public void EnterState(TurnManager manager)
     {
-        mainCam = gameObject.GetComponent<Camera>();
-        Debug.Assert(mainCam != null, "TileInteractor couldn't find the MainCamera component");
-
-        pathfinder = gameObject.GetComponent<Pathfinder>();
-        Debug.Assert(pathfinder != null, "TileInteractor couldn't find the PathFinder component");
+        
     }
 
-    void Update()
+    public void ExitState(TurnManager manager)
+    {
+        foreach(Character character in manager.characterList)
+        {
+            character.movementThisTurn = 0;
+        }
+    }
+
+    public void UpdateState(TurnManager manager)
     {
         Clear();
-        MouseUpdate();
+        MouseUpdate(manager);
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            manager.SwitchState(TurnEnums.TurnState.EnemyTurn);
+        }
     }
 
     #endregion
@@ -39,12 +43,12 @@ public class TileInteractor : MonoBehaviour
 
     private void Clear()
     {
-        if(currentTile == null)
+        if (currentTile == null)
         {
             return;
         }
 
-        if(currentTile.inFrontier)
+        if (currentTile.inFrontier)
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.frontier);
             currentTile = null;
@@ -55,47 +59,47 @@ public class TileInteractor : MonoBehaviour
         currentTile = null;
     }
 
-    private void MouseUpdate()
+    private void MouseUpdate(TurnManager manager)
     {
-        if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, tileLayer))
+        if (Physics.Raycast(manager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, manager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
-            InspectTile();
+            InspectTile(manager);
         }
     }
 
-    private void InspectTile()
+    private void InspectTile(TurnManager manager)
     {
         if (currentTile.tileOccupied)
         {
-            InspectCharacter();
+            InspectCharacter(manager);
         }
         else
         {
-            NavigateToTile();
+            NavigateToTile(manager);
         }
     }
 
-    private void InspectCharacter()
+    private void InspectCharacter(TurnManager manager)
     {
         currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
         if (!currentTile.characterOnTile.moving)
         {
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 //If no character is selected
-                if(selectedCharacter == null) 
+                if (selectedCharacter == null)
                 {
-                    GrabCharacter();
+                    GrabCharacter(manager);
                 }
                 else
                 {
-                    pathfinder.ResetPathFinder();
+                    manager.pathfinder.ResetPathFinder();
 
                     //If the character we selected is different from the current is switches the selection over to the new one
-                    if(selectedCharacter != currentTile.characterOnTile)
+                    if (selectedCharacter != currentTile.characterOnTile)
                     {
-                        GrabCharacter();
+                        GrabCharacter(manager);
                     }
                     //If they are the same we deselect the character
                     else
@@ -108,14 +112,14 @@ public class TileInteractor : MonoBehaviour
     }
 
     //Grabs the information for the selected character and determines where they can travel
-    private void GrabCharacter()
+    private void GrabCharacter(TurnManager manager)
     {
         selectedCharacter = currentTile.characterOnTile;
-        pathfinder.FindPaths(selectedCharacter);
+        manager.pathfinder.FindPaths(selectedCharacter);
     }
 
     //Illustrates potential paths and sets the player on their way to a target location when it is clicked
-    private void NavigateToTile()
+    private void NavigateToTile(TurnManager manager)
     {
         if (currentTile.inFrontier)
         {
@@ -127,17 +131,17 @@ public class TileInteractor : MonoBehaviour
             return;
         }
 
-        if(selectedCharacter.moving == true || currentTile.Reachable == false)
+        if (selectedCharacter.moving == true || currentTile.Reachable == false)
         {
             return;
         }
 
-        Tile[] path = pathfinder.PathBetween(currentTile, selectedCharacter.characterTile);
+        Tile[] path = manager.pathfinder.PathBetween(currentTile, selectedCharacter.characterTile);
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             selectedCharacter.Move(path);
-            pathfinder.ResetPathFinder();
+            manager.pathfinder.ResetPathFinder();
             selectedCharacter = null;
         }
     }

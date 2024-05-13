@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    #region Enums
-
-    public enum TileMaterial
-    {
-        baseMaterial,
-        highlight,
-        frontier
-    }
-
-    #endregion
-
     #region Variables
 
     [Header("Tile Information:")]
@@ -66,17 +55,17 @@ public class Tile : MonoBehaviour
     #region CustomMethods
 
     //Changes the material applied to the Tile
-    public void ChangeTileColor(TileMaterial tileMat)
+    public void ChangeTileColor(TileEnums.TileMaterial tileMat)
     {
         switch (tileMat)
         {
-            case TileMaterial.baseMaterial:
+            case TileEnums.TileMaterial.baseMaterial:
                 tileRenderer.material = baseMaterial;
                 break;
-            case TileMaterial.highlight:
+            case TileEnums.TileMaterial.highlight:
                 tileRenderer.material = highlightMaterial;
                 break;
-            case TileMaterial.frontier:
+            case TileEnums.TileMaterial.frontier:
                 tileRenderer.material = reachableMaterial;
                 break;
         }
