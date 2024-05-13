@@ -10,6 +10,7 @@ public class Character : MonoBehaviour
     [Header("Character Movement Info:")]
     [SerializeField] private float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
+    [HideInInspector] public int movementThisTurn = 0;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -55,11 +56,13 @@ public class Character : MonoBehaviour
     //Carries the character through a path
     IEnumerator MoveThroughPath(Tile[] path)
     {
-        int step = 0;
+        int step = 1;
         int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
         characterTile.OnTileExit();
         Tile currentTile = path[0];
+
+        //Debug.Log("CURRENT TILE TARGET: " + currentTile.name);
 
         float animationTime = 0f;
         const float distanceToNext = 0.05f;
@@ -81,19 +84,26 @@ public class Character : MonoBehaviour
                 continue;
             }
 
+            movementThisTurn += (int)path[step].tileData.tileCost;
+
             //Moves onto the next point
             previousTile = currentTile;
             currentTile.OnTileEnter();
             currentTile = path[step];
-            previousTile.OnTileExit();
 
             step++;
+
+            //Checks if we have arrived at the last tile, if not it triggers OnTileExit
+            if(step < pathLength)
+            {
+                previousTile.OnTileExit();
+            }
+
             animationTime = 0f;
         }
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
-        characterTile.OnTileEnter();
         characterTile.OnTileStay();
     }
 

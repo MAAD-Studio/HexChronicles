@@ -34,7 +34,7 @@ public class Pathfinder : MonoBehaviour
         //Grabs and sets the origin tile
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(character.characterTile);
-        character.characterTile.cost = 0;
+        character.characterTile.cost = character.movementThisTurn;
 
         //While we have tiles to investigate
         while (openTiles.Count > 0)
@@ -44,13 +44,20 @@ public class Pathfinder : MonoBehaviour
             //Checks every adjacent tile to the current tile we are investigating
             foreach (Tile adjacentTile in FindAdjacentTiles(currentTile))
             {
+                float newCost = currentTile.cost + adjacentTile.tileData.tileCost;
+
                 //If the adjacent tile hsa already been added to the list of tile to check ignore it
                 if (openTiles.Contains(adjacentTile))
                 {
+                    if(adjacentTile.cost > newCost)
+                    {
+                        adjacentTile.cost = newCost;
+                        adjacentTile.parentTile = currentTile;
+                    }
                     continue;
                 }
 
-                adjacentTile.cost = currentTile.cost + adjacentTile.tileData.tileCost;
+                adjacentTile.cost = newCost;
 
                 //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
                 if (IsValidTile(adjacentTile, character.moveDistance))

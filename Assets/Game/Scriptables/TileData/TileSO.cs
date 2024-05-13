@@ -6,6 +6,7 @@ public class TileSO : ScriptableObject
     public enum TileType
     {
         neutral,
+        forest,
         lava,
         water,
         snow,

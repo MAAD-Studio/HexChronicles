@@ -39,8 +39,15 @@ public class TileInteractor : MonoBehaviour
 
     private void Clear()
     {
-        if(currentTile == null || currentTile.tileOccupied == false)
+        if(currentTile == null)
         {
+            return;
+        }
+
+        if(currentTile.inFrontier)
+        {
+            currentTile.ChangeTileColor(Tile.TileMaterial.frontier);
+            currentTile = null;
             return;
         }
 
@@ -59,7 +66,7 @@ public class TileInteractor : MonoBehaviour
 
     private void InspectTile()
     {
-        if(currentTile.tileOccupied)
+        if (currentTile.tileOccupied)
         {
             InspectCharacter();
         }
@@ -71,9 +78,9 @@ public class TileInteractor : MonoBehaviour
 
     private void InspectCharacter()
     {
-        if(!currentTile.characterOnTile.moving)
+        currentTile.ChangeTileColor(Tile.TileMaterial.highlight);
+        if (!currentTile.characterOnTile.moving)
         {
-            currentTile.ChangeTileColor(Tile.TileMaterial.highlight);
             if(Input.GetMouseButtonDown(0))
             {
                 //If no character is selected
@@ -110,7 +117,12 @@ public class TileInteractor : MonoBehaviour
     //Illustrates potential paths and sets the player on their way to a target location when it is clicked
     private void NavigateToTile()
     {
-        if(selectedCharacter == null)
+        if (currentTile.inFrontier)
+        {
+            currentTile.ChangeTileColor(Tile.TileMaterial.highlight);
+        }
+
+        if (selectedCharacter == null)
         {
             return;
         }
