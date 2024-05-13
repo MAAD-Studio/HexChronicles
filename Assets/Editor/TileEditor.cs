@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -109,7 +108,7 @@ public class TileEditor : EditorWindow
         GUILayout.Label("Tile Prefab Selection: ");
         popupIndex = EditorGUILayout.Popup(popupIndex, prefabNames.ToArray());
 
-        //If count of prefabs is greater than 0 is holds onto the selected one
+        //If count of prefabs is greater than 0 it holds onto the selected one
         if(prefabNames.Count > 0)
         {
             selectedPrefab = prefabTilesList.transform.GetChild(popupIndex).gameObject;
@@ -254,7 +253,7 @@ public class TileEditor : EditorWindow
         List<GameObject> TilesToDestroy = new List<GameObject>();
 
         //If only a single tile is selected
-        if (Selection.objects.Length < 1)
+        if (Selection.objects.Length < 2)
         {
             selectedObject = (GameObject)Selection.activeObject;
 
@@ -351,7 +350,7 @@ public class TileEditor : EditorWindow
         //Checks if a tile already exists where the user is trying to add one
         foreach (Transform child in actingGrid.GetComponentInChildren<Transform>())
         {
-            if (child.position == position)
+            if (child.position == position && child.name != "ObjectParent")
             {
                 EditorUtility.DisplayDialog("Tile Editor Error", 
                     "There is already a tile where your trying to add one", "Confirm");
@@ -373,6 +372,11 @@ public class TileEditor : EditorWindow
         Vector3 gridPos = new Vector3(gridPosition.x, 0, gridPosition.y);
         gridParent.transform.position = gridPos;
         Transform gridTransform = gridParent.transform;
+
+        GameObject objectParent = new GameObject();
+        objectParent.name = "ObjectParent";
+        objectParent.transform.position = gridPos;
+        objectParent.transform.parent = gridTransform;
 
         Vector2 tileSize = DetermineTileSize(baseTilePrefab.GetComponent<MeshFilter>().sharedMesh.bounds);
         Vector3 position = gridTransform.position;
