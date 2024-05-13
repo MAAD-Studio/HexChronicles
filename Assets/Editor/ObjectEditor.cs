@@ -71,12 +71,6 @@ public class ObjectEditor : EditorWindow
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         /*
-         * OBJECT REPLACEMENT SECTION
-         */
-
-
-
-        /*
          * OBJECT DELETION SECTION
          */
 
@@ -92,11 +86,7 @@ public class ObjectEditor : EditorWindow
             {
                 //Doesn't need to warn about anything
             }
-            /*else if (selected.tag != "TileObjects")
-            {
-                EditorUtility.DisplayDialog("Object Editor Error",
-                    "Object you tried to delete isn't a tileObject", "Confirm");
-            }*/
+            //Checks that the parent to act on has been provided
             else if (actingParent == null)
             {
                 EditorUtility.DisplayDialog("Object Editor Error",
@@ -123,16 +113,13 @@ public class ObjectEditor : EditorWindow
             {
                 //Doesn't need to warn about anything
             }
-            else if(selected.GetComponent<Tile>() == null)
-            {
-                EditorUtility.DisplayDialog("Object Editor Error",
-                    "Object you tried to place an object on isn't a Tile", "Confirm");
-            }
+            //Checks that a prefab has been selected
             else if(selectedPrefab == null)
             {
                 EditorUtility.DisplayDialog("Object Editor Error",
                     "You need to select a prefab before you can add", "Confirm");
             }
+            //Checks that the parent to act on has been provided
             else if(actingParent == null)
             {
                 EditorUtility.DisplayDialog("Object Editor Error",
@@ -149,16 +136,20 @@ public class ObjectEditor : EditorWindow
 
     #region CustomMethods
 
+    //Adds an Object into the Parent Object
     private void AddObject()
     {
+        //Used for displaying how many failed actions there were
         bool failedLoop = false;
         int failureCount = 0;
 
         Transform parentTransform = actingParent.transform;
 
+        //Determines tile sizing
         Vector3 tileSize = DetermineTileSize(baseTile.GetComponent<MeshFilter>().sharedMesh.bounds);
         Vector3 position = parentTransform.position;
 
+        //Used for tracking the position of the tile the object will be placed on
         Vector2 tilePos;
 
         foreach (object Tile in Selection.gameObjects)
@@ -166,6 +157,8 @@ public class ObjectEditor : EditorWindow
             failedLoop = false;
 
             GameObject selectedTile = (GameObject)Tile;
+
+            //Pulls the tile Grid Space position from its name
             tilePos = VectorFromString(selectedTile.name);
 
             //Calculates where the Object should be placed
@@ -176,9 +169,10 @@ public class ObjectEditor : EditorWindow
 
             position.y = selectedPrefab.transform.position.y;
 
+            //Checks that another object isn't already in that position
             foreach(Transform child in actingParent.GetComponentInChildren<Transform>())
             {
-                if(child.position == position)
+                if(child.position.x == position.x && child.position.z == position.z)
                 {
                     failureCount++;
                     failedLoop = true;
@@ -186,12 +180,14 @@ public class ObjectEditor : EditorWindow
                 }
             }
 
+            //If there wasn't another object present at that location it generates it
             if(!failedLoop)
             {
                 GenerateObject(selectedPrefab, position, new Vector2Int((int)tilePos.x, (int)tilePos.y), actingParent);
             }
         }
 
+        //If any of the addition actions failed an error it throw showing how many
         if(failureCount > 0)
         {
             EditorUtility.DisplayDialog("Object Editor Error",
@@ -201,6 +197,7 @@ public class ObjectEditor : EditorWindow
         Selection.objects = null;
     }
 
+    //Deletes Objects from the Parent Object
     private void DeleteObject()
     {
         List<GameObject> objectsToDestroy = new List<GameObject>();
@@ -210,29 +207,35 @@ public class ObjectEditor : EditorWindow
         {
             GameObject selectedObject = (GameObject)obj;
 
-            //if(selectedObject.tag == "TileObjects")
-            //{
+            //Checks if the object is properly tagged.
+            if(selectedObject.tag == "TileObject")
+            {
                 objectsToDestroy.Add(selectedObject);
-            //}
-            /*else
+            }
+            else
             {
                 failureCount++;
-            }*/
+            }
         }
 
+        //Destroys any objects that were correctly tagged
         while(objectsToDestroy.Count > 0)
         {
             DestroyImmediate(objectsToDestroy[0]);
             objectsToDestroy.RemoveAt(0);
         }
 
+        //If any deletion actions failed an error is throw displaying the count
         if(failureCount > 0)
         {
             EditorUtility.DisplayDialog("Object Editor Error",
                     failureCount + " Objects couldn't be deleted since they weren't tileObjects", "Confirm");
         }
+
+        Selection.objects = null;
     }
 
+    //Pulls the Grid Space position of a tile from its name
     private Vector2 VectorFromString(string name)
     {
         string[] halves = name.Split(',');
@@ -246,6 +249,7 @@ public class ObjectEditor : EditorWindow
         return pos;
     }
 
+    //Generates a new Object
     private void GenerateObject(GameObject objPrefab, Vector3 pos, Vector2Int id, GameObject parent)
     {
         GameObject newObject = Instantiate(objPrefab, pos, Quaternion.identity);
