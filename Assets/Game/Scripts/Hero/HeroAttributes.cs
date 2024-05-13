@@ -1,11 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Character Attributes/Hero Attributes")]
-public class HeroAttributesSO : ScriptableObject
+[System.Serializable]
+public class HeroAttributes
 {
-    public HeroAttributes attributes = new HeroAttributes();
-
-    /*public string heroName;
+    public string heroName;
     public string description;
     public Sprite avatar;
 
@@ -24,5 +24,5 @@ public class HeroAttributesSO : ScriptableObject
     public float maxDefense = 0;
 
     [Header("Element")]
-    public ElementType elementType;*/
+    public ElementType elementType;
 }

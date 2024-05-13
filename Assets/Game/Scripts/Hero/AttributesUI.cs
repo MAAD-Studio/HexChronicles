@@ -13,14 +13,14 @@ public class AttributesUI : MonoBehaviour
     {
         if (hero != null)
         {
-            heroText.text = "Hero: " + hero.heroAttributes.heroName + "\n" +
-                            "Description: " + hero.heroAttributes.description + "\n" +
-                            "Health: " + hero.heroAttributes.health + "/" + hero.originalHealth + "\n" +
-                            "Movement Range: " + hero.heroAttributes.movementRange + "\n" +
-                            "Attack Damage: " + hero.heroAttributes.attackDamage + "\n" +
-                            "Attack Range: " + hero.heroAttributes.attackRange + "\n" +
-                            "Defense: " + hero.heroAttributes.defensePercentage + "\n" +
-                            "Element: " + hero.heroAttributes.elementType;
+            heroText.text = "Hero: " + hero.heroSO.attributes.heroName + "\n" +
+                            "Description: " + hero.heroSO.attributes.description + "\n" +
+                            "Health: " + hero.heroSO.attributes.health + "/" + hero.originalHealth + "\n" +
+                            "Movement Range: " + hero.heroSO.attributes.movementRange + "\n" +
+                            "Attack Damage: " + hero.heroSO.attributes.attackDamage + "\n" +
+                            "Attack Range: " + hero.heroSO.attributes.attackRange + "\n" +
+                            "Defense: " + hero.heroSO.attributes.defensePercentage + "\n" +
+                            "Element: " + hero.heroSO.attributes.elementType;
         }
     }
 }
