@@ -80,21 +80,25 @@ public class ObjectEditor : EditorWindow
         //Deletes the selected objects
         if(GUILayout.Button("Delete Selected Objects"))
         {
-            GameObject selected = (GameObject)Selection.activeObject;
-            
-            if (selected == null)
+            if(EditorUtility.DisplayDialog("Object Editor Confirm",
+                "Are you sure you want to delete these objects?", "Confirm", "Cancel"))
             {
-                //Doesn't need to warn about anything
-            }
-            //Checks that the parent to act on has been provided
-            else if (actingParent == null)
-            {
-                EditorUtility.DisplayDialog("Object Editor Error",
-                    "You havent provided the objectParent for objects to be added into", "Confirm");
-            }
-            else
-            {
-                DeleteObject();
+                GameObject selected = (GameObject)Selection.activeObject;
+
+                if (selected == null)
+                {
+                    //Doesn't need to warn about anything
+                }
+                //Checks that the parent to act on has been provided
+                else if (actingParent == null)
+                {
+                    EditorUtility.DisplayDialog("Object Editor Error",
+                        "You havent provided the objectParent for objects to be added into", "Confirm");
+                }
+                else
+                {
+                    DeleteObject();
+                }
             }
         }
 
