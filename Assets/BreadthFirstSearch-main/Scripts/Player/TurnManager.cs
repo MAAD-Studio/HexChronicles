@@ -12,10 +12,15 @@ public class TurnManager : MonoBehaviour
     [SerializeField] public Camera mainCam;
 
     [HideInInspector] public Pathfinder pathfinder;
+
+    [Header("Characters on level:")]
     public List<Character> characterList;
-    [HideInInspector] public List<Character> enemyList;
+    public List<Character> enemyList;
 
     StateInterface<TurnManager> currentTurn;
+
+    [Header("Level Type:")]
+    public TurnEnums.WorldTurns worldTurnStyle;
 
     #endregion
 
@@ -29,11 +34,12 @@ public class TurnManager : MonoBehaviour
         Debug.Assert(pathfinder != null, "TileInteractor couldn't find the PathFinder component");
 
         currentTurn = new PlayerTurn();
+        currentTurn.EnterState(this);
     }
 
     void Update()
     {
-        currentTurn.UpdateState(this);
+        currentTurn.UpdateState();
     }
 
     #endregion
@@ -42,7 +48,7 @@ public class TurnManager : MonoBehaviour
 
     public void SwitchState(TurnEnums.TurnState state)
     {
-        currentTurn.ExitState(this);
+        currentTurn.ExitState();
 
         switch (state)
         {
@@ -53,9 +59,46 @@ public class TurnManager : MonoBehaviour
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = new EnemyTurn();  
                 break;
+
+            case TurnEnums.TurnState.WorldTurn:
+                currentTurn = WorldTurnChoice();
+                break;
         }
 
         currentTurn.EnterState(this);
+    }
+
+    public StateInterface<TurnManager> WorldTurnChoice()
+    {
+        StateInterface<TurnManager> style;
+
+        switch(worldTurnStyle)
+        {
+            case TurnEnums.WorldTurns.Towers:
+                style = new TowersTurn();
+                break;
+
+            case TurnEnums.WorldTurns.NightSurvival:
+                style = new NightSurvivalTurn();
+                break;
+
+            case TurnEnums.WorldTurns.RefugeeConvoy:
+                style = new ConvoyTurn();
+                break;
+
+            default:
+                style = new OutpostTurn();
+                break;
+        }
+
+        return style;
+    }
+
+    //**DEBUG ONLY**
+    public void DestroyACharacter(Character character)
+    {
+        characterList.Remove(character);
+        Destroy(character.gameObject);
     }
 
     #endregion

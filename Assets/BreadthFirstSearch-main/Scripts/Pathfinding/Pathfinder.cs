@@ -9,8 +9,9 @@ public class Pathfinder : MonoBehaviour
     #region Variables
 
     [SerializeField] private LayerMask tileLayer;
-    private PathIllustrator illustrator;
+    [HideInInspector] public PathIllustrator illustrator;
     private List<Tile> frontier = new List<Tile>();
+    [HideInInspector] public TurnEnums.PathfinderTypes type;
 
     #endregion
 
@@ -24,6 +25,10 @@ public class Pathfinder : MonoBehaviour
 
     #endregion
 
+    #region CustomMethods
+
+    #endregion
+
     #region BreadthFirstMethods
 
     //BreadthFirst searches for what tiles the character can reach
@@ -34,7 +39,15 @@ public class Pathfinder : MonoBehaviour
         //Grabs and sets the origin tile
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(character.characterTile);
-        character.characterTile.cost = character.movementThisTurn;
+
+        if(type == TurnEnums.PathfinderTypes.Movement)
+        {
+            character.characterTile.cost = character.movementThisTurn;
+        }
+        else
+        {
+            character.characterTile.cost = 0;
+        }
 
         //While we have tiles to investigate
         while (openTiles.Count > 0)
@@ -44,9 +57,17 @@ public class Pathfinder : MonoBehaviour
             //Checks every adjacent tile to the current tile we are investigating
             foreach (Tile adjacentTile in FindAdjacentTiles(currentTile))
             {
-                float newCost = currentTile.cost + adjacentTile.tileData.tileCost;
+                float newCost;
+                if (type == TurnEnums.PathfinderTypes.Movement)
+                {
+                    newCost = currentTile.cost + adjacentTile.tileData.tileCost;
+                }
+                else
+                {
+                    newCost = currentTile.cost + 1;
+                }
 
-                //If the adjacent tile hsa already been added to the list of tile to check ignore it
+                //If the adjacent tile has already been added to the list of tile to check ignore it
                 if (openTiles.Contains(adjacentTile))
                 {
                     if(adjacentTile.cost > newCost)
@@ -59,18 +80,31 @@ public class Pathfinder : MonoBehaviour
 
                 adjacentTile.cost = newCost;
 
-                //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
-                if (IsValidTile(adjacentTile, character.moveDistance))
+                if(type == TurnEnums.PathfinderTypes.Movement)
                 {
-                    adjacentTile.parentTile = currentTile;
-                    openTiles.Enqueue(adjacentTile);
-                    AddTileToFrontier(adjacentTile);
+                    //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
+                    if (IsValidTile(adjacentTile, character.moveDistance))
+                    {
+                        adjacentTile.parentTile = currentTile;
+                        openTiles.Enqueue(adjacentTile);
+                        AddTileToFrontier(adjacentTile);
+                    }
+                }
+                else
+                {
+                    //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
+                    if (IsValidTile(adjacentTile, character.attackDistance))
+                    {
+                        adjacentTile.parentTile = currentTile;
+                        openTiles.Enqueue(adjacentTile);
+                        AddTileToFrontier(adjacentTile);
+                    }
                 }
             }
         }
 
         //Once we confirm what tiles can be reached we illustrate them
-        illustrator.IllustrateFrontier(frontier);
+        illustrator.IllustrateFrontier(frontier, type);
     }
 
     //Checks if a tile is valid for reaching
@@ -111,9 +145,25 @@ public class Pathfinder : MonoBehaviour
             if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
-                if (!hitTile.tileOccupied)
+                
+                if(type == TurnEnums.PathfinderTypes.Movement)
                 {
-                    adjacentTiles.Add(hitTile);
+                    if (!hitTile.tileOccupied)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
+                }
+                else
+                {
+                    if (!hitTile.tileOccupied)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
+                    else if(hitTile.characterOnTile.characterType == TurnEnums.CharacterType.Enemy)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
+
                 }
             }
         }
@@ -131,7 +181,10 @@ public class Pathfinder : MonoBehaviour
     public Tile[] PathBetween(Tile dest, Tile source)
     {
         Tile[] path = MakePath(dest, source);
-        illustrator.IllustratePath(path);
+        if(type == TurnEnums.PathfinderTypes.Movement)
+        {
+            illustrator.IllustratePath(path);
+        }
         return path;
     }
 

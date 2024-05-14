@@ -81,10 +81,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e756be36c92cff47bb1f4e8017253b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
-  connectedTile: {fileID: 0}
-  occupyingCharacter: {fileID: 0}
+  tileData: {fileID: 0}
   cost: 0
-  GreenChild: {fileID: 0}
-  WhiteChild: {fileID: 0}
-  debug: 0
+  baseMaterial: {fileID: 2100000, guid: b466f13222b712b4eb8d5bf9fa6832de, type: 2}
+  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
+  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
+  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  connectedTile: {fileID: 0}
+  parentTile: {fileID: 0}
+  characterOnTile: {fileID: 0}
+  tileOccupied: 0
+  inFrontier: 0

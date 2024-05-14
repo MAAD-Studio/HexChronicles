@@ -6,27 +6,29 @@ public class EnemyTurn : StateInterface<TurnManager>
 {
     #region Variables
 
+    private TurnManager turnManager;
+
     #endregion
 
     #region StateInterfaceMethods
 
     public void EnterState(TurnManager manager)
     {
-        
+        turnManager = manager;
     }
 
-    public void ExitState(TurnManager manager)
+    public void ExitState()
     {
         
     }
 
-    public void UpdateState(TurnManager manager)
+    public void UpdateState()
     {
         Debug.Log("WE ARE NOW DOING ENEMY THINGS");
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            manager.SwitchState(TurnEnums.TurnState.PlayerTurn);
+            turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }
     }
 

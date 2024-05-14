@@ -2,7 +2,7 @@ public interface StateInterface<t>
 {
     void EnterState(t manager);
 
-    void UpdateState(t manager);
+    void UpdateState();
 
-    void ExitState(t manager);
+    void ExitState();
 }
