@@ -8,9 +8,9 @@ public class Pathfinder : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField] private LayerMask tileLayer;
+    [SerializeField] public LayerMask tileLayer;
     [HideInInspector] public PathIllustrator illustrator;
-    private List<Tile> frontier = new List<Tile>();
+    [HideInInspector] public List<Tile> frontier = new List<Tile>();
     [HideInInspector] public TurnEnums.PathfinderTypes type;
 
     #endregion
@@ -199,7 +199,7 @@ public class Pathfinder : MonoBehaviour
     }
 
     //Makes the path between two points
-    private Tile[] MakePath(Tile destination, Tile origin)
+    public Tile[] MakePath(Tile destination, Tile origin)
     {
         List<Tile> tiles = new List<Tile>();
         Tile current = destination;

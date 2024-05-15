@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -51581,6 +51581,7 @@ GameObject:
   - component: {fileID: 2033004412}
   - component: {fileID: 2033004411}
   - component: {fileID: 2033004410}
+  - component: {fileID: 2033004415}
   m_Layer: 0
   m_Name: TurnManager
   m_TagString: Untagged
@@ -51605,10 +51606,11 @@ MonoBehaviour:
     m_Bits: 8
   mainCam: {fileID: 330585545}
   pathfinder: {fileID: 0}
+  enemyBrain: {fileID: 0}
   characterList:
   - {fileID: 2269300039888282468}
+  enemyList:
   - {fileID: 4438165176272983553}
-  enemyList: []
   worldTurnStyle: 0
 --- !u!114 &2033004411
 MonoBehaviour:
@@ -51626,6 +51628,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   illustrator: {fileID: 0}
+  frontier: []
   type: 0
 --- !u!114 &2033004412
 MonoBehaviour:
@@ -51758,6 +51761,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2033004415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033004409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5884a5de11b29458c13ff9bc052b3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnManager: {fileID: 2033004410}
 --- !u!1 &2033036682
 GameObject:
   m_ObjectHideFlags: 0

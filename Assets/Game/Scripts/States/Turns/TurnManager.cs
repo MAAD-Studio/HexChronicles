@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Pathfinder))]
+[RequireComponent(typeof(Pathfinder), typeof(EnemyBrain))]
 public class TurnManager : MonoBehaviour
 {
     #region Variables
@@ -12,6 +12,7 @@ public class TurnManager : MonoBehaviour
     [SerializeField] public Camera mainCam;
 
     [HideInInspector] public Pathfinder pathfinder;
+    [HideInInspector] public EnemyBrain enemyBrain;
 
     [Header("Characters on level:")]
     public List<Character> characterList;
@@ -32,6 +33,9 @@ public class TurnManager : MonoBehaviour
 
         pathfinder = gameObject.GetComponent<Pathfinder>();
         Debug.Assert(pathfinder != null, "TileInteractor couldn't find the PathFinder component");
+
+        enemyBrain = gameObject.GetComponent<EnemyBrain>();
+        Debug.Assert(enemyBrain != null, "TileInteractor couldn't find the EnemyBrain component");
 
         currentTurn = new PlayerTurn();
         currentTurn.EnterState(this);

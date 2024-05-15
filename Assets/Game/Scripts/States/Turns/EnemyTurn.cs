@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyTurn : StateInterface<TurnManager>
@@ -8,6 +9,8 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     private TurnManager turnManager;
 
+    bool RunEnemyAI = true;
+
     #endregion
 
     #region StateInterfaceMethods
@@ -15,18 +18,25 @@ public class EnemyTurn : StateInterface<TurnManager>
     public void EnterState(TurnManager manager)
     {
         turnManager = manager;
+
+        RunEnemyAI = true;
     }
 
     public void ExitState()
     {
-        
+        turnManager.pathfinder.type = TurnEnums.PathfinderTypes.Movement;
+        turnManager.pathfinder.ResetPathFinder();
     }
 
     public void UpdateState()
     {
-        Debug.Log("WE ARE NOW DOING ENEMY THINGS");
+        if(RunEnemyAI)
+        {
+            turnManager.enemyBrain.CalculateEnemyTurns();
+            RunEnemyAI = false;
+        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if(turnManager.enemyBrain.DecisionMakingFinished)
         {
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }
