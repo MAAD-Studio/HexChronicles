@@ -26,7 +26,7 @@ public class EnemyTurn : StateInterface<TurnManager>
     {
         Debug.Log("WE ARE NOW DOING ENEMY THINGS");
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }

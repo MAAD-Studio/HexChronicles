@@ -110,9 +110,19 @@ public class Pathfinder : MonoBehaviour
     //Checks if a tile is valid for reaching
     bool IsValidTile(Tile tile, int maxCost)
     {
-        if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
+        if(type == TurnEnums.PathfinderTypes.Movement)
         {
-            return true;
+            if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (!frontier.Contains(tile) && tile.cost <= maxCost)
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -125,7 +135,7 @@ public class Pathfinder : MonoBehaviour
     }
 
     //Finds any tiles adjacent to the current tile
-    private List<Tile> FindAdjacentTiles(Tile origin)
+    public List<Tile> FindAdjacentTiles(Tile origin)
     {
         List<Tile> adjacentTiles = new List<Tile>();
 

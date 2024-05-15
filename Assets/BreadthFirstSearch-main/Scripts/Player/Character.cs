@@ -15,6 +15,7 @@ public class Character : MonoBehaviour
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
+    [SerializeField] public ActiveSkill activeSkill;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;

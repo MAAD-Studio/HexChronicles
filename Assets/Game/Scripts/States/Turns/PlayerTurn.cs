@@ -10,6 +10,8 @@ public class PlayerTurn : StateInterface<TurnManager>
     private Character selectedCharacter;
     private TurnEnums.PathfinderTypes type;
     private TurnManager turnManager;
+    private ActiveSkill activeSkill;
+    private List<Tile> adjacentTiles;
 
     #endregion
 
@@ -43,20 +45,36 @@ public class PlayerTurn : StateInterface<TurnManager>
     private void InputUpdate()
     {
         //Changes Turn **DEBUG USE ONLY**
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             EndTurn();
         }
 
         //Switchs between movement and attacl **DEBUG USE ONLY**
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (type == TurnEnums.PathfinderTypes.Movement)
+            if (type != TurnEnums.PathfinderTypes.Attack)
             {
+                ResetBoard();
                 SwitchToAttack();
             }
             else
             {
+                ResetBoard();
+                SwitchToMovement();
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if(type != TurnEnums.PathfinderTypes.Skill)
+            {
+                ResetBoard();
+                SwitchToSkill();
+            }
+            else
+            {
+                ResetBoard();
                 SwitchToMovement();
             }
         }
@@ -89,12 +107,27 @@ public class PlayerTurn : StateInterface<TurnManager>
         }
     }
 
+    public void SwitchToSkill()
+    {
+        turnManager.pathfinder.ResetPathFinder();
+        if(selectedCharacter != null)
+        {
+            type = TurnEnums.PathfinderTypes.Skill;
+            activeSkill = ActiveSkill.SpawnSelf(selectedCharacter.activeSkill).GetComponent<ActiveSkill>();
+        }
+    }
+
     //Changes colors back to normal and clears any pathfinding
     public void ResetBoard()
     {
         turnManager.pathfinder.ResetPathFinder();
         type = TurnEnums.PathfinderTypes.Movement;
         turnManager.pathfinder.type = type;
+
+        if(activeSkill != null)
+        {
+            activeSkill.DestroySelf();
+        }
     }
 
     //Ends the player turn and swaps to the enemy turn
@@ -119,6 +152,49 @@ public class PlayerTurn : StateInterface<TurnManager>
         if(Input.GetMouseButtonDown(0))
         {
             if (currentTile.tileOccupied && currentTile.characterOnTile.characterType == TurnEnums.CharacterType.Enemy)
+            {
+                //**DEBUG ONLY**
+                turnManager.DestroyACharacter(currentTile.characterOnTile);
+                ResetBoard();
+                selectedCharacter = null;
+            }
+        }
+    }
+
+    private void ActiveSkillUse()
+    {
+        if (selectedCharacter == null)
+        {
+            return;
+        }
+
+        if (selectedCharacter.moving == true)
+        {
+            return;
+        }
+
+        adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(selectedCharacter.characterTile);
+
+        Tile selectedTile = currentTile;
+        float distance = 1000f;
+
+        foreach(Tile tile in adjacentTiles)
+        {
+            float newDistance = Vector3.Distance(currentTile.transform.position, tile.transform.position);
+
+            if (newDistance < distance)
+            {
+                selectedTile = tile;
+                distance = newDistance;
+            }
+        }
+
+        Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
+        activeSkill.transform.position = newPos;
+
+        if (Input.GetMouseButton(0))
+        {
+            if(currentTile.tileOccupied && currentTile.characterOnTile.characterType == TurnEnums.CharacterType.Enemy)
             {
                 //**DEBUG ONLY**
                 turnManager.DestroyACharacter(currentTile.characterOnTile);
@@ -181,13 +257,21 @@ public class PlayerTurn : StateInterface<TurnManager>
                 NavigateToTile();
             }
         }
-        else
+        else if(type == TurnEnums.PathfinderTypes.Attack)
         {
             if (currentTile.tileOccupied)
             {
                 InspectCharacter();
                 AttackTile();
             }
+        }
+        else
+        {
+            if(currentTile.tileOccupied)
+            {
+                InspectCharacter();
+            }
+            ActiveSkillUse();
         }
     }
 
@@ -202,7 +286,7 @@ public class PlayerTurn : StateInterface<TurnManager>
             currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
         }
 
-        if(type == TurnEnums.PathfinderTypes.Attack)
+        if(type != TurnEnums.PathfinderTypes.Movement)
         {
             if(currentTile.inFrontier && selectedCharType == TurnEnums.CharacterType.Enemy)
             {

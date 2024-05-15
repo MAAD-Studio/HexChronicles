@@ -18,7 +18,8 @@ public class TurnEnums
     public enum PathfinderTypes
     {
         Movement,
-        Attack
+        Attack,
+        Skill
     }
 
     public enum CharacterType

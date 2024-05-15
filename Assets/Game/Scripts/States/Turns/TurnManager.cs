@@ -97,6 +97,8 @@ public class TurnManager : MonoBehaviour
     //**DEBUG ONLY**
     public void DestroyACharacter(Character character)
     {
+        character.characterTile.characterOnTile = null;
+        character.characterTile.tileOccupied = false;
         characterList.Remove(character);
         Destroy(character.gameObject);
     }
