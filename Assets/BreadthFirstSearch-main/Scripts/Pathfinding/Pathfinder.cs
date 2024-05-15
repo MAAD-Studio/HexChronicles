@@ -163,6 +163,17 @@ public class Pathfinder : MonoBehaviour
                         adjacentTiles.Add(hitTile);
                     }
                 }
+                else if(type == TurnEnums.PathfinderTypes.EnemyBasicAttack)
+                {
+                    if (!hitTile.tileOccupied)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
+                    else if (hitTile.characterOnTile.characterType == TurnEnums.CharacterType.Player)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
+                }
                 else
                 {
                     if (!hitTile.tileOccupied)
@@ -173,7 +184,6 @@ public class Pathfinder : MonoBehaviour
                     {
                         adjacentTiles.Add(hitTile);
                     }
-
                 }
             }
         }

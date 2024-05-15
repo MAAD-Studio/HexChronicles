@@ -4,7 +4,7 @@ public class TurnEnums
     {
         PlayerTurn,
         EnemyTurn,
-        WorldTurn
+        WorldTurn,
     }
 
     public enum WorldTurns
@@ -19,6 +19,7 @@ public class TurnEnums
     {
         Movement,
         BasicAttack,
+        EnemyBasicAttack,
         ActiveSkill
     }
 
