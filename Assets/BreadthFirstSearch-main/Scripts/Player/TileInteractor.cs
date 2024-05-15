@@ -46,12 +46,12 @@ public class TileInteractor : MonoBehaviour
 
         if(currentTile.inFrontier)
         {
-            currentTile.ChangeTileColor(Tile.TileMaterial.frontier);
+            currentTile.ChangeTileColor(TileEnums.TileMaterial.frontier);
             currentTile = null;
             return;
         }
 
-        currentTile.ChangeTileColor(Tile.TileMaterial.baseMaterial);
+        currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         currentTile = null;
     }
 
@@ -78,7 +78,7 @@ public class TileInteractor : MonoBehaviour
 
     private void InspectCharacter()
     {
-        currentTile.ChangeTileColor(Tile.TileMaterial.highlight);
+        currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
         if (!currentTile.characterOnTile.moving)
         {
             if(Input.GetMouseButtonDown(0))
@@ -119,7 +119,7 @@ public class TileInteractor : MonoBehaviour
     {
         if (currentTile.inFrontier)
         {
-            currentTile.ChangeTileColor(Tile.TileMaterial.highlight);
+            currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
         }
 
         if (selectedCharacter == null)

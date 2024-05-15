@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    #region Enums
-
-    public enum TileMaterial
-    {
-        baseMaterial,
-        highlight,
-        frontier
-    }
-
-    #endregion
-
     #region Variables
 
     [Header("Tile Information:")]
@@ -25,6 +14,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private Material baseMaterial;
     [SerializeField] private Material highlightMaterial;
     [SerializeField] private Material reachableMaterial;
+    [SerializeField] private Material attackableMaterial;
 
     [Header("Connected Tile (Can be NULL):")]
     public Tile connectedTile;
@@ -53,6 +43,8 @@ public class Tile : MonoBehaviour
 
         Debug.Assert(reachableMaterial != null, $"{gameObject.name} doesn't have a ReachableMaterial provided");
 
+        Debug.Assert(attackableMaterial != null, $"{gameObject.name} doesn't have a AttackableMaterial provided");
+
         tileRenderer = GetComponent<Renderer>();
     }
 
@@ -66,18 +58,24 @@ public class Tile : MonoBehaviour
     #region CustomMethods
 
     //Changes the material applied to the Tile
-    public void ChangeTileColor(TileMaterial tileMat)
+    public void ChangeTileColor(TileEnums.TileMaterial tileMat)
     {
         switch (tileMat)
         {
-            case TileMaterial.baseMaterial:
+            case TileEnums.TileMaterial.baseMaterial:
                 tileRenderer.material = baseMaterial;
                 break;
-            case TileMaterial.highlight:
+
+            case TileEnums.TileMaterial.highlight:
                 tileRenderer.material = highlightMaterial;
                 break;
-            case TileMaterial.frontier:
+
+            case TileEnums.TileMaterial.frontier:
                 tileRenderer.material = reachableMaterial;
+                break;
+
+            case TileEnums.TileMaterial.attackable:
+                tileRenderer.material = attackableMaterial;
                 break;
         }
     }
