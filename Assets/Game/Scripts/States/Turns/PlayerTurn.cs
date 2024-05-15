@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public class PlayerTurn : StateInterface<TurnManager>
@@ -177,20 +178,27 @@ public class PlayerTurn : StateInterface<TurnManager>
 
         Tile selectedTile = currentTile;
         float distance = 1000f;
+        int loop = 0;
+        float rotation = 0f;
 
-        foreach(Tile tile in adjacentTiles)
+        foreach (Tile tile in adjacentTiles)
         {
+            loop++;
+
             float newDistance = Vector3.Distance(currentTile.transform.position, tile.transform.position);
 
             if (newDistance < distance)
             {
                 selectedTile = tile;
                 distance = newDistance;
+                rotation = selectedCharacter.transform.rotation.y + (60 * loop);
             }
         }
 
         Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
         activeSkill.transform.position = newPos;
+
+        activeSkill.transform.eulerAngles = new Vector3(0, rotation, 0);
 
         if (Input.GetMouseButton(0))
         {

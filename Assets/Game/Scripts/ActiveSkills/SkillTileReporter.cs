@@ -35,7 +35,7 @@ public class SkillTileReporter : MonoBehaviour
         {
             collisionTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             collisionTile.inFrontier = false;
-            skill.affectedTiles.Remove(collisionTile);
+            //skill.affectedTiles.Remove(collisionTile);
         }
     }
 
