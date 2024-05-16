@@ -26,6 +26,11 @@ public class EnemyTurn : StateInterface<TurnManager>
     {
         turnManager.pathfinder.type = TurnEnums.PathfinderTypes.Movement;
         turnManager.pathfinder.ResetPathFinder();
+        
+        foreach(Character enemy in turnManager.enemyList)
+        {
+            enemy.movementThisTurn = 0;
+        }
     }
 
     public void UpdateState()

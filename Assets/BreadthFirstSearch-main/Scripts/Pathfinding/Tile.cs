@@ -83,19 +83,19 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public void OnTileEnter()
     {
-        Debug.Log("++WE ENTERED A TILE++");
+        //Debug.Log("++WE ENTERED A TILE++");
     }
 
     //Called when a Character stays on a tile
     public void OnTileStay()
     {
-        Debug.Log("**WE ARE STAYING ON A TILE**");
+        //Debug.Log("**WE ARE STAYING ON A TILE**");
     }
 
     //Called when a Character is leaving a tile
     public void OnTileExit()
     {
-        Debug.Log("--WE EXITED A TILE--");
+        //Debug.Log("--WE EXITED A TILE--");
     }
 
     #endregion

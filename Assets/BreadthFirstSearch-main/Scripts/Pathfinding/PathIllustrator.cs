@@ -47,6 +47,10 @@ public class PathIllustrator : MonoBehaviour
                 tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
             }
         }
+        else if(type == TurnEnums.PathfinderTypes.EnemyBasicAttack || type == TurnEnums.PathfinderTypes.EnemyMovement)
+        {
+
+        }
         else
         {
             foreach (Tile tile in frontier)

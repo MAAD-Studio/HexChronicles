@@ -40,7 +40,7 @@ public class Pathfinder : MonoBehaviour
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(character.characterTile);
 
-        if(type == TurnEnums.PathfinderTypes.Movement)
+        if(type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
         {
             character.characterTile.cost = character.movementThisTurn;
         }
@@ -58,7 +58,7 @@ public class Pathfinder : MonoBehaviour
             foreach (Tile adjacentTile in FindAdjacentTiles(currentTile))
             {
                 float newCost;
-                if (type == TurnEnums.PathfinderTypes.Movement)
+                if (type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
                 {
                     newCost = currentTile.cost + adjacentTile.tileData.tileCost;
                 }
@@ -80,7 +80,7 @@ public class Pathfinder : MonoBehaviour
 
                 adjacentTile.cost = newCost;
 
-                if(type == TurnEnums.PathfinderTypes.Movement)
+                if(type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
                 {
                     //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
                     if (IsValidTile(adjacentTile, character.moveDistance))
@@ -110,7 +110,7 @@ public class Pathfinder : MonoBehaviour
     //Checks if a tile is valid for reaching
     bool IsValidTile(Tile tile, int maxCost)
     {
-        if(type == TurnEnums.PathfinderTypes.Movement)
+        if(type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
         {
             if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
             {
@@ -156,7 +156,7 @@ public class Pathfinder : MonoBehaviour
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
                 
-                if(type == TurnEnums.PathfinderTypes.Movement)
+                if(type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
                 {
                     if (!hitTile.tileOccupied)
                     {
@@ -201,7 +201,7 @@ public class Pathfinder : MonoBehaviour
     public Tile[] PathBetween(Tile dest, Tile source)
     {
         Tile[] path = MakePath(dest, source);
-        if(type == TurnEnums.PathfinderTypes.Movement)
+        if(type == TurnEnums.PathfinderTypes.Movement || type == TurnEnums.PathfinderTypes.EnemyMovement)
         {
             illustrator.IllustratePath(path);
         }
@@ -245,7 +245,7 @@ public class Pathfinder : MonoBehaviour
             tile.inFrontier = false;
             tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
-
+        
         frontier.Clear();
     }
 

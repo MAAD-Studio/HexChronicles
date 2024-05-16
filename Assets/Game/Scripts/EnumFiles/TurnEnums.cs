@@ -20,6 +20,7 @@ public class TurnEnums
         Movement,
         BasicAttack,
         EnemyBasicAttack,
+        EnemyMovement,
         ActiveSkill
     }
 
