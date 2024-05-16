@@ -13,7 +13,8 @@ public class PlayerTurn : StateInterface<TurnManager>
     private TurnEnums.PathfinderTypes type;
     private TurnManager turnManager;
 
-    private ActiveSkill activeSkill;
+    //private ActiveSkill activeSkill;
+    private AttackArea Attackarea;
 
     #endregion
 
@@ -113,7 +114,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if(selectedCharacter != null)
         {
             type = TurnEnums.PathfinderTypes.ActiveSkill;
-            activeSkill = ActiveSkill.SpawnSelf(selectedCharacter.activeSkill).GetComponent<ActiveSkill>();
+            Attackarea = AttackArea.SpawnAttackArea(selectedCharacter.newActiveTest).GetComponent<AttackArea>();
         }
     }
 
@@ -124,9 +125,9 @@ public class PlayerTurn : StateInterface<TurnManager>
         type = TurnEnums.PathfinderTypes.Movement;
         turnManager.pathfinder.type = type;
 
-        if(activeSkill != null)
+        if(Attackarea != null)
         {
-            activeSkill.DestroySelf();
+            Attackarea.DestroySelf();
         }
     }
 
@@ -181,14 +182,11 @@ public class PlayerTurn : StateInterface<TurnManager>
         float distance = 1000f;
 
         //Used for calculating what rotation the spawned ActiveSkill should have
-        int loop = 0;
-        float rotation = 0f;
+        float rotation = selectedCharacter.transform.rotation.eulerAngles.y;
 
         //Checks all adjacent tiles to check what one to spawn on
         foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(selectedCharacter.characterTile))
         {
-            loop++;
-
             float newDistance = Vector3.Distance(currentTile.transform.position, tile.transform.position);
 
             //Checks if the current tile is closer to the hit point than the previous ones
@@ -196,18 +194,31 @@ public class PlayerTurn : StateInterface<TurnManager>
             {
                 selectedTile = tile;
                 distance = newDistance;
-
-                //Gets a new rotation by adding onto the selected character rotation based on the number of tiles checked
-                rotation = selectedCharacter.transform.rotation.y + (60 * loop);
             }
         }
 
         //Sets the ActiveSkill to the selected location
         Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
-        activeSkill.transform.position = newPos;
+        Attackarea.transform.position = newPos;
+
+        float angle = Vector3.Angle(selectedCharacter.transform.forward, (selectedTile.transform.position - selectedCharacter.transform.position));
+
+        if(Vector3.Distance(selectedTile.transform.position, selectedCharacter.transform.position + (selectedCharacter.transform.right * 6)) < 
+            Vector3.Distance(selectedTile.transform.position, selectedCharacter.transform.position + (-selectedCharacter.transform.right) * 6))
+        {
+            rotation += angle;
+            Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+        }
+        else
+        {
+            rotation -= angle;
+            Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+        }
 
         //Rotates the ActiveSkill to the selected rotation
-        activeSkill.transform.eulerAngles = new Vector3(0, rotation, 0);
+        //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+
+        Attackarea.DetectArea();
 
         if (Input.GetMouseButton(0))
         {
