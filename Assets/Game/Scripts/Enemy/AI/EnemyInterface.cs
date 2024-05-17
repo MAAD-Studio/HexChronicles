@@ -12,7 +12,7 @@ public interface EnemyInterface
 
     public int CalculateMovementValue(Tile tile);
 
-    public int CalculteAttackValue(Tile tile);
+    public int CalculteAttackValue(AttackArea attackArea);
 
     public void ExecuteAttack(Tile target);
 }

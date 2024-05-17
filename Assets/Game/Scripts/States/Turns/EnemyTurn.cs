@@ -24,9 +24,6 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void ExitState()
     {
-        turnManager.pathfinder.type = TurnEnums.PathfinderTypes.Movement;
-        turnManager.pathfinder.ResetPathFinder();
-        
         foreach(Character enemy in turnManager.enemyList)
         {
             enemy.movementThisTurn = 0;
@@ -35,16 +32,16 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void UpdateState()
     {
-        if(RunEnemyAI)
+        /*if(RunEnemyAI)
         {
             turnManager.enemyBrain.CalculateEnemyTurns();
             RunEnemyAI = false;
-        }
+        }*/
 
-        if(turnManager.enemyBrain.DecisionMakingFinished)
-        {
+        //if(turnManager.enemyBrain.DecisionMakingFinished)
+        //{
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
-        }
+        //}
     }
 
     #endregion

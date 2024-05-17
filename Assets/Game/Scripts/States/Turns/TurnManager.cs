@@ -11,17 +11,21 @@ public class TurnManager : MonoBehaviour
     [SerializeField] public LayerMask tileLayer;
     [SerializeField] public Camera mainCam;
 
-    [HideInInspector] public Pathfinder pathfinder;
-    [HideInInspector] public ProgenitorBrain enemyBrain;
-
     [Header("Characters on level:")]
     public List<Character> characterList;
     public List<Character> enemyList;
 
-    StateInterface<TurnManager> currentTurn;
-
     [Header("Level Type:")]
     public TurnEnums.WorldTurns worldTurnStyle;
+
+    [HideInInspector] public Pathfinder pathfinder;
+    [HideInInspector] public ProgenitorBrain enemyBrain;
+
+    private StateInterface<TurnManager> playerTurn;
+    private StateInterface<TurnManager> enemyTurn;
+    private StateInterface<TurnManager> worldTurn;
+
+    private StateInterface<TurnManager> currentTurn;
 
     #endregion
 
@@ -37,7 +41,11 @@ public class TurnManager : MonoBehaviour
         enemyBrain = gameObject.GetComponent<ProgenitorBrain>();
         Debug.Assert(enemyBrain != null, "TileInteractor couldn't find the EnemyBrain component");
 
-        currentTurn = new PlayerTurn();
+        playerTurn = new PlayerTurn();
+        enemyTurn = new EnemyTurn();
+        worldTurn = WorldTurnChoice();
+
+        currentTurn = playerTurn;
         currentTurn.EnterState(this);
     }
 
@@ -57,21 +65,22 @@ public class TurnManager : MonoBehaviour
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
-                currentTurn = new PlayerTurn();
+                currentTurn = playerTurn;
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
-                currentTurn = new EnemyTurn();  
+                currentTurn = enemyTurn;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
-                currentTurn = WorldTurnChoice();
+                currentTurn = worldTurn;
                 break;
         }
 
         currentTurn.EnterState(this);
     }
 
+    //Creates an instance of the selected WorldTurn type on startup
     public StateInterface<TurnManager> WorldTurnChoice()
     {
         StateInterface<TurnManager> style;
@@ -98,7 +107,7 @@ public class TurnManager : MonoBehaviour
         return style;
     }
 
-    //**DEBUG ONLY**
+    //**TESTING ONLY**
     public void DestroyACharacter(Character character)
     {
         character.characterTile.characterOnTile = null;

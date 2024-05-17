@@ -51605,13 +51605,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   mainCam: {fileID: 330585545}
-  pathfinder: {fileID: 0}
-  enemyBrain: {fileID: 0}
   characterList:
   - {fileID: 2269300039888282468}
   enemyList:
   - {fileID: 4438165176272983553}
   worldTurnStyle: 0
+  pathfinder: {fileID: 0}
+  enemyBrain: {fileID: 0}
 --- !u!114 &2033004411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51629,7 +51629,6 @@ MonoBehaviour:
     m_Bits: 8
   illustrator: {fileID: 0}
   frontier: []
-  type: 0
 --- !u!114 &2033004412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51773,7 +51772,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 077688b7a18875d44a613ae05e38d207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnManager: {fileID: 2033004410}
 --- !u!1 &2033036682
 GameObject:
   m_ObjectHideFlags: 0
@@ -55296,7 +55294,11 @@ PrefabInstance:
     - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: activeSkill
       value: 
-      objectReference: {fileID: 5060428271722532883, guid: f5167dd5a6e59a646a7e33fb2db93be2, type: 3}
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttack
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
     - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: moveDistance
       value: 5

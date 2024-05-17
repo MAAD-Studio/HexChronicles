@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProgenitorBrain : MonoBehaviour
 {
-    #region Variables
+    /*#region Variables
 
     [SerializeField] private TurnManager turnManager;
 
@@ -154,12 +154,12 @@ public class ProgenitorBrain : MonoBehaviour
         turnManager.pathfinder.ResetPathFinder();
         movementLibrary.Clear();
         DecisionMakingFinished = true;
-    }
+    }*/
 
     /*
      * Stores the Movement Frontier of the Enemy into a Dictionary for later reference
      */
-    private void ProduceMovementLibrary(Character enemy)
+   /* private void ProduceMovementLibrary(Character enemy)
     {
         movementLibrary.Clear();
 
@@ -176,12 +176,12 @@ public class ProgenitorBrain : MonoBehaviour
         {
             movementLibrary.Add(tile, tile.parentTile);
         }
-    }
+    }*/
 
     /*
      * Calculates how valuable a tile is to Move to based on enviromental factors
      */
-    private int CalculateMovementValue(Character enemy, Tile moveTile)
+   /* private int CalculateMovementValue(Character enemy, Tile moveTile)
     {
         int valueOfMovement = -100;
         foreach (Character character in turnManager.characterList)
@@ -196,12 +196,12 @@ public class ProgenitorBrain : MonoBehaviour
             }
         }
         return valueOfMovement;
-    }
+    }*/
 
     /*
      * Determines what tiles can be attacked based on a Movement Tile
      */
-    private List<Tile> DetermineAttackFrontier(Character enemy, Tile moveTile)
+   /* private List<Tile> DetermineAttackFrontier(Character enemy, Tile moveTile)
     {
         turnManager.pathfinder.type = TurnEnums.PathfinderTypes.EnemyBasicAttack;
 
@@ -213,12 +213,12 @@ public class ProgenitorBrain : MonoBehaviour
         enemy.characterTile = originTile;
 
         return turnManager.pathfinder.frontier;
-    }
+    }*/
 
     /*
      * Calculates how valuable a combination of moving and attacking is
      */
-    private int CalculateAttackValue(Character enemy, Tile attackTile, int valueOfMovement)
+    /*private int CalculateAttackValue(Character enemy, Tile attackTile, int valueOfMovement)
     {
         //Checks the value of the Attack tile
         int valueOfCombination = valueOfMovement;
@@ -227,12 +227,12 @@ public class ProgenitorBrain : MonoBehaviour
             valueOfCombination += 3;
         }
         return valueOfCombination;
-    }
+    }*/
 
     /*
      * Checks if a combination with the given Movement Tile is already in the combinations
      */
-    private bool AlreadyAttemptingMove(Tile moveTile)
+    /*private bool AlreadyAttemptingMove(Tile moveTile)
     {
         foreach (KeyValuePair<int, Tile> movementTiles in chosenMovements)
         {
@@ -243,12 +243,12 @@ public class ProgenitorBrain : MonoBehaviour
         }
 
         return false;
-    }
+    }*/
 
     /*
      * If any combinations attack it removes any that don't
      */
-    private void ClearIfAnyAttacks()
+    /*private void ClearIfAnyAttacks()
     {
         bool attackingComboFound = false;
         List<int> keysToRemove = new List<int>();
@@ -272,12 +272,12 @@ public class ProgenitorBrain : MonoBehaviour
                 RemoveCombination(key);
             }
         }
-    }
+    }*/
 
     /*
      * Makes the final combination selection
      */
-    private int PickCombination()
+    /*private int PickCombination()
     {
         int totalValueOfCombinations = 0;
         int currentTotal = 0;
@@ -303,12 +303,12 @@ public class ProgenitorBrain : MonoBehaviour
         }
 
         return choice;
-    }
+    }*/
 
     /*
      * Moves the character to the selected moveTile
      */
-    private void MoveCharacter(Character enemy, Tile moveTile)
+   /* private void MoveCharacter(Character enemy, Tile moveTile)
     {
         turnManager.pathfinder.type = TurnEnums.PathfinderTypes.EnemyMovement;
         turnManager.pathfinder.ResetPathFinder();
@@ -317,12 +317,12 @@ public class ProgenitorBrain : MonoBehaviour
         Tile[] path = PathMaker(moveTile, enemy.characterTile);
 
         enemy.Move(path);
-    }
+    }*/
 
     /*
      * Creates the path for the Enemy to follow to its target 
      */
-    private Tile[] PathMaker(Tile targetTile, Tile origin)
+    /*private Tile[] PathMaker(Tile targetTile, Tile origin)
     {
         List<Tile> path = new List<Tile>();
         Tile current = targetTile;
@@ -347,12 +347,12 @@ public class ProgenitorBrain : MonoBehaviour
         path.Add(origin);
         path.Reverse();
         return path.ToArray();
-    }
+    }*/
 
     /*
      * Adds a combination into the dictionaries
      */
-    private void AddCombination(Tile moveTile, Tile attackTile, int combinationValue)
+    /*private void AddCombination(Tile moveTile, Tile attackTile, int combinationValue)
     {
         chosenMovements.Add(uniqueIds, moveTile);
         chosenValues.Add(uniqueIds, combinationValue);
@@ -368,22 +368,22 @@ public class ProgenitorBrain : MonoBehaviour
 
         uniqueIds++;
         CalculateLowestValue();
-    }
+    }*/
 
     /*
      * Removes a combination from the dictionaries
      */
-    private void RemoveCombination(int key)
+    /*private void RemoveCombination(int key)
     {
         chosenMovements.Remove(key);
         chosenAttacks.Remove(key);
         chosenValues.Remove(key);
-    }
+    }*/
 
     /*
      * Confirms what the lowest current value in the combinations is
      */
-    private void CalculateLowestValue()
+    /*private void CalculateLowestValue()
     {
         foreach(int value in chosenValues.Values)
         {
@@ -392,12 +392,12 @@ public class ProgenitorBrain : MonoBehaviour
                 lowestValue = value;
             }
         }
-    }
+    }*/
 
     /*
      * Settles conflicts between values when adding new combinations
      */
-    private void SettleValueConflict(Tile moveTile, Tile attackTile, int combinationValue, bool newAtThreat)
+    /*private void SettleValueConflict(Tile moveTile, Tile attackTile, int combinationValue, bool newAtThreat)
     {
         int choice = 0;
         if(newAtThreat)
@@ -414,7 +414,7 @@ public class ProgenitorBrain : MonoBehaviour
         RemoveCombination(inThreatKeys[choice]);
 
         AddCombination(moveTile, attackTile, combinationValue);
-    }
+    }*/
 
-    #endregion
+    //#endregion
 }

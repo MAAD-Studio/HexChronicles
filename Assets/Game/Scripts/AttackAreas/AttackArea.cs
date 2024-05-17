@@ -34,14 +34,23 @@ public class AttackArea : MonoBehaviour
         }
     }
 
+    //Colors all tiles in its area of effect
     private void ColourArea()
     {
         foreach (Tile tile in reporterTiles)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.attackable);
+            if(tile.tileOccupied)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
+            }
+            else
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.attackable);
+            }
         }
     }
 
+    //Resets the area than checks what tiles it is interacting with
     public void DetectArea()
     {
         ResetArea();
@@ -58,6 +67,7 @@ public class AttackArea : MonoBehaviour
         ColourArea();
     }
 
+    //Returns a list of all Characters in its area based on the provided type
     public List<Character> CharactersHit(TurnEnums.CharacterType type)
     {
         List<Character> characters = new List<Character>();
@@ -71,10 +81,24 @@ public class AttackArea : MonoBehaviour
         return characters;
     }
 
+    //Checks if its area contains a tile
+    public bool ContainsTile(Tile tileToCheck)
+    {
+        foreach(Tile tile in reporterTiles)
+        {
+            if(tileToCheck == tile)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void DestroySelf()
     {
         ResetArea();
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     public static AttackArea SpawnAttackArea(AttackArea attackArea)

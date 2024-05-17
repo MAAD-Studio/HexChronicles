@@ -15,12 +15,10 @@ public class TurnEnums
         NightSurvival
     }
 
-    public enum PathfinderTypes
+    public enum PlayerAction
     {
         Movement,
         BasicAttack,
-        EnemyBasicAttack,
-        EnemyMovement,
         ActiveSkill
     }
 

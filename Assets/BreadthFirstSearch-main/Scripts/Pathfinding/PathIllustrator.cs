@@ -38,25 +38,11 @@ public class PathIllustrator : MonoBehaviour
     }
 
     //Illustrates the frontier provided by changing the material of the tiles in the frontier
-    public void IllustrateFrontier(List<Tile> frontier, TurnEnums.PathfinderTypes type)
+    public void IllustrateFrontier(List<Tile> frontier)
     {
-        if(type == TurnEnums.PathfinderTypes.Movement)
+        foreach (Tile tile in frontier)
         {
-            foreach (Tile tile in frontier)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
-            }
-        }
-        else if(type == TurnEnums.PathfinderTypes.EnemyBasicAttack || type == TurnEnums.PathfinderTypes.EnemyMovement)
-        {
-
-        }
-        else
-        {
-            foreach (Tile tile in frontier)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.attackable);
-            }
+            tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
         }
     }
 
