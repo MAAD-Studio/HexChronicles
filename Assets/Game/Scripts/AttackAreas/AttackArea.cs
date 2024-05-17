@@ -51,7 +51,7 @@ public class AttackArea : MonoBehaviour
     }
 
     //Resets the area than checks what tiles it is interacting with
-    public void DetectArea()
+    public void DetectArea(bool illustrate)
     {
         ResetArea();
 
@@ -64,7 +64,10 @@ public class AttackArea : MonoBehaviour
             }
         }
 
-        ColourArea();
+        if(illustrate)
+        {
+            ColourArea();
+        }
     }
 
     //Returns a list of all Characters in its area based on the provided type

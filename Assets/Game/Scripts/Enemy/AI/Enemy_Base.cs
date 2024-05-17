@@ -14,22 +14,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     #region InterfaceMethods
 
-    public Dictionary<Tile, Tile> DetermineAttackFrontier(Tile tile)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public List<Tile> DetermineMovementFrontier()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void TakePath(Tile destination)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public virtual int CalculateMovementValue(Tile tile)
+    public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
     {
         return 0;
     }
@@ -39,7 +24,7 @@ public class Enemy_Base : Character, EnemyInterface
         return 0;
     }
 
-    public virtual void ExecuteAttack(Tile target)
+    public virtual void ExecuteAttack(AttackArea attackArea)
     {
         
     }

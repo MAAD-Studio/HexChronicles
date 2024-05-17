@@ -14,19 +14,42 @@ public class Enemy_Basic : Enemy_Base
 
     #region InterfaceMethods
 
-    public override int CalculateMovementValue(Tile tile)
+    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
     {
-        return 0;
+        int valueOfMovement = -100;
+        foreach (Character character in turnManager.characterList)
+        {
+            int distanceTile = (int)Vector3.Distance(tile.transform.position, character.transform.position);
+            int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, character.transform.position);
+            int tileValue = distanceEnemy - distanceTile;
+
+            if (valueOfMovement < tileValue)
+            {
+                valueOfMovement = tileValue;
+            }
+        }
+        return valueOfMovement * 2;
     }
 
     public override int CalculteAttackValue(AttackArea attackArea)
     {
-        return 0;
+        int valueOfAttack = 0;
+        foreach(Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        {
+            valueOfAttack += 5;
+        }
+
+        foreach(Character character in attackArea.CharactersHit(characterType))
+        {
+            valueOfAttack -= 2;
+        }
+
+        return valueOfAttack;
     }
 
-    public override void ExecuteAttack(Tile target)
+    public override void ExecuteAttack(AttackArea attackArea)
     {
-
+        Debug.Log("~~** WE DO BE EXECUTING AN ATTACK **~~");
     }
 
     #endregion

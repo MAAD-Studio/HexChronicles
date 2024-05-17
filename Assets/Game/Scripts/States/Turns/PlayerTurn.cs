@@ -154,7 +154,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         //Rotates the ActiveSkill to the selected rotation
         //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
 
-        areaPrefab.DetectArea();
+        areaPrefab.DetectArea(true);
 
         if (Input.GetMouseButton(0))
         {
@@ -214,22 +214,16 @@ public class PlayerTurn : StateInterface<TurnManager>
 
         float rotation = selectedCharacter.transform.eulerAngles.y;
 
-        //Sets the ActiveSkill to the selected location
-        Vector3 newPos = new Vector3(tileTransform.position.x, 0, tileTransform.position.z);
-        areaPrefab.transform.position = newPos;
-
         float angle = Vector3.Angle(characterTransform.forward, (tileTransform.position - characterTransform.position));
 
         if (Vector3.Distance(tileTransform.position, characterTransform.position + (characterTransform.right * 6)) <
             Vector3.Distance(tileTransform.position, characterTransform.position + (-characterTransform.right) * 6))
         {
             rotation += angle;
-            areaPrefab.transform.eulerAngles = new Vector3(0, rotation, 0);
         }
         else
         {
             rotation -= angle;
-            areaPrefab.transform.eulerAngles = new Vector3(0, rotation, 0);
         }
 
         return new Vector3(0, rotation, 0);
