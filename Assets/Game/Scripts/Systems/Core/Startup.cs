@@ -73,7 +73,7 @@ public class Startup : MonoBehaviour
             MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
         }
 #else
-        MenuManager.Instance.ShowMenu(MainMenuClassifier);
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
 #endif
     }
 }

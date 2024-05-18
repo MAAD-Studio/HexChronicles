@@ -21,6 +21,17 @@ public class HUDMenu : Menu
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
     }
 
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            OnPauseGame();
+
+            // TODO: Disable tile selection
+
+        }
+    }
+
     public void OnPauseGame()
     {
         if (pauseMenu.gameObject.activeInHierarchy == false)

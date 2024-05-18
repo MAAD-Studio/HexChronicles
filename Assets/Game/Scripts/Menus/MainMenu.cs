@@ -33,4 +33,13 @@ public class MainMenu : Menu
         MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
     }
+
+    public void OnQuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 }

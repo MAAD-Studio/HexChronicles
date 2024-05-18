@@ -16,7 +16,15 @@ public class PauseMenu : Menu
         MenuManager.Instance.HideMenu(menuClassifier);
     }
 
-    public void OnPauseGame()
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            OnResumeGame();
+        }
+    }
+
+    public void OnResumeGame()
     {
         Time.timeScale = 1.0f;
         MenuManager.Instance.HideMenu(menuClassifier);
