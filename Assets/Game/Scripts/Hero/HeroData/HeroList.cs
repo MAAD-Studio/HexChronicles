@@ -9,10 +9,10 @@ using UnityEngine;
 [System.Serializable]
 public class HeroList
 {
-    public List<HeroAttributes> heroes;
+    public List<BasicAttributes> heroes;
 
     // Constructor to initialize the list
-    public HeroList(List<HeroAttributes> Heroes)
+    public HeroList(List<BasicAttributes> Heroes)
     {
         this.heroes = Heroes;
     }

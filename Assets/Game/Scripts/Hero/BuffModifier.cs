@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "Character Attributes/StatModifier")]
-public class StatModifier : ScriptableObject
+public class BuffModifier : ScriptableObject
 {
     public BasicAttributeType attributeType;
     public float value;
-    public bool isPercentage; // not actually used
+    public bool isPercentage; // not used yet
 
-    public StatModifier(BasicAttributeType attributeType, float value, bool isPercentage)
+    public BuffModifier(BasicAttributeType attributeType, float value, bool isPercentage)
     {
         this.attributeType = attributeType;
         this.value = value;

@@ -49,7 +49,7 @@ public class EnemyBrain : MonoBehaviour
         foreach(Enemy_Base enemy_base in turnManager.enemyList)
         {
             yield return new WaitForSeconds(0.01f);
-            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttack);
+            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();

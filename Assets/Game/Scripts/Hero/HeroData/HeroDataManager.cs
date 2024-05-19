@@ -13,7 +13,7 @@ public class HeroDataManager : Singleton<HeroDataManager>
     //private string fileLocation = Application.persistentDataPath + "/SavedHeroData.json"; // this should be used for player's hero data
     private string fileLocation = "Assets/Game/Scripts/Hero/HeroData/HeroData.json";
     public List<HeroAttributesSO> heroSOs = new List<HeroAttributesSO>();
-    public List<HeroAttributes> heroes = new List<HeroAttributes>();
+    public List<BasicAttributes> heroes = new List<BasicAttributes>();
 
     private void Start()
     {
@@ -75,11 +75,11 @@ public class HeroDataManager : Singleton<HeroDataManager>
 
             for (int i = 0; i < heroes.Count; i++)
             {
-                HeroAttributes hero = heroes[i]; // existing SO
-                HeroAttributes heroData = dataContainer.heroes[i]; // deserialized SO
+                BasicAttributes hero = heroes[i]; // existing SO
+                BasicAttributes heroData = dataContainer.heroes[i]; // deserialized SO
 
                 // Assign data from deserialized JSON to corresponding SO properties
-                hero.heroName = heroData.heroName;
+                hero.name = heroData.name;
                 hero.description = heroData.description;
                 hero.avatar = heroData.avatar;
                 hero.health = heroData.health;
@@ -95,7 +95,7 @@ public class HeroDataManager : Singleton<HeroDataManager>
                 hero.maxDefense = heroData.maxDefense;
                 hero.elementType = heroData.elementType;
 
-                Debug.Log("Loaded Hero: " + hero.heroName);
+                Debug.Log("Loaded Hero: " + hero.name);
             }
         }
         else

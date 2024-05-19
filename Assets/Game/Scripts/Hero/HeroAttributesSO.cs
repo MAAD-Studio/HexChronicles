@@ -3,26 +3,19 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Character Attributes/Hero Attributes")]
 public class HeroAttributesSO : ScriptableObject
 {
-    public HeroAttributes attributes = new HeroAttributes();
+    public BasicAttributes attributes = new BasicAttributes();
+    public ActiveSkill activeSkill = new ActiveSkill();
 
-    /*public string heroName;
-    public string description;
-    public Sprite avatar;
+    public enum SkillEffect
+    {
+        Damage,
+        Heal,
 
-    [Header("Basic Attributes")]
-    public float health = 0;
-    public float movementRange = 0;
-    public float attackDamage = 0;
-    public float attackRange = 0;
-    public float defensePercentage = 0;
-
-    [Header("Max Values")]
-    public float maxHealth = 0;
-    public float maxMovementRange = 0;
-    public float maxAttackDamage = 0;
-    public float maxAttackRange = 0;
-    public float maxDefense = 0;
-
-    [Header("Element")]
-    public ElementType elementType;*/
+        // special
+        AddStatMod,
+        AddStatus,
+        ReduceCD,
+        ChangeTileType
+    }
+    public SkillEffect skillEffect;
 }

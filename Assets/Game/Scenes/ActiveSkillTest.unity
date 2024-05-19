@@ -330,6 +330,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: tileLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
@@ -4482,8 +4486,9 @@ MonoBehaviour:
   movementThisTurn: 0
   attackDistance: 2
   characterType: 1
-  basicAttack: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-  activeSkill: {fileID: 0}
+  basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+  activeSkillArea: {fileID: 0}
+  statusList: []
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -4901,8 +4906,9 @@ MonoBehaviour:
   movementThisTurn: 0
   attackDistance: 2
   characterType: 1
-  basicAttack: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-  activeSkill: {fileID: 0}
+  basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+  activeSkillArea: {fileID: 0}
+  statusList: []
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -8767,6 +8773,14 @@ PrefabInstance:
       propertyPath: attackDistance
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkillArea
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
     - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: tileLayer.m_Bits
       value: 8
@@ -17899,8 +17913,9 @@ MonoBehaviour:
   movementThisTurn: 0
   attackDistance: 2
   characterType: 1
-  basicAttack: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-  activeSkill: {fileID: 0}
+  basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+  activeSkillArea: {fileID: 0}
+  statusList: []
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
