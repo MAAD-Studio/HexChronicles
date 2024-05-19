@@ -1223,7 +1223,7 @@ GameObject:
   - component: {fileID: 3700114334662833899}
   - component: {fileID: 2170363127931966424}
   - component: {fileID: 8591538072208304518}
-  - component: {fileID: 4074697103068773494}
+  - component: {fileID: 5177571310019496208}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Player
@@ -1295,7 +1295,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4074697103068773494
+--- !u!114 &5177571310019496208
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1304,14 +1304,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 4040470824494885969}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 453a1124258b2f94e9500310d8a6ec04, type: 3}
+  m_Script: {fileID: 11500000, guid: e1160e0d9a96a344981787592a64aa60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movedata: {fileID: 11400000, guid: dd6f1c9025f1ba945b2082ff9cda2f56, type: 2}
-  characterTile: {fileID: 0}
-  GroundLayerMask:
+  moveSpeed: 0.4
+  moveDistance: 10
+  movementThisTurn: 0
+  attackDistance: 2
+  characterType: 0
+  basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+  activeSkillArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+  statusList: []
+  currentHealth: 0
+  maxHealth: 0
+  tileLayer:
     serializedVersion: 2
     m_Bits: 8
+  moving: 0
+  characterTile: {fileID: 0}
+  heroSO: {fileID: 11400000, guid: df0f9560b70b1d3459c04e7916265c39, type: 2}
+  attackDamage: 0
+  defensePercentage: 0
+  skillCD: 3
+  currentSkillCD: 0
+  buffModifiers: []
 --- !u!1 &4068752844551533863
 GameObject:
   m_ObjectHideFlags: 0
