@@ -15,6 +15,7 @@ public class Status
         Poisoned,
 
         // physical
+        Bound,
         Taunt,
         Chaos,
         CannotMove,
@@ -38,6 +39,9 @@ public class Status
             case StatusTypes.Freezed:
                 FreezeStatus(character);
                 break;
+            case StatusTypes.Bound:
+                BoundStatus(character);
+                break;
             case StatusTypes.Chaos:
                 ChaosStatus(character);
                 break;
@@ -45,6 +49,7 @@ public class Status
                 TauntStatus(character);
                 break;
         }
+        effectTurns -= 1;
     }
 
     private void BurningStatus(Character character)
@@ -61,6 +66,12 @@ public class Status
     private void FreezeStatus(Character character)
     {
         Debug.Log("Freezed");
+    }
+
+    private void BoundStatus(Character character)
+    {
+        character.movementThisTurn = 0;
+        // Attack?
     }
 
     private void ChaosStatus(Character character)

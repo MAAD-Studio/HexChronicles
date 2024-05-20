@@ -72,6 +72,11 @@ public class Character : MonoBehaviour
         foreach (Status status in statusList)
         {
             status.Apply(this);
+
+            if (status.effectTurns == 0)
+            {
+                RemoveStatus(status);
+            }
         }
     }
 

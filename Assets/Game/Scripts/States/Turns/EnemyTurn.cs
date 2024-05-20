@@ -20,6 +20,15 @@ public class EnemyTurn : StateInterface<TurnManager>
         turnManager = manager;
 
         RunEnemyAI = true;
+
+        // Apply Enemy's Status
+        foreach (Enemy_Base enemy in turnManager.enemyList)
+        {
+            if (enemy.statusList.Count > 0)
+            {
+                enemy.ApplyStatus();
+            }
+        }
     }
 
     public void ExitState()

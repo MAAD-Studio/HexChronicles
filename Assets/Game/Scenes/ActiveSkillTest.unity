@@ -4489,6 +4489,8 @@ MonoBehaviour:
   basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
   activeSkillArea: {fileID: 0}
   statusList: []
+  currentHealth: 0
+  maxHealth: 0
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -4909,6 +4911,8 @@ MonoBehaviour:
   basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
   activeSkillArea: {fileID: 0}
   statusList: []
+  currentHealth: 0
+  maxHealth: 0
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -8036,17 +8040,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883798642}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!114 &907769758 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-  m_PrefabInstance: {fileID: 1022562539}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 453a1124258b2f94e9500310d8a6ec04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &935638860
 GameObject:
   m_ObjectHideFlags: 0
@@ -11956,8 +11949,8 @@ MonoBehaviour:
     m_Bits: 8
   mainCam: {fileID: 1842005307}
   characterList:
-  - {fileID: 907769758}
-  - {fileID: 2052648448}
+  - {fileID: 1981355576}
+  - {fileID: 2052648452}
   enemyList:
   - {fileID: 2056815723}
   - {fileID: 564790343}
@@ -17149,6 +17142,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979788174}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
+--- !u!114 &1981355576 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+  m_PrefabInstance: {fileID: 1022562539}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1160e0d9a96a344981787592a64aa60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2003666014
 GameObject:
   m_ObjectHideFlags: 0
@@ -17799,15 +17803,15 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2033988316}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!114 &2052648448 stripped
+--- !u!114 &2052648452 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
   m_PrefabInstance: {fileID: 20746000}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 453a1124258b2f94e9500310d8a6ec04, type: 3}
+  m_Script: {fileID: 11500000, guid: e1160e0d9a96a344981787592a64aa60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &2056815721
@@ -17916,6 +17920,8 @@ MonoBehaviour:
   basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
   activeSkillArea: {fileID: 0}
   statusList: []
+  currentHealth: 0
+  maxHealth: 0
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
