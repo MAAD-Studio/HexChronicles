@@ -30,7 +30,10 @@ public class PlayerTurn : StateInterface<TurnManager>
                 character.ApplyStatus();
             }
 
-            character.characterTile.OnTileStay(character);
+            if(character.characterTile != null)
+            {
+                character.characterTile.OnTileStay(character);
+            }
         }
     }
 
