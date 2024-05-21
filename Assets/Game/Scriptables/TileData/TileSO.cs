@@ -5,9 +5,9 @@ using UnityEngine;
 public class TileSO : ScriptableObject
 {
     public float tileCost;
-    public TileEnums.TileType tileType = TileEnums.TileType.lava;
     public bool walkable = true;
 
-    public List<ElementType> buffTypes = new List<ElementType>();
-    public List<ElementType> debuffTypes = new List<ElementType>();
+    public ElementType tileType = new ElementType();
+    public List<ElementType> elementsWeakAgainst = new List<ElementType>();
+    public List<ElementType> elementsStrongAgainst = new List<ElementType>();
 }

@@ -83,51 +83,35 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public void OnTileEnter(Character character)
     {
-        if(tileData.buffTypes.Contains(character.elmentType))
+        if(tileData.elementsStrongAgainst.Contains(character.elementType))
         {
-            
+            character.defensePercentage += 10;
         }
-        else if(tileData.debuffTypes.Contains(character.elmentType))
+        else if(tileData.tileType == character.elementType)
         {
-            
-        }
-        else
-        {
-            
+            character.attackDamage += 1;
         }
     }
 
     //Called when a Character stays on a tile
     public void OnTileStay(Character character)
     {
-        if (tileData.buffTypes.Contains(character.elmentType))
+        if (tileData.elementsWeakAgainst.Contains(character.elementType))
         {
-            
-        }
-        else if (tileData.debuffTypes.Contains(character.elmentType))
-        {
-            
-        }
-        else
-        {
-            
+            character.movementThisTurn += 1;
         }
     }
 
     //Called when a Character is leaving a tile
     public void OnTileExit(Character character)
     {
-        if (tileData.buffTypes.Contains(character.elmentType))
+        if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
-            
+            character.defensePercentage -= 10;
         }
-        else if (tileData.debuffTypes.Contains(character.elmentType))
+        else if (tileData.tileType == character.elementType)
         {
-            
-        }
-        else
-        {
-            
+            character.attackDamage -= 1;
         }
     }
 

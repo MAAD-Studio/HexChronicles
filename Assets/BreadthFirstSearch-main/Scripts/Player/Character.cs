@@ -26,12 +26,10 @@ public class Character : MonoBehaviour
     [HideInInspector] public float maxHealth = 0f;
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
-    [HideInInspector] public ElementType elementType;
+    public ElementType elementType;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
-
-    [SerializeField] public ElementType elmentType;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
@@ -185,8 +183,6 @@ public class Character : MonoBehaviour
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
-        characterTile.OnTileStay(this);
-
     }
 
     //Starts the process of moving the character to a new location

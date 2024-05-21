@@ -29,6 +29,8 @@ public class PlayerTurn : StateInterface<TurnManager>
             {
                 character.ApplyStatus();
             }
+
+            character.characterTile.OnTileStay(character);
         }
     }
 
