@@ -13,14 +13,25 @@ public class AttributesUI : MonoBehaviour
     {
         if (hero != null)
         {
-            heroText.text = "Hero: " + hero.heroSO.attributes.heroName + "\n" +
+            heroText.text = "Hero: " + hero.heroSO.attributes.name + "\n" +
                             "Description: " + hero.heroSO.attributes.description + "\n" +
-                            "Health: " + hero.heroSO.attributes.health + "/" + hero.originalHealth + "\n" +
-                            "Movement Range: " + hero.heroSO.attributes.movementRange + "\n" +
-                            "Attack Damage: " + hero.heroSO.attributes.attackDamage + "\n" +
-                            "Attack Range: " + hero.heroSO.attributes.attackRange + "\n" +
-                            "Defense: " + hero.heroSO.attributes.defensePercentage + "\n" +
-                            "Element: " + hero.heroSO.attributes.elementType;
+                            "Health: " + hero.currentHealth + " / " + hero.maxHealth + "\n" +
+                            "Movement Range: " + hero.moveDistance + "\n" +
+                            "Attack Damage: " + hero.attackDamage + "\n" +
+                            //"Attack Range: " + hero.heroSO.attributes.attackRange + "\n" +
+                            "Defense: " + hero.defensePercentage + "\n" +
+                            "Element: " + hero.heroSO.attributes.elementType + "\n" +
+                            "Status: " + GetStatusTypes();
         }
+    }
+
+    private string GetStatusTypes()
+    {
+        string statusList = "";
+        foreach (var status in hero.statusList)
+        {
+            statusList += status.statusType.ToString() + ", ";
+        }
+        return statusList;
     }
 }

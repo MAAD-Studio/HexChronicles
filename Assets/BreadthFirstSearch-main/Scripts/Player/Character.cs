@@ -16,8 +16,13 @@ public class Character : MonoBehaviour
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
-    [SerializeField] public AttackArea basicAttack;
-    [SerializeField] public AttackArea activeSkill;
+    [SerializeField] public AttackArea basicAttackArea;
+    [SerializeField] public AttackArea activeSkillArea;
+    [SerializeField] public List<Status> statusList = new List<Status>();
+
+    [Header("Character Health Info:")]
+    public float currentHealth = 0f;
+    public float maxHealth = 0f;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -28,9 +33,15 @@ public class Character : MonoBehaviour
 
     #endregion
 
+    /*#region Events
+    public event EventHandler OnDamage;
+    public event EventHandler OnHeal;
+    public event EventHandler OnDeath;
+    #endregion*/
+
     #region UnityMethods
 
-    void Start()
+    protected virtual void Start()
     {
         FindTile();
     }
@@ -40,6 +51,63 @@ public class Character : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region AttackMethods
+    public virtual void PerformBasicAttack(List<Character> targets) { }
+    public virtual void ReleaseActiveSkill(List<Character> targets) { }
+
+    public void AddStatus(Status status)
+    {
+        statusList.Add(status);
+    }
+
+    public void RemoveStatus(Status status)
+    {
+        statusList.Remove(status);
+    }
+
+    public void ApplyStatus()
+    {
+        foreach (Status status in statusList)
+        {
+            status.Apply(this);
+
+            if (status.effectTurns == 0)
+            {
+                RemoveStatus(status);
+            }
+        }
+    }
+
+    public virtual void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+
+        if (currentHealth < 0)
+        {
+            currentHealth = 0;
+            Died();
+            //OnDeath?.Invoke(this, EventArgs.Empty);
+        }
+        //OnDamage?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void Heal(float heal)
+    {
+        currentHealth += heal;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        //OnHeal?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void Died()
+    {
+        // TODO
+    }
     #endregion
 
     #region BreadthFirstMethods

@@ -13,17 +13,32 @@ MonoBehaviour:
   m_Name: FireGuySO
   m_EditorClassIdentifier: 
   attributes:
-    heroName: Fire
+    name: 
     description: Aggressive
     avatar: {fileID: 21300000, guid: c678273049088f74dac4b1f70ddf901b, type: 3}
-    health: 90
+    health: 9
     movementRange: 5
-    attackDamage: 40
+    attackDamage: 4
     attackRange: 2
     defensePercentage: 7
-    maxHealth: 140
+    maxHealth: 14
     maxMovementRange: 7
-    maxAttackDamage: 60
+    maxAttackDamage: 6
     maxAttackRange: 2
     maxDefense: 15
     elementType: 0
+  activeSkill:
+    skillName: Flame
+    description: 
+    icon: {fileID: 0}
+    particleEffect: {fileID: 0}
+    soundEffect: {fileID: 0}
+    damage: 3
+    targets: []
+    isFriendly: 0
+    status:
+      statusType: 1
+      effectTurns: 2
+    affectedTiles: []
+    releaseTypes: 3
+  skillEffect: 0

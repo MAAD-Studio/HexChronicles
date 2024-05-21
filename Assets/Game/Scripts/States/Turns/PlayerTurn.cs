@@ -21,6 +21,15 @@ public class PlayerTurn : StateInterface<TurnManager>
     public void EnterState(TurnManager manager)
     {
         turnManager = manager;
+
+        // Apply Character Status in this turn
+        foreach (Character character in turnManager.characterList)
+        {
+            if (character.statusList.Count > 0)
+            {
+                character.ApplyStatus();
+            }
+        }
     }
 
     public void UpdateState()
@@ -88,7 +97,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if (selectedCharacter != null)
         {
             actionType = TurnEnums.PlayerAction.BasicAttack;
-            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttack).GetComponent<AttackArea>();
+            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea).GetComponent<AttackArea>();
         }
     }
 
@@ -110,7 +119,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if(selectedCharacter != null)
         {
             actionType = TurnEnums.PlayerAction.ActiveSkill;
-            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkill).GetComponent<AttackArea>();
+            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea).GetComponent<AttackArea>();
         }
     }
 
@@ -162,23 +171,24 @@ public class PlayerTurn : StateInterface<TurnManager>
             {
                 if(actionType == TurnEnums.PlayerAction.BasicAttack)
                 {
-                    //**TESTING ONLY**
-                    //turnManager.DestroyACharacter(currentTile.characterOnTile);
-
                     Debug.Log("~~** BASIC ATTACK USED **~~");
+                    //selectedCharacter.PerformBasicAttack(currentTile.characterOnTile);
+                    selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+
                     Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
                     Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+
                     ResetBoard();
                     selectedCharacter = null;
                 }
                 else
                 {
-                    //**TESTING ONLY**
-                    //turnManager.DestroyACharacter(currentTile.characterOnTile);
-
                     Debug.Log("~~** ACTIVE SKILL USED **~~");
+                    selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                    
                     Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
                     Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+
                     ResetBoard();
                     selectedCharacter = null;
                 }
