@@ -8,10 +8,6 @@ public class Hero : Character
     [Header("Hero Specific:")]
     public HeroAttributesSO heroSO;
 
-    // Basic Attributes
-    public float attackDamage = 0;
-    public float defensePercentage = 0;
-
     // Active skill
     public int skillCD = 3;
     public int currentSkillCD;
@@ -24,6 +20,7 @@ public class Hero : Character
         moveDistance = heroSO.attributes.movementRange;
         attackDamage = heroSO.attributes.attackDamage;
         defensePercentage = heroSO.attributes.defensePercentage;
+        elementType = heroSO.attributes.elementType;
 
         maxHealth = heroSO.attributes.health;
         currentHealth = maxHealth;
@@ -92,9 +89,9 @@ public class Hero : Character
                 heroSO.attributes.attackRange += mod.value;
                 break;*/
             case BasicAttributeType.Health:
-                heroSO.attributes.health += mod.value;
-                if (heroSO.attributes.health >= heroSO.attributes.maxHealth)
-                    heroSO.attributes.health = heroSO.attributes.maxHealth;
+                currentHealth += mod.value;
+                if (currentHealth >= maxHealth)
+                    currentHealth = maxHealth;
                 break;
             case BasicAttributeType.DefensePercentage:
                 defensePercentage += mod.value;

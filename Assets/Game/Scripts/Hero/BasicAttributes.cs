@@ -16,15 +16,15 @@ public class BasicAttributes
     public int attackRange = 0;
     public float defensePercentage = 0;
 
-    [Header("Max Upgrade")]
+    [Header("Element")]
+    public ElementType elementType;
+
+    /*[Header("Max Upgrade")]
     public float maxHealth = 0;
     public float maxMovementRange = 0;
     public float maxAttackDamage = 0;
     public float maxAttackRange = 0;
-    public float maxDefense = 0;
-
-    [Header("Element")]
-    public ElementType elementType;
+    public float maxDefense = 0;*/
 
     //[Header("Upgrades")]
     //public List<StatModifier> statModifiers = new List<StatModifier>();

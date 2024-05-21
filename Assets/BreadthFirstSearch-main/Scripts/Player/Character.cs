@@ -21,9 +21,12 @@ public class Character : MonoBehaviour
     [SerializeField] public AttackArea activeSkillArea;
     [SerializeField] public List<Status> statusList = new List<Status>();
 
-    [Header("Character Health Info:")]
-    public float currentHealth = 0f;
-    public float maxHealth = 0f;
+    [Header("Character Basic Attributes:")]
+    [HideInInspector] public float currentHealth = 0f;
+    [HideInInspector] public float maxHealth = 0f;
+    [HideInInspector] public float attackDamage = 0;
+    [HideInInspector] public float defensePercentage = 0;
+    [HideInInspector] public ElementType elementType;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;

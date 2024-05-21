@@ -88,11 +88,6 @@ public class HeroDataManager : Singleton<HeroDataManager>
                 hero.attackRange = heroData.attackRange;
                 hero.defensePercentage = heroData.defensePercentage;
 
-                hero.maxHealth = heroData.maxHealth;
-                hero.maxMovementRange = heroData.maxMovementRange;
-                hero.maxAttackDamage = heroData.maxAttackDamage;
-                hero.maxAttackRange = heroData.maxAttackRange;
-                hero.maxDefense = heroData.maxDefense;
                 hero.elementType = heroData.elementType;
 
                 Debug.Log("Loaded Hero: " + hero.name);
