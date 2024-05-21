@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class Character : MonoBehaviour
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
+
+    [SerializeField] public ElementType elmentType;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
@@ -134,7 +137,7 @@ public class Character : MonoBehaviour
         int step = 1;
         int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
-        characterTile.OnTileExit();
+        characterTile.OnTileExit(this);
         Tile currentTile = path[0];
 
         //Debug.Log("CURRENT TILE TARGET: " + currentTile.name);
@@ -163,15 +166,15 @@ public class Character : MonoBehaviour
 
             //Moves onto the next point
             previousTile = currentTile;
-            currentTile.OnTileEnter();
             currentTile = path[step];
+            currentTile.OnTileEnter(this);
 
             step++;
 
             //Checks if we have arrived at the last tile, if not it triggers OnTileExit
             if(step < pathLength)
             {
-                previousTile.OnTileExit();
+                previousTile.OnTileExit(this);
             }
 
             animationTime = 0f;
@@ -179,7 +182,8 @@ public class Character : MonoBehaviour
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
-        characterTile.OnTileStay();
+        characterTile.OnTileStay(this);
+
     }
 
     //Starts the process of moving the character to a new location
