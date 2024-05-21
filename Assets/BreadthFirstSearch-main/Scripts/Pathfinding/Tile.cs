@@ -81,21 +81,54 @@ public class Tile : MonoBehaviour
     }
 
     //Called when a Character enters a tile
-    public void OnTileEnter()
+    public void OnTileEnter(Character character)
     {
-        //Debug.Log("++WE ENTERED A TILE++");
+        if(tileData.buffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else if(tileData.debuffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else
+        {
+            
+        }
     }
 
     //Called when a Character stays on a tile
-    public void OnTileStay()
+    public void OnTileStay(Character character)
     {
-        //Debug.Log("**WE ARE STAYING ON A TILE**");
+        if (tileData.buffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else if (tileData.debuffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else
+        {
+            
+        }
     }
 
     //Called when a Character is leaving a tile
-    public void OnTileExit()
+    public void OnTileExit(Character character)
     {
-        //Debug.Log("--WE EXITED A TILE--");
+        if (tileData.buffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else if (tileData.debuffTypes.Contains(character.elmentType))
+        {
+            
+        }
+        else
+        {
+            
+        }
     }
 
     #endregion
