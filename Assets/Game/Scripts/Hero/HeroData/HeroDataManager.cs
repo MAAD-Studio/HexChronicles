@@ -25,7 +25,7 @@ public class HeroDataManager : Singleton<HeroDataManager>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             WriteJSON();
         }
