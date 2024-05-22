@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_Basic : Enemy_Base
+public class Enemy_Gangsta : Enemy_Base
 {
     #region Variables
 
@@ -34,12 +34,12 @@ public class Enemy_Basic : Enemy_Base
     public override int CalculteAttackValue(AttackArea attackArea)
     {
         int valueOfAttack = 0;
-        foreach(Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             valueOfAttack += 5;
         }
 
-        foreach(Character character in attackArea.CharactersHit(characterType))
+        foreach (Character character in attackArea.CharactersHit(characterType))
         {
             valueOfAttack -= 2;
         }
@@ -49,7 +49,33 @@ public class Enemy_Basic : Enemy_Base
 
     public override void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        Debug.Log("~~** WE DO BE EXECUTING AN ATTACK **~~");
+        foreach(Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        {
+            character.TakeDamage(attackDamage);
+
+            List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
+
+            foreach(Tile tile in adjacentTiles)
+            {
+                if(!tile.tileOccupied)
+                {
+                    continue;
+                }
+
+                Enemy_Gangsta otherEnemy = tile.characterOnTile.GetComponent<Enemy_Gangsta>();
+                if(otherEnemy != null && otherEnemy.gameObject != gameObject)
+                {
+                    otherEnemy.FollowUpAttack(character);
+                }
+            }
+        }
+    }
+
+    public void FollowUpAttack(Character character)
+    {
+        transform.LookAt(character.transform.position);
+
+        character.TakeDamage(attackDamage);
     }
 
     #endregion

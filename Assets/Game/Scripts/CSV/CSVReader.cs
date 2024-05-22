@@ -32,11 +32,12 @@ public class CSVReader : MonoBehaviour
             list.Add(newTest);
         }
 
-        Debug.Log("---------------------");
+        //Uncomment to print out the data for testing purposes
+        /*Debug.Log("---------------------");
         foreach (TestStruct tester in list)
         {
             Debug.Log("NAME: " + tester.name + " CLAN: " + tester.clan + " STATUS: " + tester.status);
         }
-        Debug.Log("---------------------");
+        Debug.Log("---------------------");*/
     }
 }

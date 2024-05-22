@@ -61,15 +61,15 @@ public class EnemyBrain : MonoBehaviour
                 //Runs through all the Tiles adjacent to the current Movement tile
                 foreach(Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
                 {
-                    yield return new WaitForSeconds(0.01f);
-
                     //Positions and Rotates the AttackArea object
                     enemyAttackArea.transform.position = adjacentTile.transform.position;
                     Vector3 rotation = DetermineAttackAreaRotation(adjacentTile, tile);
                     enemyAttackArea.transform.eulerAngles = rotation;
 
-                    //Calculates the value of Attacking in that direction
+                    //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
+                    yield return new WaitForSeconds(0.05f);
                     enemyAttackArea.DetectArea(false);
+    
                     valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea);
 
                     //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
@@ -145,7 +145,11 @@ public class EnemyBrain : MonoBehaviour
                     enemyAttackArea.transform.position = finalCombo.attackingTile.transform.position;
                     enemyAttackArea.transform.eulerAngles = finalCombo.attackRotation;
 
-                    enemy_base.ExecuteAttack(enemyAttackArea);
+                    //IMPORTANT YIELD which lets the triggers update
+                    yield return new WaitForSeconds(0.05f);
+                    enemyAttackArea.DetectArea(true);
+
+                    enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
                 }
             }
             else

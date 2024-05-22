@@ -38,7 +38,7 @@ public class Enemy_Base : Character, EnemyInterface
         return 0;
     }
 
-    public virtual void ExecuteAttack(AttackArea attackArea)
+    public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
         
     }

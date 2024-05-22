@@ -8,5 +8,5 @@ public interface EnemyInterface
 
     public int CalculteAttackValue(AttackArea attackArea);
 
-    public void ExecuteAttack(AttackArea attackArea);
+    public void ExecuteAttack(AttackArea attackArea, TurnManager turnManager);
 }
