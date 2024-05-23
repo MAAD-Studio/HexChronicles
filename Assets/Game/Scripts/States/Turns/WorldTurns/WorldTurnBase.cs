@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldTurnBase : MonoBehaviour, StateInterface<TurnManager>
+[RequireComponent(typeof(TurnManager))]
+public class WorldTurnBase : MonoBehaviour, StateInterface
 {
     #region Variables
 
@@ -10,11 +11,21 @@ public class WorldTurnBase : MonoBehaviour, StateInterface<TurnManager>
 
     #endregion
 
+    #region UnityMethods
+
+    private void Start()
+    {
+        turnManager = GetComponent<TurnManager>();
+        Debug.Assert(turnManager != null, "WorldTurn doesn't have a TurnManager");
+    }
+
+    #endregion
+
     #region StateInterfaceMethods
 
-    public virtual void EnterState(TurnManager manager)
+    public virtual void EnterState()
     {
-        turnManager = manager;
+        
     }
 
     public virtual void ExitState()

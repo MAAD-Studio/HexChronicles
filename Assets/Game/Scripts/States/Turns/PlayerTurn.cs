@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerTurn : StateInterface<TurnManager>
+[RequireComponent(typeof(TurnManager))]
+public class PlayerTurn : MonoBehaviour, StateInterface
 {
     #region Variables
-
+    
     private Tile currentTile;
     private Character selectedCharacter;
+    public Character SelectedCharacter
+    {
+        get { return selectedCharacter; }
+    }
 
     private TurnEnums.PlayerAction actionType;
     private TurnManager turnManager;
@@ -16,12 +21,20 @@ public class PlayerTurn : StateInterface<TurnManager>
 
     #endregion
 
+    #region UnityMethods
+
+    private void Start()
+    {
+        turnManager = GetComponent<TurnManager>();
+        Debug.Assert(turnManager != null, "PlayerTurn doesn't have a TurnManager");
+    }
+
+    #endregion
+
     #region StateInterfaceMethods
 
-    public void EnterState(TurnManager manager)
+    public void EnterState()
     {
-        turnManager = manager;
-
         // Apply Character Status in this turn
         foreach (Character character in turnManager.characterList)
         {
@@ -351,6 +364,7 @@ public class PlayerTurn : StateInterface<TurnManager>
     {
         selectedCharacter = currentTile.characterOnTile;
         turnManager.pathfinder.FindPaths(selectedCharacter);
+        turnManager.mainCameraController.SetCamToSelectedCharacter(selectedCharacter);
     }
 
     //Performs the action for Movement

@@ -10,7 +10,9 @@ public class CameraController : MonoBehaviour
     private Camera mainCamera;
     private Transform cameraTransform;
 
-    private bool allowControl = true;
+    private bool dollying = false;
+
+    [HideInInspector] public bool allowControl = true;
 
     [Header("Camera Default Info:")]
     [SerializeField] private Vector3 defaultPosition = Vector3.zero;
@@ -245,17 +247,50 @@ public class CameraController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Keypad1))
         {
-            ResetValues();
+            SetValues(defaultPosition);
         }
     }
 
-    public void ResetValues()
+    public void SetValues(Vector3 position)
     {
-        cameraTransform.position = defaultPosition;
-        cameraPosition = defaultPosition;
-        targetPosition = defaultPosition;
+        targetPosition = position;
         velocityX = Vector3.zero;
         velocityZ = Vector3.zero;
+
+        if(dollying == false)
+        {
+            StartCoroutine(DollyToTarget());
+        }
+    }
+
+    public void SetCamToDefault()
+    {
+        SetValues(defaultPosition);
+    }
+
+    public void SetCamToSelectedCharacter(Character character)
+    {
+        Vector3 newPosition = character.transform.position;
+        newPosition.y += 10;
+        newPosition.z -= 4;
+        SetValues(newPosition);
+    }
+
+    public IEnumerator DollyToTarget()
+    {
+        dollying = true;
+
+        //Interpolates for smoother moving
+        while (Vector3.Distance(cameraPosition, targetPosition) > 0.5f)
+        {
+            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.05f);
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        cameraPosition = targetPosition;
+        cameraTransform.position = cameraPosition;
+
+        dollying = false;
     }
 
     #endregion

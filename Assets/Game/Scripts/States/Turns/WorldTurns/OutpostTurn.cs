@@ -12,9 +12,9 @@ public class OutpostTurn : WorldTurnBase
 
     #region StateInterfaceMethods
 
-    public override void EnterState(TurnManager manager)
+    public override void EnterState()
     {
-        base.EnterState(manager);
+        base.EnterState();
     }
 
     public override void ExitState()

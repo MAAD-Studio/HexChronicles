@@ -2,28 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Pathfinder), typeof(EnemyBrain))]
+[RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn))]
 public class TurnManager : MonoBehaviour
 {
     #region Variables
 
     [Header("General Information:")]
     [SerializeField] public LayerMask tileLayer;
+
+    [Header("External Components: ")]
     [SerializeField] public Camera mainCam;
+    [HideInInspector] public CameraController mainCameraController;
+
+    [SerializeField] public Pathfinder pathfinder;
+    [SerializeField] public EnemyBrain enemyBrain;
 
     [Header("Characters on level:")]
     public List<Character> characterList;
     public List<Enemy_Base> enemyList;
 
-    [Header("Level Type:")]
-    [HideInInspector] public Pathfinder pathfinder;
-    [HideInInspector] public EnemyBrain enemyBrain;
-
-    private StateInterface<TurnManager> playerTurn;
-    private StateInterface<TurnManager> enemyTurn;
+    [Header("WorldTurn Type:")]
     [SerializeField] private WorldTurnBase worldTurn;
 
-    private StateInterface<TurnManager> currentTurn;
+    private PlayerTurn playerTurn;
+    private EnemyTurn enemyTurn;
+
+    private StateInterface currentTurn;
 
     private int turnNumber;
     public int TurnNumber
@@ -37,20 +41,21 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Assert(mainCam != null, "TileInteractor couldn't find the MainCamera component");
+        Debug.Assert(mainCam != null, "TurnManager couldn't find the MainCamera Component");
 
-        pathfinder = gameObject.GetComponent<Pathfinder>();
-        Debug.Assert(pathfinder != null, "TileInteractor couldn't find the PathFinder component");
+        playerTurn = GetComponent<PlayerTurn>();
+        Debug.Assert(playerTurn != null, "TurnManager couldn't find the PlayerTurn Component");
 
-        enemyBrain = gameObject.GetComponent<EnemyBrain>();
-        Debug.Assert(enemyBrain != null, "TileInteractor couldn't find the EnemyBrain component");
+        enemyTurn = GetComponent<EnemyTurn>();
+        Debug.Assert(playerTurn != null, "TurnManager couldn't find the EnemyTurn Component");
 
-        playerTurn = new PlayerTurn();
-        enemyTurn = new EnemyTurn();
+        mainCameraController = mainCam.GetComponent<CameraController>();
+        Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
+
         turnNumber = 1;
 
         currentTurn = playerTurn;
-        currentTurn.EnterState(this);
+        currentTurn.EnterState();
     }
 
     void Update()
@@ -70,19 +75,24 @@ public class TurnManager : MonoBehaviour
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
+                mainCameraController.allowControl = true;
                 currentTurn = playerTurn;
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
+                mainCameraController.SetCamToDefault();
+                mainCameraController.allowControl = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
+                mainCameraController.SetCamToDefault();
+                mainCameraController.allowControl = false;
                 break;
         }
 
-        currentTurn.EnterState(this);
+        currentTurn.EnterState();
     }
 
     //**TESTING ONLY**
