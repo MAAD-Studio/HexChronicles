@@ -55,7 +55,6 @@ public class TurnManager : MonoBehaviour
         turnNumber = 1;
 
         currentTurn = playerTurn;
-        currentTurn.EnterState();
     }
 
     void Update()
