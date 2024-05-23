@@ -152,8 +152,6 @@ public class Character : MonoBehaviour
         characterTile.OnTileExit(this);
         Tile currentTile = path[0];
 
-        //Debug.Log("CURRENT TILE TARGET: " + currentTile.name);
-
         float animationTime = 0f;
         const float distanceToNext = 0.05f;
 

@@ -33,7 +33,7 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void ExitState()
     {
-        foreach(Character enemy in turnManager.enemyList)
+        foreach (Character enemy in turnManager.enemyList)
         {
             enemy.movementThisTurn = 0;
         }
@@ -41,15 +41,15 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void UpdateState()
     {
-        if(RunEnemyAI)
+        if (RunEnemyAI)
         {
             turnManager.enemyBrain.CalculateEnemyTurns();
             RunEnemyAI = false;
         }
 
-        if(turnManager.enemyBrain.DecisionMakingFinished)
+        if (turnManager.enemyBrain.DecisionMakingFinished)
         {
-            turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
+            turnManager.SwitchState(TurnEnums.TurnState.WorldTurn);
         }
     }
 

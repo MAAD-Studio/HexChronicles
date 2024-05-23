@@ -6,7 +6,12 @@ public class TowersTurn : WorldTurnBase
 {
     #region Variables
 
-    
+    [SerializeField] private int turnsbetweenSpawn = 2;
+    [SerializeField] private List<Spawner> spawners = new List<Spawner>();
+
+    #endregion
+
+    #region UnityMethods
 
     #endregion
 
@@ -25,6 +30,16 @@ public class TowersTurn : WorldTurnBase
     public override void UpdateState()
     {
         base.UpdateState();
+
+        if (turnManager.TurnNumber % turnsbetweenSpawn == 0)
+        {
+            foreach (Spawner spawner in spawners)
+            {
+                spawner.AttemptSpawn();
+            }
+        }
+
+        turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
     }
 
     #endregion

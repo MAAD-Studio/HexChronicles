@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldTurnBase : StateInterface<TurnManager>
+public class WorldTurnBase : MonoBehaviour, StateInterface<TurnManager>
 {
     #region Variables
 
-    private TurnManager turnManager;
+    protected TurnManager turnManager;
 
     #endregion
 

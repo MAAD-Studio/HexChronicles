@@ -16,16 +16,20 @@ public class TurnManager : MonoBehaviour
     public List<Enemy_Base> enemyList;
 
     [Header("Level Type:")]
-    public TurnEnums.WorldTurns worldTurnStyle;
-
     [HideInInspector] public Pathfinder pathfinder;
     [HideInInspector] public EnemyBrain enemyBrain;
 
     private StateInterface<TurnManager> playerTurn;
     private StateInterface<TurnManager> enemyTurn;
-    private StateInterface<TurnManager> worldTurn;
+    [SerializeField] private WorldTurnBase worldTurn;
 
     private StateInterface<TurnManager> currentTurn;
+
+    private int turnNumber;
+    public int TurnNumber
+    {
+        get { return turnNumber; }
+    }
 
     #endregion
 
@@ -43,7 +47,7 @@ public class TurnManager : MonoBehaviour
 
         playerTurn = new PlayerTurn();
         enemyTurn = new EnemyTurn();
-        worldTurn = WorldTurnChoice();
+        turnNumber = 1;
 
         currentTurn = playerTurn;
         currentTurn.EnterState(this);
@@ -65,6 +69,7 @@ public class TurnManager : MonoBehaviour
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
+                turnNumber++;
                 currentTurn = playerTurn;
                 break;
 
@@ -78,33 +83,6 @@ public class TurnManager : MonoBehaviour
         }
 
         currentTurn.EnterState(this);
-    }
-
-    //Creates an instance of the selected WorldTurn type on startup
-    public StateInterface<TurnManager> WorldTurnChoice()
-    {
-        StateInterface<TurnManager> style;
-
-        switch(worldTurnStyle)
-        {
-            case TurnEnums.WorldTurns.Towers:
-                style = new TowersTurn();
-                break;
-
-            case TurnEnums.WorldTurns.NightSurvival:
-                style = new NightSurvivalTurn();
-                break;
-
-            case TurnEnums.WorldTurns.RefugeeConvoy:
-                style = new ConvoyTurn();
-                break;
-
-            default:
-                style = new OutpostTurn();
-                break;
-        }
-
-        return style;
     }
 
     //**TESTING ONLY**
