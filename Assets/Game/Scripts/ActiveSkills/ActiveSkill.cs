@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,23 +8,38 @@ public class ActiveSkill
 {
     #region Variables
 
+    public Sprite icon;
     public string skillName;
     public string description;
-    public Sprite icon;
+    public AttackArea shapeArea;
     public GameObject particleEffect;
-    public AudioClip soundEffect;
+    public GameObject soundEffect;
 
-    public int damage;
-    public List<Character> targets;
-    public bool isFriendly;
+    public SkillEffect skillEffect;
+    public int skillEffectValue;
 
     public Status status = new Status();
+
+    //public ReleaseTypes releaseTypes; // Not used yet
+
+    private List<Character> targets;
 
     [HideInInspector] public List<Tile> affectedTiles = new List<Tile>();
 
     #endregion
 
     #region Enum
+
+    [Flags]
+    public enum SkillEffect
+    {
+        Damage = 1 << 0,     
+        Heal = 1 << 1,     
+        AddStatus = 1 << 2, 
+        ReduceCD = 1 << 3,
+        Push = 1 << 4,
+        ChangeTileType = 1 << 5 
+    }
 
     public enum ReleaseTypes
     {
@@ -33,48 +49,73 @@ public class ActiveSkill
         Shape,
         All
     }
-    public ReleaseTypes releaseTypes;
 
     #endregion Enum
 
     #region Use Skill
     public void Release(List<Character> targets)
     {
-        foreach (var target in targets)
+        if ((skillEffect & SkillEffect.Damage) != 0) // Has Damage effect
         {
-            if ((isFriendly && target.characterType == TurnEnums.CharacterType.Enemy) || !isFriendly)
+            foreach (var target in targets)
             {
-                target.TakeDamage(damage);
-
-                if (status.statusType != Status.StatusTypes.None)
-                {
-                    target.AddStatus(status);
-                }
+                target.TakeDamage(skillEffectValue);
             }
+        }
+
+        if ((skillEffect & SkillEffect.Heal) != 0) 
+        {
+            foreach (var target in targets)
+            {
+                target.Heal(skillEffectValue);
+            }
+        }
+
+        if ((skillEffect & SkillEffect.AddStatus) != 0 && status.statusType != Status.StatusTypes.None)
+        {
+            foreach (var target in targets)
+            {
+                target.AddStatus(status);
+            }
+        }
+
+        if ((skillEffect & SkillEffect.ReduceCD) != 0)
+        {
+            foreach (var target in targets)
+            {
+                Hero heroTarget = (Hero)target;
+                heroTarget.currentSkillCD -= skillEffectValue;
+            }
+        }
+
+        if ((skillEffect & SkillEffect.Push) != 0)
+        {
+            // TODO
+        }
+
+        if ((skillEffect & SkillEffect.ChangeTileType) != 0)
+        {
+            // TODO
         }
     }
 
     public void GetTargets()
     {
-        // release skill
-        switch (releaseTypes)
+        /*switch (releaseTypes)
         {
-            case ReleaseTypes.Single:
-                //targets = GetSelectedHero();
+            case ReleaseTypes.Shape:
+                targets = shapeArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+                Debug.Log("Targets: " + targets.Count);
                 break;
+
             case ReleaseTypes.OnTileType:
                 //targets = GetTargetsOnTileType();
                 break;
+
             case ReleaseTypes.Area:
                 //targets = GetTargetsInRange();
                 break;
-            case ReleaseTypes.Shape:
-                //targets = GetTargetsInShape();
-                break;
-            case ReleaseTypes.All:
-                //targets = GetAllMapTargets();
-                break;
-        }
+        }*/
     }
 
     public void GetTargetsOnTileType(TileEnums.TileType tileType)

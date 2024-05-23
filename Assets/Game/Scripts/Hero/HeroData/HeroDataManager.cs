@@ -13,9 +13,15 @@ public class HeroDataManager : Singleton<HeroDataManager>
     //private string fileLocation = Application.persistentDataPath + "/SavedHeroData.json"; // this should be used for player's hero data
     private string fileLocation = "Assets/Game/Scripts/Hero/HeroData/HeroData.json";
     public List<HeroAttributesSO> heroSOs = new List<HeroAttributesSO>();
-    public List<BasicAttributes> heroes = new List<BasicAttributes>();
+    [HideInInspector] public List<BasicAttributes> heroes = new List<BasicAttributes>();
 
     private void Start()
+    {
+        heroes.Clear();
+        AddHeroSO();
+    }
+
+    public void AddHeroSO()
     {
         foreach (HeroAttributesSO heroSO in heroSOs)
         {
@@ -69,7 +75,7 @@ public class HeroDataManager : Singleton<HeroDataManager>
 
             if (heroes.Count != dataContainer.heroes.Count)
             {
-                Debug.LogError("Number of items in the existing list does not match the deserialized list");
+                Debug.LogError("Number of items in the existing list does not match the deserialized list: " + heroes.Count);
                 return;
             }
 
