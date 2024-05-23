@@ -112,7 +112,16 @@ public class TurnManager : MonoBehaviour
     {
         character.characterTile.characterOnTile = null;
         character.characterTile.tileOccupied = false;
-        characterList.Remove(character);
+
+        if (character.characterType == TurnEnums.CharacterType.Player)
+        {
+            characterList.Remove(character);
+        }
+        else
+        {
+            enemyList.Remove((Enemy_Base)character);
+        }
+
         Destroy(character.gameObject);
     }
 
