@@ -9,19 +9,19 @@ public class Status
     public enum StatusTypes
     {
         None,
-        // elemental
-        Burning,
+        Burning, // Damage 1
+        Bound, // Skip this turn
+        Blessing, // Heal 2
+        Hurt, // Take +1 damage
+        _________BelowNotUsed,
         Freezed,
         Poisoned,
-
-        // physical
-        Bound,
         Taunt,
         Chaos,
         CannotMove,
         CannotAttack,
         CannotUseSkill,
-        CannotBeSelected,
+        CannotBeSelected
     }
     public StatusTypes statusType;
     public int effectTurns;
@@ -31,56 +31,33 @@ public class Status
         switch (statusType)
         {
             case StatusTypes.Burning:
-                BurningStatus(character);
+                character.TakeDamage(1);
                 break;
-            case StatusTypes.Poisoned:
-                PoisonStatus(character);
-                break;
-            case StatusTypes.Freezed:
-                FreezeStatus(character);
-                break;
+
             case StatusTypes.Bound:
-                BoundStatus(character);
+                character.movementThisTurn = 0;
                 break;
+
+            case StatusTypes.Blessing:
+                character.Heal(2);
+                break;
+
+            case StatusTypes.Hurt:
+                character.isHurt = true;
+                break;
+
+            case StatusTypes.Poisoned:
+                break;
+
+            case StatusTypes.Freezed:
+                break;
+
             case StatusTypes.Chaos:
-                ChaosStatus(character);
                 break;
+
             case StatusTypes.Taunt:
-                TauntStatus(character);
                 break;
         }
         effectTurns -= 1;
-    }
-
-    private void BurningStatus(Character character)
-    {
-        Debug.Log("Burning");
-        character.TakeDamage(1);
-    }
-
-    private void PoisonStatus(Character character)
-    {
-        Debug.Log("Poisoned");
-    }
-
-    private void FreezeStatus(Character character)
-    {
-        Debug.Log("Freezed");
-    }
-
-    private void BoundStatus(Character character)
-    {
-        character.movementThisTurn = 0;
-        // Attack?
-    }
-
-    private void ChaosStatus(Character character)
-    {
-        Debug.Log("Chaos");
-    }
-
-    private void TauntStatus(Character character)
-    {
-        Debug.Log("Taunt");
     }
 }

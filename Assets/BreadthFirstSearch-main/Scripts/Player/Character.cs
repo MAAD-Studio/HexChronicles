@@ -17,9 +17,8 @@ public class Character : MonoBehaviour
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
-    [SerializeField] public AttackArea basicAttackArea;
-    [SerializeField] public AttackArea activeSkillArea;
-    [SerializeField] public List<Status> statusList = new List<Status>();
+    [HideInInspector] public AttackArea basicAttackArea;
+    [HideInInspector] public AttackArea activeSkillArea;
 
     [Header("Character Basic Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
@@ -34,6 +33,10 @@ public class Character : MonoBehaviour
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
     private Tile previousTile;
+
+    [Header("Character Status:")]
+    public List<Status> statusList = new List<Status>();
+    [HideInInspector] public bool isHurt = false;
 
     #endregion
 
@@ -69,6 +72,11 @@ public class Character : MonoBehaviour
     public void RemoveStatus(Status status)
     {
         statusList.Remove(status);
+
+        if (status.statusType == Status.StatusTypes.Hurt)
+        {
+            isHurt = false;
+        }
     }
 
     public void ApplyStatus()
@@ -88,7 +96,9 @@ public class Character : MonoBehaviour
     {
         currentHealth -= damage;
 
-        if (currentHealth < 0)
+        if (isHurt) { currentHealth--; }
+
+        if (currentHealth <= 0)
         {
             currentHealth = 0;
             Died();
@@ -110,7 +120,8 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
-        // TODO
+        TurnManager tm = FindObjectOfType<TurnManager>();
+        tm.DestroyACharacter(this);
     }
     #endregion
 
@@ -140,8 +151,6 @@ public class Character : MonoBehaviour
 
         characterTile.OnTileExit(this);
         Tile currentTile = path[0];
-
-        //Debug.Log("CURRENT TILE TARGET: " + currentTile.name);
 
         float animationTime = 0f;
         const float distanceToNext = 0.05f;

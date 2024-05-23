@@ -24,6 +24,9 @@ public class Hero : Character
 
         maxHealth = heroSO.attributes.health;
         currentHealth = maxHealth;
+
+        basicAttackArea = heroSO.attackArea;
+        activeSkillArea = heroSO.activeSkill.shapeArea;
         currentSkillCD = skillCD;
         buffModifiers = new List<BuffModifier>();
     }
@@ -42,7 +45,7 @@ public class Hero : Character
     {
         foreach (var target in targets)
         {
-            target.TakeDamage(heroSO.attributes.attackDamage);
+            target.TakeDamage(attackDamage);
         }
     }
 
@@ -60,26 +63,7 @@ public class Hero : Character
     public void AddModifier(BuffModifier mod)
     {
         buffModifiers.Add(mod);
-        CalculateCurrentStats(mod);
-    }
 
-    public void RemoveModifier(BuffModifier mod)
-    {
-        buffModifiers.Remove(mod);
-        CalculateCurrentStats(mod);
-    }
-
-    public void ClearModifiers()
-    {
-        foreach (var mod in buffModifiers)
-        {
-            RemoveModifier(mod);
-        }
-        buffModifiers.Clear();
-    }
-
-    private void CalculateCurrentStats(BuffModifier mod)
-    {
         switch (mod.attributeType)
         {
             case BasicAttributeType.AttackDamage:
@@ -101,6 +85,42 @@ public class Hero : Character
                 break;
         }
     }
+
+    public void RemoveModifier(BuffModifier mod)
+    {
+        buffModifiers.Remove(mod);
+
+        switch (mod.attributeType)
+        {
+            case BasicAttributeType.AttackDamage:
+                attackDamage -= mod.value;
+                break;
+            /*case BasicAttributeType.AttackRange:
+                heroSO.attributes.attackRange -= mod.value;
+                break;*/
+            case BasicAttributeType.Health:
+                currentHealth -= mod.value;
+                if (currentHealth < 0)
+                    currentHealth = 0;
+                break;
+            case BasicAttributeType.DefensePercentage:
+                defensePercentage -= mod.value;
+                break;
+            case BasicAttributeType.MovementRange:
+                moveDistance -= (int)mod.value;
+                break;
+        }
+    }
+
+    public void ClearModifiers()
+    {
+        foreach (var mod in buffModifiers)
+        {
+            RemoveModifier(mod);
+        }
+        buffModifiers.Clear();
+    }
+
     #endregion Modifiers
 
 }

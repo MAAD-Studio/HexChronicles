@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyTurn : StateInterface<TurnManager>
+[RequireComponent(typeof(TurnManager))]
+public class EnemyTurn : MonoBehaviour, StateInterface
 {
     #region Variables
 
@@ -13,12 +14,20 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     #endregion
 
+    #region UnityMethods
+
+    private void Start()
+    {
+        turnManager = GetComponent<TurnManager>();
+        Debug.Assert(turnManager != null, "EnemyTurn doesn't have a TurnManager");
+    }
+
+    #endregion
+
     #region StateInterfaceMethods
 
-    public void EnterState(TurnManager manager)
+    public void EnterState()
     {
-        turnManager = manager;
-
         RunEnemyAI = true;
 
         // Apply Enemy's Status
@@ -33,7 +42,7 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void ExitState()
     {
-        foreach(Character enemy in turnManager.enemyList)
+        foreach (Character enemy in turnManager.enemyList)
         {
             enemy.movementThisTurn = 0;
         }
@@ -41,15 +50,15 @@ public class EnemyTurn : StateInterface<TurnManager>
 
     public void UpdateState()
     {
-        if(RunEnemyAI)
+        if (RunEnemyAI)
         {
             turnManager.enemyBrain.CalculateEnemyTurns();
             RunEnemyAI = false;
         }
 
-        if(turnManager.enemyBrain.DecisionMakingFinished)
+        if (turnManager.enemyBrain.DecisionMakingFinished)
         {
-            turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
+            turnManager.SwitchState(TurnEnums.TurnState.WorldTurn);
         }
     }
 

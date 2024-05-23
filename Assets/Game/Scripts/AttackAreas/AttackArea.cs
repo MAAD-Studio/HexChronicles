@@ -13,7 +13,6 @@ public class AttackArea : MonoBehaviour
 
     #region UnityMethods
 
-    // Start is called before the first frame update
     void Start()
     {
         foreach (TileReporter reporter in transform.GetComponentsInChildren<TileReporter>())

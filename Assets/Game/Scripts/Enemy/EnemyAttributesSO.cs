@@ -6,5 +6,6 @@ using UnityEngine;
 public class EnemyAttributesSO : ScriptableObject
 {
     public BasicAttributes attributes = new BasicAttributes();
+    public AttackArea attackArea;
 
 }

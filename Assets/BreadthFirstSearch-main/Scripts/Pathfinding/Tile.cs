@@ -21,11 +21,13 @@ public class Tile : MonoBehaviour
 
     [HideInInspector] public Tile parentTile;
     [HideInInspector] public Character characterOnTile;
+    [HideInInspector] public TileObject objectOnTile;
 
     [HideInInspector] public bool tileOccupied = false;
+    [HideInInspector] public bool tileHasObject = false;
     [HideInInspector] public bool inFrontier = false;
 
-    [HideInInspector] public bool Reachable { get { return !tileOccupied && inFrontier; } }
+    [HideInInspector] public bool Reachable { get { return !tileOccupied && !tileHasObject && inFrontier; } }
 
     private Renderer tileRenderer;
 

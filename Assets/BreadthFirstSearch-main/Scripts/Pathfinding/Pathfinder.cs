@@ -55,7 +55,7 @@ public class Pathfinder : MonoBehaviour
                 //If the adjacent tile has already been added to the list of tile to check ignore it
                 if (openTiles.Contains(adjacentTile))
                 {
-                    if(adjacentTile.cost > newCost)
+                    if (adjacentTile.cost > newCost)
                     {
                         adjacentTile.cost = newCost;
                         adjacentTile.parentTile = currentTile;
@@ -118,8 +118,8 @@ public class Pathfinder : MonoBehaviour
             if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
-                
-                if (includeOccupied || !hitTile.tileOccupied)
+
+                if (includeOccupied || !hitTile.tileOccupied && !hitTile.tileHasObject)
                 {
                     adjacentTiles.Add(hitTile);
                 }
@@ -182,7 +182,7 @@ public class Pathfinder : MonoBehaviour
             tile.inFrontier = false;
             tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
-        
+
         frontier.Clear();
     }
 
