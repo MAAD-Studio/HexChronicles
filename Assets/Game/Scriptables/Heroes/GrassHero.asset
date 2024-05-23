@@ -13,27 +13,26 @@ MonoBehaviour:
   m_Name: GrassHero
   m_EditorClassIdentifier: 
   attributes:
+    avatar: {fileID: 0}
     name: Grass
     description: 
-    avatar: {fileID: 0}
     health: 12
     movementRange: 3
     attackDamage: 2
     attackRange: 4
     defensePercentage: 15
     elementType: 2
+  attackArea: {fileID: 3827415136764973267, guid: e08f29601a8b0cb4dbfa7b9091ef138f, type: 3}
   activeSkill:
+    icon: {fileID: 0}
     skillName: Bound Skill
     description: 
-    icon: {fileID: 0}
+    shapeArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
     particleEffect: {fileID: 0}
     soundEffect: {fileID: 0}
-    damage: 0
-    targets: []
-    isFriendly: 0
+    skillEffect: 4
+    skillEffectValue: 0
     status:
-      statusType: 4
+      statusType: 2
       effectTurns: 2
     affectedTiles: []
-    releaseTypes: 0
-  skillEffect: 0

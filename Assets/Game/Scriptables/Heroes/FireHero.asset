@@ -13,27 +13,26 @@ MonoBehaviour:
   m_Name: FireHero
   m_EditorClassIdentifier: 
   attributes:
+    avatar: {fileID: 21300000, guid: c678273049088f74dac4b1f70ddf901b, type: 3}
     name: Fire
     description: Aggressive
-    avatar: {fileID: 21300000, guid: c678273049088f74dac4b1f70ddf901b, type: 3}
     health: 9
     movementRange: 5
     attackDamage: 4
     attackRange: 2
     defensePercentage: 7
     elementType: 0
+  attackArea: {fileID: 3827415136764973267, guid: 7be9ba0d0d482614b961812c41e94daf, type: 3}
   activeSkill:
+    icon: {fileID: 0}
     skillName: Flame
     description: 
-    icon: {fileID: 0}
+    shapeArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
     particleEffect: {fileID: 0}
     soundEffect: {fileID: 0}
-    damage: 3
-    targets: []
-    isFriendly: 0
+    skillEffect: 5
+    skillEffectValue: 2
     status:
       statusType: 1
       effectTurns: 2
     affectedTiles: []
-    releaseTypes: 3
-  skillEffect: 0

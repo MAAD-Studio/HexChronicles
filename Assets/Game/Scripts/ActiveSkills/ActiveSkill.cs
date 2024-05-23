@@ -8,12 +8,12 @@ public class ActiveSkill
 {
     #region Variables
 
+    public Sprite icon;
     public string skillName;
     public string description;
-    public Sprite icon;
     public AttackArea shapeArea;
     public GameObject particleEffect;
-    public AudioClip soundEffect;
+    public GameObject soundEffect;
 
     public SkillEffect skillEffect;
     public int skillEffectValue;

@@ -5,9 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class BasicAttributes
 {
+    public Sprite avatar;
     public string name;
     public string description;
-    public Sprite avatar;
 
     [Header("Basic Attributes")]
     public float health = 0;
