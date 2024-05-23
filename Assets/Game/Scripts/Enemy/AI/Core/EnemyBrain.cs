@@ -51,6 +51,8 @@ public class EnemyBrain : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
+            turnManager.mainCameraController.SetCamToSelectedCharacter(enemy_base);
+
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();
             turnManager.pathfinder.FindPaths(enemy_base);

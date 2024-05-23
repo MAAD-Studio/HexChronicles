@@ -6,7 +6,8 @@ public class TowersTurn : WorldTurnBase
 {
     #region Variables
 
-    [SerializeField] private int turnsbetweenSpawn = 2;
+    [Header("Spawning Information: ")]
+    [SerializeField] private int turnsTillSpawn = 2;
     [SerializeField] private List<Spawner> spawners = new List<Spawner>();
 
     #endregion
@@ -17,9 +18,9 @@ public class TowersTurn : WorldTurnBase
 
     #region StateInterfaceMethods
 
-    public override void EnterState(TurnManager manager)
+    public override void EnterState()
     {
-        base.EnterState(manager);
+        base.EnterState();
     }
 
     public override void ExitState()
@@ -31,7 +32,7 @@ public class TowersTurn : WorldTurnBase
     {
         base.UpdateState();
 
-        if (turnManager.TurnNumber % turnsbetweenSpawn == 0)
+        if (turnManager.TurnNumber % turnsTillSpawn == 0)
         {
             foreach (Spawner spawner in spawners)
             {

@@ -10,8 +10,8 @@ public class Spawner : TileObject
     private Tile attachedTile;
 
     [Header("Setup Info:")]
-    [SerializeField] private TurnManager turnManager;
     [SerializeField] private LayerMask tileLayer;
+    [SerializeField] private TurnManager turnManager;
 
     [Header("Spawning Info: ")]
     [SerializeField] private int numberToSpawn = 1;
