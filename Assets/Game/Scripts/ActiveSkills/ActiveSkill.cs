@@ -10,6 +10,7 @@ public class ActiveSkill
     public string skillName;
     public string description;
     public Sprite icon;
+    public AttackArea shapeArea;
     public GameObject particleEffect;
     public AudioClip soundEffect;
 

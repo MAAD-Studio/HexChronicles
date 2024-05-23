@@ -17,9 +17,9 @@ public class Character : MonoBehaviour
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
-    [SerializeField] public AttackArea basicAttackArea;
-    [SerializeField] public AttackArea activeSkillArea;
     [SerializeField] public List<Status> statusList = new List<Status>();
+    [HideInInspector] public AttackArea basicAttackArea;
+    [HideInInspector] public AttackArea activeSkillArea;
 
     [Header("Character Basic Attributes:")]
     [HideInInspector] public float currentHealth = 0f;

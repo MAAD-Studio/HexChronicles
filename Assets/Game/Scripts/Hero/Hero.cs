@@ -24,6 +24,9 @@ public class Hero : Character
 
         maxHealth = heroSO.attributes.health;
         currentHealth = maxHealth;
+
+        basicAttackArea = heroSO.attackArea;
+        activeSkillArea = heroSO.activeSkill.shapeArea;
         currentSkillCD = skillCD;
         buffModifiers = new List<BuffModifier>();
     }

@@ -22,6 +22,8 @@ public class Enemy_Base : Character, EnemyInterface
 
         maxHealth = enemySO.attributes.health;
         currentHealth = maxHealth;
+
+        basicAttackArea = enemySO.attackArea;
     }
 
     #endregion
