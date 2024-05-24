@@ -8,6 +8,8 @@ public class MenuManager : Singleton<MenuManager>
     public MenuClassifier MainMenuClassifier;
     public MenuClassifier LoadingScreenClassifier;
     public MenuClassifier HUDMenuClassifier;
+    public MenuClassifier PauseMenuClassifier;
+    public MenuClassifier MapClassifier;
 
     private Dictionary<Guid, Menu> menuList = new Dictionary<Guid, Menu>();
 

@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class MainMenu : Menu
 {
-    public SceneReference Level;
+    public SceneReference Map;
     public MenuClassifier hudClassifier;
+    public MenuClassifier mapClassifier;
 
-    public void OnLoadLevel()
+    public void OnStartGame()
     {
-        SceneLoader.Instance.LoadScene(Level);
-        MenuManager.Instance.HideMenu(menuClassifier);
+        SceneLoader.Instance.LoadScene(Map);
 
-        MenuManager.Instance.ShowMenu(hudClassifier);
+        MenuManager.Instance.HideMenu(menuClassifier);
+        MenuManager.Instance.ShowMenu(mapClassifier);
     }
 
     public void OnReturnToMainMenu()

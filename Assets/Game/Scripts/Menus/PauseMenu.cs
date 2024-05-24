@@ -4,17 +4,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
-using static UnityEngine.InputSystem.InputAction;
 
 public class PauseMenu : Menu
 {
     public MenuClassifier hudMenuClassifier;
-
-    public void OnReturnToMainMenu()
-    {
-        MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
-        MenuManager.Instance.HideMenu(menuClassifier);
-    }
 
     private void Update()
     {
@@ -28,5 +21,29 @@ public class PauseMenu : Menu
     {
         Time.timeScale = 1.0f;
         MenuManager.Instance.HideMenu(menuClassifier);
+    }
+
+    public void OnReturnToMainMenu()
+    {
+        MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
+        MenuManager.Instance.HideMenu(menuClassifier);
+
+        CleanActiveScene();
+    }
+
+    public void OnReturnToMap()
+    {
+        MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.MapClassifier)?.OnReturnToMap();
+        MenuManager.Instance.HideMenu(menuClassifier);
+
+        CleanActiveScene();
+    }
+
+    private void CleanActiveScene()
+    {
+        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            Destroy(go);
+        }
     }
 }
