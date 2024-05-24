@@ -23,6 +23,7 @@ public class ActiveSkill
     //public ReleaseTypes releaseTypes; // Not used yet
 
     private List<Character> targets;
+    [HideInInspector] public Character thisCharacter;
 
     [HideInInspector] public List<Tile> affectedTiles = new List<Tile>();
 
@@ -90,13 +91,24 @@ public class ActiveSkill
 
         if ((skillEffect & SkillEffect.Push) != 0)
         {
-            // TODO
+            foreach (var target in targets)
+            {
+                int distance = skillEffectValue;
+                Vector3 direction = target.transform.position - thisCharacter.transform.position;
+                target.PushedBack(direction, distance);
+            }
         }
 
         if ((skillEffect & SkillEffect.ChangeTileType) != 0)
         {
             // TODO
         }
+    }
+
+    // Method to clone the ActiveSkill
+    public ActiveSkill Clone()
+    {
+        return (ActiveSkill)this.MemberwiseClone();
     }
 
     public void GetTargets()

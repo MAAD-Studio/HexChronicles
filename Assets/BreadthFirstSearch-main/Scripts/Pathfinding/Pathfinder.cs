@@ -186,5 +186,18 @@ public class Pathfinder : MonoBehaviour
         frontier.Clear();
     }
 
+    // Used for pushing characters
+    public Tile GetTileInDirection(Tile origin, Vector3 direction)
+    {
+        Vector3 aboveTilePos = origin.transform.position + direction;
+        aboveTilePos.y += 1f;
+
+        if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, 50f, tileLayer))
+        {
+            return hit.transform.GetComponent<Tile>();
+        }
+
+        return null;
+    }
     #endregion
 }

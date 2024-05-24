@@ -231,5 +231,42 @@ public class Character : MonoBehaviour
         tile.characterOnTile = this;
     }
 
+    public void PushedBack(Vector3 direction, int distance)
+    {
+        Tile targetTile = characterTile;
+        List<Tile> tiles = new List<Tile>();
+
+        //temporarily get the pathfinder
+        Pathfinder pathfinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
+
+        while (distance > 0)
+        {
+            Tile newTile = pathfinder.GetTileInDirection(targetTile, direction);
+            if (newTile == null || newTile.tileOccupied)
+            {
+                break;
+            }
+            targetTile = newTile;
+            tiles.Add(newTile);
+            distance--;
+        }
+
+        if (tiles != null && tiles.Count != 0)
+        {
+            Tile[] path = tiles.ToArray();
+            Move(path);
+            // TODO: rotate after move, fix movement reduced next turn
+            //StartCoroutine(RotateBack());
+        }
+    }
+
+    IEnumerator RotateBack()
+    {
+        while (moving)
+        {
+            yield return null;
+        }
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
+    }
     #endregion
 }

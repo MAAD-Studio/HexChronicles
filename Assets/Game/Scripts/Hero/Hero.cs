@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class Hero : Character
 {
@@ -9,6 +8,7 @@ public class Hero : Character
     public HeroAttributesSO heroSO;
 
     // Active skill
+    [HideInInspector] public ActiveSkill activeSkill;
     public int skillCD = 3;
     public int currentSkillCD;
 
@@ -26,8 +26,12 @@ public class Hero : Character
         currentHealth = maxHealth;
 
         basicAttackArea = heroSO.attackArea;
-        activeSkillArea = heroSO.activeSkill.shapeArea;
+
+        activeSkill = heroSO.activeSkill.Clone();
+        activeSkill.thisCharacter = this;
+        activeSkillArea = activeSkill.shapeArea;
         currentSkillCD = skillCD;
+
         buffModifiers = new List<BuffModifier>();
     }
 
@@ -51,7 +55,7 @@ public class Hero : Character
 
     public override void ReleaseActiveSkill(List<Character> targets)
     {
-        heroSO.activeSkill.Release(targets);
+        activeSkill.Release(targets);
     }
 
     public void ApplyPassiveSkill()
