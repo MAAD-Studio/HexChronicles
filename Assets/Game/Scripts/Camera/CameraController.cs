@@ -10,8 +10,6 @@ public class CameraController : MonoBehaviour
     private Camera mainCamera;
     private Transform cameraTransform;
 
-    private bool dollying = false;
-
     [HideInInspector] public bool allowControl = true;
 
     [Header("Camera Default Info:")]
@@ -39,6 +37,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 2f;
     private Vector3 targetPosition = Vector3.zero;
 
+    private Character selectedCharacter;
+
     #endregion
 
     #region UnityMethods
@@ -57,6 +57,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        ApproachTargetPosition();
+
         if (allowControl)
         {
             DefaultsUpdate();
@@ -87,8 +89,6 @@ public class CameraController : MonoBehaviour
 
             targetPosition.x = Mathf.Clamp(targetPosition.x, -5, 20);
             targetPosition.z = Mathf.Clamp(targetPosition.z, -5, 20);
-
-            cameraTransform.position = cameraPosition;
         }
     }
 
@@ -122,16 +122,6 @@ public class CameraController : MonoBehaviour
                 targetPosition += -mainCameraForward * scrollDelta;
                 targetPosition.y += scrollDelta;
             }
-        }
-
-        //Interpolates for smoother zooming
-        if (Vector3.Distance(cameraPosition, targetPosition) > 0.5f)
-        {
-            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.05f);
-        }
-        else
-        {
-            cameraPosition = targetPosition;
         }
     }
 
@@ -243,54 +233,73 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    //Checks if the player wants to return to a default cam position
     public void DefaultsUpdate()
     {
         if(Input.GetKeyDown(KeyCode.Keypad1))
         {
             SetValues(defaultPosition);
         }
+        else if(Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            if(selectedCharacter != null)
+            {
+                SetCamToSelectedCharacter(selectedCharacter);
+            }
+        }
     }
 
+    //Sets a new target position and gets rid of velocity
     public void SetValues(Vector3 position)
     {
         targetPosition = position;
         velocityX = Vector3.zero;
         velocityZ = Vector3.zero;
-
-        if(dollying == false)
-        {
-            StartCoroutine(DollyToTarget());
-        }
     }
 
+    //Sets the cam to move to the default position
     public void SetCamToDefault()
     {
         SetValues(defaultPosition);
     }
 
+    //Sets the cam to move to the position of a character
     public void SetCamToSelectedCharacter(Character character)
     {
         Vector3 newPosition = character.transform.position;
         newPosition.y += 10;
         newPosition.z -= 4;
+
+        selectedCharacter = character;
+
         SetValues(newPosition);
     }
 
-    public IEnumerator DollyToTarget()
+    //Tells the camera to unselect the character it is holding onto
+    public void UnSelectCharacter()
     {
-        dollying = true;
+        selectedCharacter = null;
+    }
 
-        //Interpolates for smoother moving
-        while (Vector3.Distance(cameraPosition, targetPosition) > 0.5f)
+    //Gets the camera to approach the target position
+    public void ApproachTargetPosition()
+    {
+        if(selectedCharacter != null && !allowControl)
         {
-            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.05f);
-            yield return new WaitForSeconds(0.02f);
+            SetCamToSelectedCharacter(selectedCharacter);
         }
 
-        cameraPosition = targetPosition;
-        cameraTransform.position = cameraPosition;
+        //Interpolates for smoother movement
+        if (Vector3.Distance(cameraPosition, targetPosition) > 0.5f)
+        {
+            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.05f);
+        }
+        else
+        {
+            cameraPosition = targetPosition;
+        }
 
-        dollying = false;
+        cameraTransform.position = cameraPosition;
     }
 
     #endregion

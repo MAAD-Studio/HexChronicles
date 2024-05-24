@@ -157,6 +157,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public void EndTurn()
     {
         ResetBoard();
+        turnManager.mainCameraController.UnSelectCharacter();
         turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
     }
 
@@ -180,13 +181,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         //Rotates the ActiveSkill to the selected rotation
         //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
 
-        areaPrefab.DetectArea(true);
+        areaPrefab.DetectArea(true, true);
 
         if (Input.GetMouseButton(0))
         {
             //Won't trigger if the occupant of the hovered over tile is a Player Character
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
+                turnManager.mainCameraController.UnSelectCharacter();
                 if(actionType == TurnEnums.PlayerAction.BasicAttack)
                 {
                     Debug.Log("~~** BASIC ATTACK USED **~~");
@@ -352,6 +354,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     //If they are the same we deselect the Character
                     else
                     {
+                        turnManager.mainCameraController.UnSelectCharacter();
                         selectedCharacter = null;
                     }
                 }
@@ -392,6 +395,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (Input.GetMouseButtonDown(0))
         {
             selectedCharacter.Move(path);
+            turnManager.mainCameraController.UnSelectCharacter();
             ResetBoard();
             selectedCharacter = null;
         }

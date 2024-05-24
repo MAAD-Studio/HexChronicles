@@ -31,12 +31,20 @@ public class Enemy_Gangsta : Enemy_Base
         return valueOfMovement * 2;
     }
 
-    public override int CalculteAttackValue(AttackArea attackArea)
+    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
     {
         int valueOfAttack = 0;
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             valueOfAttack += 5;
+            foreach(Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
+            {
+                if(tile.tileOccupied && tile.characterOnTile.GetComponent<Enemy_Gangsta>() != null)
+                {
+                    valueOfAttack += 10;
+                    break;
+                }
+            }
         }
 
         foreach (Character character in attackArea.CharactersHit(characterType))

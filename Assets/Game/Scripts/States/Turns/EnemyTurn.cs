@@ -58,6 +58,7 @@ public class EnemyTurn : MonoBehaviour, StateInterface
 
         if (turnManager.enemyBrain.DecisionMakingFinished)
         {
+            turnManager.mainCameraController.UnSelectCharacter();
             turnManager.SwitchState(TurnEnums.TurnState.WorldTurn);
         }
     }

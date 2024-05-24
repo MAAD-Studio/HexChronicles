@@ -70,9 +70,9 @@ public class EnemyBrain : MonoBehaviour
 
                     //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
                     yield return new WaitForSeconds(0.03f);
-                    enemyAttackArea.DetectArea(false);
+                    enemyAttackArea.DetectArea(false, false);
 
-                    valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea);
+                    valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager);
 
                     //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
                     if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
@@ -149,9 +149,10 @@ public class EnemyBrain : MonoBehaviour
 
                     //IMPORTANT YIELD which lets the triggers update
                     yield return new WaitForSeconds(0.03f);
-                    enemyAttackArea.DetectArea(true);
+                    enemyAttackArea.DetectArea(true, false);
 
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
+                    yield return new WaitForSeconds(0.5f);
                 }
             }
             else

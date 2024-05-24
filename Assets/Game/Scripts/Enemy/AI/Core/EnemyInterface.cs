@@ -6,7 +6,7 @@ public interface EnemyInterface
 {
     public int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager);
 
-    public int CalculteAttackValue(AttackArea attackArea);
+    public int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager);
 
     public void ExecuteAttack(AttackArea attackArea, TurnManager turnManager);
 }
