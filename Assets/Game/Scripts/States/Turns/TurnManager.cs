@@ -74,6 +74,7 @@ public class TurnManager : MonoBehaviour
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
+                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = true;
                 currentTurn = playerTurn;
                 break;

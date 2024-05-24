@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour
@@ -38,6 +39,7 @@ public class CameraController : MonoBehaviour
     private Vector3 targetPosition = Vector3.zero;
 
     private Character selectedCharacter;
+    private TileObject selectedObject;
 
     #endregion
 
@@ -275,10 +277,27 @@ public class CameraController : MonoBehaviour
         SetValues(newPosition);
     }
 
+    public void SetCamToObject(TileObject tileObject)
+    {
+        Vector3 newPosition = tileObject.transform.position;
+        newPosition.y += 10;
+        newPosition.z -= 4;
+
+        selectedObject = tileObject;
+
+        SetValues(newPosition);
+    }
+
     //Tells the camera to unselect the character it is holding onto
     public void UnSelectCharacter()
     {
         selectedCharacter = null;
+    }
+
+    //Tells the camera to unselect the object it is holding onto
+    public void UnSelectObject()
+    {
+        selectedObject = null;
     }
 
     //Gets the camera to approach the target position
@@ -287,6 +306,10 @@ public class CameraController : MonoBehaviour
         if(selectedCharacter != null && !allowControl)
         {
             SetCamToSelectedCharacter(selectedCharacter);
+        }
+        else if(selectedObject != null && !allowControl)
+        {
+            SetCamToObject(selectedObject);
         }
 
         //Interpolates for smoother movement
