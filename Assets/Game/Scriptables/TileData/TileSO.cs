@@ -10,4 +10,7 @@ public class TileSO : ScriptableObject
     public ElementType tileType = new ElementType();
     public List<ElementType> elementsWeakAgainst = new List<ElementType>();
     public List<ElementType> elementsStrongAgainst = new List<ElementType>();
+
+    public Sprite tileSprite;
+    public string tileEffects;
 }
