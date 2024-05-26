@@ -9,15 +9,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     
     private Tile currentTile;
     private Character selectedCharacter;
-    public Character SelectedCharacter
-    {
-        get { return selectedCharacter; }
-    }
 
     private TurnEnums.PlayerAction actionType;
     private TurnManager turnManager;
 
     private AttackArea areaPrefab;
+
+    public Tile CurrentTile
+    {
+        get { return currentTile; }
+    }
+    public Character SelectedCharacter
+    {
+        get { return selectedCharacter; }
+    }
 
     #endregion
 
