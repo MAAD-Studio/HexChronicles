@@ -30,6 +30,11 @@ public class TurnManager : MonoBehaviour
     private StateInterface currentTurn;
 
     private int turnNumber;
+
+    public StateInterface CurrentTurn
+    {
+        get { return currentTurn; }
+    }
     public int TurnNumber
     {
         get { return turnNumber; }
