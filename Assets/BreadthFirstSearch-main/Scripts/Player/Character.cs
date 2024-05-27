@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
 {
@@ -16,8 +17,15 @@ public class Character : MonoBehaviour
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
-    [SerializeField] public AttackArea basicAttack;
-    [SerializeField] public AttackArea activeSkill;
+    [HideInInspector] public AttackArea basicAttackArea;
+    [HideInInspector] public AttackArea activeSkillArea;
+
+    [Header("Character Basic Attributes:")]
+    [HideInInspector] public float currentHealth = 0f;
+    [HideInInspector] public float maxHealth = 0f;
+    [HideInInspector] public float attackDamage = 0;
+    [HideInInspector] public float defensePercentage = 0;
+    public ElementType elementType;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -26,11 +34,21 @@ public class Character : MonoBehaviour
     [HideInInspector] public Tile characterTile;
     private Tile previousTile;
 
+    [Header("Character Status:")]
+    public List<Status> statusList = new List<Status>();
+    [HideInInspector] public bool isHurt = false;
+
     #endregion
+
+    /*#region Events
+    public event EventHandler OnDamage;
+    public event EventHandler OnHeal;
+    public event EventHandler OnDeath;
+    #endregion*/
 
     #region UnityMethods
 
-    void Start()
+    protected virtual void Start()
     {
         FindTile();
     }
@@ -40,6 +58,71 @@ public class Character : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region AttackMethods
+    public virtual void PerformBasicAttack(List<Character> targets) { }
+    public virtual void ReleaseActiveSkill(List<Character> targets) { }
+
+    public void AddStatus(Status status)
+    {
+        statusList.Add(status);
+    }
+
+    public void RemoveStatus(Status status)
+    {
+        statusList.Remove(status);
+
+        if (status.statusType == Status.StatusTypes.Hurt)
+        {
+            isHurt = false;
+        }
+    }
+
+    public void ApplyStatus()
+    {
+        foreach (Status status in statusList)
+        {
+            status.Apply(this);
+
+            if (status.effectTurns == 0)
+            {
+                RemoveStatus(status);
+            }
+        }
+    }
+
+    public virtual void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+
+        if (isHurt) { currentHealth--; }
+
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            Died();
+            //OnDeath?.Invoke(this, EventArgs.Empty);
+        }
+        //OnDamage?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void Heal(float heal)
+    {
+        currentHealth += heal;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+        //OnHeal?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void Died()
+    {
+        TurnManager tm = FindObjectOfType<TurnManager>();
+        tm.DestroyACharacter(this);
+    }
     #endregion
 
     #region BreadthFirstMethods
@@ -66,10 +149,8 @@ public class Character : MonoBehaviour
         int step = 1;
         int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
-        characterTile.OnTileExit();
+        characterTile.OnTileExit(this);
         Tile currentTile = path[0];
-
-        //Debug.Log("CURRENT TILE TARGET: " + currentTile.name);
 
         float animationTime = 0f;
         const float distanceToNext = 0.05f;
@@ -95,15 +176,15 @@ public class Character : MonoBehaviour
 
             //Moves onto the next point
             previousTile = currentTile;
-            currentTile.OnTileEnter();
             currentTile = path[step];
+            currentTile.OnTileEnter(this);
 
             step++;
 
             //Checks if we have arrived at the last tile, if not it triggers OnTileExit
             if(step < pathLength)
             {
-                previousTile.OnTileExit();
+                previousTile.OnTileExit(this);
             }
 
             animationTime = 0f;
@@ -111,7 +192,6 @@ public class Character : MonoBehaviour
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
-        characterTile.OnTileStay();
     }
 
     //Starts the process of moving the character to a new location
@@ -151,5 +231,42 @@ public class Character : MonoBehaviour
         tile.characterOnTile = this;
     }
 
+    public void PushedBack(Vector3 direction, int distance)
+    {
+        Tile targetTile = characterTile;
+        List<Tile> tiles = new List<Tile>();
+
+        //temporarily get the pathfinder
+        Pathfinder pathfinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
+
+        while (distance > 0)
+        {
+            Tile newTile = pathfinder.GetTileInDirection(targetTile, direction);
+            if (newTile == null || newTile.tileOccupied)
+            {
+                break;
+            }
+            targetTile = newTile;
+            tiles.Add(newTile);
+            distance--;
+        }
+
+        if (tiles != null && tiles.Count != 0)
+        {
+            Tile[] path = tiles.ToArray();
+            Move(path);
+            // TODO: rotate after move, fix movement reduced next turn
+            //StartCoroutine(RotateBack());
+        }
+    }
+
+    IEnumerator RotateBack()
+    {
+        while (moving)
+        {
+            yield return null;
+        }
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
+    }
     #endregion
 }

@@ -55,7 +55,7 @@ public class Pathfinder : MonoBehaviour
                 //If the adjacent tile has already been added to the list of tile to check ignore it
                 if (openTiles.Contains(adjacentTile))
                 {
-                    if(adjacentTile.cost > newCost)
+                    if (adjacentTile.cost > newCost)
                     {
                         adjacentTile.cost = newCost;
                         adjacentTile.parentTile = currentTile;
@@ -118,8 +118,8 @@ public class Pathfinder : MonoBehaviour
             if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
-                
-                if (includeOccupied || !hitTile.tileOccupied)
+
+                if (includeOccupied || !hitTile.tileOccupied && !hitTile.tileHasObject)
                 {
                     adjacentTiles.Add(hitTile);
                 }
@@ -182,9 +182,22 @@ public class Pathfinder : MonoBehaviour
             tile.inFrontier = false;
             tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
-        
+
         frontier.Clear();
     }
 
+    // Used for pushing characters
+    public Tile GetTileInDirection(Tile origin, Vector3 direction)
+    {
+        Vector3 aboveTilePos = origin.transform.position + direction;
+        aboveTilePos.y += 1f;
+
+        if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, 50f, tileLayer))
+        {
+            return hit.transform.GetComponent<Tile>();
+        }
+
+        return null;
+    }
     #endregion
 }

@@ -13,7 +13,6 @@ public class AttackArea : MonoBehaviour
 
     #region UnityMethods
 
-    // Start is called before the first frame update
     void Start()
     {
         foreach (TileReporter reporter in transform.GetComponentsInChildren<TileReporter>())
@@ -35,11 +34,11 @@ public class AttackArea : MonoBehaviour
     }
 
     //Colors all tiles in its area of effect
-    private void ColourArea()
+    private void ColourArea(bool highlightOccupied)
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied)
+            if(tile.tileOccupied && highlightOccupied)
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
             }
@@ -51,7 +50,7 @@ public class AttackArea : MonoBehaviour
     }
 
     //Resets the area than checks what tiles it is interacting with
-    public void DetectArea(bool illustrate)
+    public void DetectArea(bool illustrate, bool highlightOccupied)
     {
         ResetArea();
 
@@ -66,7 +65,7 @@ public class AttackArea : MonoBehaviour
 
         if(illustrate)
         {
-            ColourArea();
+            ColourArea(highlightOccupied);
         }
     }
 

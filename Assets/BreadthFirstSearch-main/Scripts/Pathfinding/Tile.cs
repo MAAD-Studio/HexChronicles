@@ -21,11 +21,13 @@ public class Tile : MonoBehaviour
 
     [HideInInspector] public Tile parentTile;
     [HideInInspector] public Character characterOnTile;
+    [HideInInspector] public TileObject objectOnTile;
 
     [HideInInspector] public bool tileOccupied = false;
+    [HideInInspector] public bool tileHasObject = false;
     [HideInInspector] public bool inFrontier = false;
 
-    [HideInInspector] public bool Reachable { get { return !tileOccupied && inFrontier; } }
+    [HideInInspector] public bool Reachable { get { return !tileOccupied && !tileHasObject && inFrontier; } }
 
     private Renderer tileRenderer;
 
@@ -81,21 +83,38 @@ public class Tile : MonoBehaviour
     }
 
     //Called when a Character enters a tile
-    public void OnTileEnter()
+    public void OnTileEnter(Character character)
     {
-        //Debug.Log("++WE ENTERED A TILE++");
+        if(tileData.elementsStrongAgainst.Contains(character.elementType))
+        {
+            character.defensePercentage += 10;
+        }
+        else if(tileData.tileType == character.elementType)
+        {
+            character.attackDamage += 1;
+        }
     }
 
     //Called when a Character stays on a tile
-    public void OnTileStay()
+    public void OnTileStay(Character character)
     {
-        //Debug.Log("**WE ARE STAYING ON A TILE**");
+        if (tileData.elementsWeakAgainst.Contains(character.elementType))
+        {
+            character.movementThisTurn += 1;
+        }
     }
 
     //Called when a Character is leaving a tile
-    public void OnTileExit()
+    public void OnTileExit(Character character)
     {
-        //Debug.Log("--WE EXITED A TILE--");
+        if (tileData.elementsStrongAgainst.Contains(character.elementType))
+        {
+            character.defensePercentage -= 10;
+        }
+        else if (tileData.tileType == character.elementType)
+        {
+            character.attackDamage -= 1;
+        }
     }
 
     #endregion

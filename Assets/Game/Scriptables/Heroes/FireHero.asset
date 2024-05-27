@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d08c6d7d7a84c644b340840ba943b5d, type: 3}
+  m_Name: FireHero
+  m_EditorClassIdentifier: 
+  attributes:
+    avatar: {fileID: 21300000, guid: a136faf2449177d4b9942515b38c35ec, type: 3}
+    name: Fire
+    description: Aggressive
+    health: 9
+    movementRange: 5
+    attackDamage: 4
+    attackRange: 2
+    defensePercentage: 7
+    elementType: 0
+  attackArea: {fileID: 3827415136764973267, guid: 7be9ba0d0d482614b961812c41e94daf, type: 3}
+  activeSkill:
+    icon: {fileID: 21300000, guid: 201409e7f7a0e0342b9531b81a590577, type: 3}
+    skillName: Collapse
+    description: Choose 1 lava tile to Collapse tiles around 1 range will change
+      to lava, add Burn status to enemies
+    shapeArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    particleEffect: {fileID: 0}
+    soundEffect: {fileID: 0}
+    skillEffect: 5
+    skillEffectValue: 2
+    status:
+      statusType: 1
+      effectTurns: 2
+    thisCharacter: {fileID: 0}
+    affectedTiles: []

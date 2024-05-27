@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerTurn : StateInterface<TurnManager>
+[RequireComponent(typeof(TurnManager))]
+public class PlayerTurn : MonoBehaviour, StateInterface
 {
     #region Variables
-
+    
     private Tile currentTile;
     private Character selectedCharacter;
 
@@ -14,13 +15,44 @@ public class PlayerTurn : StateInterface<TurnManager>
 
     private AttackArea areaPrefab;
 
+    public Tile CurrentTile
+    {
+        get { return currentTile; }
+    }
+    public Character SelectedCharacter
+    {
+        get { return selectedCharacter; }
+    }
+
+    #endregion
+
+    #region UnityMethods
+
+    private void Start()
+    {
+        turnManager = GetComponent<TurnManager>();
+        Debug.Assert(turnManager != null, "PlayerTurn doesn't have a TurnManager");
+    }
+
     #endregion
 
     #region StateInterfaceMethods
 
-    public void EnterState(TurnManager manager)
+    public void EnterState()
     {
-        turnManager = manager;
+        // Apply Character Status in this turn
+        foreach (Character character in turnManager.characterList)
+        {
+            if (character.statusList.Count > 0)
+            {
+                character.ApplyStatus();
+            }
+
+            if(character.characterTile != null)
+            {
+                character.characterTile.OnTileStay(character);
+            }
+        }
     }
 
     public void UpdateState()
@@ -88,7 +120,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if (selectedCharacter != null)
         {
             actionType = TurnEnums.PlayerAction.BasicAttack;
-            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttack).GetComponent<AttackArea>();
+            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea).GetComponent<AttackArea>();
         }
     }
 
@@ -110,7 +142,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if(selectedCharacter != null)
         {
             actionType = TurnEnums.PlayerAction.ActiveSkill;
-            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkill).GetComponent<AttackArea>();
+            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea).GetComponent<AttackArea>();
         }
     }
 
@@ -130,6 +162,7 @@ public class PlayerTurn : StateInterface<TurnManager>
     public void EndTurn()
     {
         ResetBoard();
+        turnManager.mainCameraController.UnSelectCharacter();
         turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
     }
 
@@ -153,32 +186,34 @@ public class PlayerTurn : StateInterface<TurnManager>
         //Rotates the ActiveSkill to the selected rotation
         //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
 
-        areaPrefab.DetectArea(true);
+        areaPrefab.DetectArea(true, true);
 
         if (Input.GetMouseButton(0))
         {
             //Won't trigger if the occupant of the hovered over tile is a Player Character
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
+                turnManager.mainCameraController.UnSelectCharacter();
                 if(actionType == TurnEnums.PlayerAction.BasicAttack)
                 {
-                    //**TESTING ONLY**
-                    //turnManager.DestroyACharacter(currentTile.characterOnTile);
-
                     Debug.Log("~~** BASIC ATTACK USED **~~");
+                    //selectedCharacter.PerformBasicAttack(currentTile.characterOnTile);
+                    selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+
                     Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
                     Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+
                     ResetBoard();
                     selectedCharacter = null;
                 }
                 else
                 {
-                    //**TESTING ONLY**
-                    //turnManager.DestroyACharacter(currentTile.characterOnTile);
-
                     Debug.Log("~~** ACTIVE SKILL USED **~~");
+                    selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                    
                     Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
                     Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+
                     ResetBoard();
                     selectedCharacter = null;
                 }
@@ -324,6 +359,7 @@ public class PlayerTurn : StateInterface<TurnManager>
                     //If they are the same we deselect the Character
                     else
                     {
+                        turnManager.mainCameraController.UnSelectCharacter();
                         selectedCharacter = null;
                     }
                 }
@@ -336,6 +372,7 @@ public class PlayerTurn : StateInterface<TurnManager>
     {
         selectedCharacter = currentTile.characterOnTile;
         turnManager.pathfinder.FindPaths(selectedCharacter);
+        turnManager.mainCameraController.SetCamToSelectedCharacter(selectedCharacter);
     }
 
     //Performs the action for Movement
@@ -363,6 +400,7 @@ public class PlayerTurn : StateInterface<TurnManager>
         if (Input.GetMouseButtonDown(0))
         {
             selectedCharacter.Move(path);
+            turnManager.mainCameraController.UnSelectCharacter();
             ResetBoard();
             selectedCharacter = null;
         }

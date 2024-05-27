@@ -13,9 +13,15 @@ public class HeroDataManager : Singleton<HeroDataManager>
     //private string fileLocation = Application.persistentDataPath + "/SavedHeroData.json"; // this should be used for player's hero data
     private string fileLocation = "Assets/Game/Scripts/Hero/HeroData/HeroData.json";
     public List<HeroAttributesSO> heroSOs = new List<HeroAttributesSO>();
-    public List<HeroAttributes> heroes = new List<HeroAttributes>();
+    [HideInInspector] public List<BasicAttributes> heroes = new List<BasicAttributes>();
 
     private void Start()
+    {
+        heroes.Clear();
+        AddHeroSO();
+    }
+
+    public void AddHeroSO()
     {
         foreach (HeroAttributesSO heroSO in heroSOs)
         {
@@ -25,7 +31,7 @@ public class HeroDataManager : Singleton<HeroDataManager>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             WriteJSON();
         }
@@ -69,17 +75,17 @@ public class HeroDataManager : Singleton<HeroDataManager>
 
             if (heroes.Count != dataContainer.heroes.Count)
             {
-                Debug.LogError("Number of items in the existing list does not match the deserialized list");
+                Debug.LogError("Number of items in the existing list does not match the deserialized list: " + heroes.Count);
                 return;
             }
 
             for (int i = 0; i < heroes.Count; i++)
             {
-                HeroAttributes hero = heroes[i]; // existing SO
-                HeroAttributes heroData = dataContainer.heroes[i]; // deserialized SO
+                BasicAttributes hero = heroes[i]; // existing SO
+                BasicAttributes heroData = dataContainer.heroes[i]; // deserialized SO
 
                 // Assign data from deserialized JSON to corresponding SO properties
-                hero.heroName = heroData.heroName;
+                hero.name = heroData.name;
                 hero.description = heroData.description;
                 hero.avatar = heroData.avatar;
                 hero.health = heroData.health;
@@ -88,14 +94,9 @@ public class HeroDataManager : Singleton<HeroDataManager>
                 hero.attackRange = heroData.attackRange;
                 hero.defensePercentage = heroData.defensePercentage;
 
-                hero.maxHealth = heroData.maxHealth;
-                hero.maxMovementRange = heroData.maxMovementRange;
-                hero.maxAttackDamage = heroData.maxAttackDamage;
-                hero.maxAttackRange = heroData.maxAttackRange;
-                hero.maxDefense = heroData.maxDefense;
                 hero.elementType = heroData.elementType;
 
-                Debug.Log("Loaded Hero: " + hero.heroName);
+                Debug.Log("Loaded Hero: " + hero.name);
             }
         }
         else

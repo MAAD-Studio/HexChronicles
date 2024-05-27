@@ -1,11 +1,12 @@
 public enum ElementType
 {
     // Basic
-    fire,
-    water,
-    grass,
+    Fire,
+    Water,
+    Grass,
+    Base,
     // Advanced
-    rock,
-    snow,
-    poison
+    Rock,
+    Snow,
+    Poison
 }

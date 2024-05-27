@@ -1,6 +1,6 @@
-public interface StateInterface<t>
+public interface StateInterface
 {
-    void EnterState(t manager);
+    void EnterState();
 
     void UpdateState();
 
