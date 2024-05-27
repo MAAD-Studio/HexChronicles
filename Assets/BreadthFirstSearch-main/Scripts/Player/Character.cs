@@ -38,6 +38,8 @@ public class Character : MonoBehaviour
     public List<Status> statusList = new List<Status>();
     [HideInInspector] public bool isHurt = false;
 
+    [HideInInspector] public bool effectedByWeather = false;
+
     #endregion
 
     /*#region Events
