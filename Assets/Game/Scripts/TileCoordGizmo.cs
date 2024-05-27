@@ -9,6 +9,7 @@ public class TileCoordGizmo : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+#if UNITY_EDITOR
         if (showTileCoord)
         {
             foreach (Transform child in transform)
@@ -18,5 +19,6 @@ public class TileCoordGizmo : MonoBehaviour
                 Handles.Label(pos, $"{child.name}");
             }
         }
+#endif
     }
 }
