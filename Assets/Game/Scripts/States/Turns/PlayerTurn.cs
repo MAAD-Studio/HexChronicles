@@ -174,17 +174,24 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             return;
         }
 
-        //Used for calculating what Tile to spawn the ActiveSkill mesh on
-        Tile selectedTile = DetermineAttackAreaTilePosition();
+        if(!areaPrefab.freeRange)
+        {
+            //Used for calculating what Tile to spawn the ActiveSkill mesh on
+            Tile selectedTile = DetermineAttackAreaTilePosition();
 
-        //Sets the ActiveSkill to the selected location
-        Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
-        areaPrefab.transform.position = newPos;
+            //Sets the ActiveSkill to the selected location
+            Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
+            areaPrefab.transform.position = newPos;
 
-        areaPrefab.transform.eulerAngles = DetermineAttackAreaRotation(selectedTile);
+            areaPrefab.transform.eulerAngles = DetermineAttackAreaRotation(selectedTile);
 
-        //Rotates the ActiveSkill to the selected rotation
-        //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+            //Rotates the ActiveSkill to the selected rotation
+            //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+        }
+        else
+        {
+            areaPrefab.transform.position = currentTile.transform.position;
+        }
 
         areaPrefab.DetectArea(true, true);
 
@@ -193,29 +200,32 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             //Won't trigger if the occupant of the hovered over tile is a Player Character
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
-                turnManager.mainCameraController.UnSelectCharacter();
-                if(actionType == TurnEnums.PlayerAction.BasicAttack)
+                if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
-                    Debug.Log("~~** BASIC ATTACK USED **~~");
-                    //selectedCharacter.PerformBasicAttack(currentTile.characterOnTile);
-                    selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                    turnManager.mainCameraController.UnSelectCharacter();
+                    if (actionType == TurnEnums.PlayerAction.BasicAttack)
+                    {
+                        Debug.Log("~~** BASIC ATTACK USED **~~");
+                        //selectedCharacter.PerformBasicAttack(currentTile.characterOnTile);
+                        selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
 
-                    Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
-                    Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+                        Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
+                        Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
 
-                    ResetBoard();
-                    selectedCharacter = null;
-                }
-                else
-                {
-                    Debug.Log("~~** ACTIVE SKILL USED **~~");
-                    selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-                    
-                    Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
-                    Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+                        ResetBoard();
+                        selectedCharacter = null;
+                    }
+                    else
+                    {
+                        Debug.Log("~~** ACTIVE SKILL USED **~~");
+                        selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
 
-                    ResetBoard();
-                    selectedCharacter = null;
+                        Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
+                        Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
+
+                        ResetBoard();
+                        selectedCharacter = null;
+                    }
                 }
             }
         }

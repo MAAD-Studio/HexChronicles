@@ -6,8 +6,11 @@ public class AttackArea : MonoBehaviour
 {
     #region Variables
 
-    List<TileReporter> tileReporters = new List<TileReporter>();
-    List<Tile> reporterTiles = new List<Tile>();
+    private List<TileReporter> tileReporters = new List<TileReporter>();
+    private List<Tile> reporterTiles = new List<Tile>();
+
+    [SerializeField] public bool freeRange = false;
+    [SerializeField] public ElementType effectedTileType;
 
     #endregion
 
@@ -38,7 +41,7 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied && highlightOccupied)
+            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange)
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
             }
