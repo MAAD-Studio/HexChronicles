@@ -86,6 +86,17 @@ public class AttackArea : MonoBehaviour
         return characters;
     }
 
+    //Returns a list of tiles being effected by the AttackArea
+    public List<Tile> TilesHit()
+    {
+        List<Tile> tileList = new List<Tile>();
+        foreach(Tile tile in reporterTiles)
+        {
+            tileList.Add(tile);
+        }
+        return tileList;
+    }
+
     //Checks if its area contains a tile
     public bool ContainsTile(Tile tileToCheck)
     {

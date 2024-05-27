@@ -218,7 +218,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     else
                     {
                         Debug.Log("~~** ACTIVE SKILL USED **~~");
-                        selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+
+                        if(!areaPrefab.freeRange)
+                        {
+                            selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                        }
+                        else
+                        {
+                            //NEW METHOD IN ATTACKAREA PROVIDING A LIST OF EFFECTED TILES
+                            Debug.Log("OTHER METHOD");
+                        }
 
                         Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
                         Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
