@@ -57,6 +57,9 @@ public class Status
 
             case StatusTypes.Taunt:
                 break;
+
+            default:
+                break;
         }
         effectTurns -= 1;
     }

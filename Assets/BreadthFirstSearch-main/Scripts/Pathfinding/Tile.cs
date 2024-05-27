@@ -10,6 +10,9 @@ public class Tile : MonoBehaviour
     [SerializeField] public TileSO tileData;
     [HideInInspector] public float cost = 1f;
 
+    [HideInInspector] public float weatherCost = 1f;
+    [HideInInspector] public bool underWeatherAffect = false;
+
     [Header("Tile Materials:")]
     [SerializeField] private Material baseMaterial;
     [SerializeField] private Material highlightMaterial;
