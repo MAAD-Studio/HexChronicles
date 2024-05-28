@@ -25,6 +25,7 @@ public class PauseMenu : Menu
 
     public void OnReturnToMainMenu()
     {
+        Time.timeScale = 1.0f;
         MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -33,7 +34,8 @@ public class PauseMenu : Menu
 
     public void OnReturnToMap()
     {
-        MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.MapClassifier)?.OnReturnToMap();
+        Time.timeScale = 1.0f;
+        MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
         CleanActiveScene();

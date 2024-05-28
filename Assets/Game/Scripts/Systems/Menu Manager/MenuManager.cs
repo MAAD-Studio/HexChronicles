@@ -9,7 +9,10 @@ public class MenuManager : Singleton<MenuManager>
     public MenuClassifier LoadingScreenClassifier;
     public MenuClassifier HUDMenuClassifier;
     public MenuClassifier PauseMenuClassifier;
-    public MenuClassifier MapClassifier;
+    public MenuClassifier WorldMapClassifier;
+    public MenuClassifier PreGameScreenClassifier;
+    public MenuClassifier VictoryScreenClassifier;
+    public MenuClassifier DefeatedScreenClassifier;
 
     private Dictionary<Guid, Menu> menuList = new Dictionary<Guid, Menu>();
 

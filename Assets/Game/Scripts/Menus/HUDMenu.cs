@@ -36,4 +36,18 @@ public class HUDMenu : Menu
             MenuManager.Instance.ShowMenu(pauseMenuClassifier);
         }
     }
+
+    // Only For Testing
+    public void ShowVictory()
+    {
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
+        MenuManager.Instance.HideMenu(menuClassifier);
+    }
+
+    // Only For Testing
+    public void ShowDefeat()
+    {
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.DefeatedScreenClassifier);
+        MenuManager.Instance.HideMenu(menuClassifier);
+    }
 }
