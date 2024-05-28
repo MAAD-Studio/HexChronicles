@@ -9,4 +9,6 @@ public interface EnemyInterface
     public int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager);
 
     public void ExecuteAttack(AttackArea attackArea, TurnManager turnManager);
+
+    public bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager);
 }

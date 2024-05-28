@@ -174,6 +174,12 @@ public class HUDInfo : MonoBehaviour
             {
                 selectHeroStatus.skillBtn.interactable = true;
             }
+
+
+            selectHeroStatus.attackBtn.interactable = hero.canAttack;
+            selectHeroStatus.moveBtn.interactable = hero.canMove;
+
+
             selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
             selectHeroStatus.textName.text = hero.heroSO.attributes.name;
             selectHeroStatus.textType.text = "Type: " + selectedCharacter.elementType;
