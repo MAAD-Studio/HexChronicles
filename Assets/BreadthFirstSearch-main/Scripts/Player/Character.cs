@@ -30,6 +30,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
+    [SerializeField] private Animator animator;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -57,6 +58,7 @@ public class Character : MonoBehaviour
     protected virtual void Start()
     {
         FindTile();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -67,8 +69,20 @@ public class Character : MonoBehaviour
     #endregion
 
     #region AttackMethods
-    public virtual void PerformBasicAttack(List<Character> targets) { }
-    public virtual void ReleaseActiveSkill(List<Character> targets) { }
+    public virtual void PerformBasicAttack(List<Character> targets)
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("attack");
+        }
+    }
+    public virtual void ReleaseActiveSkill(List<Character> targets)
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("attack");
+        }
+    }
 
     public virtual void EnterNewTurn()
     {
