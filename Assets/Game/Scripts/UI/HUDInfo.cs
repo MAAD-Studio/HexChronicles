@@ -113,6 +113,7 @@ public class HUDInfo : MonoBehaviour
         selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToActiveSkill());
         endTurn.onClick.AddListener(() => playerTurn.EndTurn());
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
+        undo.interactable = false;
     }
     #endregion
 
@@ -123,10 +124,12 @@ public class HUDInfo : MonoBehaviour
         if (turnManager.CurrentTurn is PlayerTurn)
         {
             currentTurn.text = "PLAYER TURN";
+            endTurn.interactable = true;
         }
         else if (turnManager.CurrentTurn is EnemyTurn)
         {
             currentTurn.text = "ENEMY TURN";
+            endTurn.interactable = false;
         }
 
         turnNumber.text = turnManager.TurnNumber.ToString();
@@ -139,13 +142,37 @@ public class HUDInfo : MonoBehaviour
         {
             selectHeroStatus.gameObject.SetActive(true);
             Hero hero = selectedCharacter as Hero;
-            if (hero.currentSkillCD == 0)
+            //if CannotAttack or Freezed
+            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotAttack)
+                || hero.statusList.Exists(x => x.statusType == Status.StatusTypes.Freezed))
             {
-                selectHeroStatus.skillBtn.interactable = true;
+                selectHeroStatus.attackBtn.interactable = false;
             }
             else
             {
+                selectHeroStatus.attackBtn.interactable = true;
+            }
+
+            //if CannotMove or Freezed
+            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotMove)
+                || hero.statusList.Exists(x => x.statusType == Status.StatusTypes.Freezed))
+            {
+                selectHeroStatus.moveBtn.interactable = false;
+            }
+            else
+            {
+                selectHeroStatus.moveBtn.interactable = true;
+            }
+
+            //if CannotUseSkill or has SkillCD
+            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotUseSkill)
+                || hero.currentSkillCD > 0)
+            {
                 selectHeroStatus.skillBtn.interactable = false;
+            }
+            else
+            {
+                selectHeroStatus.skillBtn.interactable = true;
             }
             selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
             selectHeroStatus.textName.text = hero.heroSO.attributes.name;
