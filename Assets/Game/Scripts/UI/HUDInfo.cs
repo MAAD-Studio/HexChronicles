@@ -139,6 +139,14 @@ public class HUDInfo : MonoBehaviour
         {
             selectHeroStatus.gameObject.SetActive(true);
             Hero hero = selectedCharacter as Hero;
+            if (hero.currentSkillCD == 0)
+            {
+                selectHeroStatus.skillBtn.interactable = true;
+            }
+            else
+            {
+                selectHeroStatus.skillBtn.interactable = false;
+            }
             selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
             selectHeroStatus.textName.text = hero.heroSO.attributes.name;
             selectHeroStatus.textType.text = "Type: " + selectedCharacter.elementType;

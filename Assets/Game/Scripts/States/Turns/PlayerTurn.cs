@@ -43,10 +43,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         // Apply Character Status in this turn
         foreach (Character character in turnManager.characterList)
         {
-            if (character.statusList.Count > 0)
-            {
-                character.ApplyStatus();
-            }
+            character.EnterNewTurn();
 
             if(character.characterTile != null)
             {
@@ -141,8 +138,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         ResetBoard();
         if(selectedCharacter != null)
         {
-            actionType = TurnEnums.PlayerAction.ActiveSkill;
-            areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea).GetComponent<AttackArea>();
+            Hero hero = (Hero)selectedCharacter;
+            if (hero.currentSkillCD == 0)
+            {
+                actionType = TurnEnums.PlayerAction.ActiveSkill;
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea).GetComponent<AttackArea>();
+            }
+            else
+            {
+                Debug.Log("Skill is on cooldown");
+            }
         }
     }
 

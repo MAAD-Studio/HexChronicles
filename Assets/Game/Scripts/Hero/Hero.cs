@@ -35,6 +35,18 @@ public class Hero : Character
         buffModifiers = new List<BuffModifier>();
     }
 
+    public override void EnterNewTurn()
+    {
+        base.EnterNewTurn();
+
+        ReduceSkillCD(1);
+    }
+
+    public void ReduceSkillCD(int value)
+    {
+        currentSkillCD = Mathf.Clamp(currentSkillCD - value, 0, skillCD);
+    }
+
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
@@ -56,6 +68,7 @@ public class Hero : Character
     public override void ReleaseActiveSkill(List<Character> targets)
     {
         activeSkill.Release(targets);
+        currentSkillCD = skillCD;
     }
 
     public void ApplyPassiveSkill()

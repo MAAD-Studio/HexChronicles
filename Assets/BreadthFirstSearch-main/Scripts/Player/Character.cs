@@ -66,6 +66,14 @@ public class Character : MonoBehaviour
     public virtual void PerformBasicAttack(List<Character> targets) { }
     public virtual void ReleaseActiveSkill(List<Character> targets) { }
 
+    public virtual void EnterNewTurn()
+    {
+        if (statusList.Count > 0)
+        {
+            ApplyStatus();
+        }
+    }
+
     public void AddStatus(Status status)
     {
         statusList.Add(status);
