@@ -24,6 +24,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         get { return selectedCharacter; }
     }
 
+    //DEBUG DEBUG DEBUG
+    [SerializeField] GameObject hitMarker;
+
     #endregion
 
     #region UnityMethods
@@ -44,7 +47,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         foreach (Character character in turnManager.characterList)
         {
             character.EnterNewTurn();
-
             if(character.characterTile != null)
             {
                 character.characterTile.OnTileStay(character);
@@ -82,37 +84,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             EndTurn();
         }
-
-        //Switchs between Movement and BasicAttack **TESTING USE ONLY**
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (actionType != TurnEnums.PlayerAction.BasicAttack)
-            {
-                SwitchToBasicAttack();
-            }
-            else
-            {
-                SwitchToMovement();
-            }
-        }
-
-        //Switches between Movement and ActiveSkill **TESTING USE ONLY**
-        if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if(actionType != TurnEnums.PlayerAction.ActiveSkill)
-            {
-                SwitchToActiveSkill();
-            }
-            else
-            {
-                SwitchToMovement();
-            }
-        }
     }
 
     //Switches the selected Character to the BasicAttack Action
     public void SwitchToBasicAttack()
     {
+        if(!selectedCharacter.canAttack || selectedCharacter.moving || actionType == TurnEnums.PlayerAction.BasicAttack)
+        {
+            return;
+        }
+
         ResetBoard();
         if (selectedCharacter != null)
         {
@@ -124,17 +105,28 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     //Switches the selected Character to the Movement Action
     public void SwitchToMovement()
     {
+        if(!selectedCharacter.canMove || actionType == TurnEnums.PlayerAction.Movement)
+        {
+            return;
+        }
+
         ResetBoard();
         if (selectedCharacter != null)
         {
             actionType = TurnEnums.PlayerAction.Movement;
             turnManager.pathfinder.FindPaths(selectedCharacter);
+            selectedCharacter.needsToPath = false;
         }
     }
 
     //Switches the selected Character to the ActiveSkill Action
     public void SwitchToActiveSkill()
     {
+        if (!selectedCharacter.canAttack || selectedCharacter.moving || actionType == TurnEnums.PlayerAction.ActiveSkill)
+        {
+            return;
+        }
+
         ResetBoard();
         if(selectedCharacter != null)
         {
@@ -155,9 +147,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public void ResetBoard()
     {
         turnManager.pathfinder.ResetPathFinder();
-        actionType = TurnEnums.PlayerAction.Movement;
+        actionType = TurnEnums.PlayerAction.None;
 
-        if(areaPrefab != null)
+        if (selectedCharacter != null && selectedCharacter.hasMoved)
+        {
+            selectedCharacter.canMove = false;
+        }
+
+        if (areaPrefab != null)
         {
             areaPrefab.DestroySelf();
         }
@@ -171,27 +168,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
     }
 
-    //Performs the Action for ActiveSkill
     private void AttackAreaAction()
     {
-        if (selectedCharacter == null || selectedCharacter.moving == true)
-        {
-            return;
-        }
-
+        //Determines how to position the AttackArea based on its freeRange setting
         if(!areaPrefab.freeRange)
         {
-            //Used for calculating what Tile to spawn the ActiveSkill mesh on
-            Tile selectedTile = DetermineAttackAreaTilePosition();
-
-            //Sets the ActiveSkill to the selected location
-            Vector3 newPos = new Vector3(selectedTile.transform.position.x, 0, selectedTile.transform.position.z);
-            areaPrefab.transform.position = newPos;
-
-            areaPrefab.transform.eulerAngles = DetermineAttackAreaRotation(selectedTile);
-
-            //Rotates the ActiveSkill to the selected rotation
-            //Attackarea.transform.eulerAngles = new Vector3(0, rotation, 0);
+            areaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, selectedCharacter.characterTile, currentTile);
         }
         else
         {
@@ -207,84 +189,71 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
-                    turnManager.mainCameraController.UnSelectCharacter();
                     if (actionType == TurnEnums.PlayerAction.BasicAttack)
                     {
                         Debug.Log("~~** BASIC ATTACK USED **~~");
-                        //selectedCharacter.PerformBasicAttack(currentTile.characterOnTile);
+
+                        foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+                        {
+                            Vector3 hitPos = character.transform.position;
+                            hitPos.y += 2;
+                            Instantiate(hitMarker, hitPos, Quaternion.identity);
+                        }
+
                         selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-
-                        Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
-                        Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
-
-                        ResetBoard();
-                        selectedCharacter = null;
                     }
                     else
                     {
                         Debug.Log("~~** ACTIVE SKILL USED **~~");
-
                         if(!areaPrefab.freeRange)
                         {
+                            foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+                            {
+                                Vector3 hitPos = character.transform.position;
+                                hitPos.y += 2;
+                                Instantiate(hitMarker, hitPos, Quaternion.identity);
+                            }
+
                             selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
                         }
                         else
                         {
+                            foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+                            {
+                                Vector3 hitPos = character.transform.position;
+                                hitPos.y += 2;
+                                Instantiate(hitMarker, hitPos, Quaternion.identity);
+                            }
+
                             //NEW METHOD IN ATTACKAREA PROVIDING A LIST OF EFFECTED TILES
                             Debug.Log("OTHER METHOD");
                         }
-
-                        Debug.Log("PLAYERS HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Player).Count);
-                        Debug.Log("ENEMIES HIT: " + areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Count);
-
-                        ResetBoard();
-                        selectedCharacter = null;
                     }
+
+                    ResetBoard();
+                    selectedCharacter.canAttack = false;
                 }
             }
         }
     }
 
-    private Tile DetermineAttackAreaTilePosition()
+    private void LimitedUpdate()
     {
-        Tile selectedTile = null;
-        float distance = 1000f;
-
-        foreach(Tile tile in turnManager.pathfinder.FindAdjacentTiles(selectedCharacter.characterTile, true))
+        if(selectedCharacter != null)
         {
-            float newDistance = Vector3.Distance(currentTile.transform.position, tile.transform.position);
-
-            //Checks if the current tile is closer to the hit point than the previous ones
-            if (newDistance < distance)
+            if(actionType == TurnEnums.PlayerAction.Movement)
             {
-                selectedTile = tile;
-                distance = newDistance;
+                if (!selectedCharacter.moving && selectedCharacter.needsToPath)
+                {
+                    turnManager.pathfinder.FindPaths(selectedCharacter);
+                    selectedCharacter.needsToPath = false;
+                }
+            }
+            else if(areaPrefab != null)
+            {
+                areaPrefab.DetectArea(true, true);
             }
         }
-
-        return selectedTile;
-    }
-
-    private Vector3 DetermineAttackAreaRotation(Tile targetTile)
-    {
-        Transform characterTransform = selectedCharacter.transform;
-        Transform tileTransform = targetTile.transform;
-
-        float rotation = selectedCharacter.transform.eulerAngles.y;
-
-        float angle = Vector3.Angle(characterTransform.forward, (tileTransform.position - characterTransform.position));
-
-        if (Vector3.Distance(tileTransform.position, characterTransform.position + (characterTransform.right * 6)) <
-            Vector3.Distance(tileTransform.position, characterTransform.position + (-characterTransform.right) * 6))
-        {
-            rotation += angle;
-        }
-        else
-        {
-            rotation -= angle;
-        }
-
-        return new Vector3(0, rotation, 0);
     }
 
     #endregion
@@ -306,11 +275,15 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 currentTile.ChangeTileColor(TileEnums.TileMaterial.frontier);
 
                 currentTile = null;
-                return;
+            }
+            else
+            {
+                currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+
+                currentTile = null;
             }
         }
-        
-        if(areaPrefab == null || !areaPrefab.ContainsTile(currentTile))
+        else if(areaPrefab == null || !areaPrefab.ContainsTile(currentTile))
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             currentTile = null;
@@ -324,29 +297,26 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             currentTile = hit.transform.GetComponent<Tile>();
             InspectTile();
         }
+        else
+        {
+            LimitedUpdate();
+        }
     }
 
     private void InspectTile()
     {
-        if(actionType == TurnEnums.PlayerAction.Movement)
+        if(selectedCharacter != null && actionType == TurnEnums.PlayerAction.Movement)
         {
-            if (currentTile.tileOccupied)
-            {
-                InspectCharacter();
-            }
-            else
-            {
-                NavigateToTile();
-            }
+            NavigateToTile();
         }
-        else
+        else if(areaPrefab != null)
         {
             AttackAreaAction();
+        }
 
-            if (currentTile.tileOccupied)
-            {
-                InspectCharacter();
-            }
+        if(currentTile.tileOccupied)
+        {
+            InspectCharacter();
         }
     }
 
@@ -395,8 +365,10 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private void GrabCharacter()
     {
         selectedCharacter = currentTile.characterOnTile;
-        turnManager.pathfinder.FindPaths(selectedCharacter);
-        turnManager.mainCameraController.SetCamToSelectedCharacter(selectedCharacter);
+        if (selectedCharacter.canMove)
+        {
+            turnManager.mainCameraController.SetCamToSelectedCharacter(selectedCharacter);
+        }
     }
 
     //Performs the action for Movement
@@ -407,15 +379,26 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
         }
 
-        if (selectedCharacter == null)
+        if(selectedCharacter.moving)
         {
-            turnManager.pathfinder.illustrator.ClearIllustrations();
             return;
         }
 
-        if (selectedCharacter.moving == true || currentTile.Reachable == false)
+        if (selectedCharacter.needsToPath)
+        {
+            turnManager.pathfinder.FindPaths(selectedCharacter);
+            selectedCharacter.needsToPath = false;
+        }
+
+        if (currentTile.Reachable == false)
         {
             turnManager.pathfinder.illustrator.ClearIllustrations();
+            if (selectedCharacter.movementThisTurn >= selectedCharacter.moveDistance)
+            {
+                ResetBoard();
+                selectedCharacter.canMove = false;
+            }
+
             return;
         }
 
@@ -424,9 +407,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (Input.GetMouseButtonDown(0))
         {
             selectedCharacter.Move(path);
-            turnManager.mainCameraController.UnSelectCharacter();
-            ResetBoard();
-            selectedCharacter = null;
+            turnManager.pathfinder.ResetPathFinder();
+            selectedCharacter.hasMoved = true;
+            selectedCharacter.needsToPath = true;
         }
     }
 

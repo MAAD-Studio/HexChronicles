@@ -17,6 +17,7 @@ public class TurnEnums
 
     public enum PlayerAction
     {
+        None,
         Movement,
         BasicAttack,
         ActiveSkill

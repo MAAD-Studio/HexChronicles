@@ -44,7 +44,7 @@ public class TowersTurn : WorldTurnBase
             if (!updateCalled)
             {
                 updateCalled = true;
-                weatherManager.UpdateWeather();
+                //weatherManager.UpdateWeather();
                 StartCoroutine(UpdateSpawners());
             }
             else if(updateDone)
@@ -54,7 +54,7 @@ public class TowersTurn : WorldTurnBase
         }
         else
         {
-            weatherManager.UpdateWeather();
+            //weatherManager.UpdateWeather();
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }
     }

@@ -13,12 +13,16 @@ public class Character : MonoBehaviour
     [SerializeField] private float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
+    [HideInInspector] public bool hasMoved = false;
+    [HideInInspector] public bool canMove = true;
+    [HideInInspector] public bool needsToPath = true;
 
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
+    [HideInInspector] public bool canAttack = true;
 
     [Header("Character Basic Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
@@ -159,8 +163,15 @@ public class Character : MonoBehaviour
         int step = 1;
         int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
+        List<Tile> tilesInPath = new List<Tile>();
+        foreach(Tile tile in path)
+        {
+            tilesInPath.Add(tile);
+        }
+
         characterTile.OnTileExit(this);
         Tile currentTile = path[0];
+        tilesInPath.Remove(currentTile);
 
         float animationTime = 0f;
         const float distanceToNext = 0.05f;
@@ -169,6 +180,11 @@ public class Character : MonoBehaviour
         while (step < pathLength)
         {
             yield return null;
+
+            foreach (Tile tile in tilesInPath)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.path);
+            }
 
             Vector3 nextTilePosition = path[step].transform.position;
 
@@ -188,6 +204,8 @@ public class Character : MonoBehaviour
             previousTile = currentTile;
             currentTile = path[step];
             currentTile.OnTileEnter(this);
+            tilesInPath.Remove(path[step]);
+            path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
             step++;
 
@@ -198,6 +216,11 @@ public class Character : MonoBehaviour
             }
 
             animationTime = 0f;
+        }
+
+        foreach(Tile tile in path)
+        {
+            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
 
         //Plants the character down onto the newest tile
