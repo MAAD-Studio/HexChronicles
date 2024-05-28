@@ -146,8 +146,10 @@ public class HUDInfo : MonoBehaviour
             selectHeroStatus.textMovement.text = "MOV: " + selectedCharacter.moveDistance;
             selectHeroStatus.textAttack.text = "ATK: " + selectedCharacter.attackDamage;
             selectHeroStatus.textDef.text = "Def: " + selectedCharacter.defensePercentage;
+            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.DisplaySkillDetail();
+            selectHeroStatus.skillInfo.ForceMeshUpdate();
             selectHeroStatus.textStatus.text = "Status: " + GetStatusTypes(selectedCharacter);
-            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description;
+
         }
         else
         {
