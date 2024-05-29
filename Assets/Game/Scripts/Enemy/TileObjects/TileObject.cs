@@ -22,17 +22,12 @@ public class TileObject : MonoBehaviour
         else
         {
             TemporaryMarker.GenerateMarker(tileObjectData.missText, gameObject.transform.position, 4f, 0.5f);
-            Debug.Log("HIT MISSED");
         }
 
         if(tileObjectData.health < 0)
         {
             objectDestroyed.Invoke(this);
             Destroy(gameObject);
-        }
-        else
-        {
-            Debug.Log("MY HEALTH IS: " + tileObjectData.health);
         }
     }
 }

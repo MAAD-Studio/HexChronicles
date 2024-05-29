@@ -81,8 +81,6 @@ public class Character : MonoBehaviour
         animator.SetTrigger("skill");
     }
 
-    public virtual void PerformBasicAttack(List<Character> targets) { }
-    public virtual void ReleaseActiveSkill(List<Character> targets) { }
     public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
 
 

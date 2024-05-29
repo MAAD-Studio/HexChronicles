@@ -48,15 +48,6 @@ public class TowersTurn : WorldTurnBase
     {
         base.UpdateState();
 
-        if(turnManager == null)
-        {
-            Debug.Log("SORRY. TURNMANAGER WAS NULL");
-        }
-        else
-        {
-            Debug.Log("TURN NUM WAS: " + turnManager.TurnNumber);
-        }
-
         if (turnManager.TurnNumber % turnsTillSpawn == 0)
         {
             if (!updateCalled)
@@ -96,8 +87,6 @@ public class TowersTurn : WorldTurnBase
 
     private void SpawnerDestroyed(TileObject tileObj)
     {
-        Debug.Log("EVENT WAS CALLED");
-
         Spawner spawnerToDestroy = null;
 
         foreach(Spawner spawner in spawners)
@@ -111,7 +100,6 @@ public class TowersTurn : WorldTurnBase
 
         if(spawnerToDestroy != null)
         {
-            Debug.Log("SPAWNER WAS DESTROYED");
             spawners.Remove(spawnerToDestroy);
             if(spawners.Count <= 0)
             {
