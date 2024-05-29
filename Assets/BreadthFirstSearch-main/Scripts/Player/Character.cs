@@ -31,6 +31,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
     [SerializeField] protected Animator animator;
+    [SerializeField] private HealthBar healthBar;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -59,6 +60,9 @@ public class Character : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null, "Can not find Animatior Component on Character");
+
+        if (healthBar == null) { healthBar = GetComponentInChildren<HealthBar>(); }
+        healthBar.character = this;
 
         FindTile();
     }

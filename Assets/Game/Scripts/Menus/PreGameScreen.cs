@@ -21,4 +21,9 @@ public class PreGameScreen : Menu
         WorldMap map = worldMap.GetComponent<WorldMap>();
         map?.OnLoadLevel(map.levels[0]);
     }
+
+    public void ClosePreGame()
+    {
+        MenuManager.Instance.HideMenu(menuClassifier);
+    }
 }
