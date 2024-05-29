@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.ScrollRect;
 
 public class AttackArea : MonoBehaviour
 {
@@ -109,6 +110,50 @@ public class AttackArea : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void PositionAndRotateAroundCharacter(Pathfinder pathfinder, Tile originTile, Tile targetTile)
+    {
+        Tile selectedTile = null;
+        float distance = 1000f;
+
+        foreach (Tile tile in pathfinder.FindAdjacentTiles(originTile, true))
+        {
+            float newDistance = Vector3.Distance(targetTile.transform.position, tile.transform.position);
+            if (newDistance < distance)
+            {
+                selectedTile = tile;
+                distance = newDistance;
+            }
+        }
+
+        Vector3 newPos = selectedTile.transform.position;
+        newPos.y = 0;
+
+        transform.position = newPos;
+        Rotate(selectedTile, originTile);
+    }
+
+    public void Rotate(Tile targetTile, Tile originTile)
+    {
+        Transform originTransform = originTile.transform;
+        Transform tileTransform = targetTile.transform;
+
+        float rotation = originTransform.eulerAngles.y;
+
+        float angle = Vector3.Angle(originTransform.forward, (tileTransform.position - originTransform.position));
+
+        if (Vector3.Distance(tileTransform.position, originTransform.position + (originTransform.right * 6)) <
+            Vector3.Distance(tileTransform.position, originTransform.position + (-originTransform.right) * 6))
+        {
+            rotation += angle;
+        }
+        else
+        {
+            rotation -= angle;
+        }
+
+        transform.eulerAngles = new Vector3(0, rotation, 0);
     }
 
     public void DestroySelf()

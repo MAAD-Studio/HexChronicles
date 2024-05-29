@@ -82,6 +82,10 @@ public class Tile : MonoBehaviour
             case TileEnums.TileMaterial.attackable:
                 tileRenderer.material = attackableMaterial;
                 break;
+
+            case TileEnums.TileMaterial.path:
+                tileRenderer.material = tileData.pathMaterial;
+                break;
         }
     }
 

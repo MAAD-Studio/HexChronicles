@@ -142,31 +142,11 @@ public class HUDInfo : MonoBehaviour
         {
             selectHeroStatus.gameObject.SetActive(true);
             Hero hero = selectedCharacter as Hero;
-            //if CannotAttack or Freezed
-            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotAttack)
-                || hero.statusList.Exists(x => x.statusType == Status.StatusTypes.Freezed))
-            {
-                selectHeroStatus.attackBtn.interactable = false;
-            }
-            else
-            {
-                selectHeroStatus.attackBtn.interactable = true;
-            }
 
-            //if CannotMove or Freezed
-            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotMove)
-                || hero.statusList.Exists(x => x.statusType == Status.StatusTypes.Freezed))
-            {
-                selectHeroStatus.moveBtn.interactable = false;
-            }
-            else
-            {
-                selectHeroStatus.moveBtn.interactable = true;
-            }
+            selectHeroStatus.attackBtn.interactable = hero.canAttack;
+            selectHeroStatus.moveBtn.interactable = hero.canMove;
 
-            //if CannotUseSkill or has SkillCD
-            if (hero.statusList.Exists(x => x.statusType == Status.StatusTypes.CannotUseSkill)
-                || hero.currentSkillCD > 0)
+            if (hero.currentSkillCD > 0)
             {
                 selectHeroStatus.skillBtn.interactable = false;
             }
@@ -174,6 +154,7 @@ public class HUDInfo : MonoBehaviour
             {
                 selectHeroStatus.skillBtn.interactable = true;
             }
+
             selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
             selectHeroStatus.textName.text = hero.heroSO.attributes.name;
             selectHeroStatus.textType.text = "Type: " + selectedCharacter.elementType;

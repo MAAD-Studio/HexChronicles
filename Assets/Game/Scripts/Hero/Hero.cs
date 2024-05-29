@@ -59,6 +59,8 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
+        base.PerformBasicAttack(targets);
+
         foreach (var target in targets)
         {
             target.TakeDamage(attackDamage);
@@ -67,6 +69,8 @@ public class Hero : Character
 
     public override void ReleaseActiveSkill(List<Character> targets)
     {
+        base.ReleaseActiveSkill(targets);
+
         activeSkill.Release(targets);
         currentSkillCD = skillCD;
     }
