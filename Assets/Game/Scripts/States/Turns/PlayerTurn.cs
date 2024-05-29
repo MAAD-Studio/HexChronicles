@@ -362,6 +362,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             Enemy_Base enemy = (Enemy_Base)character;
             TemporaryMarker.GenerateMarker(enemy.enemySO.attributes.hitMarker, character.transform.position, 2f, 0.5f);
         }
+
+        foreach(TileObject tileObj in areaPrefab.ObjectsHit())
+        {
+            TemporaryMarker.GenerateMarker(tileObj.tileObjectData.hitMarker, tileObj.transform.position, 4f, 0.5f);
+        }
     }
 
     private void SpawnSelectMarker()

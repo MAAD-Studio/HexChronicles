@@ -8,7 +8,7 @@ public class TileObject : MonoBehaviour
     [Header("Setup Info:")]
     [SerializeField] protected LayerMask tileLayer;
     [SerializeField] protected TurnManager turnManager;
-    [SerializeField] protected TileObjectSO tileObjectData;
+    [SerializeField] public TileObjectSO tileObjectData;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
 
