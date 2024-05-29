@@ -25,6 +25,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     }
 
     [SerializeField] private GameObject hitMarker;
+    [SerializeField] private GameObject selectedCharMarker;
+    private GameObject spawnedSelectMarker;
 
     #endregion
 
@@ -54,7 +56,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void UpdateState()
     {
-        ClearPreviousTile();
+        TilesReset();
         KeyboardUpdate();
         MouseUpdate();
     }
@@ -75,8 +77,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     #region CustomMethods
 
-    private void ClearPreviousTile()
+    private void TilesReset()
     {
+        if (selectedCharacter != null && !selectedCharacter.moving)
+        {
+            selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
+        }
+
         if (currentTile == null)
         {
             return;
@@ -97,7 +104,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
-
         currentTile = null;
     }
 
@@ -181,9 +187,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         turnManager.pathfinder.ResetPathFinder();
         actionType = TurnEnums.PlayerAction.None;
 
-        if (selectedCharacter != null && selectedCharacter.hasMoved)
+        if(selectedCharacter != null)
         {
-            selectedCharacter.canMove = false;
+            selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            if(selectedCharacter.hasMoved)
+            {
+                selectedCharacter.canMove = false;
+            }
         }
 
         if (areaPrefab != null)
@@ -208,6 +218,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 if (!selectedCharacter.moving && selectedCharacter.needsToPath)
                 {
                     turnManager.pathfinder.FindPaths(selectedCharacter);
+                    SpawnSelectMarker();
                     selectedCharacter.needsToPath = false;
                 }
             }
@@ -250,6 +261,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 if (selectedCharacter == null)
                 {
                     GrabCharacter();
+                    SpawnSelectMarker();
                 }
                 else
                 {
@@ -259,11 +271,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     if (selectedCharacter != hovererdCharacter)
                     {
                         GrabCharacter();
+                        SpawnSelectMarker();
                     }
                     //If the Character selected is the [SAME] as the previous one deselect the Character
                     else
                     {
                         turnManager.mainCameraController.UnSelectCharacter();
+                        DestroySelectMarker();
                         selectedCharacter = null;
                     }
                 }
@@ -328,13 +342,36 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
     }
 
-    public void SpawnHitMarkers()
+    private void SpawnHitMarkers()
     {
         foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
         {
             Vector3 hitPos = character.transform.position;
             hitPos.y += 2;
             Instantiate(hitMarker, hitPos, Quaternion.identity);
+        }
+    }
+
+    private void SpawnSelectMarker()
+    {
+        if(spawnedSelectMarker == null)
+        {
+            spawnedSelectMarker = Instantiate(selectedCharMarker, transform.position, selectedCharMarker.transform.rotation);
+        }
+
+        if(selectedCharacter != null)
+        {
+            Vector3 position = selectedCharacter.transform.position;
+            position.y += 2.5f;
+            spawnedSelectMarker.transform.position = position;
+        }
+    }
+
+    private void DestroySelectMarker()
+    {
+        if(spawnedSelectMarker != null)
+        {
+            Destroy(spawnedSelectMarker.gameObject);
         }
     }
 
@@ -354,6 +391,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (selectedCharacter.needsToPath)
         {
             turnManager.pathfinder.FindPaths(selectedCharacter);
+            SpawnSelectMarker();
             selectedCharacter.needsToPath = false;
         }
 
@@ -373,6 +411,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (Input.GetMouseButtonDown(0))
         {
+            selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            DestroySelectMarker();
             selectedCharacter.Move(path);
             turnManager.pathfinder.ResetPathFinder();
             selectedCharacter.hasMoved = true;
