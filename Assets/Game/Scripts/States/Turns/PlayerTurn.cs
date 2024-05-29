@@ -70,7 +70,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         foreach(Character character in turnManager.characterList)
         {
-            character.movementThisTurn = 0;
+            character.EndTurn();
         }
     }
 

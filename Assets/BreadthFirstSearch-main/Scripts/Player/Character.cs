@@ -88,6 +88,14 @@ public class Character : MonoBehaviour
         }
     }
 
+    public virtual void EndTurn()
+    {
+        movementThisTurn = 0;
+        canMove = true;
+        canAttack = true;
+        hasMoved = false;
+    }
+
     public void AddStatus(Status status)
     {
         statusList.Add(status);

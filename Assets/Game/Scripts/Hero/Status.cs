@@ -13,15 +13,8 @@ public class Status
         Bound, // Skip this turn
         Blessing, // Heal 2
         Hurt, // Take +1 damage
-        _________BelowNotUsed,
-        Freezed,
-        Poisoned,
-        Taunt,
-        Chaos,
         CannotMove,
-        CannotAttack,
-        CannotUseSkill,
-        CannotBeSelected
+        CannotAttack
     }
     public StatusTypes statusType;
     public int effectTurns;
@@ -35,7 +28,8 @@ public class Status
                 break;
 
             case StatusTypes.Bound:
-                character.movementThisTurn = 0;
+                character.canMove = false;
+                character.canAttack = false;
                 break;
 
             case StatusTypes.Blessing:
@@ -46,16 +40,12 @@ public class Status
                 character.isHurt = true;
                 break;
 
-            case StatusTypes.Poisoned:
+            case StatusTypes.CannotMove:
+                character.canMove = false;
                 break;
 
-            case StatusTypes.Freezed:
-                break;
-
-            case StatusTypes.Chaos:
-                break;
-
-            case StatusTypes.Taunt:
+            case StatusTypes.CannotAttack:
+                character.canAttack = false;
                 break;
 
             default:
