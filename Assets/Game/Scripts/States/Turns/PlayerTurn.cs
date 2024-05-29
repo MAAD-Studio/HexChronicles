@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(TurnManager))]
 public class PlayerTurn : MonoBehaviour, StateInterface
@@ -292,6 +293,10 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void MouseUpdate()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
