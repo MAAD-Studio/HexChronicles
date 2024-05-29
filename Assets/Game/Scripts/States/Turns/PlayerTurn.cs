@@ -24,7 +24,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         get { return selectedCharacter; }
     }
 
-    [SerializeField] private GameObject hitMarker;
     [SerializeField] private GameObject selectedCharMarker;
     private GameObject spawnedSelectMarker;
 
@@ -355,9 +354,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
         {
-            Vector3 hitPos = character.transform.position;
-            hitPos.y += 2;
-            Instantiate(hitMarker, hitPos, Quaternion.identity);
+            Enemy_Base enemy = (Enemy_Base)character;
+            TemporaryMarker.GenerateMarker(enemy.enemySO.attributes.hitMarker, character.transform.position, 2f, 0.5f);
         }
     }
 
@@ -365,14 +363,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if(spawnedSelectMarker == null)
         {
-            spawnedSelectMarker = Instantiate(selectedCharMarker, transform.position, selectedCharMarker.transform.rotation);
-        }
-
-        if(selectedCharacter != null)
-        {
-            Vector3 position = selectedCharacter.transform.position;
-            position.y += 2.5f;
-            spawnedSelectMarker.transform.position = position;
+            spawnedSelectMarker = TemporaryMarker.GenerateMarker(selectedCharMarker, selectedCharacter.transform.position, 2.5f);
         }
     }
 

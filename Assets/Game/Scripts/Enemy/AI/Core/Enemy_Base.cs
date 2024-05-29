@@ -51,4 +51,21 @@ public class Enemy_Base : Character, EnemyInterface
     }
 
     #endregion
+
+    #region CustomMethods
+
+    public override void TakeDamage(float damage)
+    {
+        int hitNum = Random.Range(0, 101);
+        if (hitNum > enemySO.attributes.defensePercentage)
+        {
+            base.TakeDamage(damage);
+        }
+        else
+        {
+            TemporaryMarker.GenerateMarker(enemySO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+        }
+    }
+
+    #endregion
 }

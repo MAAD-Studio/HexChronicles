@@ -103,14 +103,8 @@ public class Enemy_Gangsta : Enemy_Base
                 transform.LookAt(target.transform);
                 follower.FollowUpAttack(target);
 
-                Vector3 textPos = follower.transform.position;
-                textPos.y += 2;
-
-                Vector3 markerPos = target.transform.position;
-                markerPos.y += 4;
-
-                Instantiate(followUpText, textPos, Quaternion.identity);
-                Instantiate(followUpMarker, markerPos, Quaternion.identity);
+                TemporaryMarker.GenerateMarker(followUpText, follower.transform.position, 2f, 0.5f);
+                TemporaryMarker.GenerateMarker(followUpMarker, target.transform.position, 4f, 0.5f);
             }
 
             followUpsPerformed++;

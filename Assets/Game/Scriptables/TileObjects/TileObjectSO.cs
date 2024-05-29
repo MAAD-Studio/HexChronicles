@@ -7,4 +7,5 @@ public class TileObjectSO : ScriptableObject
 {
     public float health;
     public float defense;
+    public GameObject missText;
 }
