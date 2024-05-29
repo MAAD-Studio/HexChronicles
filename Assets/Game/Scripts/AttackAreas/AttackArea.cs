@@ -42,7 +42,7 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange)
+            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
             }
@@ -85,6 +85,20 @@ public class AttackArea : MonoBehaviour
             }
         }
         return characters;
+    }
+
+    //Returns a list of all objects in its area
+    public List<TileObject> ObjectsHit()
+    {
+        List<TileObject> objects = new List<TileObject>();
+        foreach(Tile tile in reporterTiles)
+        {
+            if(tile.tileHasObject)
+            {
+                objects.Add(tile.objectOnTile);
+            }
+        }
+        return objects;
     }
 
     //Returns a list of tiles being effected by the AttackArea

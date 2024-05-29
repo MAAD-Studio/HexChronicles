@@ -122,7 +122,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void KeyboardUpdate()
     {
-
+        //DEBUG DEBUG DEBUG
+        if(Input.GetKey(KeyCode.Alpha0))
+        {
+            if(selectedCharacter != null)
+            {
+                selectedCharacter.canAttack = true;
+            }
+        }
     }
 
     //Switches the selected Character to the BasicAttack Action
@@ -321,6 +328,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     {
                         Debug.Log("~~** BASIC ATTACK USED **~~");
                         selectedCharacter.PerformBasicAttack(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                        selectedCharacter.PerformBasicAttackObjects(areaPrefab.ObjectsHit());
                     }
                     else
                     {
@@ -328,6 +336,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                         if(!areaPrefab.freeRange)
                         {
                             selectedCharacter.ReleaseActiveSkill(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+                            selectedCharacter.PerformBasicAttackObjects(areaPrefab.ObjectsHit());
                         }
                         else
                         {

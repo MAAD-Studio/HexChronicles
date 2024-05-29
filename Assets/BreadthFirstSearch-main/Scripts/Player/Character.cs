@@ -69,6 +69,7 @@ public class Character : MonoBehaviour
     #region AttackMethods
     public virtual void PerformBasicAttack(List<Character> targets) { }
     public virtual void ReleaseActiveSkill(List<Character> targets) { }
+    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
 
     public virtual void EnterNewTurn()
     {

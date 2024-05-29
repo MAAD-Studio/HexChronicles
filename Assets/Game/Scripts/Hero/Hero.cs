@@ -71,6 +71,14 @@ public class Hero : Character
         currentSkillCD = skillCD;
     }
 
+    public override void PerformBasicAttackObjects(List<TileObject> targets)
+    {
+        foreach(TileObject target in targets)
+        {
+            target.TakeDamage(attackDamage);
+        }
+    }
+
     public void ApplyPassiveSkill()
     {
         //passiveSkill.Apply();
