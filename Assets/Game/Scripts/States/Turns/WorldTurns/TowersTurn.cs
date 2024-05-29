@@ -66,6 +66,7 @@ public class TowersTurn : WorldTurnBase
             foreach (Spawner spawner in spawners)
             {
                 turnManager.mainCameraController.SetCamToObject(spawner);
+
                 yield return new WaitForSeconds(0.5f);
                 spawner.AttemptSpawn();
                 yield return new WaitForSeconds(0.5f);

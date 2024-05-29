@@ -32,13 +32,11 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
     {
-        Debug.Log("BBBB");
         return 0;
     }
 
     public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
     {
-        Debug.Log("AAAA");
         return 0;
     }
 

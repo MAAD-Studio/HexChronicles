@@ -6,11 +6,11 @@ public class Enemy_Gangsta : Enemy_Base
 {
     #region Variables
 
-    List<FollowUpCombo> followUpComboList = new List<FollowUpCombo>();
-    int followUpsPerformed = 0;
+    private List<FollowUpCombo> followUpComboList = new List<FollowUpCombo>();
+    private int followUpsPerformed = 0;
 
-    public GameObject followUpText;
-    public GameObject followUpMarker;
+    [SerializeField] private GameObject followUpText;
+    [SerializeField] private GameObject followUpMarker;
 
     #endregion
 
@@ -23,6 +23,7 @@ public class Enemy_Gangsta : Enemy_Base
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
     {
         int valueOfMovement = -100;
+        //Calculates the value based on if its getting closer or further away from characters
         foreach (Character character in turnManager.characterList)
         {
             int distanceTile = (int)Vector3.Distance(tile.transform.position, character.transform.position);
@@ -90,12 +91,6 @@ public class Enemy_Gangsta : Enemy_Base
         }
     }
 
-    public void FollowUpAttack(Character character)
-    {
-        transform.LookAt(character.transform.position);
-        character.TakeDamage(attackDamage);
-    }
-
     public override bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
     {
         if(followUpsPerformed < followUpComboList.Count)
@@ -128,6 +123,12 @@ public class Enemy_Gangsta : Enemy_Base
             followUpComboList.Clear();
             return false;
         }
+    }
+
+    private void FollowUpAttack(Character character)
+    {
+        transform.LookAt(character.transform.position);
+        character.TakeDamage(attackDamage);
     }
 
     #endregion
