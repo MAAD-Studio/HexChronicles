@@ -9,10 +9,6 @@ public class Spawner : TileObject
 
     private Tile attachedTile;
 
-    [Header("Setup Info:")]
-    [SerializeField] private LayerMask tileLayer;
-    [SerializeField] private TurnManager turnManager;
-
     [Header("Spawning Info: ")]
     [SerializeField] private int numberToSpawn = 1;
     [SerializeField] private List<Enemy_Base> enemyList;
@@ -70,6 +66,11 @@ public class Spawner : TileObject
             enemiesSpawnedIn++;
             adjacentTiles.Remove(adjacentTiles[tileChoice]);
         }
+    }
+
+    public override void TakeDamage(float attackDamage)
+    {
+        base.TakeDamage(attackDamage);
     }
 
     #endregion

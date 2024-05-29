@@ -32,13 +32,11 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
     {
-        Debug.Log("BBBB");
         return 0;
     }
 
     public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
     {
-        Debug.Log("AAAA");
         return 0;
     }
 
@@ -50,6 +48,23 @@ public class Enemy_Base : Character, EnemyInterface
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
     {
         return false;
+    }
+
+    #endregion
+
+    #region CustomMethods
+
+    public override void TakeDamage(float damage)
+    {
+        int hitNum = Random.Range(0, 101);
+        if (hitNum > enemySO.attributes.defensePercentage)
+        {
+            base.TakeDamage(damage);
+        }
+        else
+        {
+            TemporaryMarker.GenerateMarker(enemySO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+        }
     }
 
     #endregion

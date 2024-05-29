@@ -13,12 +13,6 @@ public class Tile : MonoBehaviour
     [HideInInspector] public float weatherCost = 1f;
     [HideInInspector] public bool underWeatherAffect = false;
 
-    [Header("Tile Materials:")]
-    [SerializeField] private Material baseMaterial;
-    [SerializeField] private Material highlightMaterial;
-    [SerializeField] private Material reachableMaterial;
-    [SerializeField] private Material attackableMaterial;
-
     [Header("Connected Tile (Can be NULL):")]
     public Tile connectedTile;
 
@@ -42,13 +36,12 @@ public class Tile : MonoBehaviour
     {
         Debug.Assert(tileData != null, $"{gameObject.name} doesn't have a TileSO provided");
 
-        Debug.Assert(baseMaterial != null, $"{gameObject.name} doesn't have a BaseMaterial provided");
-
-        Debug.Assert(highlightMaterial != null, $"{gameObject.name} doesn't have a HighlightMaterial provided");
-
-        Debug.Assert(reachableMaterial != null, $"{gameObject.name} doesn't have a ReachableMaterial provided");
-
-        Debug.Assert(attackableMaterial != null, $"{gameObject.name} doesn't have a AttackableMaterial provided");
+        Debug.Assert(tileData.baseMaterial != null, $"{tileData.name} SO doesn't have a base material included");
+        Debug.Assert(tileData.highlightMaterial != null, $"{tileData.name} SO doesn't have a highlight material included");
+        Debug.Assert(tileData.reachableMaterial != null, $"{tileData.name} SO doesn't have a reachable material included");
+        Debug.Assert(tileData.attackableMaterial != null, $"{tileData.name} SO doesn't have a attackable material included");
+        Debug.Assert(tileData.pathMaterial != null, $"{tileData.name} SO doesn't have a path material included");
+        Debug.Assert(tileData.selectedCharMaterial != null, $"{tileData.name} SO doesn't have a selectedChar material included");
 
         tileRenderer = GetComponent<Renderer>();
     }
@@ -68,23 +61,27 @@ public class Tile : MonoBehaviour
         switch (tileMat)
         {
             case TileEnums.TileMaterial.baseMaterial:
-                tileRenderer.material = baseMaterial;
+                tileRenderer.material = tileData.baseMaterial;
                 break;
 
             case TileEnums.TileMaterial.highlight:
-                tileRenderer.material = highlightMaterial;
+                tileRenderer.material = tileData.highlightMaterial;
                 break;
 
             case TileEnums.TileMaterial.frontier:
-                tileRenderer.material = reachableMaterial;
+                tileRenderer.material = tileData.reachableMaterial;
                 break;
 
             case TileEnums.TileMaterial.attackable:
-                tileRenderer.material = attackableMaterial;
+                tileRenderer.material = tileData.attackableMaterial;
                 break;
 
             case TileEnums.TileMaterial.path:
                 tileRenderer.material = tileData.pathMaterial;
+                break;
+
+            case TileEnums.TileMaterial.selectedChar:
+                tileRenderer.material = tileData.selectedCharMaterial;
                 break;
         }
     }

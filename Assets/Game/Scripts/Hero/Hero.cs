@@ -49,7 +49,15 @@ public class Hero : Character
 
     public override void TakeDamage(float damage)
     {
-        base.TakeDamage(damage);
+        int hitNum = UnityEngine.Random.Range(0, 101);
+        if (hitNum > heroSO.attributes.defensePercentage)
+        {
+            base.TakeDamage(damage);
+        }
+        else
+        {
+            TemporaryMarker.GenerateMarker(heroSO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+        }
     }
 
     public override void Heal(float heal)
@@ -73,6 +81,14 @@ public class Hero : Character
 
         activeSkill.Release(targets);
         currentSkillCD = skillCD;
+    }
+
+    public override void PerformBasicAttackObjects(List<TileObject> targets)
+    {
+        foreach(TileObject target in targets)
+        {
+            target.TakeDamage(attackDamage);
+        }
     }
 
     public void ApplyPassiveSkill()

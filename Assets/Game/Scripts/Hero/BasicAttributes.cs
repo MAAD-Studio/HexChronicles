@@ -19,6 +19,10 @@ public class BasicAttributes
     [Header("Element")]
     public ElementType elementType;
 
+    [Header("Marker Info:")]
+    public GameObject hitMarker;
+    public GameObject missText;
+
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;
     public float maxMovementRange = 0;
