@@ -44,7 +44,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        
+        animator.SetTrigger("attack");
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

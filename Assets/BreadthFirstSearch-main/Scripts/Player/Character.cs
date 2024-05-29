@@ -30,7 +30,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
-    [SerializeField] private Animator animator;
+    [SerializeField] protected Animator animator;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -57,8 +57,10 @@ public class Character : MonoBehaviour
 
     protected virtual void Start()
     {
-        FindTile();
         animator = GetComponent<Animator>();
+        Debug.Assert(animator != null, "Can not find Animatior Component on Character");
+
+        FindTile();
     }
 
     void Update()
@@ -71,17 +73,11 @@ public class Character : MonoBehaviour
     #region AttackMethods
     public virtual void PerformBasicAttack(List<Character> targets)
     {
-        if (animator != null)
-        {
-            animator.SetTrigger("attack");
-        }
+        animator.SetTrigger("attack");
     }
     public virtual void ReleaseActiveSkill(List<Character> targets)
     {
-        if (animator != null)
-        {
-            animator.SetTrigger("attack");
-        }
+        animator.SetTrigger("skill");
     }
 
     public virtual void EnterNewTurn()
@@ -132,6 +128,10 @@ public class Character : MonoBehaviour
             Died();
             //OnDeath?.Invoke(this, EventArgs.Empty);
         }
+        else
+        {
+            animator.SetTrigger("hit");
+        }
         //OnDamage?.Invoke(this, EventArgs.Empty);
     }
 
@@ -148,9 +148,16 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
+        animator.SetTrigger("died");
+        Invoke("Destroy", 0.6f);
+    }
+
+    private void Destroy()
+    {
         TurnManager tm = FindObjectOfType<TurnManager>();
         tm.DestroyACharacter(this);
     }
+
     #endregion
 
     #region BreadthFirstMethods
@@ -239,12 +246,16 @@ public class Character : MonoBehaviour
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
+
+        animator.SetBool("walking", false);
     }
 
     //Starts the process of moving the character to a new location
     public void Move(Tile[] _path)
     {
         moving = true;
+        animator.SetBool("walking", true);
+
         characterTile.tileOccupied = false;
         StartCoroutine(MoveThroughPath(_path));
     }
@@ -315,5 +326,6 @@ public class Character : MonoBehaviour
         }
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
     }
+
     #endregion
 }

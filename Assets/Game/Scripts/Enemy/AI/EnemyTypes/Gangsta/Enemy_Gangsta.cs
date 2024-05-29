@@ -63,7 +63,9 @@ public class Enemy_Gangsta : Enemy_Base
 
     public override void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        foreach(Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        base.ExecuteAttack(attackArea, turnManager);
+
+        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             transform.LookAt(character.transform.position);
 
