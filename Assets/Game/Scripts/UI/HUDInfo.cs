@@ -100,6 +100,7 @@ public class HUDInfo : MonoBehaviour
         GameObject enemyUI = Instantiate(enemyStatusPrefab);
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
         enemyUI.transform.localScale = new Vector3(1, 1, 1);
+        enemyUI.transform.localPosition = new Vector3(0, 0, 0);
         enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
     }
 
@@ -219,7 +220,7 @@ public class HUDInfo : MonoBehaviour
 
             // Display Status:
             enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
-            enemyStatus.element.sprite = GetElementSprite(selectedCharacter.elementType);
+            enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
             enemyStatus.textName.text = enemy.enemySO.attributes.name;
             enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description;
             enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
@@ -227,7 +228,7 @@ public class HUDInfo : MonoBehaviour
             enemyStatus.textAttack.text = $"{enemy.attackDamage}";
             enemyStatus.textRange.text = $"{enemy.attackDistance}%";
             enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
-            enemyStatus.textStatus.text = "Status: " + GetStatusTypes(enemy);
+            enemyStatus.textStatus.text = "" + GetStatusTypes(enemy);
         }
         else
         {
