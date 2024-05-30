@@ -111,8 +111,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
 		if (EventSystem.current.IsPointerOverGameObject())
 		{
-			return;
-		}
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+
+            var raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, raycastResults);
+
+            foreach (var result in raycastResults)
+            {
+                if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
+                {
+                    return;
+                }
+            }
+        }
         if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
