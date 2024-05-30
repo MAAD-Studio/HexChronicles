@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 
 [RequireComponent(typeof(TurnManager))]
-public class PlayerTurn : MonoBehaviour, StateInterface
+public class PlayerTurnAlternate : MonoBehaviour, StateInterface
 {
     #region Variables
 
@@ -30,8 +30,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     [SerializeField] private GameObject selectedCharMarker;
     private GameObject spawnedSelectMarker;
-
-    private GameObject phantom;
 
     private Tile potentialMovementTile;
     private Tile[] potentialPath;
@@ -89,7 +87,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         foreach (Character character in turnManager.characterList)
         {
             character.EndTurn();
-            character.hasMadeDecision = false;
         }
     }
 
@@ -97,7 +94,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     #region CustomMethods
 
-    public void EndTurn()
+    private void EndTurn()
     {
         FullReset();
         turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
@@ -125,7 +122,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
 
-        if (areaPrefab != null)
+        if(areaPrefab != null)
         {
             areaPrefab.DestroySelf();
         }
@@ -133,21 +130,21 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void ResetTile()
     {
-        if (selectedCharacter != null)
+        if(selectedCharacter != null)
         {
             selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
         }
 
-        if (currentTile == null)
+        if(currentTile == null)
         {
             return;
         }
-
-        if (areaPrefab != null && areaPrefab.ContainsTile(currentTile))
+        
+        if(areaPrefab != null && areaPrefab.ContainsTile(currentTile))
         {
             return;
         }
-        else if (currentTile.inFrontier)
+        else if(currentTile.inFrontier)
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.frontier);
         }
@@ -158,46 +155,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         currentTile = null;
     }
 
-    private void MouseUpdate()
-    {
-		if (EventSystem.current.IsPointerOverGameObject())
-		{
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.mousePosition;
-
-            var raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, raycastResults);
-
-            foreach (var result in raycastResults)
-            {
-                if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
-                {
-                    return;
-                }
-            }
-        }
-        else if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
-        {
-            currentTile = hit.transform.GetComponent<Tile>();
-            SelectPhase();
-        }
-    }
-
     private void KeyboardUpdate()
     {
-        if (Input.GetKey(KeyCode.Alpha0))
+        if(Input.GetKey(KeyCode.Alpha0))
         {
             EndTurn();
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && selectedCharacter != null)
+        if(Input.GetKeyDown(KeyCode.Backspace) && selectedCharacter != null)
         {
-            if (phase == TurnEnums.PlayerPhase.Movement)
+            if(phase == TurnEnums.PlayerPhase.Movement)
             {
-                DestroyPhantom();
                 FullReset();
             }
-            else if (phase == TurnEnums.PlayerPhase.Attack)
+            else if(phase == TurnEnums.PlayerPhase.Attack)
             {
                 areaPrefab.DestroySelf();
                 phase = TurnEnums.PlayerPhase.Movement;
@@ -220,16 +191,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void SelectPhase()
     {
-        if (phase == TurnEnums.PlayerPhase.Movement && selectedCharacter != null)
+        if(phase == TurnEnums.PlayerPhase.Movement && selectedCharacter != null)
         {
             MovementPhase();
         }
-        else if (phase == TurnEnums.PlayerPhase.Attack)
+        else if(phase == TurnEnums.PlayerPhase.Attack)
         {
             AttackPhase();
         }
+        else
+        {
+            return;
+        }
 
-        if (currentTile.tileOccupied)
+        if(currentTile.tileOccupied)
         {
             InspectCharacter();
         }
@@ -240,17 +215,17 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         Character inspectionCharacter = currentTile.characterOnTile;
         TurnEnums.CharacterType characterType = inspectionCharacter.characterType;
 
-        if (characterType == TurnEnums.CharacterType.Player && !inspectionCharacter.hasMadeDecision)
+        if(characterType == TurnEnums.CharacterType.Player && !inspectionCharacter.hasMadeDecision)
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
 
-            if (Input.GetMouseButtonDown(0))
+            if(Input.GetMouseButtonDown(0))
             {
-                if (selectedCharacter == null)
+                if(selectedCharacter == null)
                 {
                     GrabCharacter();
                 }
-                else if (inspectionCharacter != selectedCharacter)
+                else if(inspectionCharacter != selectedCharacter)
                 {
                     ResetBoard();
                     GrabCharacter();
@@ -271,25 +246,22 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void MovementPhase()
     {
-        if (!currentTile.inFrontier || !currentTile.Reachable)
+        if(!currentTile.inFrontier || !currentTile.Reachable)
         {
             pathFinder.illustrator.ClearIllustrations();
-            DestroyPhantom();
         }
-        else if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
+        else if(currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
 
             Tile[] path = new Tile[0];
             if (currentTile.characterOnTile != selectedCharacter)
             {
-                SpawnPhantom();
                 path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
             }
             else
             {
                 pathFinder.illustrator.ClearIllustrations();
-                DestroyPhantom();
             }
 
             if (Input.GetMouseButtonDown(0))
@@ -314,39 +286,19 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             areaPrefab.transform.position = currentTile.transform.position;
         }
 
-        if(phantom != null)
-        {
-            phantom.transform.LookAt(areaPrefab.transform.position);
-        }
-
         areaPrefab.DetectArea(true, true);
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
                 if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
+                    ResetBoard();
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
 
-                    if(pathFinder == null)
-                    {
-                        Debug.Log("Path Null");
-                    }
-                    if(turnManager == null)
-                    {
-                        Debug.Log("TurnManager Null");
-                    }
-                    if(currentTile == null)
-                    {
-                        Debug.Log("CurrentTile Null");
-                    }
-
-                    DestroyPhantom();
                     selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile);
-
-                    ResetBoard();
                 }
             }
         }
@@ -354,7 +306,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void SpawnAreaPrefab()
     {
-        if (phase == TurnEnums.PlayerPhase.Attack)
+        if(phase == TurnEnums.PlayerPhase.Attack)
         {
             if (areaPrefab != null)
             {
@@ -400,31 +352,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
     }
 
-    public void SpawnPhantom()
-    {
-        if(selectedCharacter != null)
-        {
-            if (phantom == null)
-            {
-                Hero selectedHero = (Hero)selectedCharacter;
-                phantom = Instantiate(selectedHero.heroSO.phantomModel, currentTile.transform.position, Quaternion.identity);
-            }
-
-            phantom.transform.position = currentTile.transform.position;
-        }
-    }
-
-    public void DestroyPhantom()
-    {
-        if(phantom != null)
-        {
-            Destroy(phantom.gameObject);
-        }
-    }
-
     private void CharacterFinishedMoving(Character character)
     {
-        if (character == selectedCharacter)
+        if(character == selectedCharacter)
         {
             FullReset();
         }

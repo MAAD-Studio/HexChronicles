@@ -136,7 +136,6 @@ public class TileInteractor : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-            selectedCharacter.Move(path);
             pathfinder.ResetPathFinder();
             selectedCharacter = null;
         }
