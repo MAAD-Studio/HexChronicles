@@ -20,9 +20,6 @@ public class EnemyBrain : MonoBehaviour
 
     public bool DecisionMakingFinished { get; private set; }
 
-    //DEBUG DEBUG DEBUG
-    [SerializeField] GameObject hitMarker;
-
     #endregion
 
     #region UnityMethods
@@ -157,9 +154,7 @@ public class EnemyBrain : MonoBehaviour
 
                     foreach (Character character in enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
                     {
-                        Vector3 hitPos = character.transform.position;
-                        hitPos.y += 4;
-                        Instantiate(hitMarker, hitPos, Quaternion.identity);
+                        TemporaryMarker.GenerateMarker(enemy_base.enemySO.attributes.hitMarker, character.transform.position, 4f, 0.5f);
                     }
 
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
