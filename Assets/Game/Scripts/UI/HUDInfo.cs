@@ -93,14 +93,12 @@ public class HUDInfo : MonoBehaviour
         // Create heroInfoPrefab in Character List:
         GameObject heroUI = Instantiate(heroStatusPrefab);
         heroUI.transform.SetParent(heroListPanel.transform);
-        heroUI.transform.localScale = new Vector3(1, 1, 1);
         selectHeroStatus = heroUI.GetComponent<CharacterStatsUI>();
 
         // Create enemyInfoPrefab:
         GameObject enemyUI = Instantiate(enemyStatusPrefab);
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
-        enemyUI.transform.localScale = new Vector3(1, 1, 1);
-        enemyUI.transform.localPosition = new Vector3(0, 0, 0);
+        enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
         enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
     }
 
