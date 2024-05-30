@@ -17,8 +17,9 @@ public class Spawner : TileObject
 
     #region UnityMethods
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         Debug.Assert(turnManager != null, "Spawner doesn't have a turnManager provided");
         Debug.Assert(enemyList != null, "Spawner doesn't have any provided enemies for spawning");
 

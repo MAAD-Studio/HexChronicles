@@ -62,7 +62,7 @@ public class Character : MonoBehaviour
         Debug.Assert(animator != null, "Can not find Animatior Component on Character");
 
         if (healthBar == null) { healthBar = GetComponentInChildren<HealthBar>(); }
-        healthBar.character = this;
+        if (healthBar.isCharacter) { healthBar.character = this; }
 
         FindTile();
     }
