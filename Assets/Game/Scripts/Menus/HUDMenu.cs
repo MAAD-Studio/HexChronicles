@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class HUDMenu : Menu
 {
@@ -14,7 +15,14 @@ public class HUDMenu : Menu
     protected override void Start()
     {
         base.Start();
+        TileObject.objectDestroyed.AddListener(LevelVictory);
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
+    }
+
+    private void LevelVictory(TileObject arg0)
+    {
+        ShowVictory();
+        TileObject.objectDestroyed.RemoveListener(LevelVictory);
     }
 
     private void Update()
