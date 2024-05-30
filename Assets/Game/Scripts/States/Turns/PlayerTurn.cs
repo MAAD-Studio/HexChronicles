@@ -158,31 +158,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         currentTile = null;
     }
 
-    private void MouseUpdate()
-    {
-		if (EventSystem.current.IsPointerOverGameObject())
-		{
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.mousePosition;
-
-            var raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, raycastResults);
-
-            foreach (var result in raycastResults)
-            {
-                if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
-                {
-                    return;
-                }
-            }
-        }
-        else if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
-        {
-            currentTile = hit.transform.GetComponent<Tile>();
-            SelectPhase();
-        }
-    }
-
     private void KeyboardUpdate()
     {
         if (Input.GetKey(KeyCode.Alpha0))
@@ -209,9 +184,21 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            return;
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+
+            var raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, raycastResults);
+
+            foreach (var result in raycastResults)
+            {
+                if (result.gameObject.layer == LayerMask.NameToLayer("UI"))
+                {
+                    return;
+                }
+            }
         }
-        if (Physics.Raycast(mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
+        if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
             SelectPhase();
