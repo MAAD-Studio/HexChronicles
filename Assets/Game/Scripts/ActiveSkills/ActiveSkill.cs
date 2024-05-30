@@ -10,7 +10,7 @@ public class ActiveSkill
 
     public Sprite icon;
     public string skillName;
-    public string description;
+    [TextArea] public string description;
     public SkillKeyword[] keywords;
     public Sprite skillshape;
     public AttackArea shapeArea;
