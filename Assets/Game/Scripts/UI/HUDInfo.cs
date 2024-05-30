@@ -106,9 +106,9 @@ public class HUDInfo : MonoBehaviour
 
     private void ButtonsAddListener()
     {
-        selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
+        //selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
         selectHeroStatus.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
-        selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToActiveSkill());
+        selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
         endTurn.onClick.AddListener(() => playerTurn.EndTurn());
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
         undo.interactable = false;

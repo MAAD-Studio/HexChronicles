@@ -33,7 +33,14 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            if (tile.inFrontier)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
+            }
+            else
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
         }
     }
 

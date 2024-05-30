@@ -17,10 +17,15 @@ public class TurnEnums
 
     public enum PlayerAction
     {
-        None,
-        Movement,
         BasicAttack,
         ActiveSkill
+    }
+
+    public enum PlayerPhase
+    {
+        Movement,
+        Attack,
+        Execution
     }
 
     public enum CharacterType
