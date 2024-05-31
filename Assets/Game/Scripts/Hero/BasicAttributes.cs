@@ -7,7 +7,7 @@ public class BasicAttributes
 {
     public Sprite avatar;
     public string name;
-    [TextArea] public string description;
+    public KeywordDescription description;
 
     [Header("Basic Attributes")]
     public float health = 0;

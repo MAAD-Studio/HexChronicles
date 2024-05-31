@@ -156,11 +156,11 @@ public class HeroEditor : EditorWindow
                         }
                     }
                 }
-                else if (field.FieldType == typeof(SkillKeyword[]))
+                else if (field.FieldType == typeof(Keyword[]))
                 {
                     GUILayout.Box("", GUILayout.Height(3), GUILayout.ExpandWidth(true));
                     EditorGUILayout.LabelField("Keywords:", EditorStyles.boldLabel);
-                    foreach (var keyword in (SkillKeyword[])field.GetValue(heroSOs[i].activeSkill))
+                    foreach (var keyword in (Keyword[])field.GetValue(heroSOs[i].activeSkill))
                     {
                         EditorGUILayout.LabelField("Keyword:");
                         EditorGUILayout.BeginHorizontal();

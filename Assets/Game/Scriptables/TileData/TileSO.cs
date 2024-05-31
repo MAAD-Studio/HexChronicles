@@ -24,5 +24,5 @@ public class TileSO : ScriptableObject
     public Material selectedCharMaterial;
 
     public Sprite tileSprite;
-    public string tileEffects;
+    public KeywordDescription tileEffects;
 }

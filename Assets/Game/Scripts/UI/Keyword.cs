@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 [System.Serializable]
-public class SkillKeyword
+public class Keyword
 {
     public string keyword;
     public Color color;
