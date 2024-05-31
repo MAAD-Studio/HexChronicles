@@ -179,9 +179,10 @@ public class HUDInfo : MonoBehaviour
             selectHeroStatus.textDef.text = $"{selectedCharacter.defensePercentage}%";
 
             selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
-            selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.ToString();
+            selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
+            selectHeroStatus.attackInfo.ForceMeshUpdate();
 
-            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.DisplaySkillDetail();
+            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
             selectHeroStatus.skillInfo.ForceMeshUpdate();
             selectHeroStatus.textStatus.text = GetStatusTypes(selectedCharacter).ToString();
         }
@@ -239,7 +240,8 @@ public class HUDInfo : MonoBehaviour
             enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
             enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
             enemyStatus.textName.text = enemy.enemySO.attributes.name;
-            enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description;
+            enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
+            enemyStatus.enemyInfo.ForceMeshUpdate();
             enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
             enemyStatus.textMovement.text = $"{enemy.moveDistance}";
             enemyStatus.textAttack.text = $"{enemy.attackDamage}";
@@ -255,10 +257,12 @@ public class HUDInfo : MonoBehaviour
             // Display Status:
             objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
             objectStatus.textName.text = tileObject.tileObjectData.objectName;
-            objectStatus.enemyInfo.text = tileObject.tileObjectData.description;
+            objectStatus.enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
+            objectStatus.enemyInfo.ForceMeshUpdate();
             objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
             objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
             //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
+            objectStatus.textStatus.gameObject.SetActive(false);
         }
         else
         {
@@ -278,7 +282,8 @@ public class HUDInfo : MonoBehaviour
             if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
             else { tileElement.gameObject.SetActive(true); }
             tileName.text = currentTile.tileData.name;
-            tileEffects.text = currentTile.tileData.tileEffects;
+            tileEffects.text = currentTile.tileData.tileEffects.DisplayKeywordDescription();
+            tileEffects.ForceMeshUpdate();
         }
         else
         {

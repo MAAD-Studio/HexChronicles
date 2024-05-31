@@ -10,8 +10,7 @@ public class ActiveSkill
 
     public Sprite icon;
     public string skillName;
-    [TextArea] public string description;
-    public SkillKeyword[] keywords;
+    public KeywordDescription description;
     public Sprite skillshape;
     public AttackArea shapeArea;
     public GameObject particleEffect;
@@ -147,18 +146,6 @@ public class ActiveSkill
 
     }
     #endregion Use Skill
-
-    public string DisplaySkillDetail()
-    {
-        string formattedText = description;
-        foreach (var keyword in keywords)
-        {
-            string replacement = keyword.GetFormattedKeyword();
-            formattedText = formattedText.Replace(keyword.keyword, replacement);
-        }
-
-        return formattedText;
-    }
 
     //Resets the Tiles affected by the SkillTileReporters. Important for when the ActiveSkill gets Destroyed
     public void ResetTiles()

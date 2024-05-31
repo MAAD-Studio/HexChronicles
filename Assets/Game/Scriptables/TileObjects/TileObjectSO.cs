@@ -7,7 +7,7 @@ public class TileObjectSO : ScriptableObject
 {
     public Sprite avatar;
     public string objectName;
-    public string description;
+    public KeywordDescription description;
     public float health;
     public float defense;
     public GameObject missText;
