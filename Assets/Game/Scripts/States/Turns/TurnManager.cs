@@ -18,8 +18,10 @@ public class TurnManager : MonoBehaviour
     [SerializeField] public EnemyBrain enemyBrain;
 
     [Header("Characters on level:")]
-    public List<Character> characterList;
-    public List<Enemy_Base> enemyList;
+    [SerializeField] private GameObject heroesParent;
+    [SerializeField] private GameObject enemyParent;
+    [HideInInspector] public List<Character> characterList;
+    [HideInInspector] public List<Enemy_Base> enemyList;
 
     [Header("WorldTurn Type:")]
     [SerializeField] private WorldTurnBase worldTurn;
@@ -57,6 +59,16 @@ public class TurnManager : MonoBehaviour
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
 
+        foreach(Character character in heroesParent.GetComponentsInChildren<Character>())
+        {
+            characterList.Add(character);
+        }
+
+        foreach(Enemy_Base enemy in enemyParent.GetComponentsInChildren<Enemy_Base>())
+        {
+            enemyList.Add(enemy);
+        }
+
         turnNumber = 1;
 
         currentTurn = playerTurn;
@@ -74,25 +86,23 @@ public class TurnManager : MonoBehaviour
     public void SwitchState(TurnEnums.TurnState state)
     {
         currentTurn.ExitState();
+        mainCameraController.SetCamToDefault();
 
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = true;
                 currentTurn = playerTurn;
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = false;
                 break;
         }

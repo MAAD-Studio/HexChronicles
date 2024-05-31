@@ -1850,6 +1850,7 @@ MonoBehaviour:
   attackDamage: 0
   defensePercentage: 0
   elementType: 0
+  elementWeakAgainst: 0
   animator: {fileID: 0}
   healthBar: {fileID: 0}
   tileLayer:
@@ -1860,6 +1861,7 @@ MonoBehaviour:
   statusList: []
   isHurt: 0
   effectedByWeather: 0
+  hasMadeDecision: 0
   enemySO: {fileID: 11400000, guid: 8de64be854178174ea48d115aeae0d35, type: 2}
   followUpText: {fileID: 2552050792341772675, guid: 695c9ef69a4d6ef4daf9eea3d5dac4ff, type: 3}
   followUpMarker: {fileID: 1151094310716297599, guid: 9abc2928ea3bc744fa3572ce4fae181e, type: 3}
@@ -1902,6 +1904,8 @@ MonoBehaviour:
   mainCameraController: {fileID: 0}
   pathfinder: {fileID: 1632916473}
   enemyBrain: {fileID: 989854784}
+  heroesParent: {fileID: 283555647}
+  enemyParent: {fileID: 243109697}
   characterList:
   - {fileID: 1981355576}
   - {fileID: 438049307}
@@ -8210,6 +8214,7 @@ MonoBehaviour:
   attackDamage: 0
   defensePercentage: 0
   elementType: 0
+  elementWeakAgainst: 0
   animator: {fileID: 0}
   healthBar: {fileID: 0}
   tileLayer:
@@ -8220,6 +8225,7 @@ MonoBehaviour:
   statusList: []
   isHurt: 0
   effectedByWeather: 0
+  hasMadeDecision: 0
   enemySO: {fileID: 11400000, guid: 8de64be854178174ea48d115aeae0d35, type: 2}
   followUpText: {fileID: 2552050792341772675, guid: 695c9ef69a4d6ef4daf9eea3d5dac4ff, type: 3}
   followUpMarker: {fileID: 1151094310716297599, guid: 9abc2928ea3bc744fa3572ce4fae181e, type: 3}
@@ -13775,7 +13781,14 @@ MonoBehaviour:
   maxMoveSpeed: 10
   accelerationSpeed: 18
   deccelerationSpeed: 12
+  panSpeed: 10
   zoomSpeed: 2
+  maxLeft: -5
+  maxRight: 20
+  maxBackwards: -5
+  maxForwards: 20
+  maxZoomIn: 6
+  maxZoomOut: 20
 --- !u!1 &1847155119
 GameObject:
   m_ObjectHideFlags: 0
