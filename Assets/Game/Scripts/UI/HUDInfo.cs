@@ -32,6 +32,11 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject enemyStatusPrefab;
     private EnemyStatsUI enemyStatus;
 
+    [Header("Tile Object Info")]
+    [SerializeField] private GameObject objectInfoPanel;
+    [SerializeField] private GameObject objectStatusPrefab;
+    private EnemyStatsUI objectStatus;
+
     [Header("Tile Info")]
     [SerializeField] private GameObject tileInfoPanel;
     [SerializeField] private Image tileImage;
@@ -103,6 +108,12 @@ public class HUDInfo : MonoBehaviour
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
         enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
         enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
+
+        // Create objectInfoPrefab:
+        GameObject objectUI = Instantiate(objectStatusPrefab);
+        objectUI.transform.SetParent(objectInfoPanel.transform);
+        objectUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        objectStatus = objectUI.GetComponent<EnemyStatsUI>();
     }
 
     private void ButtonsAddListener()
@@ -236,9 +247,23 @@ public class HUDInfo : MonoBehaviour
             enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
             enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString();
         }
+        else if (currentTile != null && currentTile.tileHasObject)
+        {
+            objectInfoPanel.gameObject.SetActive(true);
+            TileObject tileObject = currentTile.objectOnTile;
+
+            // Display Status:
+            objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
+            objectStatus.textName.text = tileObject.tileObjectData.objectName;
+            objectStatus.enemyInfo.text = tileObject.tileObjectData.description;
+            objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
+            objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
+            //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
+        }
         else
         {
             enemyInfoPanel.gameObject.SetActive(false);
+            objectInfoPanel.gameObject.SetActive(false);
         }
     }
 
