@@ -318,6 +318,17 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         areaPrefab.DetectArea(true, true);
 
+        // Preview Damage on enemy healthbar
+        foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        {
+            character.PreviewDamage(selectedCharacter.attackDamage);
+        }
+
+        foreach (TileObject tileObject in areaPrefab.ObjectsHit())
+        {
+            tileObject.PreviewDamage(selectedCharacter.attackDamage);
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)

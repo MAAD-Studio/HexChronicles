@@ -10,15 +10,20 @@ public class TileObject : MonoBehaviour
     [SerializeField] protected TurnManager turnManager;
     [SerializeField] public TileObjectSO tileObjectData;
     [HideInInspector] public float currentHealth = 0f;
-    [SerializeField] private HealthBar healthBar;
+    [SerializeField] public TileObjectHealthBar healthBar;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
+    
+    public event System.EventHandler OnDamagePreview;
 
     public virtual void Start()
     {
         currentHealth =  tileObjectData.health;
-        if (healthBar == null) { healthBar = GetComponentInChildren<EnemyHealthBar>(); }
-        if (!healthBar.isCharacter) { healthBar.tileObject = this; }
+        if (healthBar == null) 
+        { 
+            healthBar = GetComponentInChildren<TileObjectHealthBar>();
+            healthBar.tileObject = this;
+        }
     }
 
     public virtual void TakeDamage(float attackDamage)
@@ -38,5 +43,11 @@ public class TileObject : MonoBehaviour
             objectDestroyed.Invoke(this);
             Destroy(gameObject);
         }
+    }
+
+    public void PreviewDamage(float damage)
+    {
+        healthBar.damagePreview = damage;
+        OnDamagePreview?.Invoke(this, System.EventArgs.Empty);
     }
 }

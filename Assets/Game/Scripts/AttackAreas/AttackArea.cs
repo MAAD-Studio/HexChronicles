@@ -33,6 +33,17 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
+            // Reset preview on enemy healthbar
+            if (tile.tileOccupied && tile.characterOnTile != null)
+            {
+                tile.characterOnTile.PreviewDamage(0);
+            }
+
+            if (tile.tileHasObject && tile.objectOnTile != null)
+            {
+                tile.objectOnTile.PreviewDamage(0);
+            }
+
             if (tile.inFrontier)
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.frontier);

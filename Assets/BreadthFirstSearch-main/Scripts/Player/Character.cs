@@ -32,7 +32,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
     [SerializeField] protected Animator animator;
-    [SerializeField] private HealthBar healthBar;
+    [SerializeField] public HealthBar healthBar;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -50,13 +50,11 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
+    public event EventHandler OnDamagePreview;
+    public event EventHandler OnUpdateHealthBar;
+
     #endregion
 
-    /*#region Events
-    public event EventHandler OnDamage;
-    public event EventHandler OnHeal;
-    public event EventHandler OnDeath;
-    #endregion*/
 
     #region UnityMethods
 
@@ -64,9 +62,6 @@ public class Character : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null, "Can not find Animatior Component on Character");
-
-        if (healthBar == null) { healthBar = GetComponentInChildren<HealthBar>(); }
-        if (healthBar.isCharacter) { healthBar.character = this; }
 
         FindTile();
     }
@@ -91,6 +86,11 @@ public class Character : MonoBehaviour
 
     public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
 
+    public void PreviewDamage(float damage)
+    {
+        healthBar.damagePreview = damage;
+        OnDamagePreview?.Invoke(this, EventArgs.Empty);
+    }
 
     public virtual void EnterNewTurn()
     {
@@ -146,13 +146,12 @@ public class Character : MonoBehaviour
         {
             currentHealth = 0;
             Died();
-            //OnDeath?.Invoke(this, EventArgs.Empty);
         }
         else
         {
             animator.SetTrigger("hit");
         }
-        //OnDamage?.Invoke(this, EventArgs.Empty);
+        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void Heal(float heal)
@@ -163,7 +162,7 @@ public class Character : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        //OnHeal?.Invoke(this, EventArgs.Empty);
+        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void Died()

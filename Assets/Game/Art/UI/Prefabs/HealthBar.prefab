@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 8964118109569607510}
   - component: {fileID: 4869969900948279872}
   m_Layer: 0
-  m_Name: HealthPreview
+  m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 192986770373902313}
   - component: {fileID: 4449395908390763157}
   m_Layer: 0
-  m_Name: Health
+  m_Name: HealthPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -390,8 +390,8 @@ RectTransform:
   m_Children:
   - {fileID: 2391452227422536909}
   - {fileID: 8507769793513463569}
-  - {fileID: 754219718529274353}
   - {fileID: 6482055006225856166}
+  - {fileID: 754219718529274353}
   - {fileID: 5089403495125833563}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -412,14 +412,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b072b6c0a2c26549a42c007df225d51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCharacter: 0
-  character: {fileID: 0}
-  tileObject: {fileID: 0}
   characterName: {fileID: 7533155037451078124}
   hpText: {fileID: 3368054349851364766}
-  health: {fileID: 4449395908390763157}
-  previewHealth: {fileID: 4869969900948279872}
+  health: {fileID: 4869969900948279872}
+  previewHealth: {fileID: 4449395908390763157}
   damagePreview: 0
+  hero: {fileID: 0}
 --- !u!1 &9078436715701412065
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +483,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Name
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -518,7 +516,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

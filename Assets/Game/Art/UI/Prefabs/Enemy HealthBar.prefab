@@ -51,14 +51,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09659c5823dc0684ca8a590b04b322d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCharacter: 0
-  character: {fileID: 0}
-  tileObject: {fileID: 0}
   characterName: {fileID: 4559905156004968164}
   hpText: {fileID: 8754600315015869078}
-  health: {fileID: 7673081589800600989}
-  previewHealth: {fileID: 1465559797529013576}
+  health: {fileID: 1465559797529013576}
+  previewHealth: {fileID: 7673081589800600989}
   damagePreview: 0
+  enemy: {fileID: 0}
   killIcon: {fileID: 7639961536876620159}
   atkInfoPanel: {fileID: 8207953459306861310}
   atkPercentage: {fileID: 6559774458885776307}
@@ -89,8 +87,8 @@ RectTransform:
   m_GameObject: {fileID: 1431987627985095335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 370049097113831977}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -169,9 +167,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6660991941794374721}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 2, y: -7.5}
   m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &2015444815418168886
@@ -244,9 +242,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6660991941794374721}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 16, y: -15}
   m_SizeDelta: {x: 50, y: 15}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &5872501315438008854
@@ -374,8 +372,8 @@ RectTransform:
   m_GameObject: {fileID: 8207953459306861310}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3246114913018345843}
   - {fileID: 2214803042925369176}
@@ -383,7 +381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -15}
+  m_AnchoredPosition: {x: 66.51, y: 6.75}
   m_SizeDelta: {x: 44, y: 15}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &1956992541181454497
@@ -555,16 +553,36 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4869969900948279872, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_Color.a
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869969900948279872, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
       propertyPath: m_Color.b
-      value: 0.121568635
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4869969900948279872, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
       propertyPath: m_Color.g
-      value: 0.23529413
+      value: 0.26666668
       objectReference: {fileID: 0}
     - target: {fileID: 4869969900948279872, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
       propertyPath: m_Color.r
-      value: 0.7019608
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6014267728614009665, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6014267728614009665, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_Color.g
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6014267728614009665, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7533155037451078124, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1197598029403677884, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}

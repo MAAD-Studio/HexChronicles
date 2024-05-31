@@ -72,6 +72,7 @@ public class Hero : Character
         foreach (var target in targets)
         {
             target.TakeDamage(attackDamage);
+            target.PreviewDamage(0);
         }
     }
 
@@ -88,6 +89,7 @@ public class Hero : Character
         foreach(TileObject target in targets)
         {
             target.TakeDamage(attackDamage);
+            target.PreviewDamage(0);
         }
     }
 
