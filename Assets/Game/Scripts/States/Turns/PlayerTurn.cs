@@ -106,8 +106,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private void FullReset()
     {
         ResetBoard();
+        DestroyPhantom();
         phase = TurnEnums.PlayerPhase.Movement;
-        cameraController.UnSelectCharacter();
         selectedCharacter = null;
         currentTile = null;
     }
@@ -167,16 +167,24 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (Input.GetKeyDown(KeyCode.Backspace) && selectedCharacter != null)
         {
-            if (phase == TurnEnums.PlayerPhase.Movement)
-            {
-                DestroyPhantom();
-                FullReset();
-            }
-            else if (phase == TurnEnums.PlayerPhase.Attack)
-            {
-                areaPrefab.DestroySelf();
-                phase = TurnEnums.PlayerPhase.Movement;
-            }
+            MoveBackAPhase();
+        }
+        else if(Input.GetMouseButtonDown(1) && selectedCharacter != null)
+        {
+            MoveBackAPhase();
+        }
+    }
+
+    public void MoveBackAPhase()
+    {
+        if (phase == TurnEnums.PlayerPhase.Movement)
+        {
+            FullReset();
+        }
+        else if (phase == TurnEnums.PlayerPhase.Attack)
+        {
+            areaPrefab.DestroySelf();
+            phase = TurnEnums.PlayerPhase.Movement;
         }
     }
 
@@ -241,6 +249,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 {
                     ResetBoard();
                     GrabCharacter();
+                    phase = TurnEnums.PlayerPhase.Movement;
                 }
             }
         }
@@ -263,7 +272,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
         }
-        else if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
+        
+        if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
             currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
 

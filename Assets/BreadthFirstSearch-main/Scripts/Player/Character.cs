@@ -294,72 +294,76 @@ public class Character : MonoBehaviour
 
     private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile)
     {
-        int step = 1;
-        int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
-
-        List<Tile> tilesInPath = new List<Tile>();
-        foreach (Tile tile in path)
+        if(path.Length > 0)
         {
-            tilesInPath.Add(tile);
-        }
+            int step = 1;
+            int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
-        characterTile.OnTileExit(this);
-        Tile currentTile = path[0];
-        tilesInPath.Remove(currentTile);
-
-        float animationTime = 0f;
-        const float distanceToNext = 0.05f;
-
-        //While we still have points in the path to cover
-        while (step < pathLength)
-        {
-            yield return null;
-            turnManager.mainCameraController.SetCamToSelectedCharacter(this);
-
-            foreach (Tile tile in tilesInPath)
+            List<Tile> tilesInPath = new List<Tile>();
+            foreach (Tile tile in path)
             {
-                tile.ChangeTileColor(TileEnums.TileMaterial.path);
+                tilesInPath.Add(tile);
             }
 
-            Vector3 nextTilePosition = path[step].transform.position;
+            characterTile.OnTileExit(this);
+            Tile currentTile = path[0];
+            tilesInPath.Remove(currentTile);
 
-            //Moves and roates towards the next point
-            MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
-            animationTime += Time.deltaTime;
+            float animationTime = 0f;
+            const float distanceToNext = 0.05f;
 
-            //Checks if we are close enough to move onto the next point
-            if (Vector3.Distance(transform.position, nextTilePosition) > distanceToNext)
+            //While we still have points in the path to cover
+            while (step < pathLength)
             {
-                continue;
+                yield return null;
+                turnManager.mainCameraController.SetCamToSelectedCharacter(this);
+
+                foreach (Tile tile in tilesInPath)
+                {
+                    tile.ChangeTileColor(TileEnums.TileMaterial.path);
+                }
+
+                Vector3 nextTilePosition = path[step].transform.position;
+
+                //Moves and roates towards the next point
+                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
+                animationTime += Time.deltaTime;
+
+                //Checks if we are close enough to move onto the next point
+                if (Vector3.Distance(transform.position, nextTilePosition) > distanceToNext)
+                {
+                    continue;
+                }
+
+                movementThisTurn += (int)path[step].tileData.tileCost;
+
+                //Moves onto the next point
+                previousTile = currentTile;
+                currentTile = path[step];
+                currentTile.OnTileEnter(this);
+                tilesInPath.Remove(path[step]);
+                path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+
+                step++;
+
+                //Checks if we have arrived at the last tile, if not it triggers OnTileExit
+                if (step < pathLength)
+                {
+                    previousTile.OnTileExit(this);
+                }
+
+                animationTime = 0f;
             }
 
-            movementThisTurn += (int)path[step].tileData.tileCost;
-
-            //Moves onto the next point
-            previousTile = currentTile;
-            currentTile = path[step];
-            currentTile.OnTileEnter(this);
-            tilesInPath.Remove(path[step]);
-            path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-
-            step++;
-
-            //Checks if we have arrived at the last tile, if not it triggers OnTileExit
-            if (step < pathLength)
+            foreach (Tile tile in path)
             {
-                previousTile.OnTileExit(this);
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             }
 
-            animationTime = 0f;
-        }
 
-        foreach (Tile tile in path)
-        {
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            //Plants the character down onto the newest tile
+            FinalizeTileChoice(path[pathLength - 1]);
         }
-
-        //Plants the character down onto the newest tile
-        FinalizeTileChoice(path[pathLength - 1]);
 
         animator.SetBool("walking", false);
 
@@ -375,8 +379,15 @@ public class Character : MonoBehaviour
             TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
         }
 
+        foreach(TileObject tileObj in attackAreaPrefab.ObjectsHit())
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+        }
+
         transform.LookAt(attackAreaPrefab.transform.position);
         PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        PerformBasicAttackObjects(attackAreaPrefab.ObjectsHit());
+
         yield return new WaitForSeconds(0.5f);
         attackAreaPrefab.DestroySelf();
 
