@@ -12,10 +12,13 @@ public class KeywordDescription
     public string DisplayKeywordDescription()
     {
         string formattedText = description;
-        foreach (var keyword in keywords)
+        if (keywords != null)
         {
-            string replacement = keyword.GetFormattedKeyword();
-            formattedText = formattedText.Replace(keyword.keyword, replacement);
+            foreach (var keyword in keywords)
+            {
+                string replacement = keyword.GetFormattedKeyword();
+                formattedText = formattedText.Replace(keyword.keyword, replacement);
+            }
         }
 
         return formattedText;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,7 @@ public class TurnManager : MonoBehaviour
     private StateInterface currentTurn;
 
     private int turnNumber;
+    private int objectiveTurnNumber = 8;
 
     public StateInterface CurrentTurn
     {
@@ -41,6 +43,9 @@ public class TurnManager : MonoBehaviour
     {
         get { return turnNumber; }
     }
+
+    public event EventHandler OnLevelVictory; // Not used yet
+    public event EventHandler OnLevelDefeat;
 
     #endregion
 
@@ -59,7 +64,10 @@ public class TurnManager : MonoBehaviour
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
 
-        foreach(Character character in heroesParent.GetComponentsInChildren<Character>())
+        characterList.Clear();
+        enemyList.Clear();
+
+        foreach (Character character in heroesParent.GetComponentsInChildren<Character>())
         {
             characterList.Add(character);
         }
@@ -94,6 +102,11 @@ public class TurnManager : MonoBehaviour
                 turnNumber++;
                 mainCameraController.allowControl = true;
                 currentTurn = playerTurn;
+
+                if (turnNumber == objectiveTurnNumber)
+                {
+                    OnLevelDefeat?.Invoke(this, EventArgs.Empty);
+                }
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:

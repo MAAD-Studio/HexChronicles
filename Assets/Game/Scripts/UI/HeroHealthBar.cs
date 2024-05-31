@@ -14,6 +14,7 @@ public class HeroHealthBar : HealthBar
         hero = GetComponentInParent<Hero>();
         hero.healthBar = this;
         hero.OnDamagePreview += UpdateHealthBarPreview;
+        hero.OnUpdateHealthBar += UpdateHealthBar;
 
         characterName.text = hero.heroSO.attributes.name.ToString();
         hpText.text = hero.heroSO.attributes.health + " HP";
@@ -38,5 +39,6 @@ public class HeroHealthBar : HealthBar
     protected override void OnDestroy()
     {
         hero.OnDamagePreview -= UpdateHealthBarPreview;
+        hero.OnUpdateHealthBar -= UpdateHealthBar;
     }
 }
