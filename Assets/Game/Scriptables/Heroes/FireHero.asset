@@ -18,7 +18,7 @@ MonoBehaviour:
     description:
       description: Aggressive
       keywords: []
-    health: 9
+    health: 14
     movementRange: 5
     attackDamage: 4
     attackRange: 2
@@ -27,25 +27,26 @@ MonoBehaviour:
     hitMarker: {fileID: 1151094310716297599, guid: 88d6e193f72332840bf1b6d956aca220, type: 3}
     missText: {fileID: 7693077710537728400, guid: 0182cb95b4a7248449c18ed9a865d4f0, type: 3}
   attackArea: {fileID: 3827415136764973267, guid: 7be9ba0d0d482614b961812c41e94daf, type: 3}
-  attackShape: {fileID: 21300000, guid: 201409e7f7a0e0342b9531b81a590577, type: 3}
-  attackInfo: Fire attack
+  attackShape: {fileID: 21300000, guid: 9d8029e22fe9fb443a090e5fbac0ac79, type: 3}
+  attackInfo:
+    description: Deal damage to enemies by using fire attacks
+    keywords:
+    - keyword: fire
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
   activeSkill:
-    icon: {fileID: 21300000, guid: 201409e7f7a0e0342b9531b81a590577, type: 3}
+    icon: {fileID: 21300000, guid: 1ad89350eac2ee14d9f37b97fa2d34a8, type: 3}
     skillName: Collapse
     description:
-      description: 'Choose 1 lava tile to Collapse, tiles around 1 range will change
-        to lava, Burn enemies on those tiles. <br>Burn: -1HP per turn'
+      description: "Deal damage and burn enemies on tiles. \nBurn: -1HP per turn"
       keywords:
-      - keyword: Collapse
-        color: {r: 1, g: 0, b: 0, a: 1}
-        bold: 1
-        italic: 0
       - keyword: Burn
-        color: {r: 1, g: 0, b: 0, a: 1}
+        color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
         bold: 1
         italic: 0
       - keyword: -1HP
-        color: {r: 1, g: 1, b: 1, a: 1}
+        color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
         bold: 1
         italic: 0
     skillshape: {fileID: 21300000, guid: 1ad89350eac2ee14d9f37b97fa2d34a8, type: 3}

@@ -25,14 +25,36 @@ MonoBehaviour:
   selectedCharMaterial: {fileID: 2100000, guid: 4e96cd8f525878c41a380d1fcc598014, type: 2}
   tileSprite: {fileID: 21300000, guid: c4ab57d6fbd368f43a2b49aed646a102, type: 3}
   tileEffects:
-    description: 'This is water tile. Effects: Fire ->  -1 Movement, Grass -> +10%
-      Defense, Water -> +1 Attack'
+    description: 'This is water tile.
+
+      Fire ->  -1 Movement
+
+      Grass ->
+      +10% Defense
+
+      Water -> +1 Attack'
     keywords:
-    - keyword: Fire
-      color: {r: 1, g: 0.108383924, b: 0, a: 1}
+    - keyword: -1
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
       bold: 1
       italic: 0
-    - keyword: -1 Movement
-      color: {r: 1, g: 1, b: 1, a: 1}
+    - keyword: Movement
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: +10%
+      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
       bold: 1
+      italic: 0
+    - keyword: Defense
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: +1
+      color: {r: 0, g: 0.6117647, b: 0.027450982, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: Attack
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 0
       italic: 0
