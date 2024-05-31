@@ -31,6 +31,7 @@ public class TileObject : MonoBehaviour
         int hitNum = Random.Range(0, 101);
         if (hitNum > tileObjectData.defense)
         {
+            Debug.Log("TOOK DAMAGE");
             currentHealth -= attackDamage;
         }
         else
