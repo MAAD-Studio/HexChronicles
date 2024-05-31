@@ -18,6 +18,7 @@ public class EnemyHealthBar : HealthBar
         enemy = GetComponentInParent<Enemy_Base>();
         enemy.healthBar = this;
         enemy.OnDamagePreview += UpdateHealthBarPreview;
+        enemy.OnUpdateHealthBar += UpdateHealthBar;
 
         characterName.text = enemy.enemySO.name.ToString();
         atkPercentage.text = (100 - enemy.enemySO.attributes.defensePercentage).ToString() + "%";
@@ -63,5 +64,6 @@ public class EnemyHealthBar : HealthBar
     protected override void OnDestroy()
     {
         enemy.OnDamagePreview -= UpdateHealthBarPreview;
+        enemy.OnUpdateHealthBar -= UpdateHealthBar;
     }
 }
