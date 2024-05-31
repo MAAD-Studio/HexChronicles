@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn))]
 public class TurnManager : MonoBehaviour
@@ -44,8 +45,7 @@ public class TurnManager : MonoBehaviour
         get { return turnNumber; }
     }
 
-    public event EventHandler OnLevelVictory; // Not used yet
-    public event EventHandler OnLevelDefeat;
+    [HideInInspector] public static UnityEvent<TurnManager> OnLevelDefeat = new UnityEvent<TurnManager>();
 
     #endregion
 
@@ -105,7 +105,7 @@ public class TurnManager : MonoBehaviour
 
                 if (turnNumber == objectiveTurnNumber)
                 {
-                    OnLevelDefeat?.Invoke(this, EventArgs.Empty);
+                    OnLevelDefeat?.Invoke(this);
                 }
                 break;
 
