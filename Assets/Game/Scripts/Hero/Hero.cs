@@ -47,16 +47,23 @@ public class Hero : Character
         currentSkillCD = Mathf.Clamp(currentSkillCD - value, 0, skillCD);
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, ElementType type)
     {
-        int hitNum = UnityEngine.Random.Range(0, 101);
-        if (hitNum > heroSO.attributes.defensePercentage)
+        if(elementWeakAgainst == type)
         {
-            base.TakeDamage(damage);
+            base.TakeDamage(damage, type);
         }
         else
         {
-            TemporaryMarker.GenerateMarker(heroSO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+            int hitNum = UnityEngine.Random.Range(0, 101);
+            if (hitNum > heroSO.attributes.defensePercentage)
+            {
+                base.TakeDamage(damage, type);
+            }
+            else
+            {
+                TemporaryMarker.GenerateMarker(heroSO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+            }
         }
     }
 
@@ -71,7 +78,7 @@ public class Hero : Character
 
         foreach (var target in targets)
         {
-            target.TakeDamage(attackDamage);
+            target.TakeDamage(attackDamage, elementType);
             target.PreviewDamage(0);
         }
     }

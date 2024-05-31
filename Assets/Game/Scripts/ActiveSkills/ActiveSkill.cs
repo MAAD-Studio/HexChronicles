@@ -62,7 +62,7 @@ public class ActiveSkill
         {
             foreach (var target in targets)
             {
-                target.TakeDamage(skillEffectValue);
+                target.TakeDamage(skillEffectValue, thisCharacter.elementType);
             }
         }
 

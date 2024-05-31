@@ -24,7 +24,7 @@ public class Status
         switch (statusType)
         {
             case StatusTypes.Burning:
-                character.TakeDamage(1);
+                character.TakeDamage(1, ElementType.Poison);
                 break;
 
             case StatusTypes.Bound:

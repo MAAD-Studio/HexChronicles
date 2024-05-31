@@ -31,6 +31,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
+    public ElementType elementWeakAgainst;
     [SerializeField] protected Animator animator;
     [SerializeField] public HealthBar healthBar;
 
@@ -136,7 +137,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, ElementType type)
     {
         currentHealth -= damage;
 

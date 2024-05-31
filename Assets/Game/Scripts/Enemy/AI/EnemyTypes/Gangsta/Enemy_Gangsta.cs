@@ -70,7 +70,7 @@ public class Enemy_Gangsta : Enemy_Base
         {
             transform.LookAt(character.transform.position);
 
-            character.TakeDamage(attackDamage);
+            character.TakeDamage(attackDamage, elementType);
 
             List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
 
@@ -124,7 +124,7 @@ public class Enemy_Gangsta : Enemy_Base
     private void FollowUpAttack(Character character)
     {
         transform.LookAt(character.transform.position);
-        character.TakeDamage(attackDamage);
+        character.TakeDamage(attackDamage, elementType);
     }
 
     #endregion
