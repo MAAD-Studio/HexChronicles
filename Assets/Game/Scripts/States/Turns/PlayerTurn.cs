@@ -352,7 +352,15 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     }
 
                     DestroyPhantom();
-                    selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile);
+
+                    if(attackType == TurnEnums.PlayerAction.BasicAttack)
+                    {
+                        selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile, false);
+                    }
+                    else
+                    {
+                        selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile, true);
+                    }
 
                     ResetBoard();
                 }
@@ -366,7 +374,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             if (areaPrefab != null)
             {
-                Destroy(areaPrefab);
+                areaPrefab.DestroySelf();
             }
 
             if (attackType == TurnEnums.PlayerAction.BasicAttack)

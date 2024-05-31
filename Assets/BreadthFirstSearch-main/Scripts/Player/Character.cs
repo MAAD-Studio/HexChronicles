@@ -282,16 +282,16 @@ public class Character : MonoBehaviour
         StartCoroutine(MoveThroughPath(_path));
     }
 
-    public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile)
+    public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
     {
         moving = true;
         animator.SetBool("walking", true);
 
         characterTile.tileOccupied = false;
-        StartCoroutine(MoveAndAttack(path, turnManager, targetTile));
+        StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
     }
 
-    private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile)
+    private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
     {
         if(path.Length > 0)
         {
@@ -384,7 +384,15 @@ public class Character : MonoBehaviour
         }
 
         transform.LookAt(attackAreaPrefab.transform.position);
-        PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+
+        if(activeSkillUse)
+        {
+            ReleaseActiveSkill(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        }
+        else
+        {
+            PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        }
         PerformBasicAttackObjects(attackAreaPrefab.ObjectsHit());
 
         yield return new WaitForSeconds(0.5f);
