@@ -110,7 +110,6 @@ public class TurnManager : MonoBehaviour
         currentTurn.EnterState();
     }
 
-    //**TESTING ONLY**
     public void DestroyACharacter(Character character)
     {
         character.characterTile.characterOnTile = null;
