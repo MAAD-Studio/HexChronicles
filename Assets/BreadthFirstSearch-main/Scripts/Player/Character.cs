@@ -285,10 +285,13 @@ public class Character : MonoBehaviour
 
     public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
     {
-        moving = true;
-        animator.SetBool("walking", true);
+        if(path.Length > 0)
+        {
+            moving = true;
+            animator.SetBool("walking", true);
+            characterTile.tileOccupied = false;
+        }
 
-        characterTile.tileOccupied = false;
         StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
     }
 
