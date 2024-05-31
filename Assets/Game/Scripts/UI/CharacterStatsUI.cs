@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class CharacterStatsUI : StatsUI
 {
     [Header("Hero")]
+    public Image attackShape;
+    public TextMeshProUGUI attackInfo;
+
     public Image skillShape;
     public TextMeshProUGUI skillInfo;
     public TextMeshProUGUI skillCD;

@@ -7,6 +7,9 @@ using System;
 
 public class HUDInfo : MonoBehaviour
 {
+    [SerializeField] private GameObject tempIntro;
+    [SerializeField] private Button tempButton;
+
     private TurnManager turnManager;
     private PlayerTurn playerTurn;
     private List<Enemy_Base> enemies;
@@ -110,6 +113,7 @@ public class HUDInfo : MonoBehaviour
         endTurn.onClick.AddListener(() => playerTurn.EndTurn());
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
         undo.interactable = false;
+        tempButton.onClick.AddListener(() => tempIntro.SetActive(false));
     }
     #endregion
 
@@ -162,9 +166,13 @@ public class HUDInfo : MonoBehaviour
             selectHeroStatus.textMovement.text = $"{selectedCharacter.moveDistance}";
             selectHeroStatus.textAttack.text = $"{selectedCharacter.attackDamage}";
             selectHeroStatus.textDef.text = $"{selectedCharacter.defensePercentage}%";
+
+            selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
+            selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.ToString();
+
             selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.DisplaySkillDetail();
             selectHeroStatus.skillInfo.ForceMeshUpdate();
-            selectHeroStatus.textStatus.text = "" + GetStatusTypes(selectedCharacter);
+            selectHeroStatus.textStatus.text = GetStatusTypes(selectedCharacter).ToString();
         }
         else
         {
@@ -226,7 +234,7 @@ public class HUDInfo : MonoBehaviour
             enemyStatus.textAttack.text = $"{enemy.attackDamage}";
             enemyStatus.textRange.text = $"{enemy.attackDistance}%";
             enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
-            enemyStatus.textStatus.text = "" + GetStatusTypes(enemy);
+            enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString();
         }
         else
         {
