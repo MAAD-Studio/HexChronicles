@@ -12,6 +12,7 @@ public class TileObjectHealthBar : EnemyHealthBar
         tileObject = GetComponentInParent<TileObject>();
         tileObject.healthBar = this;
         tileObject.OnDamagePreview += UpdateHealthBarPreview;
+        tileObject.OnUpdateHealthBar += UpdateHealthBar;
 
         characterName.text = tileObject.tileObjectData.objectName.ToString();
         atkPercentage.text = (100 - tileObject.tileObjectData.defense).ToString() + "%";
@@ -57,5 +58,6 @@ public class TileObjectHealthBar : EnemyHealthBar
     protected override void OnDestroy()
     {
         tileObject.OnDamagePreview -= UpdateHealthBarPreview;
+        tileObject.OnUpdateHealthBar -= UpdateHealthBar;
     }
 }

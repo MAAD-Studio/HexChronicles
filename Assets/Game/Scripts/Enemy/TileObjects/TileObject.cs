@@ -15,6 +15,7 @@ public class TileObject : MonoBehaviour
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
     
     public event System.EventHandler OnDamagePreview;
+    public event System.EventHandler OnUpdateHealthBar;
 
     public virtual void Start()
     {
@@ -39,7 +40,9 @@ public class TileObject : MonoBehaviour
             TemporaryMarker.GenerateMarker(tileObjectData.missText, gameObject.transform.position, 4f, 0.5f);
         }
 
-        if(currentHealth <= 0)
+        OnUpdateHealthBar?.Invoke(this, System.EventArgs.Empty);
+
+        if (currentHealth <= 0)
         {
             objectDestroyed.Invoke(this);
             Destroy(gameObject);
