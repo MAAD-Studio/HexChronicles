@@ -202,7 +202,7 @@ public class HUDInfo : MonoBehaviour
             endTurn.interactable = false;
         }
 
-        turnNumber.text = turnManager.TurnNumber.ToString();
+        turnNumber.text = (8 - turnManager.TurnNumber + 1).ToString();
     }
 
     private void UpdateSelectedHeroInfo(Hero hero)

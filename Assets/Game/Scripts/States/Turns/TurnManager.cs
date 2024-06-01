@@ -131,6 +131,11 @@ public class TurnManager : MonoBehaviour
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
             characterList.Remove(character);
+
+            if (characterList.Count == 0)
+            {
+                OnLevelDefeat?.Invoke(this);
+            }
         }
         else
         {

@@ -30,7 +30,7 @@ public class Hero : Character
         activeSkill = heroSO.activeSkill.Clone();
         activeSkill.thisCharacter = this;
         activeSkillArea = activeSkill.shapeArea;
-        currentSkillCD = skillCD;
+        currentSkillCD = (skillCD - 1);
 
         buffModifiers = new List<BuffModifier>();
     }
