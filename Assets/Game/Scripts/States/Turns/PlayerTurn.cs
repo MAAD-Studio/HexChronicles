@@ -235,21 +235,31 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         Character inspectionCharacter = currentTile.characterOnTile;
         TurnEnums.CharacterType characterType = inspectionCharacter.characterType;
 
-        if (characterType == TurnEnums.CharacterType.Player && !inspectionCharacter.hasMadeDecision)
+        if (characterType == TurnEnums.CharacterType.Player)
         {
-            currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
-
-            if (Input.GetMouseButtonDown(0))
+            if (!inspectionCharacter.hasMadeDecision)
             {
-                if (selectedCharacter == null)
+                currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
+
+                if (Input.GetMouseButtonDown(0))
                 {
-                    GrabCharacter();
+                    if (selectedCharacter == null)
+                    {
+                        GrabCharacter();
+                    }
+                    else if (inspectionCharacter != selectedCharacter)
+                    {
+                        ResetBoard();
+                        GrabCharacter();
+                        phase = TurnEnums.PlayerPhase.Movement;
+                    }
                 }
-                else if (inspectionCharacter != selectedCharacter)
+            } 
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
                 {
-                    ResetBoard();
-                    GrabCharacter();
-                    phase = TurnEnums.PlayerPhase.Movement;
+                    MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
                 }
             }
         }

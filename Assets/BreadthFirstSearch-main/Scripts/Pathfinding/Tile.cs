@@ -92,10 +92,18 @@ public class Tile : MonoBehaviour
         if(tileData.elementsStrongAgainst.Contains(character.elementType))
         {
             character.defensePercentage += 10;
+            if (character.characterType == TurnEnums.CharacterType.Player)
+            {
+                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s defense +10%", false);
+            }
         }
         else if(tileData.tileType == character.elementType)
         {
             character.attackDamage += 1;
+            if (character.characterType == TurnEnums.CharacterType.Player)
+            {
+                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage +1", false);
+            }
         }
     }
 
@@ -105,6 +113,10 @@ public class Tile : MonoBehaviour
         if (tileData.elementsWeakAgainst.Contains(character.elementType))
         {
             character.movementThisTurn += 1;
+            if (character.characterType == TurnEnums.CharacterType.Player)
+            {
+                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s move range +1", false);
+            }
         }
     }
 
@@ -114,10 +126,18 @@ public class Tile : MonoBehaviour
         if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
             character.defensePercentage -= 10;
+            if (character.characterType == TurnEnums.CharacterType.Player)
+            {
+                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s defense -10%", false);
+            }
         }
         else if (tileData.tileType == character.elementType)
         {
             character.attackDamage -= 1;
+            if (character.characterType == TurnEnums.CharacterType.Player)
+            {
+                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage -1", false);
+            }
         }
     }
 
