@@ -69,10 +69,69 @@ public class HUDInfo : MonoBehaviour
         {
             return;
         }
+
         UpdateTurnInfo();
-        UpdateSelectedCharacterInfo();
-        UpdateEnemyInfo();
-        UpdateTileInfo();
+        CheckCurrentHover();
+
+        selectedCharacter = playerTurn.SelectedCharacter;
+        if (selectedCharacter != null)
+        {
+            Hero hero = selectedCharacter as Hero;
+            UpdateSelectedHeroInfo(hero);
+        }
+    }
+
+    private void CheckCurrentHover()
+    {
+        currentTile = playerTurn.CurrentTile;
+
+        if (currentTile == null)
+        {
+            tileInfoPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            UpdateTileInfo();
+
+            if (currentTile.characterOnTile != null)
+            {
+                if (currentTile.characterOnTile is Hero)
+                {
+                    Hero hero = currentTile.characterOnTile as Hero;
+                    UpdateSelectedHeroInfo(hero);
+                }
+                else
+                {
+                    selectHeroStatus.gameObject.SetActive(false);
+                }
+
+                if (currentTile.characterOnTile is Enemy_Base)
+                {
+                    Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
+                    UpdateEnemyInfo(enemy);
+                }
+                else
+                {
+                    enemyInfoPanel.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                selectHeroStatus.gameObject.SetActive(false);
+                enemyInfoPanel.gameObject.SetActive(false);
+            }
+
+            if (currentTile.tileHasObject)
+            {
+                TileObject tileObject = currentTile.objectOnTile;
+
+                UpdateObjectInfo(tileObject);
+            }
+            else
+            {
+                objectInfoPanel.gameObject.SetActive(false);
+            }
+        }
     }
 
     #region Initialization Methods
@@ -128,7 +187,7 @@ public class HUDInfo : MonoBehaviour
     }
     #endregion
 
-    #region Update Methods
+    #region Update Stats
 
     private void UpdateTurnInfo()
     {
@@ -146,50 +205,43 @@ public class HUDInfo : MonoBehaviour
         turnNumber.text = turnManager.TurnNumber.ToString();
     }
 
-    private void UpdateSelectedCharacterInfo()
+    private void UpdateSelectedHeroInfo(Hero hero)
     {
-        selectedCharacter = playerTurn.SelectedCharacter;
-        if (selectedCharacter != null)
+        selectHeroStatus.gameObject.SetActive(true);
+
+        //selectHeroStatus.attackBtn.interactable = hero.canAttack;
+        //selectHeroStatus.moveBtn.interactable = hero.canMove;
+
+        if (hero.currentSkillCD > 0)
         {
-            selectHeroStatus.gameObject.SetActive(true);
-            Hero hero = selectedCharacter as Hero;
-
-            selectHeroStatus.attackBtn.interactable = hero.canAttack;
-            selectHeroStatus.moveBtn.interactable = hero.canMove;
-
-            if (hero.currentSkillCD > 0)
-            {
-                selectHeroStatus.skillBtn.interactable = false;
-                selectHeroStatus.skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
-            }
-            else
-            {
-                selectHeroStatus.skillBtn.interactable = true;
-                selectHeroStatus.skillCD.gameObject.SetActive(false);
-            }
-
-            // Display Status:
-            selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
-            selectHeroStatus.skillShape.sprite = hero.heroSO.activeSkill.skillshape;
-            selectHeroStatus.element.sprite = GetElementSprite(selectedCharacter.elementType);
-            selectHeroStatus.textName.text = hero.heroSO.attributes.name;
-            selectHeroStatus.textHP.text = $"{selectedCharacter.currentHealth} / {selectedCharacter.maxHealth}";
-            selectHeroStatus.textMovement.text = $"{selectedCharacter.moveDistance}";
-            selectHeroStatus.textAttack.text = $"{selectedCharacter.attackDamage}";
-            selectHeroStatus.textDef.text = $"{selectedCharacter.defensePercentage}%";
-
-            selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
-            selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
-            selectHeroStatus.attackInfo.ForceMeshUpdate();
-
-            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
-            selectHeroStatus.skillInfo.ForceMeshUpdate();
-            selectHeroStatus.textStatus.text = GetStatusTypes(selectedCharacter).ToString();
+            selectHeroStatus.skillBtn.interactable = false;
+            selectHeroStatus.skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
+            selectHeroStatus.attackBtn.interactable = false; // temp
         }
         else
         {
-            selectHeroStatus.gameObject.SetActive(false);
+            selectHeroStatus.skillBtn.interactable = true;
+            selectHeroStatus.skillCD.gameObject.SetActive(false);
+            selectHeroStatus.attackBtn.interactable = true; // temp
         }
+
+        // Display Status:
+        selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
+        selectHeroStatus.skillShape.sprite = hero.heroSO.activeSkill.skillshape;
+        selectHeroStatus.element.sprite = GetElementSprite(hero.elementType);
+        selectHeroStatus.textName.text = hero.heroSO.attributes.name;
+        selectHeroStatus.textHP.text = $"{hero.currentHealth} / {hero.maxHealth}";
+        selectHeroStatus.textMovement.text = $"{hero.moveDistance}";
+        selectHeroStatus.textAttack.text = $"{hero.attackDamage}";
+        selectHeroStatus.textDef.text = $"{hero.defensePercentage}%";
+
+        selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
+        selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
+        selectHeroStatus.attackInfo.ForceMeshUpdate();
+
+        selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
+        selectHeroStatus.skillInfo.ForceMeshUpdate();
+        selectHeroStatus.textStatus.text = GetStatusTypes(hero).ToString();
     }
 
     private Sprite GetElementSprite(ElementType element)
@@ -227,68 +279,47 @@ public class HUDInfo : MonoBehaviour
         return "";
     }
 
-    private void UpdateEnemyInfo()
+    private void UpdateEnemyInfo(Enemy_Base enemy)
     {
-        currentTile = playerTurn.CurrentTile;
+        enemyInfoPanel.gameObject.SetActive(true);
 
-        if (currentTile != null && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
-        {
-            enemyInfoPanel.gameObject.SetActive(true);
-            Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
+        enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
+        enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
+        enemyStatus.textName.text = enemy.enemySO.attributes.name;
+        enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
+        enemyStatus.enemyInfo.ForceMeshUpdate();
+        enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
+        enemyStatus.textMovement.text = $"{enemy.moveDistance}";
+        enemyStatus.textAttack.text = $"{enemy.attackDamage}";
+        enemyStatus.textRange.text = $"{enemy.attackDistance}%";
+        enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
+        enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString(); 
+    }
 
-            // Display Status:
-            enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
-            enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
-            enemyStatus.textName.text = enemy.enemySO.attributes.name;
-            enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
-            enemyStatus.enemyInfo.ForceMeshUpdate();
-            enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
-            enemyStatus.textMovement.text = $"{enemy.moveDistance}";
-            enemyStatus.textAttack.text = $"{enemy.attackDamage}";
-            enemyStatus.textRange.text = $"{enemy.attackDistance}%";
-            enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
-            enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString();
-        }
-        else if (currentTile != null && currentTile.tileHasObject)
-        {
-            objectInfoPanel.gameObject.SetActive(true);
-            TileObject tileObject = currentTile.objectOnTile;
+    private void UpdateObjectInfo(TileObject tileObject)
+    {
+        objectInfoPanel.gameObject.SetActive(true);
 
-            // Display Status:
-            objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
-            objectStatus.textName.text = tileObject.tileObjectData.objectName;
-            objectStatus.enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
-            objectStatus.enemyInfo.ForceMeshUpdate();
-            objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
-            objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
-            //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
-            objectStatus.textStatus.gameObject.SetActive(false);
-        }
-        else
-        {
-            enemyInfoPanel.gameObject.SetActive(false);
-            objectInfoPanel.gameObject.SetActive(false);
-        }
+        objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
+        objectStatus.textName.text = tileObject.tileObjectData.objectName;
+        objectStatus.enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
+        objectStatus.enemyInfo.ForceMeshUpdate();
+        objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
+        objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
+        //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
+        objectStatus.textStatus.gameObject.SetActive(false);
     }
 
     private void UpdateTileInfo()
     {
-        currentTile = playerTurn.CurrentTile;
-        if (currentTile != null)
-        {
-            tileInfoPanel.gameObject.SetActive(true);
-            tileImage.sprite = currentTile.tileData.tileSprite;
-            tileElement.sprite = GetElementSprite(currentTile.tileData.tileType);
-            if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
-            else { tileElement.gameObject.SetActive(true); }
-            tileName.text = currentTile.tileData.name;
-            tileEffects.text = currentTile.tileData.tileEffects.DisplayKeywordDescription();
-            tileEffects.ForceMeshUpdate();
-        }
-        else
-        {
-            tileInfoPanel.gameObject.SetActive(false);
-        }
+        tileInfoPanel.gameObject.SetActive(true);
+        tileImage.sprite = currentTile.tileData.tileSprite;
+        tileElement.sprite = GetElementSprite(currentTile.tileData.tileType);
+        if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
+        else { tileElement.gameObject.SetActive(true); }
+        tileName.text = currentTile.tileData.name;
+        tileEffects.text = currentTile.tileData.tileEffects.DisplayKeywordDescription();
+        tileEffects.ForceMeshUpdate();
     }
     #endregion
 }
