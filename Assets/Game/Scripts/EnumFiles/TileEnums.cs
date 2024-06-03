@@ -5,7 +5,9 @@ public class TileEnums
         baseMaterial,
         highlight,
         frontier,
-        attackable
+        attackable,
+        path,
+        selectedChar
     }
 
     public enum TileType

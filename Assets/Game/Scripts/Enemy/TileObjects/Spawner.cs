@@ -9,10 +9,6 @@ public class Spawner : TileObject
 
     private Tile attachedTile;
 
-    [Header("Setup Info:")]
-    [SerializeField] private LayerMask tileLayer;
-    [SerializeField] private TurnManager turnManager;
-
     [Header("Spawning Info: ")]
     [SerializeField] private int numberToSpawn = 1;
     [SerializeField] private List<Enemy_Base> enemyList;
@@ -21,8 +17,9 @@ public class Spawner : TileObject
 
     #region UnityMethods
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         Debug.Assert(turnManager != null, "Spawner doesn't have a turnManager provided");
         Debug.Assert(enemyList != null, "Spawner doesn't have any provided enemies for spawning");
 
@@ -70,6 +67,11 @@ public class Spawner : TileObject
             enemiesSpawnedIn++;
             adjacentTiles.Remove(adjacentTiles[tileChoice]);
         }
+    }
+
+    public override void TakeDamage(float attackDamage)
+    {
+        base.TakeDamage(attackDamage);
     }
 
     #endregion

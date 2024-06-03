@@ -7,7 +7,7 @@ public class BasicAttributes
 {
     public Sprite avatar;
     public string name;
-    public string description;
+    public KeywordDescription description;
 
     [Header("Basic Attributes")]
     public float health = 0;
@@ -18,6 +18,10 @@ public class BasicAttributes
 
     [Header("Element")]
     public ElementType elementType;
+
+    [Header("Marker Info:")]
+    public GameObject hitMarker;
+    public GameObject missText;
 
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;

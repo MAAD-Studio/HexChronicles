@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.ScrollRect;
 
 public class AttackArea : MonoBehaviour
 {
     #region Variables
 
-    List<TileReporter> tileReporters = new List<TileReporter>();
-    List<Tile> reporterTiles = new List<Tile>();
+    private List<TileReporter> tileReporters = new List<TileReporter>();
+    private List<Tile> reporterTiles = new List<Tile>();
+
+    [SerializeField] public bool freeRange = false;
+    [SerializeField] public ElementType effectedTileType;
 
     #endregion
 
@@ -29,7 +33,25 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            // Reset preview on enemy healthbar
+            if (tile.tileOccupied && tile.characterOnTile != null)
+            {
+                tile.characterOnTile.PreviewDamage(0);
+            }
+
+            if (tile.tileHasObject && tile.objectOnTile != null)
+            {
+                tile.objectOnTile.PreviewDamage(0);
+            }
+
+            if (tile.inFrontier)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
+            }
+            else
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
         }
     }
 
@@ -38,7 +60,7 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied && highlightOccupied)
+            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
             }
@@ -83,6 +105,31 @@ public class AttackArea : MonoBehaviour
         return characters;
     }
 
+    //Returns a list of all objects in its area
+    public List<TileObject> ObjectsHit()
+    {
+        List<TileObject> objects = new List<TileObject>();
+        foreach(Tile tile in reporterTiles)
+        {
+            if(tile.tileHasObject)
+            {
+                objects.Add(tile.objectOnTile);
+            }
+        }
+        return objects;
+    }
+
+    //Returns a list of tiles being effected by the AttackArea
+    public List<Tile> TilesHit()
+    {
+        List<Tile> tileList = new List<Tile>();
+        foreach(Tile tile in reporterTiles)
+        {
+            tileList.Add(tile);
+        }
+        return tileList;
+    }
+
     //Checks if its area contains a tile
     public bool ContainsTile(Tile tileToCheck)
     {
@@ -95,6 +142,50 @@ public class AttackArea : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void PositionAndRotateAroundCharacter(Pathfinder pathfinder, Tile originTile, Tile targetTile)
+    {
+        Tile selectedTile = null;
+        float distance = 1000f;
+
+        foreach (Tile tile in pathfinder.FindAdjacentTiles(originTile, true))
+        {
+            float newDistance = Vector3.Distance(targetTile.transform.position, tile.transform.position);
+            if (newDistance < distance)
+            {
+                selectedTile = tile;
+                distance = newDistance;
+            }
+        }
+
+        Vector3 newPos = selectedTile.transform.position;
+        newPos.y = 0;
+
+        transform.position = newPos;
+        Rotate(selectedTile, originTile);
+    }
+
+    public void Rotate(Tile targetTile, Tile originTile)
+    {
+        Transform originTransform = originTile.transform;
+        Transform tileTransform = targetTile.transform;
+
+        float rotation = originTransform.eulerAngles.y;
+
+        float angle = Vector3.Angle(originTransform.forward, (tileTransform.position - originTransform.position));
+
+        if (Vector3.Distance(tileTransform.position, originTransform.position + (originTransform.right * 6)) <
+            Vector3.Distance(tileTransform.position, originTransform.position + (-originTransform.right) * 6))
+        {
+            rotation += angle;
+        }
+        else
+        {
+            rotation -= angle;
+        }
+
+        transform.eulerAngles = new Vector3(0, rotation, 0);
     }
 
     public void DestroySelf()

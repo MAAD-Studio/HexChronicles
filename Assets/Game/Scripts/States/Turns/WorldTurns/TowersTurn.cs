@@ -17,6 +17,15 @@ public class TowersTurn : WorldTurnBase
 
     #region UnityMethods
 
+    protected override void Start()
+    {
+        base.Start();
+        if(spawners.Count > 0)
+        {
+            TileObject.objectDestroyed.AddListener(SpawnerDestroyed);
+        }
+    }
+
     #endregion
 
     #region StateInterfaceMethods
@@ -44,6 +53,7 @@ public class TowersTurn : WorldTurnBase
             if (!updateCalled)
             {
                 updateCalled = true;
+                //weatherManager.UpdateWeather();
                 StartCoroutine(UpdateSpawners());
             }
             else if(updateDone)
@@ -53,6 +63,7 @@ public class TowersTurn : WorldTurnBase
         }
         else
         {
+            //weatherManager.UpdateWeather();
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }
     }
@@ -64,6 +75,7 @@ public class TowersTurn : WorldTurnBase
             foreach (Spawner spawner in spawners)
             {
                 turnManager.mainCameraController.SetCamToObject(spawner);
+
                 yield return new WaitForSeconds(0.5f);
                 spawner.AttemptSpawn();
                 yield return new WaitForSeconds(0.5f);
@@ -71,6 +83,29 @@ public class TowersTurn : WorldTurnBase
         }
 
         updateDone = true;
+    }
+
+    private void SpawnerDestroyed(TileObject tileObj)
+    {
+        Spawner spawnerToDestroy = null;
+
+        foreach(Spawner spawner in spawners)
+        {
+            if(spawner == tileObj)
+            {
+                spawnerToDestroy = spawner;
+                break;
+            }
+        }
+
+        if(spawnerToDestroy != null)
+        {
+            spawners.Remove(spawnerToDestroy);
+            if(spawners.Count <= 0)
+            {
+                TileObject.objectDestroyed.RemoveListener(SpawnerDestroyed);
+            }
+        }
     }
 
     #endregion

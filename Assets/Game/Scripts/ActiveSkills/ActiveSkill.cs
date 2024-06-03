@@ -10,7 +10,8 @@ public class ActiveSkill
 
     public Sprite icon;
     public string skillName;
-    public string description;
+    public KeywordDescription description;
+    public Sprite skillshape;
     public AttackArea shapeArea;
     public GameObject particleEffect;
     public GameObject soundEffect;
@@ -60,7 +61,7 @@ public class ActiveSkill
         {
             foreach (var target in targets)
             {
-                target.TakeDamage(skillEffectValue);
+                target.TakeDamage(skillEffectValue, thisCharacter.elementType);
             }
         }
 
@@ -145,7 +146,6 @@ public class ActiveSkill
 
     }
     #endregion Use Skill
-
 
     //Resets the Tiles affected by the SkillTileReporters. Important for when the ActiveSkill gets Destroyed
     public void ResetTiles()

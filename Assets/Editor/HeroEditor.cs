@@ -44,7 +44,7 @@ public class HeroEditor : EditorWindow
         // Display each attributes vertically
         for (int i = 0; i < heroSOs.Count; i++)
         {
-            EditorGUILayout.BeginVertical(GUILayout.Width(300)); // Adjust width here
+            EditorGUILayout.BeginVertical(GUILayout.Width(400)); // Adjust width here
             GUIStyle centeredBoldLabel = new GUIStyle(EditorStyles.boldLabel);
             centeredBoldLabel.alignment = TextAnchor.MiddleCenter;
             EditorGUILayout.LabelField($"{heroSOs[i].name}", centeredBoldLabel);
@@ -87,13 +87,23 @@ public class HeroEditor : EditorWindow
             heroSOs[i].attackArea = (AttackArea)EditorGUILayout.ObjectField(heroSOs[i].attackArea, typeof(AttackArea), false);
 
             GUILayout.Space(10);
+            GUILayout.Box("", GUILayout.Height(5), GUILayout.ExpandWidth(true));
             GUILayout.Label("Active Skill:", EditorStyles.boldLabel);
             foreach (var field in heroSOs[i].activeSkill.GetType().GetFields())
             {
                 if (field.FieldType == typeof(string))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.TextField
-                        (field.Name, (string)field.GetValue(heroSOs[i].activeSkill)));
+                    if (field.Name == "description")
+                    {
+                        string currentText = (string)field.GetValue(heroSOs[i].activeSkill);
+                        field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.TextField
+                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkill), GUILayout.Height(60)));
+                    }
+                    else
+                    {
+                        field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.TextField
+                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkill)));
+                    }
                 }
                 else if (field.FieldType == typeof(float))
                 {
@@ -146,6 +156,27 @@ public class HeroEditor : EditorWindow
                         }
                     }
                 }
+                else if (field.FieldType == typeof(Keyword[]))
+                {
+                    GUILayout.Box("", GUILayout.Height(3), GUILayout.ExpandWidth(true));
+                    EditorGUILayout.LabelField("Keywords:", EditorStyles.boldLabel);
+                    foreach (var keyword in (Keyword[])field.GetValue(heroSOs[i].activeSkill))
+                    {
+                        EditorGUILayout.LabelField("Keyword:");
+                        EditorGUILayout.BeginHorizontal();
+                        keyword.keyword = EditorGUILayout.TextField("Name", keyword.keyword);
+                        keyword.color = EditorGUILayout.ColorField(keyword.color, GUILayout.Width(80));
+                        EditorGUILayout.EndHorizontal();
+                        keyword.bold = EditorGUILayout.Toggle("Bold", keyword.bold);
+                        keyword.italic = EditorGUILayout.Toggle("Italic", keyword.italic);
+                    }
+                    GUILayout.Box("", GUILayout.Height(3), GUILayout.ExpandWidth(true));
+                }
+                /*else if (field.FieldType == typeof(ReleaseTypes))
+                {
+                    field.SetValue(heroSOs[i].activeSkill, (ReleaseTypes)EditorGUILayout.EnumPopup
+                                               (field.Name, (ReleaseTypes)field.GetValue(heroSOs[i].activeSkill)));
+                }*/
                 GUILayout.Space(5);
             }
 

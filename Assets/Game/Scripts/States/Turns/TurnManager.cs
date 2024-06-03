@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn))]
 public class TurnManager : MonoBehaviour
@@ -18,8 +20,10 @@ public class TurnManager : MonoBehaviour
     [SerializeField] public EnemyBrain enemyBrain;
 
     [Header("Characters on level:")]
-    public List<Character> characterList;
-    public List<Enemy_Base> enemyList;
+    [SerializeField] private GameObject heroesParent;
+    [SerializeField] private GameObject enemyParent;
+    [HideInInspector] public List<Character> characterList;
+    [HideInInspector] public List<Enemy_Base> enemyList;
 
     [Header("WorldTurn Type:")]
     [SerializeField] private WorldTurnBase worldTurn;
@@ -30,6 +34,7 @@ public class TurnManager : MonoBehaviour
     private StateInterface currentTurn;
 
     private int turnNumber;
+    private int objectiveTurnNumber = 8;
 
     public StateInterface CurrentTurn
     {
@@ -39,6 +44,8 @@ public class TurnManager : MonoBehaviour
     {
         get { return turnNumber; }
     }
+
+    [HideInInspector] public static UnityEvent<TurnManager> OnLevelDefeat = new UnityEvent<TurnManager>();
 
     #endregion
 
@@ -57,6 +64,19 @@ public class TurnManager : MonoBehaviour
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
 
+        characterList.Clear();
+        enemyList.Clear();
+
+        foreach (Character character in heroesParent.GetComponentsInChildren<Character>())
+        {
+            characterList.Add(character);
+        }
+
+        foreach(Enemy_Base enemy in enemyParent.GetComponentsInChildren<Enemy_Base>())
+        {
+            enemyList.Add(enemy);
+        }
+
         turnNumber = 1;
 
         currentTurn = playerTurn;
@@ -74,25 +94,28 @@ public class TurnManager : MonoBehaviour
     public void SwitchState(TurnEnums.TurnState state)
     {
         currentTurn.ExitState();
+        mainCameraController.SetCamToDefault();
 
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = true;
                 currentTurn = playerTurn;
+
+                if (turnNumber == objectiveTurnNumber)
+                {
+                    OnLevelDefeat?.Invoke(this);
+                }
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
-                mainCameraController.SetCamToDefault();
                 mainCameraController.allowControl = false;
                 break;
         }
@@ -100,7 +123,6 @@ public class TurnManager : MonoBehaviour
         currentTurn.EnterState();
     }
 
-    //**TESTING ONLY**
     public void DestroyACharacter(Character character)
     {
         character.characterTile.characterOnTile = null;
@@ -109,6 +131,11 @@ public class TurnManager : MonoBehaviour
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
             characterList.Remove(character);
+
+            if (characterList.Count == 0)
+            {
+                OnLevelDefeat?.Invoke(this);
+            }
         }
         else
         {

@@ -42,7 +42,36 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        
+        animator.SetTrigger("attack");
+    }
+
+    public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
+    {
+        return false;
+    }
+
+    #endregion
+
+    #region CustomMethods
+
+    public override void TakeDamage(float damage, ElementType type)
+    {
+        if(elementWeakAgainst == type)
+        {
+            base.TakeDamage(damage, type);
+        }
+        else
+        {
+            int hitNum = Random.Range(0, 101);
+            if (hitNum > enemySO.attributes.defensePercentage)
+            {
+                base.TakeDamage(damage, type);
+            }
+            else
+            {
+                TemporaryMarker.GenerateMarker(enemySO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+            }
+        }
     }
 
     #endregion

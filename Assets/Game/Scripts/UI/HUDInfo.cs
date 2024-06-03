@@ -7,6 +7,9 @@ using System;
 
 public class HUDInfo : MonoBehaviour
 {
+    [SerializeField] private GameObject tempIntro;
+    [SerializeField] private Button tempButton;
+
     private TurnManager turnManager;
     private PlayerTurn playerTurn;
     private List<Enemy_Base> enemies;
@@ -26,19 +29,27 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Enemy Info")]
     [SerializeField] private GameObject enemyInfoPanel;
-    private Image enemyImage;
-    private TextMeshProUGUI enemyName;
-    private TextMeshProUGUI enemyBehavior;
+    [SerializeField] private GameObject enemyStatusPrefab;
+    private EnemyStatsUI enemyStatus;
+
+    [Header("Tile Object Info")]
+    [SerializeField] private GameObject objectInfoPanel;
+    [SerializeField] private GameObject objectStatusPrefab;
+    private EnemyStatsUI objectStatus;
 
     [Header("Tile Info")]
     [SerializeField] private GameObject tileInfoPanel;
-    private Image tileImage;
-    private TextMeshProUGUI tileName;
-    private TextMeshProUGUI tileEffects;
+    [SerializeField] private Image tileImage;
+    [SerializeField] private Image tileElement;
+    [SerializeField] private TextMeshProUGUI tileName;
+    [SerializeField] private TextMeshProUGUI tileEffects;
 
     [Header("Buttons")]
     [SerializeField] private Button endTurn;
     [SerializeField] private Button undo;
+
+    [Header("Element Icons")]
+    [SerializeField] private Sprite[] elementSprites;
 
     private void Start()
     {
@@ -47,7 +58,6 @@ public class HUDInfo : MonoBehaviour
         playerTurn = turnManager.GetComponent<PlayerTurn>();
 
         InstantiateUIElements();
-        GetUIComponents();
         ButtonsAddListener();
 
         enemies = turnManager.enemyList;
@@ -59,10 +69,69 @@ public class HUDInfo : MonoBehaviour
         {
             return;
         }
+
         UpdateTurnInfo();
-        UpdateSelectedCharacterInfo();
-        UpdateEnemyInfo();
-        UpdateTileInfo();
+        CheckCurrentHover();
+
+        selectedCharacter = playerTurn.SelectedCharacter;
+        if (selectedCharacter != null)
+        {
+            Hero hero = selectedCharacter as Hero;
+            UpdateSelectedHeroInfo(hero);
+        }
+    }
+
+    private void CheckCurrentHover()
+    {
+        currentTile = playerTurn.CurrentTile;
+
+        if (currentTile == null)
+        {
+            tileInfoPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            UpdateTileInfo();
+
+            if (currentTile.characterOnTile != null)
+            {
+                if (currentTile.characterOnTile is Hero)
+                {
+                    Hero hero = currentTile.characterOnTile as Hero;
+                    UpdateSelectedHeroInfo(hero);
+                }
+                else
+                {
+                    selectHeroStatus.gameObject.SetActive(false);
+                }
+
+                if (currentTile.characterOnTile is Enemy_Base)
+                {
+                    Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
+                    UpdateEnemyInfo(enemy);
+                }
+                else
+                {
+                    enemyInfoPanel.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                selectHeroStatus.gameObject.SetActive(false);
+                enemyInfoPanel.gameObject.SetActive(false);
+            }
+
+            if (currentTile.tileHasObject)
+            {
+                TileObject tileObject = currentTile.objectOnTile;
+
+                UpdateObjectInfo(tileObject);
+            }
+            else
+            {
+                objectInfoPanel.gameObject.SetActive(false);
+            }
+        }
     }
 
     #region Initialization Methods
@@ -89,114 +158,168 @@ public class HUDInfo : MonoBehaviour
         }
 
         // Create heroInfoPrefab in Character List:
-        GameObject statusGO = Instantiate(heroStatusPrefab);
-        statusGO.transform.SetParent(heroListPanel.transform);
-        statusGO.transform.localScale = new Vector3(1, 1, 1);
-        selectHeroStatus = statusGO.GetComponent<CharacterStatsUI>();
-    }
+        GameObject heroUI = Instantiate(heroStatusPrefab);
+        heroUI.transform.SetParent(heroListPanel.transform);
+        selectHeroStatus = heroUI.GetComponent<CharacterStatsUI>();
 
-    private void GetUIComponents()
-    {
-        enemyImage = enemyInfoPanel.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-        enemyName = enemyInfoPanel.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
-        enemyBehavior = enemyInfoPanel.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        // Create enemyInfoPrefab:
+        GameObject enemyUI = Instantiate(enemyStatusPrefab);
+        enemyUI.transform.SetParent(enemyInfoPanel.transform);
+        enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
 
-        tileImage = tileInfoPanel.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-        tileName = tileInfoPanel.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
-        tileEffects = tileInfoPanel.transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        // Create objectInfoPrefab:
+        GameObject objectUI = Instantiate(objectStatusPrefab);
+        objectUI.transform.SetParent(objectInfoPanel.transform);
+        objectUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        objectStatus = objectUI.GetComponent<EnemyStatsUI>();
     }
 
     private void ButtonsAddListener()
     {
-        selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
+        //selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
         selectHeroStatus.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
-        selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToActiveSkill());
+        selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
         endTurn.onClick.AddListener(() => playerTurn.EndTurn());
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
+        undo.interactable = false;
+        tempButton.onClick.AddListener(() => tempIntro.SetActive(false));
     }
     #endregion
 
-    #region Update Methods
+    #region Update Stats
 
     private void UpdateTurnInfo()
     {
         if (turnManager.CurrentTurn is PlayerTurn)
         {
             currentTurn.text = "PLAYER TURN";
+            endTurn.interactable = true;
         }
         else if (turnManager.CurrentTurn is EnemyTurn)
         {
             currentTurn.text = "ENEMY TURN";
+            endTurn.interactable = false;
         }
 
-        turnNumber.text = turnManager.TurnNumber.ToString();
+        turnNumber.text = (8 - turnManager.TurnNumber + 1).ToString();
     }
 
-    private void UpdateSelectedCharacterInfo()
+    private void UpdateSelectedHeroInfo(Hero hero)
     {
-        selectedCharacter = playerTurn.SelectedCharacter;
-        if (selectedCharacter != null)
+        selectHeroStatus.gameObject.SetActive(true);
+
+        //selectHeroStatus.attackBtn.interactable = hero.canAttack;
+        //selectHeroStatus.moveBtn.interactable = hero.canMove;
+
+        if (hero.currentSkillCD > 0)
         {
-            selectHeroStatus.gameObject.SetActive(true);
-            Hero hero = selectedCharacter as Hero;
-            selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
-            selectHeroStatus.textName.text = hero.heroSO.attributes.name;
-            selectHeroStatus.textType.text = "Type: " + selectedCharacter.elementType;
-            selectHeroStatus.textHP.text = "HP: " + selectedCharacter.currentHealth + " / " + selectedCharacter.maxHealth;
-            selectHeroStatus.textMovement.text = "MOV: " + selectedCharacter.moveDistance;
-            selectHeroStatus.textAttack.text = "ATK: " + selectedCharacter.attackDamage;
-            selectHeroStatus.textDef.text = "Def: " + selectedCharacter.defensePercentage;
-            selectHeroStatus.textStatus.text = "Status: " + GetStatusTypes(selectedCharacter);
-            selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description;
+            selectHeroStatus.skillBtn.interactable = false;
+            selectHeroStatus.skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
+            selectHeroStatus.attackBtn.interactable = false; // temp
         }
         else
         {
-            selectHeroStatus.gameObject.SetActive(false);
+            selectHeroStatus.skillBtn.interactable = true;
+            selectHeroStatus.skillCD.gameObject.SetActive(false);
+            selectHeroStatus.attackBtn.interactable = true; // temp
+        }
+
+        // Display Status:
+        selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
+        selectHeroStatus.skillShape.sprite = hero.heroSO.activeSkill.skillshape;
+        selectHeroStatus.element.sprite = GetElementSprite(hero.elementType);
+        selectHeroStatus.textName.text = hero.heroSO.attributes.name;
+        selectHeroStatus.textHP.text = $"{hero.currentHealth} / {hero.maxHealth}";
+        selectHeroStatus.textMovement.text = $"{hero.moveDistance}";
+        selectHeroStatus.textAttack.text = $"{hero.attackDamage}";
+        selectHeroStatus.textDef.text = $"{hero.defensePercentage}%";
+
+        selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
+        selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
+        selectHeroStatus.attackInfo.ForceMeshUpdate();
+
+        selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
+        selectHeroStatus.skillInfo.ForceMeshUpdate();
+        selectHeroStatus.textStatus.text = GetStatusTypes(hero).ToString();
+    }
+
+    private Sprite GetElementSprite(ElementType element)
+    {
+        if (element == ElementType.Fire)
+        {
+            return elementSprites[0];
+        }
+        else if (element == ElementType.Water)
+        {
+            return elementSprites[1];
+        }
+        else if (element == ElementType.Grass)
+        {
+            return elementSprites[2];
+        }
+        else
+        {
+            return null;
         }
     }
 
     private string GetStatusTypes(Character character)
     {
-        string statusList = "";
-        foreach (var status in character.statusList)
+        if (character.statusList.Count != 0)
         {
-            statusList += status.statusType.ToString() + ", ";
+            string statusList = "Status: ";
+            foreach (var status in character.statusList)
+            {
+                statusList += status.statusType.ToString() + ", ";
+            }
+            return statusList;
         }
-        return statusList;
+        
+        return "";
     }
 
-    private void UpdateEnemyInfo()
+    private void UpdateEnemyInfo(Enemy_Base enemy)
     {
-        currentTile = playerTurn.CurrentTile;
+        enemyInfoPanel.gameObject.SetActive(true);
 
-        if (currentTile != null && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
-        {
-            enemyInfoPanel.gameObject.SetActive(true);
-            Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
-            enemyImage.sprite = enemy.enemySO.attributes.avatar;
-            enemyName.text = enemy.enemySO.attributes.name;
-            enemyBehavior.text = enemy.enemySO.attributes.description;
-        }
-        else
-        {
-            enemyInfoPanel.gameObject.SetActive(false);
-        }
+        enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
+        enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
+        enemyStatus.textName.text = enemy.enemySO.attributes.name;
+        enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
+        enemyStatus.enemyInfo.ForceMeshUpdate();
+        enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
+        enemyStatus.textMovement.text = $"{enemy.moveDistance}";
+        enemyStatus.textAttack.text = $"{enemy.attackDamage}";
+        enemyStatus.textRange.text = $"{enemy.attackDistance}%";
+        enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
+        enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString(); 
+    }
+
+    private void UpdateObjectInfo(TileObject tileObject)
+    {
+        objectInfoPanel.gameObject.SetActive(true);
+
+        objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
+        objectStatus.textName.text = tileObject.tileObjectData.objectName;
+        objectStatus.enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
+        objectStatus.enemyInfo.ForceMeshUpdate();
+        objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
+        objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
+        //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
+        objectStatus.textStatus.gameObject.SetActive(false);
     }
 
     private void UpdateTileInfo()
     {
-        currentTile = playerTurn.CurrentTile;
-        if (currentTile != null)
-        {
-            tileInfoPanel.gameObject.SetActive(true);
-            tileImage.sprite = currentTile.tileData.tileSprite;
-            tileName.text = currentTile.tileData.name;
-            tileEffects.text = currentTile.tileData.tileEffects;
-        }
-        else
-        {
-            tileInfoPanel.gameObject.SetActive(false);
-        }
+        tileInfoPanel.gameObject.SetActive(true);
+        tileImage.sprite = currentTile.tileData.tileSprite;
+        tileElement.sprite = GetElementSprite(currentTile.tileData.tileType);
+        if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
+        else { tileElement.gameObject.SetActive(true); }
+        tileName.text = currentTile.tileData.name;
+        tileEffects.text = currentTile.tileData.tileEffects.DisplayKeywordDescription();
+        tileEffects.ForceMeshUpdate();
     }
     #endregion
 }

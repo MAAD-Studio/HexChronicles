@@ -9,17 +9,22 @@ public class WorldMap : Menu
 {
     public SceneReference worldMap;
     public MenuClassifier hudClassifier;
-    [SerializeField] private SceneReference[] levels;
+    public MenuClassifier preGameClassifier;
+    [SerializeField] private GameObject characterCollection;
+    [SerializeField] public SceneReference[] levels;
     [SerializeField] private Button[] levelButtons;
 
     protected override void Start()
     {
         base.Start();
 
+        CloseCharacterCollection();
+
         for (int i = 0; i < levels.Length; i++)
         {
             int index = i;
-            levelButtons[i].onClick.AddListener(() => OnLoadLevel(levels[index]));
+            //levelButtons[i].onClick.AddListener(() => OnLoadLevel(levels[index]));
+            levelButtons[i].onClick.AddListener(() => ShowPreGame()); // testing
         }
     }
 
@@ -29,6 +34,12 @@ public class WorldMap : Menu
         {
             OnReturnToMainMenu();
         }
+    }
+
+    // Only For Testing
+    public void ShowPreGame()
+    {
+        MenuManager.Instance.ShowMenu(preGameClassifier);
     }
 
     public void OnLoadLevel(SceneReference Level)
@@ -44,6 +55,7 @@ public class WorldMap : Menu
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
         MenuManager.Instance.HideMenu(menuClassifier);
+        MenuManager.Instance.HideMenu(preGameClassifier);
         MenuManager.Instance.ShowMenu(hudClassifier);
     }
 
@@ -60,6 +72,16 @@ public class WorldMap : Menu
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
         SceneLoader.Instance.UnLoadAllLoadedScenes();
+    }
+
+    public void OpenCharacterCollection()
+    {
+        characterCollection.SetActive(true);
+    }
+
+    public void CloseCharacterCollection()
+    {
+        characterCollection.SetActive(false);
     }
 
     //test

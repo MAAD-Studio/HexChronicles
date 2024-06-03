@@ -18,6 +18,8 @@ public class PathIllustrator : MonoBehaviour
     {
         lineRenderer = GetComponent<LineRenderer>();
         Debug.Assert(lineRenderer != null, $"{gameObject.name}'s PathIllustrator couldn't find the LineRenderer component.");
+
+        lineRenderer.positionCount = 0;
     }
 
     #endregion

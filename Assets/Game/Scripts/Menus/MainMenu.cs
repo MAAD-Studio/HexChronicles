@@ -1,14 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MainMenu : Menu
 {
+    public SceneReference Tutorial;
     public SceneReference Map;
     public MenuClassifier hudClassifier;
     public MenuClassifier mapClassifier;
 
     public void OnStartGame()
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
+
+        SceneLoader.Instance.LoadScene(Tutorial);
+    }
+
+    private void OnSceneLoaded(List<string> list)
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
+
+        MenuManager.Instance.HideMenu(menuClassifier);
+        MenuManager.Instance.ShowMenu(hudClassifier);
+    }
+
+    public void OnContinueGame()
     {
         SceneLoader.Instance.LoadScene(Map);
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
@@ -13,12 +14,16 @@ public class Character : MonoBehaviour
     [SerializeField] private float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
+    [HideInInspector] public bool hasMoved = false;
+    [HideInInspector] public bool canMove = true;
+    [HideInInspector] public bool needsToPath = true;
 
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
     [SerializeField] public TurnEnums.CharacterType characterType;
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
+    [HideInInspector] public bool canAttack = true;
 
     [Header("Character Basic Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
@@ -26,6 +31,9 @@ public class Character : MonoBehaviour
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
     public ElementType elementType;
+    public ElementType elementWeakAgainst;
+    [SerializeField] protected Animator animator;
+    [SerializeField] public HealthBar healthBar;
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -38,18 +46,24 @@ public class Character : MonoBehaviour
     public List<Status> statusList = new List<Status>();
     [HideInInspector] public bool isHurt = false;
 
+    [HideInInspector] public bool effectedByWeather = false;
+    [HideInInspector] public bool hasMadeDecision = false;
+
+    [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
+
+    public event EventHandler OnDamagePreview;
+    public event EventHandler OnUpdateHealthBar;
+
     #endregion
 
-    /*#region Events
-    public event EventHandler OnDamage;
-    public event EventHandler OnHeal;
-    public event EventHandler OnDeath;
-    #endregion*/
 
     #region UnityMethods
 
     protected virtual void Start()
     {
+        animator = GetComponent<Animator>();
+        Debug.Assert(animator != null, "Can not find Animatior Component on Character");
+
         FindTile();
     }
 
@@ -61,8 +75,39 @@ public class Character : MonoBehaviour
     #endregion
 
     #region AttackMethods
-    public virtual void PerformBasicAttack(List<Character> targets) { }
-    public virtual void ReleaseActiveSkill(List<Character> targets) { }
+
+    public virtual void PerformBasicAttack(List<Character> targets)
+    {
+        animator.SetTrigger("attack");
+    }
+    public virtual void ReleaseActiveSkill(List<Character> targets)
+    {
+        animator.SetTrigger("skill");
+    }
+
+    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
+
+    public void PreviewDamage(float damage)
+    {
+        healthBar.damagePreview = damage;
+        OnDamagePreview?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void EnterNewTurn()
+    {
+        if (statusList.Count > 0)
+        {
+            ApplyStatus();
+        }
+    }
+
+    public virtual void EndTurn()
+    {
+        movementThisTurn = 0;
+        canMove = true;
+        canAttack = true;
+        hasMoved = false;
+    }
 
     public void AddStatus(Status status)
     {
@@ -92,7 +137,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, ElementType type)
     {
         currentHealth -= damage;
 
@@ -102,9 +147,12 @@ public class Character : MonoBehaviour
         {
             currentHealth = 0;
             Died();
-            //OnDeath?.Invoke(this, EventArgs.Empty);
         }
-        //OnDamage?.Invoke(this, EventArgs.Empty);
+        else
+        {
+            animator.SetTrigger("hit");
+        }
+        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void Heal(float heal)
@@ -115,14 +163,21 @@ public class Character : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        //OnHeal?.Invoke(this, EventArgs.Empty);
+        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void Died()
     {
+        animator.SetTrigger("died");
+        Invoke("Destroy", 0.6f);
+    }
+
+    private void Destroy()
+    {
         TurnManager tm = FindObjectOfType<TurnManager>();
         tm.DestroyACharacter(this);
     }
+
     #endregion
 
     #region BreadthFirstMethods
@@ -149,8 +204,15 @@ public class Character : MonoBehaviour
         int step = 1;
         int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
 
+        List<Tile> tilesInPath = new List<Tile>();
+        foreach(Tile tile in path)
+        {
+            tilesInPath.Add(tile);
+        }
+
         characterTile.OnTileExit(this);
         Tile currentTile = path[0];
+        tilesInPath.Remove(currentTile);
 
         float animationTime = 0f;
         const float distanceToNext = 0.05f;
@@ -158,7 +220,13 @@ public class Character : MonoBehaviour
         //While we still have points in the path to cover
         while (step < pathLength)
         {
+
             yield return null;
+
+            foreach (Tile tile in tilesInPath)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.path);
+            }
 
             Vector3 nextTilePosition = path[step].transform.position;
 
@@ -178,6 +246,8 @@ public class Character : MonoBehaviour
             previousTile = currentTile;
             currentTile = path[step];
             currentTile.OnTileEnter(this);
+            tilesInPath.Remove(path[step]);
+            path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
             step++;
 
@@ -188,18 +258,151 @@ public class Character : MonoBehaviour
             }
 
             animationTime = 0f;
+
+
+        }
+
+        foreach(Tile tile in path)
+        {
+            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
 
         //Plants the character down onto the newest tile
         FinalizeTileChoice(path[pathLength - 1]);
+
+        animator.SetBool("walking", false);
     }
 
     //Starts the process of moving the character to a new location
     public void Move(Tile[] _path)
     {
         moving = true;
+        animator.SetBool("walking", true);
+
         characterTile.tileOccupied = false;
         StartCoroutine(MoveThroughPath(_path));
+    }
+
+    public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    {
+        if(path.Length > 0)
+        {
+            moving = true;
+            animator.SetBool("walking", true);
+            characterTile.tileOccupied = false;
+        }
+
+        StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
+    }
+
+    private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    {
+        if(path.Length > 0)
+        {
+            int step = 1;
+            int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
+
+            List<Tile> tilesInPath = new List<Tile>();
+            foreach (Tile tile in path)
+            {
+                tilesInPath.Add(tile);
+            }
+
+            characterTile.OnTileExit(this);
+            Tile currentTile = path[0];
+            tilesInPath.Remove(currentTile);
+
+            float animationTime = 0f;
+            const float distanceToNext = 0.05f;
+
+            //While we still have points in the path to cover
+            while (step < pathLength)
+            {
+                yield return null;
+                turnManager.mainCameraController.SetCamToSelectedCharacter(this);
+
+                foreach (Tile tile in tilesInPath)
+                {
+                    tile.ChangeTileColor(TileEnums.TileMaterial.path);
+                }
+
+                Vector3 nextTilePosition = path[step].transform.position;
+
+                //Moves and roates towards the next point
+                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
+                animationTime += Time.deltaTime;
+
+                //Checks if we are close enough to move onto the next point
+                if (Vector3.Distance(transform.position, nextTilePosition) > distanceToNext)
+                {
+                    continue;
+                }
+
+                movementThisTurn += (int)path[step].tileData.tileCost;
+
+                //Moves onto the next point
+                previousTile = currentTile;
+                currentTile = path[step];
+                currentTile.OnTileEnter(this);
+                tilesInPath.Remove(path[step]);
+                path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+
+                step++;
+
+                //Checks if we have arrived at the last tile, if not it triggers OnTileExit
+                if (step < pathLength)
+                {
+                    previousTile.OnTileExit(this);
+                }
+
+                animationTime = 0f;
+            }
+
+            foreach (Tile tile in path)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
+
+
+            //Plants the character down onto the newest tile
+            FinalizeTileChoice(path[pathLength - 1]);
+        }
+
+        animator.SetBool("walking", false);
+
+        AttackArea attackAreaPrefab = Instantiate(basicAttackArea);
+        attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, targetTile);
+        yield return new WaitForSeconds(0.03f);
+        attackAreaPrefab.DetectArea(true, true);
+
+        Hero thisHero = (Hero)this;
+
+        foreach(Character character in attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
+        }
+
+        foreach(TileObject tileObj in attackAreaPrefab.ObjectsHit())
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+        }
+
+        transform.LookAt(attackAreaPrefab.transform.position);
+
+        if(activeSkillUse)
+        {
+            ReleaseActiveSkill(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        }
+        else
+        {
+            PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        }
+        PerformBasicAttackObjects(attackAreaPrefab.ObjectsHit());
+
+        yield return new WaitForSeconds(0.5f);
+        attackAreaPrefab.DestroySelf();
+
+        movementComplete.Invoke(this);
     }
 
 
@@ -268,5 +471,6 @@ public class Character : MonoBehaviour
         }
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
     }
+
     #endregion
 }

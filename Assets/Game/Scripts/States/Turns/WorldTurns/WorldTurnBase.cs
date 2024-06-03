@@ -8,12 +8,13 @@ public class WorldTurnBase : MonoBehaviour, StateInterface
     #region Variables
 
     protected TurnManager turnManager;
+    [SerializeField] protected WeatherManager weatherManager;
 
     #endregion
 
     #region UnityMethods
 
-    private void Start()
+    protected virtual void Start()
     {
         turnManager = GetComponent<TurnManager>();
         Debug.Assert(turnManager != null, "WorldTurn doesn't have a TurnManager");

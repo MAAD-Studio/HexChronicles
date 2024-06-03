@@ -4,19 +4,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterStatsUI : MonoBehaviour
+public class CharacterStatsUI : StatsUI
 {
-    public Image avatar;
-    public TextMeshProUGUI textName;
-    public TextMeshProUGUI textType;
-    public TextMeshProUGUI textHP;
-    public TextMeshProUGUI textMovement;
-    public TextMeshProUGUI textAttack;
-    public TextMeshProUGUI textDef;
-    public TextMeshProUGUI textStatus;
-    public TextMeshProUGUI skillInfo;
+    [Header("Hero")]
+    public Image attackShape;
+    public TextMeshProUGUI attackInfo;
 
+    public Image skillShape;
+    public TextMeshProUGUI skillInfo;
+    public TextMeshProUGUI skillCD;
+
+    [Header("Buttons")]
     public Button moveBtn;
     public Button attackBtn;
     public Button skillBtn;
+
 }

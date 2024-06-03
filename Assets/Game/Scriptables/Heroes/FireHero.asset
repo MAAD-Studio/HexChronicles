@@ -15,19 +15,41 @@ MonoBehaviour:
   attributes:
     avatar: {fileID: 21300000, guid: a136faf2449177d4b9942515b38c35ec, type: 3}
     name: Fire
-    description: Aggressive
-    health: 9
+    description:
+      description: Aggressive
+      keywords: []
+    health: 14
     movementRange: 5
     attackDamage: 4
     attackRange: 2
     defensePercentage: 7
     elementType: 0
+    hitMarker: {fileID: 1151094310716297599, guid: 88d6e193f72332840bf1b6d956aca220, type: 3}
+    missText: {fileID: 7693077710537728400, guid: 0182cb95b4a7248449c18ed9a865d4f0, type: 3}
   attackArea: {fileID: 3827415136764973267, guid: 7be9ba0d0d482614b961812c41e94daf, type: 3}
+  attackShape: {fileID: 21300000, guid: 9d8029e22fe9fb443a090e5fbac0ac79, type: 3}
+  attackInfo:
+    description: Deal damage to enemies by using fire attacks
+    keywords:
+    - keyword: fire
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
   activeSkill:
     icon: {fileID: 21300000, guid: 201409e7f7a0e0342b9531b81a590577, type: 3}
     skillName: Collapse
-    description: Choose 1 lava tile to Collapse tiles around 1 range will change
-      to lava, add Burn status to enemies
+    description:
+      description: "Deal damage and burn enemies on tiles. \nBurn: -1HP per turn"
+      keywords:
+      - keyword: Burn
+        color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+        bold: 1
+        italic: 0
+      - keyword: -1HP
+        color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+        bold: 1
+        italic: 0
+    skillshape: {fileID: 21300000, guid: 1ad89350eac2ee14d9f37b97fa2d34a8, type: 3}
     shapeArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
     particleEffect: {fileID: 0}
     soundEffect: {fileID: 0}
@@ -35,6 +57,7 @@ MonoBehaviour:
     skillEffectValue: 2
     status:
       statusType: 1
-      effectTurns: 2
+      effectTurns: 1
     thisCharacter: {fileID: 0}
     affectedTiles: []
+  phantomModel: {fileID: 7155608844153497087, guid: e821106feac619547ad41fb9e0d8beb7, type: 3}

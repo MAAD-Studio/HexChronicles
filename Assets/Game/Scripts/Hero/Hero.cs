@@ -30,14 +30,41 @@ public class Hero : Character
         activeSkill = heroSO.activeSkill.Clone();
         activeSkill.thisCharacter = this;
         activeSkillArea = activeSkill.shapeArea;
-        currentSkillCD = skillCD;
+        currentSkillCD = (skillCD - 1);
 
         buffModifiers = new List<BuffModifier>();
     }
 
-    public override void TakeDamage(float damage)
+    public override void EnterNewTurn()
     {
-        base.TakeDamage(damage);
+        base.EnterNewTurn();
+
+        ReduceSkillCD(1);
+    }
+
+    public void ReduceSkillCD(int value)
+    {
+        currentSkillCD = Mathf.Clamp(currentSkillCD - value, 0, skillCD);
+    }
+
+    public override void TakeDamage(float damage, ElementType type)
+    {
+        if(elementWeakAgainst == type)
+        {
+            base.TakeDamage(damage, type);
+        }
+        else
+        {
+            int hitNum = UnityEngine.Random.Range(0, 101);
+            if (hitNum > heroSO.attributes.defensePercentage)
+            {
+                base.TakeDamage(damage, type);
+            }
+            else
+            {
+                TemporaryMarker.GenerateMarker(heroSO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
+            }
+        }
     }
 
     public override void Heal(float heal)
@@ -47,15 +74,30 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
+        base.PerformBasicAttack(targets);
+
         foreach (var target in targets)
         {
-            target.TakeDamage(attackDamage);
+            target.TakeDamage(attackDamage, elementType);
+            target.PreviewDamage(0);
         }
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)
     {
+        base.ReleaseActiveSkill(targets);
+
         activeSkill.Release(targets);
+        currentSkillCD = skillCD;
+    }
+
+    public override void PerformBasicAttackObjects(List<TileObject> targets)
+    {
+        foreach(TileObject target in targets)
+        {
+            target.TakeDamage(attackDamage);
+            target.PreviewDamage(0);
+        }
     }
 
     public void ApplyPassiveSkill()

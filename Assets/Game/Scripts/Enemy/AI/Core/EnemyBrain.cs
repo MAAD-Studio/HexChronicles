@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class EnemyBrain : MonoBehaviour
 {
@@ -151,7 +152,19 @@ public class EnemyBrain : MonoBehaviour
                     yield return new WaitForSeconds(0.03f);
                     enemyAttackArea.DetectArea(true, false);
 
+                    foreach (Character character in enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
+                    {
+                        TemporaryMarker.GenerateMarker(enemy_base.enemySO.attributes.hitMarker, character.transform.position, 4f, 0.5f);
+                    }
+
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
+                    yield return new WaitForSeconds(0.5f);
+
+                    while(enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                    }
+
                     yield return new WaitForSeconds(0.5f);
                 }
             }

@@ -14,19 +14,19 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.52156866, g: 0.56078434, b: 0.6313726, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -194,10 +194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -326,10 +324,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -458,10 +454,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -590,10 +584,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -722,10 +714,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -854,10 +844,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -944,7 +932,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2100047611}
   - {fileID: 1143720500}
   - {fileID: 317436282}
   m_Father: {fileID: 884738774}
@@ -1020,10 +1007,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -1152,10 +1137,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: d96b8af968a6c544793290767c6259b1, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: eb064976199830d4aab3261ddeeb50f9, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -1284,10 +1267,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -1375,7 +1356,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1022562540}
-  - {fileID: 4438165176272983553}
+  - {fileID: 438049306}
   m_Father: {fileID: 884738774}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &295675655
@@ -1449,10 +1430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -1581,10 +1560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -1650,10 +1627,50 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 243109698}
     m_Modifications:
+    - target: {fileID: 1852007545870537215, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 60ccd496aa87887478d8bc84c9301a68, type: 2}
     - target: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: m_Name
       value: Gang up (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3870579527151018132, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 60ccd496aa87887478d8bc84c9301a68, type: 2}
     - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: movedata
       value: 
@@ -1674,6 +1691,30 @@ PrefabInstance:
       propertyPath: tileLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4817240391145475522, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+    - target: {fileID: 4885645051618691207, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 60ccd496aa87887478d8bc84c9301a68, type: 2}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -1692,7 +1733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.26
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1730,6 +1771,38 @@ PrefabInstance:
       propertyPath: m_text
       value: Gang
       objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
     m_RemovedGameObjects: []
@@ -1764,15 +1837,22 @@ MonoBehaviour:
   moveSpeed: 0.4
   moveDistance: 2
   movementThisTurn: 0
+  hasMoved: 0
+  canMove: 1
+  needsToPath: 1
   attackDistance: 2
   characterType: 1
   basicAttackArea: {fileID: -5714194681822056044, guid: 79f973ce649b67545981e655b586addf, type: 3}
   activeSkillArea: {fileID: 0}
+  canAttack: 1
   currentHealth: 0
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
   elementType: 0
+  elementWeakAgainst: 0
+  animator: {fileID: 0}
+  healthBar: {fileID: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1780,7 +1860,11 @@ MonoBehaviour:
   characterTile: {fileID: 0}
   statusList: []
   isHurt: 0
+  effectedByWeather: 0
+  hasMadeDecision: 0
   enemySO: {fileID: 11400000, guid: 8de64be854178174ea48d115aeae0d35, type: 2}
+  followUpText: {fileID: 2552050792341772675, guid: 695c9ef69a4d6ef4daf9eea3d5dac4ff, type: 3}
+  followUpMarker: {fileID: 1151094310716297599, guid: 9abc2928ea3bc744fa3572ce4fae181e, type: 3}
 --- !u!1 &328114899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1820,11 +1904,12 @@ MonoBehaviour:
   mainCameraController: {fileID: 0}
   pathfinder: {fileID: 1632916473}
   enemyBrain: {fileID: 989854784}
+  heroesParent: {fileID: 283555647}
+  enemyParent: {fileID: 243109697}
   characterList:
   - {fileID: 1981355576}
-  - {fileID: 3700114334684132136}
+  - {fileID: 438049307}
   enemyList:
-  - {fileID: 2100047614}
   - {fileID: 1143720505}
   - {fileID: 317436287}
   worldTurn: {fileID: 328114901}
@@ -1840,6 +1925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaaf782286c50a5428cf4751888828d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weatherManager: {fileID: 0}
   turnsTillSpawn: 2
   spawners:
   - {fileID: 1061800833}
@@ -1867,6 +1953,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da52e0d0efa3fc443961e888ad734932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedCharMarker: {fileID: 8500630307418780312, guid: 535e69fe6483f0a4b95f4ea0f4b237a2, type: 3}
 --- !u!4 &328114904
 Transform:
   m_ObjectHideFlags: 0
@@ -1953,10 +2040,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2085,10 +2170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: bfdc6d69f409a904c80e44e468c477fe, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: a5c80ef3148192f46a31e4ed62e6ba8e, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2217,10 +2300,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2349,10 +2430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2481,10 +2560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2613,10 +2690,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2745,10 +2820,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -2877,10 +2950,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3009,10 +3080,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3141,10 +3210,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3202,6 +3269,143 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428135246}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
+--- !u!1001 &438049305
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 283555648}
+    m_Modifications:
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.20000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.98995453
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.14138614
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -16.256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3756262485472277609, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 613c6a6c5fb44c84eb490b19c9b88ee8, type: 2}
+    - target: {fileID: 4040470824494885969, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_Name
+      value: Water Hero
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveSpeed
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkill
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttack
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: newActiveTest
+      value: 
+      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: attackDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkillArea
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: tileLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4205143016935476339, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
+    - target: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: heroSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 9e664257c18a9894c9a4e611df5deffb, type: 2}
+    - target: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: elementType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: attackDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_text
+      value: Water
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+--- !u!4 &438049306 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+  m_PrefabInstance: {fileID: 438049305}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &438049307 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+  m_PrefabInstance: {fileID: 438049305}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1160e0d9a96a344981787592a64aa60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &439590699
 GameObject:
   m_ObjectHideFlags: 0
@@ -3273,10 +3477,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3405,10 +3607,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3537,10 +3737,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3669,10 +3867,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3801,10 +3997,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -3933,10 +4127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4065,10 +4257,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4197,10 +4387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4329,10 +4517,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4390,11 +4576,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 557884369}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!1 &564790338 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-  m_PrefabInstance: {fileID: 2100047610}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &590532081
 GameObject:
   m_ObjectHideFlags: 0
@@ -4466,10 +4647,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4598,10 +4777,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4659,111 +4836,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 601227296}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!1 &609838077
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 609838078}
-  - component: {fileID: 609838081}
-  - component: {fileID: 609838080}
-  - component: {fileID: 609838079}
-  m_Layer: 0
-  m_Name: Roof
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &609838078
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609838077}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.1369998, z: 0}
-  m_LocalScale: {x: 0.9, y: 1, z: 0.9}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1061800834}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &609838079
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609838077}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &609838080
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609838077}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 89beafad1ae28b445be1915ab36fff69, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &609838081
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 609838077}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &620879652
 GameObject:
   m_ObjectHideFlags: 0
@@ -4835,10 +4907,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: d96b8af968a6c544793290767c6259b1, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: eb064976199830d4aab3261ddeeb50f9, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -4967,10 +5037,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5099,10 +5167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5231,10 +5297,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5394,10 +5458,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5526,10 +5588,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5658,10 +5718,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5790,10 +5848,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -5922,10 +5978,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6054,10 +6108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6186,10 +6238,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6318,10 +6368,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6450,10 +6498,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6582,10 +6628,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6778,10 +6822,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -6910,10 +6952,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7075,10 +7115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7207,10 +7245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7339,10 +7375,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7493,6 +7527,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3756262485472277609, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 03cf61f94ee5ef9479f65bdc6c0fe38d, type: 2}
     - target: {fileID: 4040470824494885969, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: m_Name
       value: Fire Hero
@@ -7533,6 +7571,10 @@ PrefabInstance:
       propertyPath: tileLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4205143016935476339, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
     - target: {fileID: 5177571310019496208, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
       propertyPath: elementType
       value: 0
@@ -7559,59 +7601,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3700114334662833899, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
   m_PrefabInstance: {fileID: 1022562539}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1061800832
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1061800834}
-  - component: {fileID: 1061800833}
-  m_Layer: 0
-  m_Name: Spawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1061800833
+--- !u!114 &1061800833 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 8100544560541433264, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+  m_PrefabInstance: {fileID: 502851932082370462}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061800832}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6cab153dfa701394dbf49a490ccda094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  turnManager: {fileID: 328114900}
-  numberToSpawn: 1
-  enemyList:
-  - {fileID: 6587509270798819776, guid: de188764845c928478de038435915f51, type: 3}
---- !u!4 &1061800834
+--- !u!4 &1061800834 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+  m_PrefabInstance: {fileID: 502851932082370462}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061800832}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.52, y: 0.216, z: 15.78}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1635935557}
-  - {fileID: 609838078}
-  m_Father: {fileID: 1623185246}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1091039949
 GameObject:
   m_ObjectHideFlags: 0
@@ -7683,10 +7688,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7815,10 +7818,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -7947,10 +7948,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8020,6 +8019,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gang up (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912325077517035452, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: movedata
       value: 
@@ -8039,6 +8062,22 @@ PrefabInstance:
     - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: tileLayer.m_Bits
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5519334498145994545, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
       propertyPath: m_LocalScale.x
@@ -8096,6 +8135,38 @@ PrefabInstance:
       propertyPath: m_text
       value: Gang
       objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162738957594011930, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
     m_RemovedGameObjects: []
@@ -8130,15 +8201,22 @@ MonoBehaviour:
   moveSpeed: 0.4
   moveDistance: 2
   movementThisTurn: 0
+  hasMoved: 0
+  canMove: 1
+  needsToPath: 1
   attackDistance: 2
   characterType: 1
   basicAttackArea: {fileID: -5714194681822056044, guid: 79f973ce649b67545981e655b586addf, type: 3}
   activeSkillArea: {fileID: 0}
+  canAttack: 1
   currentHealth: 0
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
   elementType: 0
+  elementWeakAgainst: 0
+  animator: {fileID: 0}
+  healthBar: {fileID: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -8146,7 +8224,11 @@ MonoBehaviour:
   characterTile: {fileID: 0}
   statusList: []
   isHurt: 0
+  effectedByWeather: 0
+  hasMadeDecision: 0
   enemySO: {fileID: 11400000, guid: 8de64be854178174ea48d115aeae0d35, type: 2}
+  followUpText: {fileID: 2552050792341772675, guid: 695c9ef69a4d6ef4daf9eea3d5dac4ff, type: 3}
+  followUpMarker: {fileID: 1151094310716297599, guid: 9abc2928ea3bc744fa3572ce4fae181e, type: 3}
 --- !u!1 &1144609944
 GameObject:
   m_ObjectHideFlags: 0
@@ -8218,10 +8300,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8350,10 +8430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8482,10 +8560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: bfdc6d69f409a904c80e44e468c477fe, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: a5c80ef3148192f46a31e4ed62e6ba8e, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8614,10 +8690,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8746,10 +8820,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -8878,10 +8950,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9010,10 +9080,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9142,10 +9210,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9274,10 +9340,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9406,10 +9470,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9538,10 +9600,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: bfdc6d69f409a904c80e44e468c477fe, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: a5c80ef3148192f46a31e4ed62e6ba8e, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9670,10 +9730,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9802,10 +9860,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -9934,10 +9990,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10160,10 +10214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10323,10 +10375,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10455,10 +10505,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10587,10 +10635,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10752,10 +10798,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -10884,10 +10928,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11016,10 +11058,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11148,10 +11188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11280,10 +11318,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11412,10 +11448,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11544,10 +11578,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: d96b8af968a6c544793290767c6259b1, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: eb064976199830d4aab3261ddeeb50f9, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11676,10 +11708,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11808,10 +11838,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -11972,10 +12000,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -12200,113 +12226,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1538519598}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1635935556
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1635935557}
-  - component: {fileID: 1635935560}
-  - component: {fileID: 1635935559}
-  - component: {fileID: 1635935558}
-  m_Layer: 0
-  m_Name: Tower
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1635935557
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1635935556}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.15, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1061800834}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &1635935558
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1635935556}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!23 &1635935559
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1635935556}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: adb849f1d33bc92408f74fe1806552e2, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1635935560
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1635935556}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1671076091
 GameObject:
   m_ObjectHideFlags: 0
@@ -12378,10 +12297,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -12510,10 +12427,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -12642,10 +12557,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -12774,10 +12687,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -12906,10 +12817,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13038,10 +12947,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13170,10 +13077,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13302,10 +13207,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13434,10 +13337,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13566,10 +13467,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -13808,7 +13707,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -13882,12 +13781,14 @@ MonoBehaviour:
   maxMoveSpeed: 10
   accelerationSpeed: 18
   deccelerationSpeed: 12
+  panSpeed: 10
   zoomSpeed: 2
---- !u!1 &1844155792 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-  m_PrefabInstance: {fileID: 4438165176272983552}
-  m_PrefabAsset: {fileID: 0}
+  maxLeft: -5
+  maxRight: 20
+  maxBackwards: -5
+  maxForwards: 20
+  maxZoomIn: 6
+  maxZoomOut: 20
 --- !u!1 &1847155119
 GameObject:
   m_ObjectHideFlags: 0
@@ -13959,10 +13860,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14091,10 +13990,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14223,10 +14120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14386,10 +14281,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14518,10 +14411,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14650,10 +14541,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14793,10 +14682,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -14974,10 +14861,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15106,10 +14991,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15238,10 +15121,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15370,10 +15251,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15502,10 +15381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15563,140 +15440,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2094943843}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!1001 &2100047610
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 243109698}
-    m_Modifications:
-    - target: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_Name
-      value: Gang up (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: movedata
-      value: 
-      objectReference: {fileID: 11400000, guid: dd89a423e97207a4caa12f9027eee67b, type: 2}
-    - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: activeSkill
-      value: 
-      objectReference: {fileID: 4001614266008082878, guid: 216e9fca895167b44b2b342332c84ee8, type: 3}
-    - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: characterType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: attackDistance
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: tileLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.0405946
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 14.947219
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.23216906
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.9726755
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -206.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_text
-      value: Gang
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4137803256733042828, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2100047614}
-  m_SourcePrefab: {fileID: 100100000, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
---- !u!4 &2100047611 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-  m_PrefabInstance: {fileID: 2100047610}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2100047614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564790338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1fcaa8e94f0dfd4b997ce37d9ea61fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 0.4
-  moveDistance: 2
-  movementThisTurn: 0
-  attackDistance: 2
-  characterType: 1
-  basicAttackArea: {fileID: -5714194681822056044, guid: 79f973ce649b67545981e655b586addf, type: 3}
-  activeSkillArea: {fileID: 0}
-  currentHealth: 0
-  maxHealth: 0
-  attackDamage: 0
-  defensePercentage: 0
-  elementType: 0
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  moving: 0
-  characterTile: {fileID: 0}
-  statusList: []
-  isHurt: 0
-  enemySO: {fileID: 11400000, guid: 8de64be854178174ea48d115aeae0d35, type: 2}
 --- !u!1 &2100778287
 GameObject:
   m_ObjectHideFlags: 0
@@ -15768,10 +15511,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -15900,10 +15641,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -16032,10 +15771,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: 1e12d213d1704da4f8e116e87b474872, type: 2}
   cost: 0
-  baseMaterial: {fileID: 2100000, guid: 46485d4c4094384419f18c317e93bf6c, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
-  reachableMaterial: {fileID: 2100000, guid: 584266b6efcdde144b3190d55225e521, type: 2}
-  attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
+  weatherCost: 1
+  underWeatherAffect: 0
   connectedTile: {fileID: 0}
   parentTile: {fileID: 0}
   characterOnTile: {fileID: 0}
@@ -16093,124 +15830,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2146344602}
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
---- !u!114 &3700114334684132136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1844155792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1160e0d9a96a344981787592a64aa60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 0.4
-  moveDistance: 10
-  movementThisTurn: 0
-  attackDistance: 3
-  characterType: 0
-  basicAttackArea: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-  activeSkillArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-  currentHealth: 0
-  maxHealth: 0
-  attackDamage: 0
-  defensePercentage: 0
-  elementType: 1
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  moving: 0
-  characterTile: {fileID: 0}
-  statusList: []
-  isHurt: 0
-  heroSO: {fileID: 11400000, guid: 9e664257c18a9894c9a4e611df5deffb, type: 2}
-  activeSkill:
-    icon: {fileID: 0}
-    skillName: 
-    description: 
-    shapeArea: {fileID: 0}
-    particleEffect: {fileID: 0}
-    soundEffect: {fileID: 0}
-    skillEffect: 0
-    skillEffectValue: 0
-    status:
-      statusType: 0
-      effectTurns: 0
-    thisCharacter: {fileID: 0}
-    affectedTiles: []
-  skillCD: 3
-  currentSkillCD: 0
-  buffModifiers: []
---- !u!1001 &4438165176272983552
+--- !u!1001 &502851932082370462
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 283555648}
+    m_TransformParent: {fileID: 1623185246}
     m_Modifications:
-    - target: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_Name
-      value: Water Hero
-      objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.5346103
+      value: 4.52
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.22800004
+      value: 0.216
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.6489296
+      value: 15.78
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.99526644
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.09718402
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 11.154
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
+    - target: {fileID: 1405031332680689403, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8693943178987794285, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      propertyPath: m_text
-      value: Water
+    - target: {fileID: 2867574994839896644, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+      propertyPath: m_Name
+      value: Spawner
       objectReference: {fileID: 0}
+    - target: {fileID: 7610261572633282544, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 60ccd496aa87887478d8bc84c9301a68, type: 2}
+    - target: {fileID: 8100544560541433264, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+      propertyPath: turnManager
+      value: 
+      objectReference: {fileID: 328114900}
+    - target: {fileID: 8100544560541433264, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+      propertyPath: tileObjectData
+      value: 
+      objectReference: {fileID: 11400000, guid: a7dfa516269759e4b90edffa534206bb, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2563386856946159629, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3700114334684132136}
-  m_SourcePrefab: {fileID: 100100000, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
---- !u!4 &4438165176272983553 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6270654768495049023, guid: b8d307c6643a7884b91b19ed4dd3a1c7, type: 3}
-  m_PrefabInstance: {fileID: 4438165176272983552}
-  m_PrefabAsset: {fileID: 0}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

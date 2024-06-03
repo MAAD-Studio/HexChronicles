@@ -24,6 +24,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float accelerationSpeed = 18f;
     [SerializeField] private float deccelerationSpeed = 12f;
 
+    [Header("Camera MiddleMouse Controls: ")]
+    [SerializeField] private float panSpeed = 10f;
+
     private Vector3 velocityX = Vector3.zero;
     private bool wPressed = false;
     private bool sPressed = false;
@@ -40,6 +43,18 @@ public class CameraController : MonoBehaviour
 
     private Character selectedCharacter;
     private TileObject selectedObject;
+
+    [Header("Camera Left-Right Limits: ")]
+    [SerializeField] private int maxLeft = -5;
+    [SerializeField] private int maxRight = 20;
+
+    [Header("Camera Forward-Back Limits: ")]
+    [SerializeField] private int maxBackwards = -5;
+    [SerializeField] private int maxForwards = 20;
+
+    [Header("Camera Zoom Limits: ")]
+    [SerializeField] private int maxZoomIn = 6;
+    [SerializeField] private int maxZoomOut = 20;
 
     #endregion
 
@@ -77,20 +92,11 @@ public class CameraController : MonoBehaviour
             //Checks for WASD Key inputs
             MoveUpdate(mainCameraForward, mainCameraRight);
 
-            //Adds the velocity and clamps to ensure the player isn't leaving the map
-            velocityX = Vector3.ClampMagnitude(velocityX, maxMoveSpeed);
-            velocityZ = Vector3.ClampMagnitude(velocityZ, maxMoveSpeed);
+            cameraPosition.x = Mathf.Clamp(cameraPosition.x, maxLeft, maxRight);
+            cameraPosition.z = Mathf.Clamp(cameraPosition.z, maxBackwards, maxForwards);
 
-            totalVelocity = velocityX + velocityZ;
-
-            cameraPosition += totalVelocity * Time.deltaTime;
-            targetPosition += totalVelocity * Time.deltaTime;
-
-            cameraPosition.x = Mathf.Clamp(cameraPosition.x, -5, 20);
-            cameraPosition.z = Mathf.Clamp(cameraPosition.z, -5, 20);
-
-            targetPosition.x = Mathf.Clamp(targetPosition.x, -5, 20);
-            targetPosition.z = Mathf.Clamp(targetPosition.z, -5, 20);
+            targetPosition.x = Mathf.Clamp(targetPosition.x, maxLeft, maxRight);
+            targetPosition.z = Mathf.Clamp(targetPosition.z, maxBackwards, maxForwards);
         }
     }
 
@@ -119,7 +125,7 @@ public class CameraController : MonoBehaviour
         if (scrollDelta != 0)
         {
             //Limits how far out or in the player can zoom
-            if (scrollDelta < 0 && targetPosition.y > 6 || scrollDelta > 0 && targetPosition.y < 20)
+            if (scrollDelta < 0 && targetPosition.y > maxZoomIn || scrollDelta > 0 && targetPosition.y < maxZoomOut)
             {
                 targetPosition += -mainCameraForward * scrollDelta;
                 targetPosition.y += scrollDelta;
@@ -129,6 +135,18 @@ public class CameraController : MonoBehaviour
 
     //Checks for WASD Key inputs
     public void MoveUpdate(Vector3 mainCameraForward, Vector3 mainCameraRight)
+    {
+        if(Input.GetMouseButton(2))
+        {
+            MoveMiddleMouse(mainCameraForward, mainCameraRight);
+        }
+        else
+        {
+            MoveKeyboard(mainCameraForward, mainCameraRight);
+        }
+    }
+
+    private void MoveKeyboard(Vector3 mainCameraForward, Vector3 mainCameraRight)
     {
         if (Input.GetKey(KeyCode.W))
         {
@@ -233,6 +251,46 @@ public class CameraController : MonoBehaviour
         {
             aPressed = false;
         }
+
+        //Adds the velocity and clamps to ensure the player isn't leaving the map
+        velocityX = Vector3.ClampMagnitude(velocityX, maxMoveSpeed);
+        velocityZ = Vector3.ClampMagnitude(velocityZ, maxMoveSpeed);
+
+        totalVelocity = velocityX + velocityZ;
+
+        cameraPosition += totalVelocity * Time.deltaTime;
+        targetPosition += totalVelocity * Time.deltaTime;
+    }
+
+    private void MoveMiddleMouse(Vector3 mainCameraForward, Vector3 mainCameraRight)
+    {
+        Vector3 movement = Vector3.zero;
+
+        float axisX = Input.GetAxis("Mouse X");
+        float axisY = Input.GetAxis("Mouse Y");
+
+        if (axisX < 0)
+        {
+            movement.x -= panSpeed * (axisX * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+        }
+        else if(axisX > 0)
+        {
+            movement.x -= panSpeed * (axisX * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+        }
+
+        if(axisY < 0)
+        {
+            movement.z -= panSpeed * (axisY * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+        }
+        else if(axisY > 0)
+        {
+            movement.z -= panSpeed * (axisY * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+        }
+
+        movement = Vector3.ClampMagnitude(movement, maxMoveSpeed);
+
+        cameraPosition += movement;
+        targetPosition += movement;
     }
 
     //Checks if the player wants to return to a default cam position
@@ -252,7 +310,7 @@ public class CameraController : MonoBehaviour
     }
 
     //Sets a new target position and gets rid of velocity
-    public void SetValues(Vector3 position)
+    private void SetValues(Vector3 position)
     {
         targetPosition = position;
         velocityX = Vector3.zero;
@@ -277,6 +335,7 @@ public class CameraController : MonoBehaviour
         SetValues(newPosition);
     }
 
+    //Sets the cam to move to the position of a object
     public void SetCamToObject(TileObject tileObject)
     {
         Vector3 newPosition = tileObject.transform.position;
