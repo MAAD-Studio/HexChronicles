@@ -89,7 +89,7 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public void OnTileEnter(Character character)
     {
-        if(tileData.elementsStrongAgainst.Contains(character.elementType))
+        if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
             character.defensePercentage += 10;
             if (character.characterType == TurnEnums.CharacterType.Player)
