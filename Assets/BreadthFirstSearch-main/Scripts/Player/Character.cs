@@ -40,7 +40,6 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
-    private Tile previousTile;
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
@@ -55,7 +54,6 @@ public class Character : MonoBehaviour
     public event EventHandler OnUpdateHealthBar;
 
     #endregion
-
 
     #region UnityMethods
 
@@ -243,7 +241,6 @@ public class Character : MonoBehaviour
             movementThisTurn += (int)path[step].tileData.tileCost;
 
             //Moves onto the next point
-            previousTile = currentTile;
             currentTile = path[step];
             currentTile.OnTileEnter(this);
             tilesInPath.Remove(path[step]);
@@ -254,7 +251,11 @@ public class Character : MonoBehaviour
             //Checks if we have arrived at the last tile, if not it triggers OnTileExit
             if(step < pathLength)
             {
-                previousTile.OnTileExit(this);
+                currentTile.OnTileExit(this);
+            }
+            else
+            {
+                currentTile.OnTileStay(this);
             }
 
             animationTime = 0f;
@@ -341,7 +342,6 @@ public class Character : MonoBehaviour
                 movementThisTurn += (int)path[step].tileData.tileCost;
 
                 //Moves onto the next point
-                previousTile = currentTile;
                 currentTile = path[step];
                 currentTile.OnTileEnter(this);
                 tilesInPath.Remove(path[step]);
@@ -352,7 +352,7 @@ public class Character : MonoBehaviour
                 //Checks if we have arrived at the last tile, if not it triggers OnTileExit
                 if (step < pathLength)
                 {
-                    previousTile.OnTileExit(this);
+                    currentTile.OnTileExit(this);
                 }
 
                 animationTime = 0f;

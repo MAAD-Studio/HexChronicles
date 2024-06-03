@@ -63,7 +63,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     #endregion
 
-    #region
+    #region InterfaceMethods
 
     public void EnterState()
     {
@@ -72,6 +72,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             character.EnterNewTurn();
             if (character.characterTile != null)
             {
+                character.movementThisTurn = 0;
                 character.characterTile.OnTileStay(character);
             }
         }
@@ -373,6 +374,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     }
 
                     ResetBoard();
+                    attackType = TurnEnums.PlayerAction.BasicAttack;
                 }
             }
         }
