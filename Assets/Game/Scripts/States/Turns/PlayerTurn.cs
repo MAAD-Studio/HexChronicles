@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 
@@ -25,6 +26,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         get { return selectedCharacter; }
     }
+    public int availableCharacters;
 
     private AttackArea areaPrefab;
 
@@ -39,6 +41,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private TurnEnums.PlayerPhase phase = TurnEnums.PlayerPhase.Movement;
 
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
+
+    [HideInInspector] public static UnityEvent<PlayerTurn> OnNoActionLeft = new UnityEvent<PlayerTurn>();
 
     #endregion
 
@@ -59,6 +63,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         Debug.Assert(mainCam != null, "Playerturn couldn't get a Camera from TurnManager");
 
         Character.movementComplete.AddListener(CharacterFinishedMoving);
+
+        availableCharacters = turnManager.characterList.Count;
     }
 
     #endregion
@@ -67,6 +73,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void EnterState()
     {
+        availableCharacters = turnManager.characterList.Count;
+
         foreach (Character character in turnManager.characterList)
         {
             character.EnterNewTurn();
@@ -348,6 +356,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 {
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
+
+                    availableCharacters--;
+                    if (availableCharacters == 0)
+                    {
+                        OnNoActionLeft?.Invoke(this); // Used in HUD
+                    }
 
                     if(pathFinder == null)
                     {

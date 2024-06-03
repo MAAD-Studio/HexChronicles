@@ -61,6 +61,8 @@ public class HUDInfo : MonoBehaviour
         ButtonsAddListener();
 
         enemies = turnManager.enemyList;
+
+        PlayerTurn.OnNoActionLeft.AddListener(NoActionLeft);
     }
 
     private void Update()
@@ -180,10 +182,19 @@ public class HUDInfo : MonoBehaviour
         //selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
         selectHeroStatus.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
         selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
-        endTurn.onClick.AddListener(() => playerTurn.EndTurn());
+        endTurn.onClick.AddListener(() =>
+        {
+            playerTurn.EndTurn();
+            endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+        });
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
         undo.interactable = false;
         tempButton.onClick.AddListener(() => tempIntro.SetActive(false));
+    }
+
+    private void NoActionLeft(PlayerTurn arg0)
+    {
+        endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
     }
     #endregion
 
