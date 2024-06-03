@@ -56,7 +56,6 @@ public class Character : MonoBehaviour
 
     #endregion
 
-
     #region UnityMethods
 
     protected virtual void Start()
