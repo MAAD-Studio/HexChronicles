@@ -27,6 +27,8 @@ public class Tile : MonoBehaviour
     [HideInInspector] public bool Reachable { get { return !tileOccupied && !tileHasObject && inFrontier; } }
 
     private Renderer tileRenderer;
+    private Renderer topRenderer;
+    private GameObject tileTop;
 
     #endregion
 
@@ -43,7 +45,10 @@ public class Tile : MonoBehaviour
         Debug.Assert(tileData.pathMaterial != null, $"{tileData.name} SO doesn't have a path material included");
         Debug.Assert(tileData.selectedCharMaterial != null, $"{tileData.name} SO doesn't have a selectedChar material included");
 
-        tileRenderer = GetComponent<Renderer>();
+        tileTop = transform.GetChild(1).gameObject;
+        topRenderer = tileTop.GetComponent<Renderer>();
+
+        tileRenderer = transform.GetChild(0).GetComponent<Renderer>();
     }
 
     void Update()
@@ -61,26 +66,33 @@ public class Tile : MonoBehaviour
         switch (tileMat)
         {
             case TileEnums.TileMaterial.baseMaterial:
+                tileTop.SetActive(false);
                 tileRenderer.material = tileData.baseMaterial;
                 break;
 
             case TileEnums.TileMaterial.highlight:
+                tileTop.SetActive(false);
                 tileRenderer.material = tileData.highlightMaterial;
                 break;
 
             case TileEnums.TileMaterial.frontier:
-                tileRenderer.material = tileData.reachableMaterial;
+                tileTop.SetActive(true);
+                topRenderer.material = tileData.reachableMaterial;
+                tileRenderer.material = tileData.baseMaterial;
                 break;
 
             case TileEnums.TileMaterial.attackable:
+                tileTop.SetActive(false);
                 tileRenderer.material = tileData.attackableMaterial;
                 break;
 
             case TileEnums.TileMaterial.path:
+                tileTop.SetActive(false);
                 tileRenderer.material = tileData.pathMaterial;
                 break;
 
             case TileEnums.TileMaterial.selectedChar:
+                tileTop.SetActive(false);
                 tileRenderer.material = tileData.selectedCharMaterial;
                 break;
         }
