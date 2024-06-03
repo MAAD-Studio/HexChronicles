@@ -374,6 +374,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     }
 
                     ResetBoard();
+                    attackType = TurnEnums.PlayerAction.BasicAttack;
                 }
             }
         }
