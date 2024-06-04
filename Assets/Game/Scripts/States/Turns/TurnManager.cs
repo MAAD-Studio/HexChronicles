@@ -46,6 +46,7 @@ public class TurnManager : MonoBehaviour
     }
 
     [HideInInspector] public static UnityEvent<TurnManager> OnLevelDefeat = new UnityEvent<TurnManager>();
+    [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
 
     #endregion
 
@@ -131,6 +132,8 @@ public class TurnManager : MonoBehaviour
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
             characterList.Remove(character);
+
+            OnCharacterDied?.Invoke(character.name);
 
             if (characterList.Count == 0)
             {

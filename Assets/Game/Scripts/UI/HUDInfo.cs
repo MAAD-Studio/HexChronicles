@@ -26,6 +26,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject heroInfoPrefab;
     [SerializeField] private GameObject heroStatusPrefab;
     private CharacterStatsUI selectHeroStatus;
+    private Hero selectedHero;
 
     [Header("Enemy Info")]
     [SerializeField] private GameObject enemyInfoPanel;
@@ -63,6 +64,7 @@ public class HUDInfo : MonoBehaviour
         enemies = turnManager.enemyList;
 
         PlayerTurn.OnNoActionLeft.AddListener(NoActionLeft);
+        TurnManager.OnCharacterDied.AddListener(CharacterDied);
     }
 
     private void Update()
@@ -76,11 +78,36 @@ public class HUDInfo : MonoBehaviour
         CheckCurrentHover();
 
         selectedCharacter = playerTurn.SelectedCharacter;
+
         if (selectedCharacter != null)
         {
             Hero hero = selectedCharacter as Hero;
+            HeroSelected(hero);
             UpdateSelectedHeroInfo(hero);
         }
+        else if (selectedCharacter == null && selectedHero != null)
+        {
+            foreach (Transform child in heroListPanel.transform)
+            {
+                if (child.name == selectedHero.name)
+                {
+                    child.GetComponent<CharacterInfo>().SetDefaultState();
+                }
+            }
+        }
+    }
+
+    private void HeroSelected(Hero hero)
+    {
+        foreach (Transform child in heroListPanel.transform)
+        {
+            if (child.name == hero.name)
+            {
+                child.GetComponent<CharacterInfo>().SetSelectedState();
+            }
+        }
+
+        selectedHero = hero;
     }
 
     private void CheckCurrentHover()
@@ -149,17 +176,28 @@ public class HUDInfo : MonoBehaviour
             GameObject gameObject = Instantiate(heroInfoPrefab);
             gameObject.transform.SetParent(heroListPanel.transform);
             gameObject.transform.localScale = new Vector3(1, 1, 1);
+            gameObject.name = hero.name;
 
             // Display Hero Info:
-            TextMeshProUGUI heroName = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            heroName.text = hero.heroSO.attributes.name;
-            Image avatar = gameObject.transform.GetChild(1).GetComponent<Image>();
-            avatar.sprite = hero.heroSO.attributes.avatar;
-            Image skillIcon = gameObject.transform.GetChild(2).GetComponent<Image>();
-            skillIcon.sprite = hero.heroSO.activeSkill.icon;
+            CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
+
+            foreach (TextMeshProUGUI name in info.names)
+            {
+                name.text = hero.heroSO.attributes.name;
+            }
+            foreach (Image avatar in info.avatars)
+            {
+                avatar.sprite = hero.heroSO.attributes.avatar;
+            }
+            foreach (Image icon in info.icons)
+            {
+                icon.sprite = hero.heroSO.activeSkill.icon;
+            }
+
+            info.SetDefaultState();
         }
 
-        // Create heroInfoPrefab in Character List:
+        // Create heroStatusPrefab in Character List:
         GameObject heroUI = Instantiate(heroStatusPrefab);
         heroUI.transform.SetParent(heroListPanel.transform);
         selectHeroStatus = heroUI.GetComponent<CharacterStatsUI>();
@@ -195,6 +233,17 @@ public class HUDInfo : MonoBehaviour
     private void NoActionLeft(PlayerTurn arg0)
     {
         endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+    }
+
+    private void CharacterDied(string arg0)
+    {
+        foreach (Transform child in heroListPanel.transform)
+        {
+            if (child.name == arg0)
+            {
+                child.GetComponent<CharacterInfo>().SetDeadState();
+            }
+        }
     }
     #endregion
 
