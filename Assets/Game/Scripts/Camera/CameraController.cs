@@ -269,22 +269,38 @@ public class CameraController : MonoBehaviour
         float axisX = Input.GetAxis("Mouse X");
         float axisY = Input.GetAxis("Mouse Y");
 
+        float yScale;
+        float camY = cameraPosition.y;
+
+        if(camY < 10)
+        {
+            yScale = 0.5f;
+        }
+        else if(camY < 20)
+        {
+            yScale = 0.75f;
+        }
+        else
+        {
+            yScale = 1f;
+        }
+
         if (axisX < 0)
         {
-            movement.x -= panSpeed * (axisX * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+            movement.x -= panSpeed * (axisX * 5) * yScale * Time.deltaTime;
         }
         else if(axisX > 0)
         {
-            movement.x -= panSpeed * (axisX * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+            movement.x -= panSpeed * (axisX * 5) * yScale * Time.deltaTime;
         }
 
         if(axisY < 0)
         {
-            movement.z -= panSpeed * (axisY * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+            movement.z -= panSpeed * (axisY * 5) * yScale * Time.deltaTime;
         }
         else if(axisY > 0)
         {
-            movement.z -= panSpeed * (axisY * 5) * (cameraPosition.y / 10) * Time.deltaTime;
+            movement.z -= panSpeed * (axisY * 5) * yScale * Time.deltaTime;
         }
 
         movement = Vector3.ClampMagnitude(movement, maxMoveSpeed);
@@ -372,9 +388,9 @@ public class CameraController : MonoBehaviour
         }
 
         //Interpolates for smoother movement
-        if (Vector3.Distance(cameraPosition, targetPosition) > 0.5f)
+        if (Vector3.Distance(cameraPosition, targetPosition) > 0.05f)
         {
-            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.05f);
+            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.035f);
         }
         else
         {

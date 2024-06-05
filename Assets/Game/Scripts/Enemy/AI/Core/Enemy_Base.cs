@@ -35,7 +35,7 @@ public class Enemy_Base : Character, EnemyInterface
         return 0;
     }
 
-    public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
+    public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
         return 0;
     }

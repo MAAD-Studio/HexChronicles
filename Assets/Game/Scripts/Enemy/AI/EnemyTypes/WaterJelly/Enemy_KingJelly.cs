@@ -15,7 +15,7 @@ public class Enemy_KingJelly : Enemy_Base
         return 0;
     }
 
-    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
+    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
         return 0;
     }

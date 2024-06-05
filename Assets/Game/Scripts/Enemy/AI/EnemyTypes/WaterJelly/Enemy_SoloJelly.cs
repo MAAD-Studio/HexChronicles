@@ -45,7 +45,7 @@ public class Enemy_SoloJelly : Enemy_Base
         return valueOfMovement * 2;
     }
 
-    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
+    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
         return 0;
     }
