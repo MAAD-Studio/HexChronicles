@@ -261,7 +261,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         pathFinder.FindPaths(selectedCharacter);
 
-        cameraController.SetCamToSelectedCharacter(selectedCharacter);
         SpawnSelectMarker();
     }
 
