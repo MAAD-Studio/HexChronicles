@@ -25,6 +25,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject heroListPanel;
     [SerializeField] private GameObject heroInfoPrefab;
     [SerializeField] private GameObject heroStatusPrefab;
+    private Dictionary<string, CharacterInfo> characterInfoDict = new Dictionary<string, CharacterInfo>();
     private CharacterStatsUI selectHeroStatus;
     private Hero selectedHero;
 
@@ -87,24 +88,18 @@ public class HUDInfo : MonoBehaviour
         }
         else if (selectedCharacter == null && selectedHero != null)
         {
-            foreach (Transform child in heroListPanel.transform)
+            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
             {
-                if (child.name == selectedHero.name)
-                {
-                    child.GetComponent<CharacterInfo>().SetDefaultState();
-                }
+                info.SetDefaultState();
             }
         }
     }
 
     private void HeroSelected(Hero hero)
     {
-        foreach (Transform child in heroListPanel.transform)
+        if (characterInfoDict.TryGetValue(hero.name, out var info))
         {
-            if (child.name == hero.name)
-            {
-                child.GetComponent<CharacterInfo>().SetSelectedState();
-            }
+            info.SetSelectedState();
         }
 
         selectedHero = hero;
@@ -180,6 +175,7 @@ public class HUDInfo : MonoBehaviour
 
             // Display Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
+            characterInfoDict.Add(gameObject.name, info);
 
             foreach (TextMeshProUGUI name in info.names)
             {
@@ -200,18 +196,21 @@ public class HUDInfo : MonoBehaviour
         // Create heroStatusPrefab in Character List:
         GameObject heroUI = Instantiate(heroStatusPrefab);
         heroUI.transform.SetParent(heroListPanel.transform);
+        heroUI.transform.localScale = new Vector3(1, 1, 1); // for fixing scale difference in different resolutions
         selectHeroStatus = heroUI.GetComponent<CharacterStatsUI>();
 
         // Create enemyInfoPrefab:
         GameObject enemyUI = Instantiate(enemyStatusPrefab);
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
+        enemyUI.transform.localScale = new Vector3(1, 1, 1); 
         enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
         enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
 
         // Create objectInfoPrefab:
         GameObject objectUI = Instantiate(objectStatusPrefab);
         objectUI.transform.SetParent(objectInfoPanel.transform);
-        objectUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        objectUI.transform.localScale = new Vector3(1, 1, 1); 
+        objectUI.transform.localPosition = new Vector3(0, 0, 0); 
         objectStatus = objectUI.GetComponent<EnemyStatsUI>();
     }
 
@@ -237,12 +236,9 @@ public class HUDInfo : MonoBehaviour
 
     private void CharacterDied(string arg0)
     {
-        foreach (Transform child in heroListPanel.transform)
+        if (characterInfoDict.TryGetValue(arg0, out var info))
         {
-            if (child.name == arg0)
-            {
-                child.GetComponent<CharacterInfo>().SetDeadState();
-            }
+            info.SetDeadState();
         }
     }
     #endregion
@@ -351,7 +347,7 @@ public class HUDInfo : MonoBehaviour
         enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
         enemyStatus.textMovement.text = $"{enemy.moveDistance}";
         enemyStatus.textAttack.text = $"{enemy.attackDamage}";
-        enemyStatus.textRange.text = $"{enemy.attackDistance}%";
+        enemyStatus.textRange.text = $"{enemy.attackDistance}";
         enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
         enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString(); 
     }
