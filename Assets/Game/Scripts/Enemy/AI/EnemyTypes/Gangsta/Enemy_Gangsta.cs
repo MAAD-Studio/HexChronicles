@@ -35,16 +35,22 @@ public class Enemy_Gangsta : Enemy_Base
                 valueOfMovement = tileValue;
             }
         }
+
         return valueOfMovement * 2;
     }
 
-    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
+    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
         int valueOfAttack = 0;
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             valueOfAttack += 5;
-            foreach(Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
+            if (currentTile == characterTile)
+            {
+                valueOfAttack += 10;
+            }
+
+            foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
             {
                 if(tile.tileOccupied && tile.characterOnTile.GetComponent<Enemy_Gangsta>() != null)
                 {

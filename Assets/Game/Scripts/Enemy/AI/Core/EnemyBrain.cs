@@ -49,7 +49,6 @@ public class EnemyBrain : MonoBehaviour
     {
         foreach (Enemy_Base enemy_base in turnManager.enemyList)
         {
-            yield return new WaitForSeconds(0.01f);
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
             turnManager.mainCameraController.SetCamToSelectedCharacter(enemy_base);
@@ -57,9 +56,19 @@ public class EnemyBrain : MonoBehaviour
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();
             turnManager.pathfinder.FindPaths(enemy_base);
-            foreach (Tile tile in turnManager.pathfinder.frontier)
+
+            List<Tile> usableTiles = new List<Tile>();
+            usableTiles = turnManager.pathfinder.frontier;
+            usableTiles.Add(enemy_base.characterTile);
+            foreach (Tile tile in usableTiles)
             {
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager);
+
+                if(valueOfCombination < 0)
+                {
+                    yield return null;
+                    continue;
+                }
 
                 //Runs through all the Tiles adjacent to the current Movement tile
                 foreach (Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
@@ -70,10 +79,10 @@ public class EnemyBrain : MonoBehaviour
                     enemyAttackArea.transform.eulerAngles = rotation;
 
                     //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
-                    yield return new WaitForSeconds(0.03f);
+                    yield return new WaitForSeconds(0.02f);
                     enemyAttackArea.DetectArea(false, false);
 
-                    valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager);
+                    valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
 
                     //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
                     if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
@@ -124,7 +133,6 @@ public class EnemyBrain : MonoBehaviour
                     }
                 }
             }
-            yield return new WaitForSeconds(0.01f);
 
             //Picks the final choice to execute
             IfAttacksClearNon();
@@ -149,7 +157,7 @@ public class EnemyBrain : MonoBehaviour
                     enemyAttackArea.transform.eulerAngles = finalCombo.attackRotation;
 
                     //IMPORTANT YIELD which lets the triggers update
-                    yield return new WaitForSeconds(0.03f);
+                    yield return new WaitForSeconds(0.02f);
                     enemyAttackArea.DetectArea(true, false);
 
                     foreach (Character character in enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
