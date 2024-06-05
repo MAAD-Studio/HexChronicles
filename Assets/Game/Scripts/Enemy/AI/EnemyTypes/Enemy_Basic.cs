@@ -14,7 +14,7 @@ public class Enemy_Basic : Enemy_Base
 
     #region InterfaceMethods
 
-    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
+    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
         int valueOfMovement = -100;
         foreach (Character character in turnManager.characterList)

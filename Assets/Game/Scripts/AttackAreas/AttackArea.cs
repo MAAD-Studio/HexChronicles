@@ -13,6 +13,8 @@ public class AttackArea : MonoBehaviour
     [SerializeField] public bool freeRange = false;
     [SerializeField] public ElementType effectedTileType;
 
+    [SerializeField] public float maxHittableRange = 1f;
+
     #endregion
 
     #region UnityMethods

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface EnemyInterface
 {
-    public int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager);
+    public int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter);
 
     public int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile);
 

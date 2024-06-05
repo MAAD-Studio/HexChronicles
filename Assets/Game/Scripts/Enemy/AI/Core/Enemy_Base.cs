@@ -30,7 +30,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     #region InterfaceMethods
 
-    public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
+    public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
         return 0;
     }

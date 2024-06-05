@@ -20,23 +20,13 @@ public class Enemy_Gangsta : Enemy_Base
 
     #region InterfaceMethods
 
-    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
+    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        int valueOfMovement = -100;
-        //Calculates the value based on if its getting closer or further away from characters
-        foreach (Character character in turnManager.characterList)
-        {
-            int distanceTile = (int)Vector3.Distance(tile.transform.position, character.transform.position);
-            int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, character.transform.position);
-            int tileValue = distanceEnemy - distanceTile;
-
-            if (valueOfMovement < tileValue)
-            {
-                valueOfMovement = tileValue;
-            }
-        }
-
-        return valueOfMovement * 2;
+        int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
+        int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
+        int tileValue = distanceEnemy - distanceTile;
+        
+        return tileValue * 2;
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
@@ -45,16 +35,19 @@ public class Enemy_Gangsta : Enemy_Base
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             valueOfAttack += 5;
+
+            //Bias towards remaining on current tile
             if (currentTile == characterTile)
             {
-                valueOfAttack += 10;
+                valueOfAttack += 30;
             }
 
+            //Bias towards hitting targets surrounded by other gangstas
             foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
             {
                 if(tile.tileOccupied && tile.characterOnTile.GetComponent<Enemy_Gangsta>() != null)
                 {
-                    valueOfAttack += 10;
+                    valueOfAttack += 15;
                     break;
                 }
             }
