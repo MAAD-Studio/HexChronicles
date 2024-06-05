@@ -29,16 +29,7 @@ public class TileObject : MonoBehaviour
 
     public virtual void TakeDamage(float attackDamage)
     {
-        int hitNum = Random.Range(0, 101);
-        if (hitNum > tileObjectData.defense)
-        {
-            Debug.Log("TOOK DAMAGE");
-            currentHealth -= attackDamage;
-        }
-        else
-        {
-            TemporaryMarker.GenerateMarker(tileObjectData.missText, gameObject.transform.position, 4f, 0.5f);
-        }
+        currentHealth -= attackDamage;
 
         OnUpdateHealthBar?.Invoke(this, System.EventArgs.Empty);
 

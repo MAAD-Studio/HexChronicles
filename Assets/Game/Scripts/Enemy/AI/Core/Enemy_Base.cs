@@ -19,6 +19,8 @@ public class Enemy_Base : Character, EnemyInterface
         attackDamage = enemySO.attributes.attackDamage;
         defensePercentage = enemySO.attributes.defensePercentage;
         elementType = enemySO.attributes.elementType;
+        elementWeakAgainst = enemySO.attributes.elementWeakAgainst;
+        elementStrongAgainst = enemySO.attributes.elementStrongAgainst;
 
         maxHealth = enemySO.attributes.health;
         currentHealth = maxHealth;
@@ -56,21 +58,19 @@ public class Enemy_Base : Character, EnemyInterface
 
     public override void TakeDamage(float damage, ElementType type)
     {
-        if(elementWeakAgainst == type)
+        int hitResult = Random.Range(0, 101);
+
+        if(elementWeakAgainst == type && hitResult <= defensePercentage)
         {
-            base.TakeDamage(damage, type);
+            base.TakeDamage(damage + 1, type);
+        }
+        else if(elementStrongAgainst == type)
+        {
+            base.TakeDamage(damage - 1, type);
         }
         else
         {
-            int hitNum = Random.Range(0, 101);
-            if (hitNum > enemySO.attributes.defensePercentage)
-            {
-                base.TakeDamage(damage, type);
-            }
-            else
-            {
-                TemporaryMarker.GenerateMarker(enemySO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
-            }
+            base.TakeDamage(damage, type);
         }
     }
 

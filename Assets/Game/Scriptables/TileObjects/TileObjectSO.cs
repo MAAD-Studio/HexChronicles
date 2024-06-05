@@ -10,6 +10,5 @@ public class TileObjectSO : ScriptableObject
     public KeywordDescription description;
     public float health;
     public float defense;
-    public GameObject missText;
     public GameObject hitMarker;
 }
