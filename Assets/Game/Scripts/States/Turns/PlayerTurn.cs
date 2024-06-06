@@ -63,6 +63,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         Debug.Assert(mainCam != null, "Playerturn couldn't get a Camera from TurnManager");
 
         Character.movementComplete.AddListener(CharacterFinishedMoving);
+        HUDInfo.OnCharacterSelected.AddListener(SelectCharacter);
 
         availableCharacters = turnManager.characterList.Count;
     }
@@ -248,36 +249,46 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             if (!inspectionCharacter.hasMadeDecision)
             {
-                currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (selectedCharacter == null)
-                    {
-                        GrabCharacter();
-                    }
-                    else if (inspectionCharacter != selectedCharacter)
-                    {
-                        ResetBoard();
-                        GrabCharacter();
-                        phase = TurnEnums.PlayerPhase.Movement;
-                    }
-                }
-            } 
-            else
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
-                }
+                currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight); // Hover tile highlight
             }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                SelectCharacter(inspectionCharacter);
+            }
+        }
+    }
+
+    public void SelectCharacter(Character character)
+    {
+        // Get the tile from the passed character
+        if (currentTile == null)
+        {
+            currentTile = character.characterTile;
+        }
+
+        if (!character.hasMadeDecision)
+        {
+            if (selectedCharacter == null)
+            {
+                GrabCharacter();
+            }
+            else if (character != selectedCharacter)
+            {
+                ResetBoard();
+                GrabCharacter();
+                phase = TurnEnums.PlayerPhase.Movement;
+            }
+        }
+        else
+        {
+            MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
         }
     }
 
     private void GrabCharacter()
     {
         selectedCharacter = currentTile.characterOnTile;
-
         pathFinder.FindPaths(selectedCharacter);
 
         SpawnSelectMarker();

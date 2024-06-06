@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.Events;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject heroInfoPrefab;
     [SerializeField] private GameObject heroStatusPrefab;
     private Dictionary<string, CharacterInfo> characterInfoDict = new Dictionary<string, CharacterInfo>();
+    private List<Button> heroButtons = new List<Button>();
     private CharacterStatsUI selectHeroStatus;
     private Hero selectedHero;
 
@@ -52,6 +54,7 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Element Icons")]
     [SerializeField] private Sprite[] elementSprites;
+    [HideInInspector] public static UnityEvent<Character> OnCharacterSelected = new UnityEvent<Character>();
 
     private void Start()
     {
@@ -95,11 +98,31 @@ public class HUDInfo : MonoBehaviour
         }
     }
 
+    private void OutlineCharacter()
+    {
+        LayerMask layer = LayerMask.GetMask("Tile");
+        if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, layer))
+        {
+            Character character = hit.transform.GetComponent<Character>();
+
+        }
+
+    }
+
     private void HeroSelected(Hero hero)
     {
-        if (characterInfoDict.TryGetValue(hero.name, out var info))
+        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
         {
-            info.SetSelectedState();
+            newInfo.SetSelectedState();
+        }
+
+        // While changing hero in the list
+        if (selectedHero != null && selectedHero != hero)
+        {
+            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
+            {
+                info.SetDefaultState();
+            }
         }
 
         selectedHero = hero;
@@ -173,6 +196,14 @@ public class HUDInfo : MonoBehaviour
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             gameObject.name = hero.name;
 
+            // Add Button Listener:
+            Button button = gameObject.GetComponent<Button>();
+            button.onClick.AddListener(() =>
+            {
+                OnCharacterSelected?.Invoke(character);
+            });
+            heroButtons.Add(button);
+
             // Display Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
             characterInfoDict.Add(gameObject.name, info);
@@ -240,6 +271,8 @@ public class HUDInfo : MonoBehaviour
         {
             info.SetDeadState();
         }
+
+        heroButtons.Remove(heroButtons.Find(x => x.name == arg0));
     }
     #endregion
 
