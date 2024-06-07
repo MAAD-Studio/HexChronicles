@@ -51,7 +51,7 @@ public class EnemyBrain : MonoBehaviour
         {
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
-            turnManager.mainCameraController.SetCamToSelectedCharacter(enemy_base);
+            turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
 
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();

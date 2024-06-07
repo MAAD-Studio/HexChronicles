@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(Camera))]
 public class CameraController : MonoBehaviour
@@ -10,93 +9,80 @@ public class CameraController : MonoBehaviour
 
     private Camera mainCamera;
     private Transform cameraTransform;
+    private Vector3 targetPosition;
 
-    [HideInInspector] public bool allowControl = true;
+    [HideInInspector] public bool controlEnabled = true;
+    private Transform targetToFollow = null;
+    private Vector2 previousMousePos = Vector2.zero;
 
-    [Header("Camera Default Info:")]
+    [Header("Cursor Textures:")]
+    [SerializeField] private Texture2D cursorDefault;
+    [SerializeField] private Texture2D cursorGrab;
+
+    [Header("Camera Mode:")]
+    [SerializeField] private bool useAutoZoomCam = false;
+
+    [Header("Camera Default Positioning: ")]
     [SerializeField] private Vector3 defaultPosition = Vector3.zero;
     [SerializeField] private Vector3 defaultRotation = Vector3.zero;
 
-    private Vector3 cameraPosition = Vector3.zero;
-
-    [Header("Camera WASD Controls: ")]
-    [SerializeField] private float maxMoveSpeed = 10f;
-    [SerializeField] private float accelerationSpeed = 18f;
-    [SerializeField] private float deccelerationSpeed = 12f;
-
-    [Header("Camera MiddleMouse Controls: ")]
+    [Header("Camera Movement:")]
+    [SerializeField] private float wasdSpeed = 5f;
     [SerializeField] private float panSpeed = 10f;
 
-    private Vector3 velocityX = Vector3.zero;
-    private bool wPressed = false;
-    private bool sPressed = false;
+    [Header("Lerp: ")]
+    [Range(0.02f, 0.1f)]
+    [SerializeField] private float lerpLevel = 0.04f;
 
-    private Vector3 velocityZ = Vector3.zero;
-    private bool dPressed = false;
-    private bool aPressed = false;
+    [Range(0.02f, 0.1f)]
+    [SerializeField] private float lerpDeadZone = 0.05f;
 
-    private Vector3 totalVelocity = Vector3.zero;
+    [Header("Camera Zoom:")]
+    [SerializeField] private float scrollZoomSpeed = 4f;
+    [SerializeField] private Vector3 onZoomAddOn = Vector3.zero;
 
-    [Header("Camera Zoom Controls: ")]
-    [SerializeField] private float zoomSpeed = 2f;
-    private Vector3 targetPosition = Vector3.zero;
+    [Header("Camera Limits: ")]
+    [SerializeField] private float maxLeft = -5;
+    [SerializeField] private float maxRight = 20;
 
-    private Character selectedCharacter;
-    private TileObject selectedObject;
+    [SerializeField] private float maxBackward = -5;
+    [SerializeField] private float maxForward = 20;
 
-    [Header("Camera Left-Right Limits: ")]
-    [SerializeField] private int maxLeft = -5;
-    [SerializeField] private int maxRight = 20;
+    [Range(0f, 20f)]
+    [SerializeField] private float maxZoomIn = 6;
 
-    [Header("Camera Forward-Back Limits: ")]
-    [SerializeField] private int maxBackwards = -5;
-    [SerializeField] private int maxForwards = 20;
-
-    [Header("Camera Zoom Limits: ")]
-    [SerializeField] private int maxZoomIn = 6;
-    [SerializeField] private int maxZoomOut = 20;
+    [Range(10f, 40f)]
+    [SerializeField] private float maxZoomOut = 25;
 
     #endregion
 
     #region UnityMethods
 
-    void Start()
+    private void Start()
     {
         mainCamera = GetComponent<Camera>();
-
-        mainCamera.transform.position = defaultPosition;
-        mainCamera.transform.eulerAngles = defaultRotation;
-
         cameraTransform = mainCamera.transform;
-        cameraPosition = cameraTransform.position;
+
+        cameraTransform.position = defaultPosition;
+        cameraTransform.eulerAngles = defaultRotation;
+
         targetPosition = cameraTransform.position;
+
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
-    void Update()
+    private void Update()
     {
         ApproachTargetPosition();
 
-        if (allowControl)
+        if (controlEnabled)
         {
-            DefaultsUpdate();
+            CheckKeyInput();
 
-            Vector3 mainCameraForward = mainCamera.transform.forward;
-            mainCameraForward.y = 0;
+            ZoomUpdate();
+            MovementUpdate();
 
-            Vector3 mainCameraRight = mainCamera.transform.right;
-            mainCameraRight.y = 0;
-
-            //Checks for Scroll Wheel inputs
-            ZoomUpdate(mainCameraForward);
-
-            //Checks for WASD Key inputs
-            MoveUpdate(mainCameraForward, mainCameraRight);
-
-            cameraPosition.x = Mathf.Clamp(cameraPosition.x, maxLeft, maxRight);
-            cameraPosition.z = Mathf.Clamp(cameraPosition.z, maxBackwards, maxForwards);
-
-            targetPosition.x = Mathf.Clamp(targetPosition.x, maxLeft, maxRight);
-            targetPosition.z = Mathf.Clamp(targetPosition.z, maxBackwards, maxForwards);
+            ClampTarget();
         }
     }
 
@@ -104,300 +90,183 @@ public class CameraController : MonoBehaviour
 
     #region CustomMethods
 
-    //Decelerates a provided velocity
-    public void Decelerate(ref Vector3 velocity, float multiplier)
+    /*
+     * Moves the Camera towards a target position
+     */
+    private void ApproachTargetPosition()
     {
-        if(Vector3.Magnitude(velocity) > 0.05)
+        //If a transform has been provided to follow the target is set to its location
+        if(targetToFollow != null)
         {
-            velocity -= velocity.normalized * (deccelerationSpeed * multiplier) * Time.deltaTime;
+            targetPosition = targetToFollow.position + onZoomAddOn;
         }
-        else
+
+        if (Vector3.Distance(cameraTransform.position, targetPosition) > lerpDeadZone)
         {
-            velocity = Vector3.zero;
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, lerpLevel);
         }
     }
 
-    //Checks for Scroll Wheel inputs
-    public void ZoomUpdate(Vector3 mainCameraForward)
+    /*
+     * Checks for any Key Inputs
+     */
+    private void CheckKeyInput()
     {
-        //Checks if the player is trying to zoom in using the scroll wheel
-        float scrollDelta = -Input.mouseScrollDelta.y * zoomSpeed;
-        if (scrollDelta != 0)
+        if (Input.GetKeyDown(KeyCode.Keypad0))
         {
-            //Limits how far out or in the player can zoom
-            if (scrollDelta < 0 && targetPosition.y > maxZoomIn || scrollDelta > 0 && targetPosition.y < maxZoomOut)
-            {
-                targetPosition += -mainCameraForward * scrollDelta;
-                targetPosition.y += scrollDelta;
-            }
+            targetPosition = defaultPosition;
         }
     }
 
-    //Checks for WASD Key inputs
-    public void MoveUpdate(Vector3 mainCameraForward, Vector3 mainCameraRight)
+    /*
+     * Checks if the Player is trying to zoom the Camera
+     */
+    private void ZoomUpdate()
     {
-        if(Input.GetMouseButton(2))
+        float scrollDelta = -Input.mouseScrollDelta.y;
+
+        //Only allows zooming the Camera is within game bounds
+        if (scrollDelta < 0 && targetPosition.y > maxZoomIn || scrollDelta > 0 && targetPosition.y < maxZoomOut)
         {
-            MoveMiddleMouse(mainCameraForward, mainCameraRight);
-        }
-        else
-        {
-            MoveKeyboard(mainCameraForward, mainCameraRight);
+            Vector3 zoomMovement = Vector3.zero;
+            zoomMovement.z -= scrollDelta;
+            zoomMovement.y += scrollDelta * 2;
+
+            zoomMovement.Normalize();
+            zoomMovement *= 24;
+
+            targetPosition += zoomMovement * scrollZoomSpeed * Time.deltaTime;
         }
     }
 
-    private void MoveKeyboard(Vector3 mainCameraForward, Vector3 mainCameraRight)
+    /*
+     * Checks if the Player is trying to move the Camera
+     */
+    private void MovementUpdate()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetMouseButton(2))
         {
-            wPressed = true;
-            if (!sPressed)
-            {
-                //If we are accelerating in the opposite keys direction decelerate
-                if (velocityX.magnitude > 0.05 && Vector3.Angle(velocityX, mainCameraForward) > 90)
-                {
-                    velocityX -= velocityX.normalized * (deccelerationSpeed * 4) * Time.deltaTime;
-                }
-                else
-                {
-                    velocityX += mainCameraForward * accelerationSpeed * Time.deltaTime;
-                }
-            }
-            else
-            {
-                //If both W and S are pressed decelerate
-                Decelerate(ref velocityX, 2);
-            }
+            Cursor.SetCursor(cursorGrab, Vector2.zero, CursorMode.Auto);
+            PanMovement();
+            previousMousePos = Input.mousePosition;
         }
         else
         {
-            wPressed = false;
-            if (!sPressed)
-            {
-                //If neither W or S are pressed decelerate
-                Decelerate(ref velocityX, 2);
-            }
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            WASDMovement();
         }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            sPressed = true;
-            if (!wPressed)
-            {
-                //If we are accelerating in the opposite keys direction decelerate
-                if (velocityX.magnitude > 0.05 && Vector3.Angle(velocityX, -mainCameraForward) > 90)
-                {
-                    velocityX -= velocityX.normalized * (deccelerationSpeed * 4) * Time.deltaTime;
-                }
-                else
-                {
-                    velocityX -= mainCameraForward * accelerationSpeed * Time.deltaTime;
-                }
-            }
-        }
-        else
-        {
-            sPressed = false;
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            dPressed = true;
-            if (!aPressed)
-            {
-                //If we are accelerating in the opposite keys direction decelerate
-                if (velocityZ.magnitude > 0.05 && Vector3.Angle(velocityZ, mainCameraRight) > 90)
-                {
-                    velocityZ -= velocityZ.normalized * (deccelerationSpeed * 4) * Time.deltaTime;
-                }
-                else
-                {
-                    velocityZ += mainCameraRight * accelerationSpeed * Time.deltaTime;
-                }
-            }
-            else
-            {
-                //If both D and A are pressed decelerate
-                Decelerate(ref velocityZ, 2);
-            }
-        }
-        else
-        {
-            dPressed = false;
-            if (!aPressed)
-            {
-                //If neither D or A are pressed decelerate
-                Decelerate(ref velocityZ, 2);
-            }
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            aPressed = true;
-            if (!dPressed)
-            {
-                //If we are accelerating in the opposite keys direction decelerate
-                if (velocityZ.magnitude > 0.05 && Vector3.Angle(velocityZ, -mainCameraRight) > 90)
-                {
-                    velocityZ -= velocityZ.normalized * (deccelerationSpeed * 4) * Time.deltaTime;
-                }
-                else
-                {
-                    velocityZ -= mainCameraRight * accelerationSpeed * Time.deltaTime;
-                }
-            }
-        }
-        else
-        {
-            aPressed = false;
-        }
-
-        //Adds the velocity and clamps to ensure the player isn't leaving the map
-        velocityX = Vector3.ClampMagnitude(velocityX, maxMoveSpeed);
-        velocityZ = Vector3.ClampMagnitude(velocityZ, maxMoveSpeed);
-
-        totalVelocity = velocityX + velocityZ;
-
-        cameraPosition += totalVelocity * Time.deltaTime;
-        targetPosition += totalVelocity * Time.deltaTime;
     }
 
-    private void MoveMiddleMouse(Vector3 mainCameraForward, Vector3 mainCameraRight)
+    /*
+     * Performs Pan style movement on the Camera
+     */
+    private void PanMovement()
     {
         Vector3 movement = Vector3.zero;
 
         float axisX = Input.GetAxis("Mouse X");
         float axisY = Input.GetAxis("Mouse Y");
 
-        float yScale;
-        float camY = cameraPosition.y;
+        float yScaler = cameraTransform.position.y;
 
-        if(camY < 10)
+        Vector2 mousePos = Input.mousePosition;
+
+        if (previousMousePos.x != mousePos.x)
         {
-            yScale = 0.5f;
+            movement.x -= axisX * yScaler;
         }
-        else if(camY < 20)
+        if(previousMousePos.y != mousePos.y)
         {
-            yScale = 0.75f;
-        }
-        else
-        {
-            yScale = 1f;
+            movement.z -= axisY * yScaler;
         }
 
-        if (axisX < 0)
-        {
-            movement.x -= panSpeed * (axisX * 5) * yScale * Time.deltaTime;
-        }
-        else if(axisX > 0)
-        {
-            movement.x -= panSpeed * (axisX * 5) * yScale * Time.deltaTime;
-        }
-
-        if(axisY < 0)
-        {
-            movement.z -= panSpeed * (axisY * 5) * yScale * Time.deltaTime;
-        }
-        else if(axisY > 0)
-        {
-            movement.z -= panSpeed * (axisY * 5) * yScale * Time.deltaTime;
-        }
-
-        movement = Vector3.ClampMagnitude(movement, maxMoveSpeed);
-
-        cameraPosition += movement;
-        targetPosition += movement;
+        targetPosition += movement * panSpeed * Time.deltaTime;
     }
 
-    //Checks if the player wants to return to a default cam position
-    public void DefaultsUpdate()
+    /*
+     * Performs WASD style movement on the Camera
+     */
+    private void WASDMovement()
     {
-        if(Input.GetKeyDown(KeyCode.Keypad1))
+        Vector3 movement = Vector3.zero;
+
+        float yScaler = cameraTransform.position.y;
+
+        if (Input.GetKey(KeyCode.W))
         {
-            SetValues(defaultPosition);
-        }
-        else if(Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            if(selectedCharacter != null)
-            {
-                SetCamToSelectedCharacter(selectedCharacter);
-            }
-        }
-    }
-
-    //Sets a new target position and gets rid of velocity
-    private void SetValues(Vector3 position)
-    {
-        targetPosition = position;
-        velocityX = Vector3.zero;
-        velocityZ = Vector3.zero;
-    }
-
-    //Sets the cam to move to the default position
-    public void SetCamToDefault()
-    {
-        SetValues(defaultPosition);
-    }
-
-    //Sets the cam to move to the position of a character
-    public void SetCamToSelectedCharacter(Character character)
-    {
-        Vector3 newPosition = character.transform.position;
-        newPosition.y += 10;
-        newPosition.z -= 4;
-
-        selectedCharacter = character;
-
-        SetValues(newPosition);
-    }
-
-    //Sets the cam to move to the position of a object
-    public void SetCamToObject(TileObject tileObject)
-    {
-        Vector3 newPosition = tileObject.transform.position;
-        newPosition.y += 10;
-        newPosition.z -= 4;
-
-        selectedObject = tileObject;
-
-        SetValues(newPosition);
-    }
-
-    //Tells the camera to unselect the character it is holding onto
-    public void UnSelectCharacter()
-    {
-        selectedCharacter = null;
-    }
-
-    //Tells the camera to unselect the object it is holding onto
-    public void UnSelectObject()
-    {
-        selectedObject = null;
-    }
-
-    //Gets the camera to approach the target position
-    public void ApproachTargetPosition()
-    {
-        if(selectedCharacter != null && !allowControl)
-        {
-            SetCamToSelectedCharacter(selectedCharacter);
-        }
-        else if(selectedObject != null && !allowControl)
-        {
-            SetCamToObject(selectedObject);
+            movement.z += 0.25f * yScaler;
         }
 
-        //Interpolates for smoother movement
-        if (Vector3.Distance(cameraPosition, targetPosition) > 0.05f)
+        if (Input.GetKey(KeyCode.S))
         {
-            cameraPosition = Vector3.Lerp(cameraPosition, targetPosition, 0.035f);
-        }
-        else
-        {
-            cameraPosition = targetPosition;
+            movement.z -= 0.25f * yScaler;
         }
 
-        cameraTransform.position = cameraPosition;
+        if (Input.GetKey(KeyCode.A))
+        {
+            movement.x -= 0.25f * yScaler;
+        }
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            movement.x += 0.25f * yScaler;
+        }
+
+        movement = Vector3.ClampMagnitude(movement, 0.25f * yScaler);
+
+        targetPosition += movement * wasdSpeed * Time.deltaTime;
+    }
+
+    /*
+     * Clamps targetPosition to keep it within the game bounds
+     */
+    private void ClampTarget()
+    {
+        targetPosition.x = Mathf.Clamp(targetPosition.x, maxLeft, maxRight);
+        targetPosition.z = Mathf.Clamp(targetPosition.z, maxBackward, maxForward);
+
+        targetPosition.y = Mathf.Clamp(targetPosition.y, maxZoomIn, maxZoomOut);
+    }
+
+    /*
+     * Moves the Camera to the given position
+     */
+    public void MoveToTargetPosition(Vector3 newTargetPos, bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetPosition = newTargetPos + onZoomAddOn;
+        }
+    }
+
+    /*
+     * Moves the Camera back to the default position
+     */
+    public void MoveToDefault(bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetPosition = defaultPosition;
+        }
+    }
+
+    /*
+     * Holds onto a Transform to continuously follow
+     */
+    public void FollowTarget(Transform target, bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetToFollow = target;
+        }
+    }
+
+    /*
+     * Stops following any Transforms
+     */
+    public void StopFollowingTarget()
+    {
+        targetToFollow = null;
     }
 
     #endregion

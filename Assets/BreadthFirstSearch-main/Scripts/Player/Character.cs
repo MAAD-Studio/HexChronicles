@@ -289,6 +289,7 @@ public class Character : MonoBehaviour
             moving = true;
             animator.SetBool("walking", true);
             characterTile.tileOccupied = false;
+            turnManager.mainCameraController.controlEnabled = false;
         }
 
         StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
@@ -314,11 +315,12 @@ public class Character : MonoBehaviour
             float animationTime = 0f;
             const float distanceToNext = 0.05f;
 
+            turnManager.mainCameraController.FollowTarget(transform, true);
+
             //While we still have points in the path to cover
             while (step < pathLength)
             {
                 yield return null;
-                turnManager.mainCameraController.SetCamToSelectedCharacter(this);
 
                 foreach (Tile tile in tilesInPath)
                 {
@@ -399,6 +401,10 @@ public class Character : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         attackAreaPrefab.DestroySelf();
+
+        turnManager.mainCameraController.controlEnabled = true;
+        turnManager.mainCameraController.StopFollowingTarget();
+        turnManager.mainCameraController.MoveToDefault(true);
 
         movementComplete.Invoke(this);
     }

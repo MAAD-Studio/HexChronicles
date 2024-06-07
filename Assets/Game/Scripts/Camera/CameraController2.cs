@@ -13,6 +13,10 @@ public class CameraController2 : MonoBehaviour
 
     [HideInInspector] public bool controlEnabled = true;
 
+    [Header("Cursor Textures:")]
+    [SerializeField] private Texture2D cursorDefault;
+    [SerializeField] private Texture2D cursorGrab;
+
     [Header("Camera Default Positioning: ")]
     [SerializeField] private Vector3 defaultPosition = Vector3.zero;
     [SerializeField] private Vector3 defaultRotation = Vector3.zero;
@@ -23,6 +27,7 @@ public class CameraController2 : MonoBehaviour
 
     [Header("Camera Zoom:")]
     [SerializeField] private float scrollZoomSpeed = 4f;
+    [SerializeField] private Vector3 onZoomAddOn = Vector3.zero;
 
     [Header("Camera Limits: ")]
     [SerializeField] private float maxLeft = -5;
@@ -31,10 +36,11 @@ public class CameraController2 : MonoBehaviour
     [SerializeField] private float maxBackward = -5;
     [SerializeField] private float maxForward = 20;
 
+    [Range(0f, 20f)]
     [SerializeField] private float maxZoomIn = 6;
-    [SerializeField] private float maxZoomOut = 25;
 
-    Vector3 previousMousePos = Vector3.zero;
+    [Range(10f, 40f)]
+    [SerializeField] private float maxZoomOut = 25;
 
     #endregion
 
@@ -102,40 +108,32 @@ public class CameraController2 : MonoBehaviour
             targetPosition += zoomMovement * scrollZoomSpeed * Time.deltaTime;
         }
     }
-
+     
     private void MovementUpdate()
     {
         if(Input.GetMouseButton(2))
         {
+            Cursor.SetCursor(cursorGrab, Vector2.zero, CursorMode.Auto);
             PanMovement();
         }
         else
         {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             WASDMovement();
         }
-
-        previousMousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     private void PanMovement()
     {
         Vector3 movement = Vector3.zero;
 
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        float axisX = Input.GetAxis("Mouse X");
+        float axisY = Input.GetAxis("Mouse Y");
 
-        Debug.Log("--------------------------");
-        Debug.Log(mousePosition.x);
-        Debug.Log(previousMousePos.x);
-        Debug.Log("--------------------------");
+        float yScaler = cameraTransform.position.y;
 
-        float movementX = mousePosition.x - previousMousePos.x;
-        float movementY = mousePosition.y - previousMousePos.y;
-
-        Debug.Log("X: " + movementX);
-        Debug.Log("Y: " + movementY);
-
-        movement.x = movementX;
-        movement.z = movementY;
+        movement.x -= axisX * panSpeed * yScaler;
+        movement.z -= axisY * panSpeed * yScaler;
 
         targetPosition += movement * Time.deltaTime;
     }
@@ -175,6 +173,11 @@ public class CameraController2 : MonoBehaviour
         targetPosition.z = Mathf.Clamp(targetPosition.z, maxBackward, maxForward);
 
         targetPosition.y = Mathf.Clamp(targetPosition.y, maxZoomIn, maxZoomOut);
+    }
+
+    private void SetTargetPosition(Vector3 newTargetPos)
+    {
+        targetPosition = newTargetPos + onZoomAddOn;
     }
 
     #endregion

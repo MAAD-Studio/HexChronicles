@@ -37399,20 +37399,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6d692c141897a4c95aedccd7747617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowControl: 1
+  controlEnabled: 1
+  cursorDefault: {fileID: 0}
+  cursorGrab: {fileID: 2800000, guid: f65c233a891198940aede4991f50acc5, type: 3}
+  useAutoZoomCam: 0
   defaultPosition: {x: 14.24, y: 22.23, z: -1.91}
   defaultRotation: {x: 60, y: 0, z: 0}
-  maxMoveSpeed: 10
-  accelerationSpeed: 18
-  deccelerationSpeed: 12
-  panSpeed: 10
-  zoomSpeed: 2
-  maxLeft: -5
-  maxRight: 20
-  maxBackwards: -5
-  maxForwards: 20
+  wasdSpeed: 4
+  panSpeed: 4
+  lerpLevel: 0.04
+  lerpDeadZone: 0.05
+  scrollZoomSpeed: 12
+  onZoomAddOn: {x: 0, y: 15, z: -6}
+  maxLeft: 0
+  maxRight: 25
+  maxBackward: -5
+  maxForward: 20
   maxZoomIn: 6
-  maxZoomOut: 20
+  maxZoomOut: 25
 --- !u!114 &1842005310
 MonoBehaviour:
   m_ObjectHideFlags: 0
