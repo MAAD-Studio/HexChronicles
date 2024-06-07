@@ -47,8 +47,14 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        foreach (Enemy_Base enemy_base in turnManager.enemyList)
+        Enemy_Base[] enemies = turnManager.enemyList.ToArray();
+        foreach (Enemy_Base enemy_base in enemies)
         {
+            if(enemy_base == null)
+            {
+                continue;
+            }
+
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
             turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
@@ -184,15 +190,15 @@ public class EnemyBrain : MonoBehaviour
                     }
 
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
-                    yield return new WaitForSeconds(0.5f);
+                }
 
-                    while(enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
-                    {
-                        yield return new WaitForSeconds(0.5f);
-                    }
-
+                yield return new WaitForSeconds(0.5f);
+                while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
+                {
                     yield return new WaitForSeconds(0.5f);
                 }
+
+                yield return new WaitForSeconds(0.5f);
             }
             else
             {

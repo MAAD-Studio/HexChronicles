@@ -74,5 +74,13 @@ public class Enemy_Base : Character, EnemyInterface
         }
     }
 
+    public void DestroySelfEnemy(TurnManager turnManager)
+    {
+        turnManager.enemyList.Remove(this);
+        characterTile.tileOccupied = false;
+        characterTile.characterOnTile = null;
+        Destroy(gameObject);
+    }
+
     #endregion
 }

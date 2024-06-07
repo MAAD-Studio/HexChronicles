@@ -19888,7 +19888,7 @@ GameObject:
   - component: {fileID: 414604176}
   - component: {fileID: 414604175}
   - component: {fileID: 414604179}
-  - component: {fileID: 414604178}
+  - component: {fileID: 414604180}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -19970,33 +19970,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &414604178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 414604174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff9c0dd874ff53a429d171a3ade6cf3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controlEnabled: 1
-  cursorDefault: {fileID: 0}
-  cursorGrab: {fileID: 2800000, guid: f65c233a891198940aede4991f50acc5, type: 3}
-  defaultPosition: {x: 3.84, y: 10.84, z: -2.97}
-  defaultRotation: {x: 60, y: 0, z: 0}
-  wasdSpeed: 20
-  panSpeed: 10
-  scrollZoomSpeed: 25
-  onZoomAddOn: {x: 6, y: 15, z: 0}
-  maxLeft: -5
-  maxRight: 30
-  maxBackward: -5
-  maxForward: 30
-  maxZoomIn: 6
-  maxZoomOut: 25
 --- !u!114 &414604179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20041,6 +20014,36 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &414604180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414604174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6d692c141897a4c95aedccd7747617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlEnabled: 1
+  cursorDefault: {fileID: 0}
+  cursorGrab: {fileID: 2800000, guid: f65c233a891198940aede4991f50acc5, type: 3}
+  useAutoZoomCam: 0
+  defaultPosition: {x: 0, y: 0, z: 0}
+  defaultRotation: {x: 0, y: 0, z: 0}
+  wasdSpeed: 5
+  panSpeed: 10
+  lerpLevel: 0.04
+  lerpDeadZone: 0.05
+  scrollZoomSpeed: 4
+  onZoomAddOn: {x: 0, y: 0, z: 0}
+  maxLeft: -5
+  maxRight: 20
+  maxBackward: -5
+  maxForward: 20
+  maxZoomIn: 6
+  maxZoomOut: 25
 --- !u!1 &414862362
 GameObject:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class TowersTurn : WorldTurnBase
         {
             foreach (Spawner spawner in spawners)
             {
-                turnManager.mainCameraController.MoveToTargetPosition(transform.position, true);
+                turnManager.mainCameraController.MoveToTargetPosition(spawner.transform.position, true);
 
                 yield return new WaitForSeconds(0.5f);
                 spawner.AttemptSpawn();
