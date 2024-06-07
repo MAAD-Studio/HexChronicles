@@ -103,6 +103,7 @@ public class TurnManager : MonoBehaviour
                 turnNumber++;
                 mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
+                EventBus.Instance.Publish(new OnPlayerTurn());
 
                 if (turnNumber == objectiveTurnNumber)
                 {
@@ -112,6 +113,7 @@ public class TurnManager : MonoBehaviour
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
+                EventBus.Instance.Publish(new OnEnemyTurn());
                 mainCameraController.controlEnabled = false;
                 break;
 

@@ -7,7 +7,7 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject tipObject;
 
-    void Start()
+    void OnEnable()
     {
         HideTooltip();
     }

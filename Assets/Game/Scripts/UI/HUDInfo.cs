@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using UnityEngine.Events;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -30,6 +29,8 @@ public class HUDInfo : MonoBehaviour
     private List<Button> heroButtons = new List<Button>();
     private CharacterStatsUI selectHeroStatus;
     private Hero selectedHero;
+    private int availableHeroes;
+    private int activeHeroes;
 
     [Header("Enemy Info")]
     [SerializeField] private GameObject enemyInfoPanel;
@@ -54,8 +55,8 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Element Icons")]
     [SerializeField] private Sprite[] elementSprites;
-    [HideInInspector] public static UnityEvent<Character> OnCharacterSelected = new UnityEvent<Character>();
 
+    #region Unity Methods
     private void Start()
     {
         turnManager = FindObjectOfType<TurnManager>();
@@ -64,11 +65,12 @@ public class HUDInfo : MonoBehaviour
 
         InstantiateUIElements();
         ButtonsAddListener();
+        SubscribeEvents();
+    }
 
-        enemies = turnManager.enemyList;
-
-        PlayerTurn.OnNoActionLeft.AddListener(NoActionLeft);
-        TurnManager.OnCharacterDied.AddListener(CharacterDied);
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
     }
 
     private void Update()
@@ -78,11 +80,9 @@ public class HUDInfo : MonoBehaviour
             return;
         }
 
-        UpdateTurnInfo();
         CheckCurrentHover();
 
         selectedCharacter = playerTurn.SelectedCharacter;
-
         if (selectedCharacter != null)
         {
             Hero hero = selectedCharacter as Hero;
@@ -97,17 +97,76 @@ public class HUDInfo : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    private void OutlineCharacter()
+    #region Events
+    private void SubscribeEvents()
     {
-        LayerMask layer = LayerMask.GetMask("Tile");
-        if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, layer))
+        if (EventBus.Instance != null)
         {
-            Character character = hit.transform.GetComponent<Character>();
+            EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
+            EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+        }
+        TurnManager.OnCharacterDied.AddListener(CharacterDied);
+    }
 
+    private void UnsubscribeEvents()
+    {
+        if (EventBus.Instance != null)
+        {
+            EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
+            EventBus.Instance.Unsubscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+        }
+        TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
+    }
+
+    private void OnEnemyTurn(object obj)
+    {
+        currentTurn.text = "ENEMY TURN";
+        endTurn.interactable = false;
+    }
+
+    private void OnPlayerTurn(object obj)
+    {
+        currentTurn.text = "PLAYER TURN";
+        endTurn.interactable = true;
+
+        activeHeroes = availableHeroes;
+        turnNumber.text = (8 - turnManager.TurnNumber + 1).ToString();
+    }
+
+    private void OnCharacterMadeDecision(object obj)
+    {
+        CharacterHasMadeDecision decisionData = (CharacterHasMadeDecision)obj;
+        if (characterInfoDict.TryGetValue(decisionData.character.name, out var info))
+        {
+            info.SetNoActionState();
+        }
+        activeHeroes--;
+
+        if (activeHeroes == 0)
+        {
+            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+        }
+    }
+
+    private void CharacterDied(string arg0)
+    {
+        if (characterInfoDict.TryGetValue(arg0, out var info))
+        {
+            info.SetDeadState();
         }
 
+        heroButtons.Remove(heroButtons.Find(x => x.name == arg0));
+
+        availableHeroes--;
     }
+
+    #endregion
+
+    #region Custom Methods
 
     private void HeroSelected(Hero hero)
     {
@@ -146,6 +205,10 @@ public class HUDInfo : MonoBehaviour
                 {
                     Hero hero = currentTile.characterOnTile as Hero;
                     UpdateSelectedHeroInfo(hero);
+                    if (hero != selectedHero && characterInfoDict.TryGetValue(hero.name, out var info))
+                    {
+                        info.SetHoverState();
+                    }
                 }
                 else
                 {
@@ -180,6 +243,7 @@ public class HUDInfo : MonoBehaviour
             }
         }
     }
+    #endregion
 
     #region Initialization Methods
 
@@ -189,6 +253,8 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = (Hero)character;
             heroes.Add(hero);
+            availableHeroes++;
+            activeHeroes++;
 
             // Create heroInfoPrefab in Character List:
             GameObject gameObject = Instantiate(heroInfoPrefab);
@@ -200,28 +266,31 @@ public class HUDInfo : MonoBehaviour
             Button button = gameObject.GetComponent<Button>();
             button.onClick.AddListener(() =>
             {
-                OnCharacterSelected?.Invoke(character);
+                EventBus.Instance.Publish(new CharacterSelected { character = character });
             });
             heroButtons.Add(button);
 
-            // Display Hero Info:
+            // Add Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
+            info.hero = hero;
             characterInfoDict.Add(gameObject.name, info);
 
-            foreach (TextMeshProUGUI name in info.names)
+            // Set Hero Info:
+            info.InitializeInfo();
+            foreach (Image element in info.elements)
             {
-                name.text = hero.heroSO.attributes.name;
-            }
-            foreach (Image avatar in info.avatars)
-            {
-                avatar.sprite = hero.heroSO.attributes.avatar;
-            }
-            foreach (Image icon in info.icons)
-            {
-                icon.sprite = hero.heroSO.activeSkill.icon;
+                element.sprite = GetElementSprite(hero.elementType);
             }
 
-            info.SetDefaultState();
+            info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
+            info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
+
+            // Update Hero Info:
+            info.UpdateInfo();
+            foreach (TextMeshProUGUI status in info.textStatus)
+            {
+                status.text = GetStatusTypes(hero).ToString();
+            }
         }
 
         // Create heroStatusPrefab in Character List:
@@ -247,9 +316,6 @@ public class HUDInfo : MonoBehaviour
 
     private void ButtonsAddListener()
     {
-        //selectHeroStatus.moveBtn.onClick.AddListener(() => playerTurn.SwitchToMovement());
-        selectHeroStatus.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
-        selectHeroStatus.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
         endTurn.onClick.AddListener(() =>
         {
             playerTurn.EndTurn();
@@ -257,42 +323,12 @@ public class HUDInfo : MonoBehaviour
         });
         //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
         undo.interactable = false;
-        tempButton.onClick.AddListener(() => tempIntro.SetActive(false));
     }
 
-    private void NoActionLeft(PlayerTurn arg0)
-    {
-        endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-    }
-
-    private void CharacterDied(string arg0)
-    {
-        if (characterInfoDict.TryGetValue(arg0, out var info))
-        {
-            info.SetDeadState();
-        }
-
-        heroButtons.Remove(heroButtons.Find(x => x.name == arg0));
-    }
+    
     #endregion
 
     #region Update Stats
-
-    private void UpdateTurnInfo()
-    {
-        if (turnManager.CurrentTurn is PlayerTurn)
-        {
-            currentTurn.text = "PLAYER TURN";
-            endTurn.interactable = true;
-        }
-        else if (turnManager.CurrentTurn is EnemyTurn)
-        {
-            currentTurn.text = "ENEMY TURN";
-            endTurn.interactable = false;
-        }
-
-        turnNumber.text = (8 - turnManager.TurnNumber + 1).ToString();
-    }
 
     private void UpdateSelectedHeroInfo(Hero hero)
     {
