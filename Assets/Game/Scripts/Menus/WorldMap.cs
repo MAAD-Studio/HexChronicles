@@ -87,22 +87,30 @@ public class WorldMap : Menu
     //test
     public void LoadWorldMap()
     {
+        SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
+
         SceneLoader.Instance.LoadScene(worldMap);
     }
 
+    private void OnMapLoaded(List<string> list)
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent -= OnMapLoaded;
+
+        MenuManager.Instance.ShowMenu(menuClassifier);
+        MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+    }
+
     //test
-    public void UnloadWorldMap()
+    /*public void UnloadWorldMap()
     {
         SceneLoader.Instance.UnloadScene(worldMap);
-    }
+    }*/
 
     private void AllScenesUnloaded()
     {
         SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
 
-        SceneLoader.Instance.LoadScene(worldMap); // Not working
-
-        MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
-        MenuManager.Instance.ShowMenu(menuClassifier);
+        LoadWorldMap();
+        //SceneLoader.Instance.LoadScene(worldMap); // Not working
     }
 }
