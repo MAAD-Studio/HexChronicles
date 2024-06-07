@@ -189,10 +189,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if (phase == TurnEnums.PlayerPhase.Movement)
         {
+            cameraController.MoveToDefault(false);
             FullReset();
         }
         else if (phase == TurnEnums.PlayerPhase.Attack)
         {
+            cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
             areaPrefab.DestroySelf();
             phase = TurnEnums.PlayerPhase.Movement;
         }
@@ -289,6 +291,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private void GrabCharacter()
     {
         selectedCharacter = currentTile.characterOnTile;
+        cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
+
         pathFinder.FindPaths(selectedCharacter);
 
         SpawnSelectMarker();
@@ -322,6 +326,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 potentialPath = path;
                 potentialMovementTile = currentTile;
+
+                cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
 
                 phase = TurnEnums.PlayerPhase.Attack;
                 SpawnAreaPrefab();

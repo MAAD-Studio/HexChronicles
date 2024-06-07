@@ -95,13 +95,13 @@ public class TurnManager : MonoBehaviour
     public void SwitchState(TurnEnums.TurnState state)
     {
         currentTurn.ExitState();
-        mainCameraController.SetCamToDefault();
+        mainCameraController.MoveToDefault(true);
 
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
-                mainCameraController.allowControl = true;
+                mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
 
                 if (turnNumber == objectiveTurnNumber)
@@ -112,12 +112,12 @@ public class TurnManager : MonoBehaviour
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
-                mainCameraController.allowControl = false;
+                mainCameraController.controlEnabled = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
-                mainCameraController.allowControl = false;
+                mainCameraController.controlEnabled = false;
                 break;
         }
 

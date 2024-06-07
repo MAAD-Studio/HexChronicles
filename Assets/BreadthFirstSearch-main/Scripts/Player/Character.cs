@@ -14,9 +14,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
-    [HideInInspector] public bool hasMoved = false;
     [HideInInspector] public bool canMove = true;
-    [HideInInspector] public bool needsToPath = true;
 
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
@@ -30,10 +28,12 @@ public class Character : MonoBehaviour
     [HideInInspector] public float maxHealth = 0f;
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
-    public ElementType elementType;
-    public ElementType elementWeakAgainst;
     [SerializeField] protected Animator animator;
     [SerializeField] public HealthBar healthBar;
+    [HideInInspector] public ElementType elementType;
+    [HideInInspector] public ElementType elementWeakAgainst;
+    [HideInInspector] public ElementType elementStrongAgainst;
+
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -103,8 +103,6 @@ public class Character : MonoBehaviour
     {
         movementThisTurn = 0;
         canMove = true;
-        canAttack = true;
-        hasMoved = false;
     }
 
     public void AddStatus(Status status)
@@ -291,6 +289,7 @@ public class Character : MonoBehaviour
             moving = true;
             animator.SetBool("walking", true);
             characterTile.tileOccupied = false;
+            turnManager.mainCameraController.controlEnabled = false;
         }
 
         StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
@@ -316,11 +315,12 @@ public class Character : MonoBehaviour
             float animationTime = 0f;
             const float distanceToNext = 0.05f;
 
+            turnManager.mainCameraController.FollowTarget(transform, true);
+
             //While we still have points in the path to cover
             while (step < pathLength)
             {
                 yield return null;
-                turnManager.mainCameraController.SetCamToSelectedCharacter(this);
 
                 foreach (Tile tile in tilesInPath)
                 {
@@ -401,6 +401,10 @@ public class Character : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
         attackAreaPrefab.DestroySelf();
+
+        turnManager.mainCameraController.controlEnabled = true;
+        turnManager.mainCameraController.StopFollowingTarget();
+        turnManager.mainCameraController.MoveToDefault(true);
 
         movementComplete.Invoke(this);
     }

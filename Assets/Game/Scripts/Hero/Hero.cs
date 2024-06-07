@@ -21,6 +21,8 @@ public class Hero : Character
         attackDamage = heroSO.attributes.attackDamage;
         defensePercentage = heroSO.attributes.defensePercentage;
         elementType = heroSO.attributes.elementType;
+        elementWeakAgainst = heroSO.attributes.elementWeakAgainst;
+        elementStrongAgainst = heroSO.attributes.elementStrongAgainst;
 
         maxHealth = heroSO.attributes.health;
         currentHealth = maxHealth;
@@ -49,21 +51,19 @@ public class Hero : Character
 
     public override void TakeDamage(float damage, ElementType type)
     {
-        if(elementWeakAgainst == type)
+        int hitResult = UnityEngine.Random.Range(0, 101);
+
+        if (elementWeakAgainst == type && hitResult <= defensePercentage)
         {
-            base.TakeDamage(damage, type);
+            base.TakeDamage(damage + 1, type);
+        }
+        else if (elementStrongAgainst == type)
+        {
+            base.TakeDamage(damage - 1, type);
         }
         else
         {
-            int hitNum = UnityEngine.Random.Range(0, 101);
-            if (hitNum > heroSO.attributes.defensePercentage)
-            {
-                base.TakeDamage(damage, type);
-            }
-            else
-            {
-                TemporaryMarker.GenerateMarker(heroSO.attributes.missText, gameObject.transform.position, 4f, 0.5f);
-            }
+            base.TakeDamage(damage, type);
         }
     }
 

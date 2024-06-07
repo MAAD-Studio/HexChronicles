@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraController : MonoBehaviour
+public class CameraController2 : MonoBehaviour
 {
     #region Variables
 
@@ -12,15 +12,10 @@ public class CameraController : MonoBehaviour
     private Vector3 targetPosition;
 
     [HideInInspector] public bool controlEnabled = true;
-    private Transform targetToFollow = null;
-    private Vector2 previousMousePos = Vector2.zero;
 
     [Header("Cursor Textures:")]
     [SerializeField] private Texture2D cursorDefault;
     [SerializeField] private Texture2D cursorGrab;
-
-    [Header("Camera Mode:")]
-    [SerializeField] private bool useAutoZoomCam = false;
 
     [Header("Camera Default Positioning: ")]
     [SerializeField] private Vector3 defaultPosition = Vector3.zero;
@@ -29,13 +24,6 @@ public class CameraController : MonoBehaviour
     [Header("Camera Movement:")]
     [SerializeField] private float wasdSpeed = 5f;
     [SerializeField] private float panSpeed = 10f;
-
-    [Header("Lerp: ")]
-    [Range(0.02f, 0.1f)]
-    [SerializeField] private float lerpLevel = 0.04f;
-
-    [Range(0.02f, 0.1f)]
-    [SerializeField] private float lerpDeadZone = 0.05f;
 
     [Header("Camera Zoom:")]
     [SerializeField] private float scrollZoomSpeed = 4f;
@@ -67,17 +55,15 @@ public class CameraController : MonoBehaviour
         cameraTransform.eulerAngles = defaultRotation;
 
         targetPosition = cameraTransform.position;
-
-        Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void Update()
     {
         ApproachTargetPosition();
 
-        if (controlEnabled)
+        if(controlEnabled)
         {
-            CheckKeyInput();
+            CheckInput();
 
             ZoomUpdate();
             MovementUpdate();
@@ -90,43 +76,27 @@ public class CameraController : MonoBehaviour
 
     #region CustomMethods
 
-    /*
-     * Moves the Camera towards a target position
-     */
     private void ApproachTargetPosition()
     {
-        //If a transform has been provided to follow the target is set to its location
-        if(targetToFollow != null)
+        if(Vector3.Distance(cameraTransform.position, targetPosition) > 0.05f)
         {
-            targetPosition = targetToFollow.position + onZoomAddOn;
-        }
-
-        if (Vector3.Distance(cameraTransform.position, targetPosition) > lerpDeadZone)
-        {
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, lerpLevel);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, 0.035f);
         }
     }
 
-    /*
-     * Checks for any Key Inputs
-     */
-    private void CheckKeyInput()
+    private void CheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad0))
+        if(Input.GetKeyDown(KeyCode.Keypad0))
         {
             targetPosition = defaultPosition;
         }
     }
 
-    /*
-     * Checks if the Player is trying to zoom the Camera
-     */
     private void ZoomUpdate()
     {
         float scrollDelta = -Input.mouseScrollDelta.y;
-
-        //Only allows zooming the Camera is within game bounds
-        if (scrollDelta < 0 && targetPosition.y > maxZoomIn || scrollDelta > 0 && targetPosition.y < maxZoomOut)
+        
+        if(scrollDelta < 0 && targetPosition.y > maxZoomIn || scrollDelta > 0 && targetPosition.y < maxZoomOut)
         {
             Vector3 zoomMovement = Vector3.zero;
             zoomMovement.z -= scrollDelta;
@@ -138,17 +108,13 @@ public class CameraController : MonoBehaviour
             targetPosition += zoomMovement * scrollZoomSpeed * Time.deltaTime;
         }
     }
-
-    /*
-     * Checks if the Player is trying to move the Camera
-     */
+     
     private void MovementUpdate()
     {
-        if (Input.GetMouseButton(2))
+        if(Input.GetMouseButton(2))
         {
             Cursor.SetCursor(cursorGrab, Vector2.zero, CursorMode.Auto);
             PanMovement();
-            previousMousePos = Input.mousePosition;
         }
         else
         {
@@ -157,9 +123,6 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    /*
-     * Performs Pan style movement on the Camera
-     */
     private void PanMovement()
     {
         Vector3 movement = Vector3.zero;
@@ -169,57 +132,41 @@ public class CameraController : MonoBehaviour
 
         float yScaler = cameraTransform.position.y;
 
-        Vector2 mousePos = Input.mousePosition;
+        movement.x -= axisX * panSpeed * yScaler;
+        movement.z -= axisY * panSpeed * yScaler;
 
-        if (previousMousePos.x != mousePos.x)
-        {
-            movement.x -= axisX * yScaler;
-        }
-        if(previousMousePos.y != mousePos.y)
-        {
-            movement.z -= axisY * yScaler;
-        }
-
-        targetPosition += movement * panSpeed * Time.deltaTime;
+        targetPosition += movement * Time.deltaTime;
     }
 
-    /*
-     * Performs WASD style movement on the Camera
-     */
     private void WASDMovement()
     {
         Vector3 movement = Vector3.zero;
 
-        float yScaler = cameraTransform.position.y;
-
-        if (Input.GetKey(KeyCode.W))
+        if(Input.GetKey(KeyCode.W))
         {
-            movement.z += 0.25f * yScaler;
+            movement.z += 1f;
         }
 
-        if (Input.GetKey(KeyCode.S))
+        if(Input.GetKey(KeyCode.S))
         {
-            movement.z -= 0.25f * yScaler;
+            movement.z -= 1f;
         }
 
-        if (Input.GetKey(KeyCode.A))
+        if(Input.GetKey(KeyCode.A))
         {
-            movement.x -= 0.25f * yScaler;
+            movement.x -= 1f;
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if(Input.GetKey(KeyCode.D))
         {
-            movement.x += 0.25f * yScaler;
+            movement.x += 1f;
         }
 
-        movement = Vector3.ClampMagnitude(movement, 0.25f * yScaler);
+        movement.Normalize();
 
         targetPosition += movement * wasdSpeed * Time.deltaTime;
     }
 
-    /*
-     * Clamps targetPosition to keep it within the game bounds
-     */
     private void ClampTarget()
     {
         targetPosition.x = Mathf.Clamp(targetPosition.x, maxLeft, maxRight);
@@ -228,45 +175,9 @@ public class CameraController : MonoBehaviour
         targetPosition.y = Mathf.Clamp(targetPosition.y, maxZoomIn, maxZoomOut);
     }
 
-    /*
-     * Moves the Camera to the given position
-     */
-    public void MoveToTargetPosition(Vector3 newTargetPos, bool forceMovement)
+    private void SetTargetPosition(Vector3 newTargetPos)
     {
-        if(useAutoZoomCam || forceMovement)
-        {
-            targetPosition = newTargetPos + onZoomAddOn;
-        }
-    }
-
-    /*
-     * Moves the Camera back to the default position
-     */
-    public void MoveToDefault(bool forceMovement)
-    {
-        if(useAutoZoomCam || forceMovement)
-        {
-            targetPosition = defaultPosition;
-        }
-    }
-
-    /*
-     * Holds onto a Transform to continuously follow
-     */
-    public void FollowTarget(Transform target, bool forceMovement)
-    {
-        if(useAutoZoomCam || forceMovement)
-        {
-            targetToFollow = target;
-        }
-    }
-
-    /*
-     * Stops following any Transforms
-     */
-    public void StopFollowingTarget()
-    {
-        targetToFollow = null;
+        targetPosition = newTargetPos + onZoomAddOn;
     }
 
     #endregion

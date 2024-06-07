@@ -40,8 +40,6 @@ public class TowersTurn : WorldTurnBase
         base.ExitState();
         updateCalled = false;
         updateDone = false;
-
-        turnManager.mainCameraController.UnSelectObject();
     }
 
     public override void UpdateState()
@@ -74,7 +72,7 @@ public class TowersTurn : WorldTurnBase
         {
             foreach (Spawner spawner in spawners)
             {
-                turnManager.mainCameraController.SetCamToObject(spawner);
+                turnManager.mainCameraController.MoveToTargetPosition(transform.position, true);
 
                 yield return new WaitForSeconds(0.5f);
                 spawner.AttemptSpawn();
