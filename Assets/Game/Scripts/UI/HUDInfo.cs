@@ -300,7 +300,7 @@ public class HUDInfo : MonoBehaviour
                     Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
 
                     enemyHoverUI.SetStats(enemy);
-                    enemyHoverUI.gameObject.transform.position = Camera.main.WorldToScreenPoint(enemy.transform.position);
+                    enemyHoverUI.gameObject.transform.position = (Camera.main.WorldToScreenPoint(enemy.transform.position) + new Vector3(0,24,0));
 
                     if (Input.GetMouseButtonDown(0))
                     {

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class EnemyHoverUI : MonoBehaviour
 {
-    public TextMeshProUGUI textName;
     public Image element;
     public TextMeshProUGUI textHP;
     public TextMeshProUGUI textAttack;
@@ -19,7 +18,6 @@ public class EnemyHoverUI : MonoBehaviour
 
     public void SetStats(Enemy_Base enemy)
     {
-        textName.text = enemy.enemySO.attributes.name;
         element.sprite = characterUIConfig.GetElementSprite(enemy.elementType);
         textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
         textAttack.text = $"{enemy.attackDamage}";
