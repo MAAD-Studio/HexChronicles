@@ -189,7 +189,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if (phase == TurnEnums.PlayerPhase.Movement)
         {
-            cameraController.MoveToDefault(false);
             FullReset();
         }
         else if (phase == TurnEnums.PlayerPhase.Attack)

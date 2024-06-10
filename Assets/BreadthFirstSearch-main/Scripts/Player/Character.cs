@@ -279,6 +279,7 @@ public class Character : MonoBehaviour
         animator.SetBool("walking", true);
 
         characterTile.tileOccupied = false;
+        characterTile.characterOnTile = null;
         StartCoroutine(MoveThroughPath(_path));
     }
 
@@ -289,6 +290,7 @@ public class Character : MonoBehaviour
             moving = true;
             animator.SetBool("walking", true);
             characterTile.tileOccupied = false;
+            characterTile.characterOnTile = null;
             turnManager.mainCameraController.controlEnabled = false;
         }
 
