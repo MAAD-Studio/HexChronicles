@@ -34,17 +34,38 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        return 0;
+        int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
+        int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
+        int tileValue = distanceEnemy - distanceTile;
+
+        return tileValue * 2;
     }
 
     public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
-        return 0;
+        int valueOfAttack = 0;
+        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        {
+            valueOfAttack += 5;
+
+            //Bias towards remaining on current tile
+            if (currentTile == characterTile)
+            {
+                valueOfAttack += 30;
+            }
+        }
+
+        return valueOfAttack;
     }
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
         animator.SetTrigger("attack");
+        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        {
+            transform.LookAt(character.transform.position);
+            character.TakeDamage(attackDamage, elementType);
+        }
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

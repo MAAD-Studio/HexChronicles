@@ -17,28 +17,12 @@ public class Enemy_KingJelly : Enemy_Base
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
-        int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
-        int tileValue = distanceEnemy - distanceTile;
-
-        return tileValue * 2;
+        return base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
-        int valueOfAttack = 0;
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
-        {
-            valueOfAttack += 5;
-
-            //Bias towards remaining on current tile
-            if (currentTile == characterTile)
-            {
-                valueOfAttack += 30;
-            }
-        }
-
-        return valueOfAttack;
+        return base.CalculteAttackValue(attackArea, turnManager, currentTile);
     }
 
     public override void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
@@ -60,7 +44,7 @@ public class Enemy_KingJelly : Enemy_Base
     public override void Died()
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();
-        turnManager.pathfinder.FindPaths(this);
+        turnManager.pathfinder.PathTilesInRange(characterTile, 0, 5, false);
 
         bool masterJellySpawned = false;
         int slimesSpawned = 0;

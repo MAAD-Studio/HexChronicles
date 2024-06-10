@@ -29,16 +29,26 @@ public class Pathfinder : MonoBehaviour
 
     #region BreadthFirstMethods
 
+    public void PathTilesInRange(Tile origin, int originCost, int maxRange, bool includeOccupied)
+    {
+        FindPaths(origin, originCost, maxRange, includeOccupied);
+    }
+
+    public void FindMovementPathsCharacter(Character character)
+    {
+        FindPaths(character.characterTile, character.movementThisTurn, character.moveDistance, false);
+    }
+
     //BreadthFirst searches for what tiles the character can reach
-    public void FindPaths(Character character)
+    private void FindPaths(Tile origin, int originCost, int maxRange, bool includeOccupied)
     {
         ResetPathFinder();
 
         //Grabs and sets the origin tile
         Queue<Tile> openTiles = new Queue<Tile>();
-        openTiles.Enqueue(character.characterTile);
+        openTiles.Enqueue(origin);
 
-        character.characterTile.cost = character.movementThisTurn;
+        origin.cost = originCost;
 
         //While we have tiles to investigate
         while (openTiles.Count > 0)
@@ -46,27 +56,22 @@ public class Pathfinder : MonoBehaviour
             Tile currentTile = openTiles.Dequeue();
 
             //Checks every adjacent tile to the current tile we are investigating
-            foreach (Tile adjacentTile in FindAdjacentTiles(currentTile, false))
+            foreach (Tile adjacentTile in FindAdjacentTiles(currentTile, includeOccupied))
             {
                 float newCost;
 
                 newCost = currentTile.cost + adjacentTile.tileData.tileCost;
 
                 //If the adjacent tile has already been added to the list of tile to check ignore it
-                if (openTiles.Contains(adjacentTile))
+                if (openTiles.Contains(adjacentTile) || frontier.Contains(adjacentTile))
                 {
-                    if (adjacentTile.cost > newCost)
-                    {
-                        adjacentTile.cost = newCost;
-                        adjacentTile.parentTile = currentTile;
-                    }
                     continue;
                 }
 
                 adjacentTile.cost = newCost;
 
                 //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
-                if (IsValidTile(adjacentTile, character.moveDistance))
+                if (IsValidTile(adjacentTile, maxRange, includeOccupied))
                 {
                     adjacentTile.parentTile = currentTile;
                     openTiles.Enqueue(adjacentTile);
@@ -80,7 +85,7 @@ public class Pathfinder : MonoBehaviour
     }
 
     //Checks if a tile is valid for reaching
-    bool IsValidTile(Tile tile, int maxCost)
+    bool IsValidTile(Tile tile, int maxCost, bool includeOccupied)
     {
         if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
         {
