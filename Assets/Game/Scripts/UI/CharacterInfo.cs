@@ -11,6 +11,7 @@ public class CharacterInfo : MonoBehaviour
     public GameObject selectedState;
     public GameObject noActionState;
     public GameObject deadState;
+    public CharacterUIConfig characterUIConfig;
 
     public List<TextMeshProUGUI> names;
     public List<Image> avatars;

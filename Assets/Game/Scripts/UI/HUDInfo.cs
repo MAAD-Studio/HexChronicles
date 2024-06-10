@@ -32,8 +32,10 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Enemy Info")]
     [SerializeField] private GameObject enemyInfoPanel;
-    [SerializeField] private GameObject enemyStatusPrefab;
+    [SerializeField] private GameObject enemyDetailPrefab;
+    [SerializeField] private GameObject enemyHoverPrefab;
     private EnemyStatsUI enemyStatus;
+    private EnemyHoverUI enemyHoverUI;
 
     [Header("Tile Object Info")]
     [SerializeField] private GameObject objectInfoPanel;
@@ -42,10 +44,7 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Tile Info")]
     [SerializeField] private GameObject tileInfoPanel;
-    [SerializeField] private Image tileImage;
-    [SerializeField] private Image tileElement;
-    [SerializeField] private TextMeshProUGUI tileName;
-    [SerializeField] private TextMeshProUGUI tileEffects;
+    private TileInfo tileInfo;
 
     [Header("Buttons")]
     [SerializeField] private Button endTurn;
@@ -197,7 +196,7 @@ public class HUDInfo : MonoBehaviour
             info.InitializeInfo();
             foreach (Image element in info.elements)
             {
-                element.sprite = GetElementSprite(hero.elementType);
+                element.sprite = info.characterUIConfig.GetElementSprite(hero.elementType);
             }
 
             info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
@@ -207,16 +206,15 @@ public class HUDInfo : MonoBehaviour
             info.UpdateInfo();
             foreach (TextMeshProUGUI status in info.textStatus)
             {
-                status.text = GetStatusTypes(hero).ToString();
+                status.text = info.characterUIConfig.GetStatusTypes(hero).ToString();
             }
         }
 
         // Create enemyInfoPrefab:
-        GameObject enemyUI = Instantiate(enemyStatusPrefab);
+        GameObject enemyUI = Instantiate(enemyDetailPrefab);
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
         enemyUI.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
         enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
-        enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
 
         // Create objectInfoPrefab:
         GameObject objectUI = Instantiate(objectStatusPrefab);
@@ -224,6 +222,18 @@ public class HUDInfo : MonoBehaviour
         objectUI.transform.localScale = new Vector3(1, 1, 1); 
         objectUI.transform.localPosition = new Vector3(0, 0, 0); 
         objectStatus = objectUI.GetComponent<EnemyStatsUI>();
+        enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
+        
+        // Create enemyHoverPrefab:
+        GameObject enemyHover = Instantiate(enemyHoverPrefab);
+        enemyHover.transform.SetParent(this.transform);
+        enemyHover.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
+        enemyHover.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        enemyHoverUI = enemyHover.GetComponent<EnemyHoverUI>();
+        enemyHoverUI.gameObject.SetActive(false);
+
+        // Get Tile Info:
+        tileInfo = tileInfoPanel.GetComponent<TileInfo>();
     }
 
     private void ButtonsAddListener()
@@ -267,11 +277,11 @@ public class HUDInfo : MonoBehaviour
 
         if (currentTile == null)
         {
-            tileInfoPanel.gameObject.SetActive(false);
+            tileInfo.Hide();
         }
         else
         {
-            UpdateTileInfo();
+            tileInfo.SetTileInfo(currentTile);
 
             if (currentTile.characterOnTile != null)
             {
@@ -288,107 +298,36 @@ public class HUDInfo : MonoBehaviour
                 if (currentTile.characterOnTile is Enemy_Base)
                 {
                     Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
-                    UpdateEnemyInfo(enemy);
+
+                    enemyHoverUI.SetStats(enemy);
+                    enemyHoverUI.gameObject.transform.position = Camera.main.WorldToScreenPoint(enemy.transform.position);
+
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        enemyStatus.SetEnemyStats(enemy);
+                    }
                 }
                 else
                 {
-                    enemyInfoPanel.gameObject.SetActive(false);
+                    enemyStatus.Hide();
+                    enemyHoverUI.Hide();
                 }
             }
             else
             {
-                enemyInfoPanel.gameObject.SetActive(false);
+                enemyStatus.Hide();
             }
 
             if (currentTile.tileHasObject)
             {
                 TileObject tileObject = currentTile.objectOnTile;
-
-                UpdateObjectInfo(tileObject);
+                objectStatus.SetObjectStats(tileObject);
             }
             else
             {
-                objectInfoPanel.gameObject.SetActive(false);
+                objectStatus.Hide();
             }
         }
-    }
-
-    private Sprite GetElementSprite(ElementType element)
-    {
-        if (element == ElementType.Fire)
-        {
-            return elementSprites[0];
-        }
-        else if (element == ElementType.Water)
-        {
-            return elementSprites[1];
-        }
-        else if (element == ElementType.Grass)
-        {
-            return elementSprites[2];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    private string GetStatusTypes(Character character)
-    {
-        if (character.statusList.Count != 0)
-        {
-            string statusList = "Status: ";
-            foreach (var status in character.statusList)
-            {
-                statusList += status.statusType.ToString() + ", ";
-            }
-            return statusList;
-        }
-        
-        return "";
-    }
-
-    private void UpdateEnemyInfo(Enemy_Base enemy)
-    {
-        enemyInfoPanel.gameObject.SetActive(true);
-
-        enemyStatus.avatar.sprite = enemy.enemySO.attributes.avatar;
-        enemyStatus.element.sprite = GetElementSprite(enemy.elementType);
-        enemyStatus.textName.text = enemy.enemySO.attributes.name;
-        enemyStatus.enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
-        enemyStatus.enemyInfo.ForceMeshUpdate();
-        enemyStatus.textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
-        enemyStatus.textMovement.text = $"{enemy.moveDistance}";
-        enemyStatus.textAttack.text = $"{enemy.attackDamage}";
-        enemyStatus.textRange.text = $"{enemy.attackDistance}";
-        enemyStatus.textDef.text = $"{enemy.defensePercentage}%";
-        enemyStatus.textStatus.text = GetStatusTypes(enemy).ToString(); 
-    }
-
-    private void UpdateObjectInfo(TileObject tileObject)
-    {
-        objectInfoPanel.gameObject.SetActive(true);
-
-        objectStatus.avatar.sprite = tileObject.tileObjectData.avatar;
-        objectStatus.textName.text = tileObject.tileObjectData.objectName;
-        objectStatus.enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
-        objectStatus.enemyInfo.ForceMeshUpdate();
-        objectStatus.textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
-        objectStatus.textDef.text = $"{tileObject.tileObjectData.defense}%";
-        //objectStatus.textStatus.text = GetStatusTypes(tileObject).ToString();
-        objectStatus.textStatus.gameObject.SetActive(false);
-    }
-
-    private void UpdateTileInfo()
-    {
-        tileInfoPanel.gameObject.SetActive(true);
-        tileImage.sprite = currentTile.tileData.tileSprite;
-        tileElement.sprite = GetElementSprite(currentTile.tileData.tileType);
-        if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
-        else { tileElement.gameObject.SetActive(true); }
-        tileName.text = currentTile.tileData.name;
-        tileEffects.text = currentTile.tileData.tileEffects.DisplayKeywordDescription();
-        tileEffects.ForceMeshUpdate();
     }
     #endregion
 }

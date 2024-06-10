@@ -4441,14 +4441,11 @@ MonoBehaviour:
   heroListPanel: {fileID: 861960004}
   heroInfoPrefab: {fileID: 2511249401130961502, guid: 9dd0f988726dc1647a2eab1c9d74061a, type: 3}
   enemyInfoPanel: {fileID: 790103749}
-  enemyStatusPrefab: {fileID: 6512405803852816446, guid: 767c67607358e1b4bbba690b77a50974, type: 3}
+  enemyDetailPrefab: {fileID: 6512405803852816446, guid: 767c67607358e1b4bbba690b77a50974, type: 3}
+  enemyHoverPrefab: {fileID: 6512405803852816446, guid: 1e80e41d83161fe488b5bfd98ac40e11, type: 3}
   objectInfoPanel: {fileID: 1774023908}
   objectStatusPrefab: {fileID: 6512405803852816446, guid: ab565bcd6a68ed342ad31a07fca755da, type: 3}
   tileInfoPanel: {fileID: 2026964658}
-  tileImage: {fileID: 83990496}
-  tileElement: {fileID: 1506286502}
-  tileName: {fileID: 1369056131}
-  tileEffects: {fileID: 1911163525}
   endTurn: {fileID: 1878596038}
   undo: {fileID: 684399827}
   elementSprites:
@@ -7541,11 +7538,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 473275755}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 20, y: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -20, y: 0}
   m_SizeDelta: {x: 160, y: 206}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &790103751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14213,11 +14210,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 473275755}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 20, y: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -20, y: 0}
   m_SizeDelta: {x: 160, y: 206}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!1 &1778937260
 GameObject:
   m_ObjectHideFlags: 0
@@ -15763,8 +15760,9 @@ GameObject:
   - component: {fileID: 2026964662}
   - component: {fileID: 2026964661}
   - component: {fileID: 2026964663}
+  - component: {fileID: 2026964664}
   m_Layer: 5
-  m_Name: Tile Info_New
+  m_Name: Tile Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15855,6 +15853,23 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2026964664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026964658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e971ef3324ec46a83e58bc5e0a169, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileImage: {fileID: 83990496}
+  tileElement: {fileID: 1506286502}
+  tileName: {fileID: 1369056131}
+  tileEffects: {fileID: 1911163525}
+  characterUIConfig: {fileID: 11400000, guid: 2e21759f4f7ee614f95134b0edd79891, type: 2}
 --- !u!1 &2027402242
 GameObject:
   m_ObjectHideFlags: 0
