@@ -24,10 +24,8 @@ public class HUDInfo : MonoBehaviour
     [Header("Hero Info")]
     [SerializeField] private GameObject heroListPanel;
     [SerializeField] private GameObject heroInfoPrefab;
-    [SerializeField] private GameObject heroStatusPrefab;
     private Dictionary<string, CharacterInfo> characterInfoDict = new Dictionary<string, CharacterInfo>();
     private List<Button> heroButtons = new List<Button>();
-    private CharacterStatsUI selectHeroStatus;
     private Hero selectedHero;
     private int availableHeroes;
     private int activeHeroes;
@@ -57,15 +55,18 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Sprite[] elementSprites;
 
     #region Unity Methods
+
     private void Start()
     {
         turnManager = FindObjectOfType<TurnManager>();
         Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
         playerTurn = turnManager.GetComponent<PlayerTurn>();
 
+        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
+
+        SubscribeEvents();
         InstantiateUIElements();
         ButtonsAddListener();
-        SubscribeEvents();
     }
 
     private void OnDestroy()
@@ -75,11 +76,6 @@ public class HUDInfo : MonoBehaviour
 
     private void Update()
     {
-        if (turnManager == null)
-        {
-            return;
-        }
-
         CheckCurrentHover();
 
         selectedCharacter = playerTurn.SelectedCharacter;
@@ -87,7 +83,7 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = selectedCharacter as Hero;
             HeroSelected(hero);
-            UpdateSelectedHeroInfo(hero);
+            //UpdateSelectedHeroInfo(hero);
         }
         else if (selectedCharacter == null && selectedHero != null)
         {
@@ -105,6 +101,7 @@ public class HUDInfo : MonoBehaviour
         if (EventBus.Instance != null)
         {
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+            Debug.Log("Subscribed to OnPlayerTurn");
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
         }
@@ -134,7 +131,7 @@ public class HUDInfo : MonoBehaviour
         endTurn.interactable = true;
 
         activeHeroes = availableHeroes;
-        turnNumber.text = (8 - turnManager.TurnNumber + 1).ToString();
+        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
     }
 
     private void OnCharacterMadeDecision(object obj)
@@ -164,85 +161,6 @@ public class HUDInfo : MonoBehaviour
         availableHeroes--;
     }
 
-    #endregion
-
-    #region Custom Methods
-
-    private void HeroSelected(Hero hero)
-    {
-        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
-        {
-            newInfo.SetSelectedState();
-        }
-
-        // While changing hero in the list
-        if (selectedHero != null && selectedHero != hero)
-        {
-            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
-            {
-                info.SetDefaultState();
-            }
-        }
-
-        selectedHero = hero;
-    }
-
-    private void CheckCurrentHover()
-    {
-        currentTile = playerTurn.CurrentTile;
-
-        if (currentTile == null)
-        {
-            tileInfoPanel.gameObject.SetActive(false);
-        }
-        else
-        {
-            UpdateTileInfo();
-
-            if (currentTile.characterOnTile != null)
-            {
-                if (currentTile.characterOnTile is Hero)
-                {
-                    Hero hero = currentTile.characterOnTile as Hero;
-                    UpdateSelectedHeroInfo(hero);
-                    if (hero != selectedHero && characterInfoDict.TryGetValue(hero.name, out var info))
-                    {
-                        info.SetHoverState();
-                    }
-                }
-                else
-                {
-                    selectHeroStatus.gameObject.SetActive(false);
-                }
-
-                if (currentTile.characterOnTile is Enemy_Base)
-                {
-                    Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
-                    UpdateEnemyInfo(enemy);
-                }
-                else
-                {
-                    enemyInfoPanel.gameObject.SetActive(false);
-                }
-            }
-            else
-            {
-                selectHeroStatus.gameObject.SetActive(false);
-                enemyInfoPanel.gameObject.SetActive(false);
-            }
-
-            if (currentTile.tileHasObject)
-            {
-                TileObject tileObject = currentTile.objectOnTile;
-
-                UpdateObjectInfo(tileObject);
-            }
-            else
-            {
-                objectInfoPanel.gameObject.SetActive(false);
-            }
-        }
-    }
     #endregion
 
     #region Initialization Methods
@@ -293,16 +211,10 @@ public class HUDInfo : MonoBehaviour
             }
         }
 
-        // Create heroStatusPrefab in Character List:
-        GameObject heroUI = Instantiate(heroStatusPrefab);
-        heroUI.transform.SetParent(heroListPanel.transform);
-        heroUI.transform.localScale = new Vector3(1, 1, 1); // for fixing scale difference in different resolutions
-        selectHeroStatus = heroUI.GetComponent<CharacterStatsUI>();
-
         // Create enemyInfoPrefab:
         GameObject enemyUI = Instantiate(enemyStatusPrefab);
         enemyUI.transform.SetParent(enemyInfoPanel.transform);
-        enemyUI.transform.localScale = new Vector3(1, 1, 1); 
+        enemyUI.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
         enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
         enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
 
@@ -328,45 +240,77 @@ public class HUDInfo : MonoBehaviour
     
     #endregion
 
-    #region Update Stats
+    #region Custom Methods
 
-    private void UpdateSelectedHeroInfo(Hero hero)
+    private void HeroSelected(Hero hero)
     {
-        selectHeroStatus.gameObject.SetActive(true);
-
-        //selectHeroStatus.attackBtn.interactable = hero.canAttack;
-        //selectHeroStatus.moveBtn.interactable = hero.canMove;
-
-        if (hero.currentSkillCD > 0)
+        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
         {
-            selectHeroStatus.skillBtn.interactable = false;
-            selectHeroStatus.skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
-            selectHeroStatus.attackBtn.interactable = false; // temp
+            newInfo.SetSelectedState();
+        }
+
+        // While changing hero in the list
+        if (selectedHero != null && selectedHero != hero)
+        {
+            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
+            {
+                info.SetDefaultState();
+            }
+        }
+
+        selectedHero = hero;
+    }
+
+    private void CheckCurrentHover()
+    {
+        currentTile = playerTurn.CurrentTile;
+
+        if (currentTile == null)
+        {
+            tileInfoPanel.gameObject.SetActive(false);
         }
         else
         {
-            selectHeroStatus.skillBtn.interactable = true;
-            selectHeroStatus.skillCD.gameObject.SetActive(false);
-            selectHeroStatus.attackBtn.interactable = true; // temp
+            UpdateTileInfo();
+
+            if (currentTile.characterOnTile != null)
+            {
+                if (currentTile.characterOnTile is Hero)
+                {
+                    Hero hero = currentTile.characterOnTile as Hero;
+                    //UpdateSelectedHeroInfo(hero);
+                    if (hero != selectedHero && characterInfoDict.TryGetValue(hero.name, out var info))
+                    {
+                        info.SetHoverState();
+                    }
+                }
+
+                if (currentTile.characterOnTile is Enemy_Base)
+                {
+                    Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
+                    UpdateEnemyInfo(enemy);
+                }
+                else
+                {
+                    enemyInfoPanel.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                enemyInfoPanel.gameObject.SetActive(false);
+            }
+
+            if (currentTile.tileHasObject)
+            {
+                TileObject tileObject = currentTile.objectOnTile;
+
+                UpdateObjectInfo(tileObject);
+            }
+            else
+            {
+                objectInfoPanel.gameObject.SetActive(false);
+            }
         }
-
-        // Display Status:
-        selectHeroStatus.avatar.sprite = hero.heroSO.attributes.avatar;
-        selectHeroStatus.skillShape.sprite = hero.heroSO.activeSkill.skillshape;
-        selectHeroStatus.element.sprite = GetElementSprite(hero.elementType);
-        selectHeroStatus.textName.text = hero.heroSO.attributes.name;
-        selectHeroStatus.textHP.text = $"{hero.currentHealth} / {hero.maxHealth}";
-        selectHeroStatus.textMovement.text = $"{hero.moveDistance}";
-        selectHeroStatus.textAttack.text = $"{hero.attackDamage}";
-        selectHeroStatus.textDef.text = $"{hero.defensePercentage}%";
-
-        selectHeroStatus.attackShape.sprite = hero.heroSO.attackShape;
-        selectHeroStatus.attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
-        selectHeroStatus.attackInfo.ForceMeshUpdate();
-
-        selectHeroStatus.skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
-        selectHeroStatus.skillInfo.ForceMeshUpdate();
-        selectHeroStatus.textStatus.text = GetStatusTypes(hero).ToString();
     }
 
     private Sprite GetElementSprite(ElementType element)

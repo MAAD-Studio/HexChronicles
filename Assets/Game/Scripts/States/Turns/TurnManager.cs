@@ -34,7 +34,7 @@ public class TurnManager : MonoBehaviour
     private StateInterface currentTurn;
 
     private int turnNumber;
-    private int objectiveTurnNumber = 8;
+    public int objectiveTurnNumber = 8;
 
     public StateInterface CurrentTurn
     {
@@ -81,6 +81,7 @@ public class TurnManager : MonoBehaviour
         turnNumber = 1;
 
         currentTurn = playerTurn;
+        EventBus.Instance.Publish(new OnPlayerTurn());
     }
 
     void Update()

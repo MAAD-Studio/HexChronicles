@@ -15,12 +15,15 @@ public class CharacterInfo : MonoBehaviour
     public List<TextMeshProUGUI> names;
     public List<Image> avatars;
     public List<Image> elements;
-    public List<TextMeshProUGUI> textHP;
     public List<TextMeshProUGUI> textMovement;
     public List<TextMeshProUGUI> textAttack;
     public List<TextMeshProUGUI> textDef;
     public List<TextMeshProUGUI> textStatus;
     [HideInInspector] public Hero hero;
+
+    [Header("HealthBar")]
+    public List<TextMeshProUGUI> textHP;
+    public List<Image> health;
 
     [Header("Hero")]
     public Image attackShape;
@@ -36,7 +39,27 @@ public class CharacterInfo : MonoBehaviour
 
     private void Start()
     {
+        hero.OnUpdateHealthBar += UpdateHealthBar;
+
         SetDefaultState();
+        UpdateHealthBar(this, EventArgs.Empty);
+    }
+
+    private void OnDestroy()
+    {
+        hero.OnUpdateHealthBar -= UpdateHealthBar;
+    }
+
+    private void UpdateHealthBar(object sender, EventArgs e)
+    {
+        foreach (Image hp in health)
+        {
+            hp.fillAmount = hero.currentHealth / hero.maxHealth;
+        }
+        foreach (TextMeshProUGUI hp in textHP)
+        {
+            hp.text = $"{hero.currentHealth} / {hero.maxHealth} HP";
+        }
     }
 
     public void InitializeInfo()
@@ -61,10 +84,6 @@ public class CharacterInfo : MonoBehaviour
 
     public void UpdateInfo()
     {
-        foreach (TextMeshProUGUI hp in textHP)
-        {
-            hp.text = hero.currentHealth + "/" + hero.maxHealth;
-        }
         foreach (TextMeshProUGUI movement in textMovement)
         {
             movement.text = hero.moveDistance.ToString();
@@ -90,6 +109,8 @@ public class CharacterInfo : MonoBehaviour
             skillCD.gameObject.SetActive(false);
             attackBtn.interactable = true;
         }
+        //selectHeroStatus.attackBtn.interactable = hero.canAttack;
+        //selectHeroStatus.moveBtn.interactable = hero.canMove;
     }
 
     public void SetDefaultState()
