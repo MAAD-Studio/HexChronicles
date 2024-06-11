@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CharacterInfo : MonoBehaviour
+public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject defaultState;
     public GameObject selectedState;
@@ -113,10 +114,22 @@ public class CharacterInfo : MonoBehaviour
         //selectHeroStatus.attackBtn.interactable = hero.canAttack;
         //selectHeroStatus.moveBtn.interactable = hero.canMove;
     }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        SetHoverState();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SetDefaultState();
+    }
 
     public void SetDefaultState()
     {
-        Debug.Log("DefaultState");
+        if (hero.hasMadeDecision)
+        {
+            return;
+        }
         defaultState.SetActive(true);
         defaultState.GetComponent<Image>().color = new Color(1, 1, 1, 0.8f);
         defaultState.GetComponent<Outline>().enabled = false;
@@ -127,7 +140,10 @@ public class CharacterInfo : MonoBehaviour
 
     public void SetHoverState()
     {
-        Debug.Log("HoverState");
+        if (hero.hasMadeDecision)
+        {
+            return;
+        }
         defaultState.SetActive(true);
         defaultState.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         defaultState.GetComponent<Outline>().enabled = true;
@@ -138,7 +154,6 @@ public class CharacterInfo : MonoBehaviour
 
     public void SetNoActionState()
     {
-        Debug.Log("NoActionState");
         defaultState.SetActive(false);
         selectedState.SetActive(false);
         noActionState.SetActive(true);
@@ -147,7 +162,10 @@ public class CharacterInfo : MonoBehaviour
 
     public void SetSelectedState()
     {
-        Debug.Log("SelectedState");
+        if (hero.hasMadeDecision)
+        {
+            return;
+        }
         defaultState.SetActive(false);
         selectedState.SetActive(true);
         noActionState.SetActive(false);
@@ -156,7 +174,6 @@ public class CharacterInfo : MonoBehaviour
 
     public void SetDeadState()
     {
-        Debug.Log("DeadState");
         defaultState.SetActive(false);
         selectedState.SetActive(false);
         noActionState.SetActive(false);
