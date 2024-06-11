@@ -314,7 +314,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         selectedCharacter = currentTile.characterOnTile;
         cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
 
-        pathFinder.FindPaths(selectedCharacter);
+        pathFinder.FindMovementPathsCharacter(selectedCharacter);
 
         SpawnSelectMarker();
     }

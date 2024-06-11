@@ -22,11 +22,7 @@ public class Enemy_Gangsta : Enemy_Base
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
-        int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
-        int tileValue = distanceEnemy - distanceTile;
-        
-        return tileValue * 2;
+        return base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
@@ -53,11 +49,6 @@ public class Enemy_Gangsta : Enemy_Base
             }
         }
 
-        foreach (Character character in attackArea.CharactersHit(characterType))
-        {
-            valueOfAttack -= 2;
-        }
-
         return valueOfAttack;
     }
 
@@ -68,11 +59,9 @@ public class Enemy_Gangsta : Enemy_Base
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             transform.LookAt(character.transform.position);
-
             character.TakeDamage(attackDamage, elementType);
 
             List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
-
             foreach(Tile tile in adjacentTiles)
             {
                 if(!tile.tileOccupied)
@@ -101,15 +90,10 @@ public class Enemy_Gangsta : Enemy_Base
                 Character target = followUpComboList[followUpsPerformed].target;
                 Enemy_Gangsta follower = followUpComboList[followUpsPerformed].follower;
 
-                transform.LookAt(target.transform);
                 follower.FollowUpAttack(target);
-
-                TemporaryMarker.GenerateMarker(followUpText, follower.transform.position, 2f, 0.5f);
-                TemporaryMarker.GenerateMarker(followUpMarker, target.transform.position, 4f, 0.5f);
             }
 
             followUpsPerformed++;
-
             return true;
         }
         else
@@ -124,6 +108,9 @@ public class Enemy_Gangsta : Enemy_Base
     {
         transform.LookAt(character.transform.position);
         character.TakeDamage(attackDamage, elementType);
+
+        TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);
+        TemporaryMarker.GenerateMarker(followUpMarker, character.transform.position, 4f, 0.5f);
     }
 
     #endregion

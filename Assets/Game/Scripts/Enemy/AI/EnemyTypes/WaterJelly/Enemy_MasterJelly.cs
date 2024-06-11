@@ -49,37 +49,17 @@ public class Enemy_MasterJelly : Enemy_Base
             }
         }
 
-
-
         return valueOfMovement * 2;
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
-        int valueOfAttack = 0;
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
-        {
-            valueOfAttack += 5;
-
-            //Bias towards remaining on current tile
-            if (currentTile == characterTile)
-            {
-                valueOfAttack += 30;
-            }
-        }
-
-        return valueOfAttack;
+        return base.CalculteAttackValue(attackArea, turnManager, currentTile);
     }
 
     public override void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
         base.ExecuteAttack(attackArea, turnManager);
-
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
-        {
-            transform.LookAt(character.transform.position);
-            character.TakeDamage(attackDamage, elementType);
-        }
     }
 
     public override bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

@@ -61,7 +61,7 @@ public class EnemyBrain : MonoBehaviour
 
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();
-            turnManager.pathfinder.FindPaths(enemy_base);
+            turnManager.pathfinder.FindMovementPathsCharacter(enemy_base);
 
             List<Tile> usableTiles = new List<Tile>();
             usableTiles = turnManager.pathfinder.frontier;
@@ -90,8 +90,7 @@ public class EnemyBrain : MonoBehaviour
                 }
 
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
-
-                if(checkAttacks == true)
+                if (checkAttacks == true)
                 {
                     //Runs through all the Tiles adjacent to the current Movement tile
                     foreach (Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
