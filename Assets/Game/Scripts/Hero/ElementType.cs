@@ -8,5 +8,6 @@ public enum ElementType
     // Advanced
     Rock,
     Snow,
-    Poison
+    Poison,
+    death
 }

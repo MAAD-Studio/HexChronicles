@@ -18,6 +18,7 @@ public class TileEnums
         water,
         snow,
         mountain,
-        swamp
+        swamp,
+        death
     }
 }

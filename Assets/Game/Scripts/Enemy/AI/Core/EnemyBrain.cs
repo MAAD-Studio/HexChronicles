@@ -90,8 +90,7 @@ public class EnemyBrain : MonoBehaviour
                 }
 
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
-
-                if(checkAttacks == true)
+                if (checkAttacks == true)
                 {
                     //Runs through all the Tiles adjacent to the current Movement tile
                     foreach (Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))

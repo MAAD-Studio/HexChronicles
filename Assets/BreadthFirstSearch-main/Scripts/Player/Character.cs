@@ -241,8 +241,9 @@ public class Character : MonoBehaviour
             //Moves onto the next point
             currentTile = path[step];
             currentTile.OnTileEnter(this);
-            tilesInPath.Remove(path[step]);
             path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            currentTile = WalkOntoTileEffect(currentTile);
+            tilesInPath.Remove(path[step]);
 
             step++;
 
@@ -257,17 +258,17 @@ public class Character : MonoBehaviour
             }
 
             animationTime = 0f;
-
-
-        }
-
-        foreach(Tile tile in path)
-        {
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
 
         //Plants the character down onto the newest tile
-        FinalizeTileChoice(path[pathLength - 1]);
+        characterTile.tileOccupied = false;
+        characterTile.characterOnTile = null;
+        characterTile = null;
+        Vector3 newPos = transform.position;
+        newPos.y += 0.2f;
+        transform.position = newPos;
+        yield return null;
+        FindTile();
 
         animator.SetBool("walking", false);
     }
@@ -280,6 +281,7 @@ public class Character : MonoBehaviour
 
         characterTile.tileOccupied = false;
         characterTile.characterOnTile = null;
+
         StartCoroutine(MoveThroughPath(_path));
     }
 
@@ -367,7 +369,14 @@ public class Character : MonoBehaviour
 
 
             //Plants the character down onto the newest tile
-            FinalizeTileChoice(path[pathLength - 1]);
+            characterTile.tileOccupied = false;
+            characterTile.characterOnTile = null;
+            characterTile = null;
+            Vector3 newPos = transform.position;
+            newPos.y += 0.2f;
+            transform.position = newPos;
+            yield return null;
+            FindTile();
         }
 
         animator.SetBool("walking", false);
@@ -476,6 +485,11 @@ public class Character : MonoBehaviour
             yield return null;
         }
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
+    }
+
+    protected virtual Tile WalkOntoTileEffect(Tile tile)
+    {
+        return tile;
     }
 
     #endregion

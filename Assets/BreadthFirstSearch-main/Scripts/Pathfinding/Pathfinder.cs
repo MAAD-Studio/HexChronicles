@@ -180,15 +180,19 @@ public class Pathfinder : MonoBehaviour
     //Resets any pathing information
     public void ResetPathFinder()
     {
+        Debug.Log("-----------------------");
         illustrator.ClearIllustrations();
 
         foreach (Tile tile in frontier)
         {
+            Debug.Log("TILE IN FRONTIER: " + tile.name);
             tile.inFrontier = false;
             tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
 
+        Debug.Log("SIZE: " + frontier.Count);
         frontier.Clear();
+        Debug.Log("SIZE 2: " + frontier.Count);
     }
 
     // Used for pushing characters

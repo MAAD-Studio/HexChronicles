@@ -99,7 +99,7 @@ public class Tile : MonoBehaviour
     }
 
     //Called when a Character enters a tile
-    public void OnTileEnter(Character character)
+    public virtual void OnTileEnter(Character character)
     {
         if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
@@ -120,7 +120,7 @@ public class Tile : MonoBehaviour
     }
 
     //Called when a Character stays on a tile
-    public void OnTileStay(Character character)
+    public virtual void OnTileStay(Character character)
     {
         if (tileData.elementsWeakAgainst.Contains(character.elementType))
         {
@@ -133,7 +133,7 @@ public class Tile : MonoBehaviour
     }
 
     //Called when a Character is leaving a tile
-    public void OnTileExit(Character character)
+    public virtual void OnTileExit(Character character)
     {
         if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
