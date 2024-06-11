@@ -88,7 +88,8 @@ public class Enemy_KingJelly : Enemy_Base
         slimeCount++;
         attackDamage += 1;
         currentHealth += 1;
-        //ADD HEALTH UPDATE LATER
+        maxHealth = currentHealth;
+        base.InvokeUpdateHealthBar();
     }
 
     #endregion

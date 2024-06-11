@@ -134,6 +134,11 @@ public class Character : MonoBehaviour
         }
     }
 
+    public virtual void InvokeUpdateHealthBar()
+    {
+        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+    }
+
     public virtual void TakeDamage(float damage, ElementType type)
     {
         currentHealth -= damage;
@@ -149,7 +154,7 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("hit");
         }
-        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+        InvokeUpdateHealthBar();
     }
 
     public virtual void Heal(float heal)
@@ -160,7 +165,7 @@ public class Character : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+        InvokeUpdateHealthBar();
     }
 
     public virtual void Died()
