@@ -26,7 +26,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         get { return selectedCharacter; }
     }
-    public int availableCharacters;
 
     private AttackArea areaPrefab;
 
@@ -41,8 +40,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private TurnEnums.PlayerPhase phase = TurnEnums.PlayerPhase.Movement;
 
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
-
-    [HideInInspector] public static UnityEvent<PlayerTurn> OnNoActionLeft = new UnityEvent<PlayerTurn>();
 
     #endregion
 
@@ -62,20 +59,45 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         mainCam = turnManager.mainCam;
         Debug.Assert(mainCam != null, "Playerturn couldn't get a Camera from TurnManager");
 
-        Character.movementComplete.AddListener(CharacterFinishedMoving);
-        HUDInfo.OnCharacterSelected.AddListener(SelectCharacter);
-
-        availableCharacters = turnManager.characterList.Count;
+        SubscribeEvents();
     }
 
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
+    }
+    #endregion
+
+    #region Events
+    private void SubscribeEvents()
+    {
+        Character.movementComplete.AddListener(CharacterFinishedMoving);
+        if (EventBus.Instance != null)
+        {
+            EventBus.Instance.Subscribe<CharacterSelected>(OnSelectCharacter);
+        }
+    }
+
+    private void UnsubscribeEvents()
+    {
+        Character.movementComplete.RemoveListener(CharacterFinishedMoving);
+        if (EventBus.Instance != null)
+        {
+            EventBus.Instance.Unsubscribe<CharacterSelected>(OnSelectCharacter);
+        }
+    }
+
+    public void OnSelectCharacter(object obj)
+    {
+        CharacterSelected characterSelected = (CharacterSelected)obj;
+        SelectCharacter(characterSelected.character);
+    }
     #endregion
 
     #region InterfaceMethods
 
     public void EnterState()
     {
-        availableCharacters = turnManager.characterList.Count;
-
         foreach (Character character in turnManager.characterList)
         {
             character.EnterNewTurn();
@@ -372,11 +394,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
 
-                    availableCharacters--;
-                    if (availableCharacters == 0)
-                    {
-                        OnNoActionLeft?.Invoke(this); // Used in HUD
-                    }
+                    EventBus.Instance.Publish(new CharacterHasMadeDecision { character = selectedCharacter });
 
                     if(pathFinder == null)
                     {

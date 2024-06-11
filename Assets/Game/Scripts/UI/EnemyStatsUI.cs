@@ -9,4 +9,40 @@ public class EnemyStatsUI : StatsUI
     [Header("Enemy")]
     public TextMeshProUGUI textRange;
     public TextMeshProUGUI enemyInfo;
+
+    public void SetEnemyStats(Enemy_Base enemy)
+    {
+        avatar.sprite = enemy.enemySO.attributes.avatar;
+        element.sprite = characterUIConfig.GetElementSprite(enemy.elementType);
+        textName.text = enemy.enemySO.attributes.name;
+        enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
+        enemyInfo.ForceMeshUpdate();
+        textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
+        textMovement.text = $"{enemy.moveDistance}";
+        textAttack.text = $"{enemy.attackDamage}";
+        textRange.text = $"{enemy.attackDistance}";
+        textDef.text = $"{enemy.defensePercentage}%";
+        textStatus.text = characterUIConfig.GetStatusTypes(enemy).ToString();
+
+        gameObject.SetActive(true);
+    }
+
+    public void SetObjectStats(TileObject tileObject)
+    {
+        avatar.sprite = tileObject.tileObjectData.avatar;
+        textName.text = tileObject.tileObjectData.objectName;
+        enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
+        enemyInfo.ForceMeshUpdate();
+        textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
+        textDef.text = $"{tileObject.tileObjectData.defense}%";
+        //textStatus.text = GetStatusTypes(tileObject).ToString();
+        textStatus.text = "";
+
+        gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
 }

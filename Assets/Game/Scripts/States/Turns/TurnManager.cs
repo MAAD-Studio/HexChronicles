@@ -34,7 +34,7 @@ public class TurnManager : MonoBehaviour
     private StateInterface currentTurn;
 
     private int turnNumber;
-    private int objectiveTurnNumber = 8;
+    public int objectiveTurnNumber = 8;
 
     public StateInterface CurrentTurn
     {
@@ -81,6 +81,7 @@ public class TurnManager : MonoBehaviour
         turnNumber = 1;
 
         currentTurn = playerTurn;
+        EventBus.Instance.Publish(new OnPlayerTurn());
     }
 
     void Update()
@@ -103,6 +104,7 @@ public class TurnManager : MonoBehaviour
                 turnNumber++;
                 mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
+                EventBus.Instance.Publish(new OnPlayerTurn());
 
                 if (turnNumber == objectiveTurnNumber)
                 {
@@ -112,6 +114,7 @@ public class TurnManager : MonoBehaviour
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
+                EventBus.Instance.Publish(new OnEnemyTurn());
                 mainCameraController.controlEnabled = false;
                 break;
 
