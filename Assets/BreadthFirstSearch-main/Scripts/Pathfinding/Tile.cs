@@ -51,11 +51,6 @@ public class Tile : MonoBehaviour
         tileRenderer = transform.GetChild(0).GetComponent<Renderer>();
     }
 
-    void Update()
-    {
-
-    }
-
     #endregion
 
     #region CustomMethods
@@ -151,6 +146,21 @@ public class Tile : MonoBehaviour
                 MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage -1", false);
             }
         }
+    }
+
+    public void TransferTileData(Tile tile)
+    {
+        tile.name = name;
+        tile.transform.parent = transform.parent;
+        tile.tileOccupied = tileOccupied;
+        tile.characterOnTile = characterOnTile;
+        tile.cost = cost;
+        tile.tileHasObject = tileHasObject;
+        tile.objectOnTile = objectOnTile;
+        tile.underWeatherAffect = underWeatherAffect;
+        tile.weatherCost = weatherCost;
+        tile.inFrontier = inFrontier;
+        tile.parentTile = parentTile;
     }
 
     #endregion

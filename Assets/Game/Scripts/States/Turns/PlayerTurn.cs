@@ -413,11 +413,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
                     if(attackType == TurnEnums.PlayerAction.BasicAttack)
                     {
-                        selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile, false);
+                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, false);
                     }
                     else
                     {
-                        selectedCharacter.ExecuteCharacterAction(potentialPath, turnManager, currentTile, true);
+                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, true);
                     }
 
                     ResetBoard();

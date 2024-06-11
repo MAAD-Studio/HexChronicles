@@ -41,6 +41,10 @@ public class Enemy_KingJelly : Enemy_Base
         return false;
     }
 
+    #endregion
+
+    #region CustomMethods
+
     public override void Died()
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();

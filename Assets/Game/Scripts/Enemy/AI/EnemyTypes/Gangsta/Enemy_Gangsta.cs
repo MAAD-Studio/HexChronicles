@@ -14,10 +14,6 @@ public class Enemy_Gangsta : Enemy_Base
 
     #endregion
 
-    #region UnityMethods
-
-    #endregion
-
     #region InterfaceMethods
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
@@ -103,6 +99,10 @@ public class Enemy_Gangsta : Enemy_Base
             return false;
         }
     }
+
+    #endregion
+
+    #region CustomMethods
 
     private void FollowUpAttack(Character character)
     {

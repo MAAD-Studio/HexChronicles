@@ -11,6 +11,8 @@ public class Enemy_Maker : Enemy_Base
 
     #endregion
 
+    #region InterfaceMethods
+
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
         int movementValue = 0;
@@ -52,6 +54,10 @@ public class Enemy_Maker : Enemy_Base
         return false;
     }
 
+    #endregion
+
+    #region CustomMethods
+
     public override void Died()
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();
@@ -74,31 +80,23 @@ public class Enemy_Maker : Enemy_Base
 
     private Tile ConvertToDeathTile(Tile tile)
     {
+        if(tile.tileData.tileType == ElementType.death)
+        {
+            return tile;
+        }
+
         TurnManager turnManager = FindObjectOfType<TurnManager>();
 
         GameObject deathTile = Instantiate(deathTilePrefab, tile.transform.position, Quaternion.identity);
         DeathTile deathTileObj = deathTile.GetComponent<DeathTile>();
 
-        deathTileObj.name = tile.name;
-        deathTileObj.transform.parent = tile.transform.parent;
-        deathTileObj.tileOccupied = tile.tileOccupied;
-        deathTileObj.characterOnTile = tile.characterOnTile;
-        deathTileObj.cost = tile.cost;
-        deathTileObj.tileHasObject = tile.tileHasObject;
-        deathTileObj.objectOnTile = tile.objectOnTile;
-        deathTileObj.underWeatherAffect = tile.underWeatherAffect;
-        deathTileObj.weatherCost = tile.weatherCost;
-        deathTileObj.inFrontier = tile.inFrontier;
-        if(deathTileObj.inFrontier)
-        {
-            turnManager.pathfinder.frontier.Add(deathTileObj);
-        }
-        deathTileObj.parentTile = tile.parentTile;
+        tile.TransferTileData(deathTileObj);
 
         turnManager.pathfinder.frontier.Remove(tile);
-
         Destroy(tile.gameObject);
 
         return deathTile.GetComponent<DeathTile>();
     }
+
+    #endregion
 }

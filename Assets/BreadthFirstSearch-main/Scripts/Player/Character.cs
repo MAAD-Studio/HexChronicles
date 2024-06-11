@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
@@ -194,135 +195,41 @@ public class Character : MonoBehaviour
         }
     }
 
-    //Carries the character through a path
-    IEnumerator MoveThroughPath(Tile[] path)
-    {
-        int step = 1;
-        int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
-
-        List<Tile> tilesInPath = new List<Tile>();
-        foreach(Tile tile in path)
-        {
-            tilesInPath.Add(tile);
-        }
-
-        characterTile.OnTileExit(this);
-        Tile currentTile = path[0];
-        tilesInPath.Remove(currentTile);
-
-        float animationTime = 0f;
-        const float distanceToNext = 0.05f;
-
-        //While we still have points in the path to cover
-        while (step < pathLength)
-        {
-
-            yield return null;
-
-            foreach (Tile tile in tilesInPath)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.path);
-            }
-
-            Vector3 nextTilePosition = path[step].transform.position;
-
-            //Moves and roates towards the next point
-            MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
-            animationTime += Time.deltaTime;
-
-            //Checks if we are close enough to move onto the next point
-            if (Vector3.Distance(transform.position, nextTilePosition) > distanceToNext)
-            {
-                continue;
-            }
-
-            movementThisTurn += (int)path[step].tileData.tileCost;
-
-            //Moves onto the next point
-            currentTile = path[step];
-            currentTile.OnTileEnter(this);
-            path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-            currentTile = WalkOntoTileEffect(currentTile);
-            tilesInPath.Remove(path[step]);
-
-            step++;
-
-            //Checks if we have arrived at the last tile, if not it triggers OnTileExit
-            if(step < pathLength)
-            {
-                currentTile.OnTileExit(this);
-            }
-            else
-            {
-                currentTile.OnTileStay(this);
-            }
-
-            animationTime = 0f;
-        }
-
-        //Plants the character down onto the newest tile
-        characterTile.tileOccupied = false;
-        characterTile.characterOnTile = null;
-        characterTile = null;
-        Vector3 newPos = transform.position;
-        newPos.y += 0.2f;
-        transform.position = newPos;
-        yield return null;
-        FindTile();
-
-        animator.SetBool("walking", false);
-    }
-
-    //Starts the process of moving the character to a new location
-    public void Move(Tile[] _path)
-    {
-        moving = true;
-        animator.SetBool("walking", true);
-
-        characterTile.tileOccupied = false;
-        characterTile.characterOnTile = null;
-
-        StartCoroutine(MoveThroughPath(_path));
-    }
-
-    public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    //Starts the process of Moving and Attacking with the Character
+    public void MoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
     {
         if(path.Length > 0)
         {
             moving = true;
             animator.SetBool("walking", true);
-            characterTile.tileOccupied = false;
-            characterTile.characterOnTile = null;
             turnManager.mainCameraController.controlEnabled = false;
         }
 
-        StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
+        StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse));
     }
 
-    private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    //Moves the character if a path is provided and performs an attack if a Tile is provided
+    private IEnumerator PerformMoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
     {
+        //Moves the Character
         if(path.Length > 0)
         {
             int step = 1;
             int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
-
-            List<Tile> tilesInPath = new List<Tile>();
-            foreach (Tile tile in path)
-            {
-                tilesInPath.Add(tile);
-            }
-
-            characterTile.OnTileExit(this);
-            Tile currentTile = path[0];
-            tilesInPath.Remove(currentTile);
+            List<Tile> tilesInPath = new List<Tile>(path);
 
             float animationTime = 0f;
             const float distanceToNext = 0.05f;
-
             turnManager.mainCameraController.FollowTarget(transform, true);
 
-            //While we still have points in the path to cover
-            while (step < pathLength)
+            characterTile.tileOccupied = false;
+            characterTile.characterOnTile = null;
+            characterTile.OnTileExit(this);
+
+            Tile currentTile = path[0];
+            tilesInPath.Remove(currentTile);
+
+            while(step < pathLength)
             {
                 yield return null;
 
@@ -342,12 +249,13 @@ public class Character : MonoBehaviour
                 {
                     continue;
                 }
-
                 movementThisTurn += (int)path[step].tileData.tileCost;
 
                 //Moves onto the next point
                 currentTile = path[step];
                 currentTile.OnTileEnter(this);
+                currentTile = WalkOntoTileEffect(currentTile);
+
                 tilesInPath.Remove(path[step]);
                 path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
@@ -358,6 +266,10 @@ public class Character : MonoBehaviour
                 {
                     currentTile.OnTileExit(this);
                 }
+                else
+                {
+                    currentTile.OnTileStay(this);
+                }
 
                 animationTime = 0f;
             }
@@ -367,51 +279,51 @@ public class Character : MonoBehaviour
                 tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             }
 
-
-            //Plants the character down onto the newest tile
-            characterTile.tileOccupied = false;
-            characterTile.characterOnTile = null;
             characterTile = null;
-            Vector3 newPos = transform.position;
-            newPos.y += 0.2f;
-            transform.position = newPos;
+            transform.position += new Vector3(0, 0.2f, 0);
+
             yield return null;
             FindTile();
+
+            animator.SetBool("walking", false);
         }
 
-        animator.SetBool("walking", false);
-
-        AttackArea attackAreaPrefab = Instantiate(basicAttackArea);
-        attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, targetTile);
-        yield return new WaitForSeconds(0.03f);
-        attackAreaPrefab.DetectArea(true, true);
-
-        Hero thisHero = (Hero)this;
-
-        foreach(Character character in attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        //Makes the character attack
+        if(attackTargetTile != null && characterType != TurnEnums.CharacterType.Enemy)
         {
-            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
-        }
+            Hero thisHero = (Hero)this;
 
-        foreach(TileObject tileObj in attackAreaPrefab.ObjectsHit())
-        {
-            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
-        }
+            AttackArea attackAreaPrefab;
+            if (activeSkillUse)
+            {
+                attackAreaPrefab = Instantiate(activeSkillArea);
+            }
+            else
+            {
+                attackAreaPrefab = Instantiate(basicAttackArea);
+            }
+            attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
+            yield return new WaitForSeconds(0.03f);
+            attackAreaPrefab.DetectArea(true, true);
 
-        transform.LookAt(attackAreaPrefab.transform.position);
+            transform.LookAt(attackAreaPrefab.transform.position);
 
-        if(activeSkillUse)
-        {
-            ReleaseActiveSkill(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-        }
-        else
-        {
-            PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-        }
-        PerformBasicAttackObjects(attackAreaPrefab.ObjectsHit());
+            List<Character> enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+            List<TileObject> objectsHit = attackAreaPrefab.ObjectsHit();
+            if (activeSkillUse)
+            {
+                ReleaseActiveSkill(enemiesHit);
+            }
+            else
+            {
+                PerformBasicAttack(enemiesHit);
+            }
+            PerformBasicAttackObjects(objectsHit);
+            GenerateHitMarkers(thisHero, enemiesHit, objectsHit);
 
-        yield return new WaitForSeconds(0.5f);
-        attackAreaPrefab.DestroySelf();
+            yield return new WaitForSeconds(0.5f);
+            attackAreaPrefab.DestroySelf();
+        }
 
         turnManager.mainCameraController.controlEnabled = true;
         turnManager.mainCameraController.StopFollowingTarget();
@@ -420,6 +332,18 @@ public class Character : MonoBehaviour
         movementComplete.Invoke(this);
     }
 
+    //Generates the HitMarker prefab over hit Enemies and Objects
+    public void GenerateHitMarkers(Hero thisHero, List<Character> enemiesHit, List<TileObject> objectsHit)
+    {
+        foreach (Character character in enemiesHit)
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
+        }
+        foreach (TileObject tileObj in objectsHit)
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+        }
+    }
 
     //Moves and Rotates the character
     void MoveAndRotate(Vector3 origin, Vector3 destination, float duration)
@@ -472,7 +396,8 @@ public class Character : MonoBehaviour
         if (tiles != null && tiles.Count != 0)
         {
             Tile[] path = tiles.ToArray();
-            Move(path);
+            TurnManager turnManager = FindObjectOfType<TurnManager>();
+            MoveAndAttack(path, null, turnManager, false);
             // TODO: rotate after move, fix movement reduced next turn
             //StartCoroutine(RotateBack());
         }

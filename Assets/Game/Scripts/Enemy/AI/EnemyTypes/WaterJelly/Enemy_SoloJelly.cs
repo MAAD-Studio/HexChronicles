@@ -97,6 +97,10 @@ public class Enemy_SoloJelly : Enemy_Base
         return false;
     }
 
+    #endregion
+
+    #region CustomMethods
+
     public void CombineJelly(TurnManager turnManager)
     {
         DestroySelfEnemy(turnManager);

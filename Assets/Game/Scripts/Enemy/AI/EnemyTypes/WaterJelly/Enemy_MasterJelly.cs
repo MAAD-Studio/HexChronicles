@@ -85,6 +85,10 @@ public class Enemy_MasterJelly : Enemy_Base
         return false;
     }
 
+    #endregion
+
+    #region CustomMethods
+
     public void CombineJelly(TurnManager turnManager)
     {
         Vector3 spawnPoint = transform.position;

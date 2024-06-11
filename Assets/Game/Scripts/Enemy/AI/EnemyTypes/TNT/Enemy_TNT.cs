@@ -11,10 +11,6 @@ public class Enemy_TNT : Enemy_Base
 
     #endregion
 
-    #region UnityMethods
-
-    #endregion
-
     #region InterfaceMethods
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
@@ -36,6 +32,10 @@ public class Enemy_TNT : Enemy_Base
     {
         return false;
     }
+
+    #endregion
+
+    #region CustomMethods
 
     public override void Died()
     {
