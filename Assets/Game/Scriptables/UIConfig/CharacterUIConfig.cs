@@ -36,7 +36,7 @@ public class CharacterUIConfig : ScriptableObject
     {
         if (character.statusList.Count != 0)
         {
-            string statusList = "Status: ";
+            string statusList = "";
             foreach (var status in character.statusList)
             {
                 statusList += status.statusType.ToString() + ", ";

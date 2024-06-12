@@ -48,9 +48,6 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Button endTurn;
     [SerializeField] private Button undo;
 
-    [Header("Element Icons")]
-    [SerializeField] private Sprite[] elementSprites;
-
     #region Unity Methods
 
     private void Start()
@@ -128,6 +125,11 @@ public class HUDInfo : MonoBehaviour
         currentTurn.text = "PLAYER TURN";
         endTurn.interactable = true;
 
+        foreach (var info in characterInfoDict.Values)
+        {
+            info.UpdateButton();
+        }
+
         activeHeroes = availableHeroes;
         turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
     }
@@ -178,7 +180,7 @@ public class HUDInfo : MonoBehaviour
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             gameObject.name = hero.name;
 
-            // Add Button Listener:
+            // Add Button Listener for select Character:
             Button button = gameObject.GetComponent<Button>();
             button.onClick.AddListener(() =>
             {
@@ -193,20 +195,8 @@ public class HUDInfo : MonoBehaviour
 
             // Set Hero Info:
             info.InitializeInfo();
-            foreach (Image element in info.elements)
-            {
-                element.sprite = info.characterUIConfig.GetElementSprite(hero.elementType);
-            }
-
             info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
             info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
-
-            // Update Hero Info:
-            info.UpdateInfo();
-            foreach (TextMeshProUGUI status in info.textStatus)
-            {
-                status.text = info.characterUIConfig.GetStatusTypes(hero).ToString();
-            }
         }
 
         // Create enemyInfoPrefab:

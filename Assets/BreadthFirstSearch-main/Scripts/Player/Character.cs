@@ -44,6 +44,7 @@ public class Character : MonoBehaviour
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
+    private List<Status> statusToRemove = new List<Status>();
     [HideInInspector] public bool isHurt = false;
 
     [HideInInspector] public bool effectedByWeather = false;
@@ -53,6 +54,8 @@ public class Character : MonoBehaviour
 
     public event EventHandler OnDamagePreview;
     public event EventHandler OnUpdateHealthBar;
+    public event EventHandler OnUpdateAttributes;
+    public event EventHandler OnUpdateStatus;
 
     #endregion
 
@@ -92,6 +95,7 @@ public class Character : MonoBehaviour
         OnDamagePreview?.Invoke(this, EventArgs.Empty);
     }
 
+
     public virtual void EnterNewTurn()
     {
         if (statusList.Count > 0)
@@ -102,6 +106,12 @@ public class Character : MonoBehaviour
 
     public virtual void EndTurn()
     {
+        foreach (Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
         movementThisTurn = 0;
         canMove = true;
     }
@@ -109,11 +119,13 @@ public class Character : MonoBehaviour
     public void AddStatus(Status status)
     {
         statusList.Add(status);
+        OnUpdateStatus.Invoke(this, EventArgs.Empty);
     }
 
     public void RemoveStatus(Status status)
     {
         statusList.Remove(status);
+        OnUpdateStatus.Invoke(this, EventArgs.Empty);
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {
@@ -123,7 +135,6 @@ public class Character : MonoBehaviour
 
     public void ApplyStatus()
     {
-        List<Status> statusToRemove = new List<Status>();
         foreach (Status status in statusList)
         {
             status.Apply(this);
@@ -133,16 +144,16 @@ public class Character : MonoBehaviour
                 statusToRemove.Add(status);
             }
         }
-
-        foreach(Status status in statusToRemove)
-        {
-            RemoveStatus(status);
-        }
     }
 
     public virtual void InvokeUpdateHealthBar()
     {
         OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+    }
+
+    public virtual void InvokeUpdateAttributes()
+    {
+        OnUpdateAttributes?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void TakeDamage(float damage, ElementType type)

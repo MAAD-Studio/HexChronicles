@@ -42,14 +42,41 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Start()
     {
         hero.OnUpdateHealthBar += UpdateHealthBar;
+        hero.OnUpdateAttributes += UpdateAttributes;
+        hero.OnUpdateStatus += UpdateStatus;
 
         SetDefaultState();
-        UpdateHealthBar(this, EventArgs.Empty);
+    }
+
+    private void UpdateAttributes(object sender, EventArgs e)
+    {
+        foreach (TextMeshProUGUI movement in textMovement)
+        {
+            movement.text = hero.moveDistance.ToString();
+        }
+        foreach (TextMeshProUGUI attack in textAttack)
+        {
+            attack.text = hero.attackDamage.ToString();
+        }
+        foreach (TextMeshProUGUI def in textDef)
+        {
+            def.text = hero.defensePercentage.ToString() + "%";
+        }
+    }
+
+    private void UpdateStatus(object sender, EventArgs e)
+    {
+        foreach (TextMeshProUGUI status in textStatus)
+        {
+            status.text = characterUIConfig.GetStatusTypes(hero).ToString();
+        }
     }
 
     private void OnDestroy()
     {
         hero.OnUpdateHealthBar -= UpdateHealthBar;
+        hero.OnUpdateAttributes -= UpdateAttributes;
+        hero.OnUpdateStatus -= UpdateStatus;
     }
 
     private void UpdateHealthBar(object sender, EventArgs e)
@@ -74,7 +101,15 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             avatar.sprite = hero.heroSO.attributes.avatar;
         }
-        
+        foreach (Image element in elements)
+        {
+            element.sprite = characterUIConfig.GetElementSprite(hero.elementType);
+        }
+
+        UpdateHealthBar(this, EventArgs.Empty);
+        UpdateAttributes(this, EventArgs.Empty);
+        UpdateStatus(this, EventArgs.Empty);
+
         attackShape.sprite = hero.heroSO.attackShape;
         attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
         attackInfo.ForceMeshUpdate();
@@ -84,21 +119,8 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         skillInfo.ForceMeshUpdate();
     }
 
-    public void UpdateInfo()
+    public void UpdateButton()
     {
-        foreach (TextMeshProUGUI movement in textMovement)
-        {
-            movement.text = hero.moveDistance.ToString();
-        }
-        foreach (TextMeshProUGUI attack in textAttack)
-        {
-            attack.text = hero.attackDamage.ToString();
-        }
-        foreach (TextMeshProUGUI def in textDef)
-        {
-            def.text = hero.defensePercentage.ToString() + "%";
-        }
-
         if (hero.currentSkillCD > 0)
         {
             skillBtn.interactable = false;
@@ -114,6 +136,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //selectHeroStatus.attackBtn.interactable = hero.canAttack;
         //selectHeroStatus.moveBtn.interactable = hero.canMove;
     }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         SetHoverState();
