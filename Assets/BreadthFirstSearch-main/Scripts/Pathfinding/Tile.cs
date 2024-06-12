@@ -70,7 +70,11 @@ public class Tile : MonoBehaviour
     //Changes the material applied to the Tile
     public void ChangeTileColor(TileEnums.TileMaterial tileMat)
     {
-        PreviousMaterial = CurrentMaterial;
+        if(CurrentMaterial != TileEnums.TileMaterial.highlight)
+        {
+            PreviousMaterial = CurrentMaterial;
+        }
+ 
         switch (tileMat)
         {
             case TileEnums.TileMaterial.baseMaterial:

@@ -41,6 +41,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
 
+    bool allowSelection = true;
+
     #endregion
 
     #region UnityMethods
@@ -131,8 +133,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void EndTurn()
     {
-        FullReset();
-        turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
+        if(allowSelection)
+        {
+            FullReset();
+            turnManager.SwitchState(TurnEnums.TurnState.EnemyTurn);
+        }
     }
 
     private void FullReset()
@@ -257,7 +262,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (characterType == TurnEnums.CharacterType.Player)
         {
-            if (!inspectionCharacter.hasMadeDecision)
+            if (!inspectionCharacter.hasMadeDecision && allowSelection)
             {
                 currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight); // Hover tile highlight
             }
@@ -277,28 +282,32 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             currentTile = character.characterTile;
         }
 
-        if (!character.hasMadeDecision)
+        if(allowSelection)
         {
-            if (selectedCharacter == null)
+            if (!character.hasMadeDecision)
             {
-                GrabCharacter();
+                if (selectedCharacter == null)
+                {
+                    GrabCharacter();
+                }
+                else if (character != selectedCharacter)
+                {
+                    ResetBoard();
+                    GrabCharacter();
+                    phase = TurnEnums.PlayerPhase.Movement;
+                }
             }
-            else if (character != selectedCharacter)
+            else
             {
-                ResetBoard();
-                GrabCharacter();
-                phase = TurnEnums.PlayerPhase.Movement;
+                MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
             }
-        }
-        else
-        {
-            MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
         }
     }
 
     private void GrabCharacter()
     {
         selectedCharacter = currentTile.characterOnTile;
+        selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
         cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
 
         pathFinder.FindMovementPathsCharacter(selectedCharacter);
@@ -408,6 +417,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     }
 
                     ResetBoard();
+                    allowSelection = false;
                     attackType = TurnEnums.PlayerAction.BasicAttack;
                 }
             }
@@ -488,6 +498,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if (character == selectedCharacter)
         {
+            allowSelection = true;
             FullReset();
         }
     }
