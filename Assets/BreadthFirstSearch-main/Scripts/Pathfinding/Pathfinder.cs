@@ -25,18 +25,18 @@ public class Pathfinder : MonoBehaviour
 
     #region BreadthFirstMethods
 
-    public void PathTilesInRange(Tile origin, int originCost, int maxRange, bool includeOccupied)
+    public void PathTilesInRange(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate)
     {
-        FindPaths(origin, originCost, maxRange, includeOccupied);
+        FindPaths(origin, originCost, maxRange, includeOccupied, illustrate);
     }
 
-    public void FindMovementPathsCharacter(Character character)
+    public void FindMovementPathsCharacter(Character character, bool illustrate)
     {
-        FindPaths(character.characterTile, character.movementThisTurn, character.moveDistance, false);
+        FindPaths(character.characterTile, character.movementThisTurn, character.moveDistance, false, illustrate);
     }
 
     //BreadthFirst searches for what tiles the character can reach
-    private void FindPaths(Tile origin, int originCost, int maxRange, bool includeOccupied)
+    private void FindPaths(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate)
     {
         ResetPathFinder();
 
@@ -76,8 +76,11 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        //Once we confirm what tiles can be reached we illustrate them
-        illustrator.IllustrateFrontier(frontier);
+        if(illustrate)
+        {
+            //Once we confirm what tiles can be reached we illustrate them
+            illustrator.IllustrateFrontier(frontier);
+        }
     }
 
     //Checks if a tile is valid for reaching

@@ -48,7 +48,7 @@ public class Enemy_KingJelly : Enemy_Base
     public override void Died()
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();
-        turnManager.pathfinder.PathTilesInRange(characterTile, 0, 5, false);
+        turnManager.pathfinder.PathTilesInRange(characterTile, 0, 5, false, false);
 
         bool masterJellySpawned = false;
         int slimesSpawned = 0;

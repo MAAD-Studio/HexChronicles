@@ -310,7 +310,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
         cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
 
-        pathFinder.FindMovementPathsCharacter(selectedCharacter);
+        pathFinder.FindMovementPathsCharacter(selectedCharacter, true);
 
         SpawnSelectMarker();
     }

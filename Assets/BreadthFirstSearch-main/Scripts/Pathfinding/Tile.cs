@@ -79,12 +79,16 @@ public class Tile : MonoBehaviour
         {
             case TileEnums.TileMaterial.baseMaterial:
                 tileTop.SetActive(false);
+                topRenderer.material = tileData.baseMaterial;
                 tileRenderer.material = tileData.baseMaterial;
                 CurrentMaterial = TileEnums.TileMaterial.baseMaterial;
                 break;
 
             case TileEnums.TileMaterial.highlight:
-                tileTop.SetActive(false);
+                if (topRenderer.material == tileData.reachableMaterial)
+                {
+                    tileTop.SetActive(true);
+                }
                 tileRenderer.material = tileData.highlightMaterial;
                 CurrentMaterial = TileEnums.TileMaterial.highlight;
                 break;
@@ -115,13 +119,19 @@ public class Tile : MonoBehaviour
                 break;
 
             case TileEnums.TileMaterial.towerAttack:
-                tileTop.SetActive(false);
+                if (topRenderer.material == tileData.reachableMaterial)
+                {
+                    tileTop.SetActive(true);
+                }
                 tileRenderer.material = tileData.towerAttackMaterial;
                 CurrentMaterial = TileEnums.TileMaterial.towerAttack;
                 break;
 
             case TileEnums.TileMaterial.weather:
-                tileTop.SetActive(false);
+                if(topRenderer.material == tileData.reachableMaterial)
+                {
+                    tileTop.SetActive(true);
+                }
                 tileRenderer.material = tileData.weatherMaterial;
                 CurrentMaterial = TileEnums.TileMaterial.weather;
                 break;

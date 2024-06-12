@@ -61,7 +61,7 @@ public class EnemyBrain : MonoBehaviour
 
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();
-            turnManager.pathfinder.FindMovementPathsCharacter(enemy_base);
+            turnManager.pathfinder.FindMovementPathsCharacter(enemy_base, false);
 
             List<Tile> usableTiles = new List<Tile>();
             usableTiles = turnManager.pathfinder.frontier;

@@ -61,7 +61,7 @@ public class Enemy_Maker : Enemy_Base
     public override void Died()
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();
-        turnManager.pathfinder.PathTilesInRange(characterTile, 0, 1, true);
+        turnManager.pathfinder.PathTilesInRange(characterTile, 0, 1, true, false);
 
         List<Tile> potentialTiles = new List<Tile>(turnManager.pathfinder.frontier);
 
