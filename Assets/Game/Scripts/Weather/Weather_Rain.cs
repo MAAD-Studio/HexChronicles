@@ -17,7 +17,7 @@ public class Weather_Rain : Weather_Base
             Status newStatus = new Status();
             newStatus.statusType = statusEffect;
             newStatus.effectTurns = effectTurns;
-            character.statusList.Add(newStatus);
+            character.AddStatus(newStatus);
             character.effectedByWeather = true;
         }
     }

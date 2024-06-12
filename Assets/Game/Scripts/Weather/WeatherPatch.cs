@@ -128,6 +128,7 @@ public class WeatherPatch
         {
             character.effectedByWeather = false;
         }
+        effectedCharacters.Clear();
     }
 
     public void EffectCharacters()
