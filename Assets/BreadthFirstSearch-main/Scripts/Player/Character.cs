@@ -123,14 +123,20 @@ public class Character : MonoBehaviour
 
     public void ApplyStatus()
     {
+        List<Status> statusToRemove = new List<Status>();
         foreach (Status status in statusList)
         {
             status.Apply(this);
 
             if (status.effectTurns == 0)
             {
-                RemoveStatus(status);
+                statusToRemove.Add(status);
             }
+        }
+
+        foreach(Status status in statusToRemove)
+        {
+            RemoveStatus(status);
         }
     }
 

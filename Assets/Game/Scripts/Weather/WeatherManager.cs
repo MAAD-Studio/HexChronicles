@@ -72,10 +72,6 @@ public class WeatherManager : MonoBehaviour
 
             foreach(WeatherPatch patch in weatherPatches)
             {
-                /*for(int i = 0; i < 10; i++)
-                {
-
-                }*/
                 int tileChoice = Random.Range(0, tilesOnMap.Count);
                 patch.origin = tilesOnMap[tileChoice];
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
@@ -106,7 +102,6 @@ public class WeatherManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("WEATHER LEAVING");
             turnsActive = 0;
             weatherActive = false;
 
@@ -116,10 +111,6 @@ public class WeatherManager : MonoBehaviour
             }
         }
     }
-
-
-
-    
 
     #endregion
 

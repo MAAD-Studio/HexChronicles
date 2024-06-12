@@ -49,12 +49,11 @@ public class TowersTurn : WorldTurnBase
         if (!updateCalled)
         {
             updateCalled = true;
-            //weatherManager.UpdateWeather();
             StartCoroutine(UpdateTowers());
         }
         else if(updateDone)
         {
-            turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
+            turnManager.SwitchState(TurnEnums.TurnState.WeatherTurn);
         }
     }
 

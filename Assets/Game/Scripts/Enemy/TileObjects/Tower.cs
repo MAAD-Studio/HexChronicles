@@ -27,7 +27,7 @@ public class Tower : Spawner
 
         Debug.Assert(attackAreaPrefab != null, $"{name} doesn't have an AttackArea prefab provided.");
 
-        actualRange = tileRange * 3.72f;
+        actualRange = tileRange * 1.75f;
     }
 
     #endregion
@@ -38,12 +38,10 @@ public class Tower : Spawner
     {
         if(spawnedAttackArea != null )
         {
-            Debug.Log("A");
             return true;
         }
         else
         {
-            Debug.Log("B");
             possibleCharacterChoices.Clear();
             foreach (Character character in turnManager.characterList)
             {
@@ -55,12 +53,10 @@ public class Tower : Spawner
 
             if(possibleCharacterChoices.Count > 0)
             {
-                Debug.Log("C");
                 return true;
             }
             else
             {
-                Debug.Log("D");
                 return false;
             }
         }
@@ -85,7 +81,7 @@ public class Tower : Spawner
 
                 foreach (Tile tile in tilesToColor)
                 {
-                    tile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
+                    tile.ChangeTileColor(TileEnums.TileMaterial.towerAttack);
                 }
             }
         }

@@ -109,6 +109,18 @@ public class Tile : MonoBehaviour
                 tileRenderer.material = tileData.selectedCharMaterial;
                 CurrentMaterial = TileEnums.TileMaterial.selectedChar;
                 break;
+
+            case TileEnums.TileMaterial.towerAttack:
+                tileTop.SetActive(false);
+                tileRenderer.material = tileData.towerAttackMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.towerAttack;
+                break;
+
+            case TileEnums.TileMaterial.weather:
+                tileTop.SetActive(false);
+                tileRenderer.material = tileData.weatherMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.weather;
+                break;
         }
     }
 

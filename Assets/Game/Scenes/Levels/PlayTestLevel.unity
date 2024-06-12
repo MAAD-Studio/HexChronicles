@@ -6321,6 +6321,7 @@ GameObject:
   - component: {fileID: 328114901}
   - component: {fileID: 328114903}
   - component: {fileID: 328114902}
+  - component: {fileID: 328114905}
   m_Layer: 0
   m_Name: TurnManager
   m_TagString: Untagged
@@ -6374,7 +6375,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaaf782286c50a5428cf4751888828d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weatherManager: {fileID: 0}
   turnsTillSpawn: 2
   towers:
   - {fileID: 462889045}
@@ -6418,6 +6418,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &328114905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328114899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cda1664cb230ac4a9721c35c11e7ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weatherManager: {fileID: 682367756}
 --- !u!1 &329722840
 GameObject:
   m_ObjectHideFlags: 0
@@ -13736,6 +13749,76 @@ MonoBehaviour:
   tileOccupied: 0
   tileHasObject: 0
   inFrontier: 0
+--- !u!1 &682367754
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 682367757}
+  - component: {fileID: 682367756}
+  - component: {fileID: 682367755}
+  m_Layer: 0
+  m_Name: WeatherManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &682367755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682367754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c4a7f3fdf4261f42896f70958b52217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statusEffect: 5
+  effectTurns: 1
+--- !u!114 &682367756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682367754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63674843ea884e544b38275c7c2b21d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridParent: {fileID: 1831120400}
+  tileLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  weatherChance: 100
+  numberOfPatches: 3
+  turnsToStay: 3
+  effectEntireMap: 0
+  maxSpread: 4
+  movementPerTurn: 2
+  weather: {fileID: 682367755}
+--- !u!4 &682367757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682367754}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &685536822
 GameObject:
   m_ObjectHideFlags: 0
@@ -21249,7 +21332,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.44
+      value: 16.34
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -21257,7 +21340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19.1
+      value: 10.38
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -44755,5 +44838,6 @@ SceneRoots:
   - {fileID: 884738774}
   - {fileID: 671756631}
   - {fileID: 328114904}
+  - {fileID: 682367757}
   - {fileID: 1538519598}
   - {fileID: 868057735}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn))]
+[RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn), typeof(WeatherTurn))]
 public class TurnManager : MonoBehaviour
 {
     #region Variables
@@ -30,6 +30,7 @@ public class TurnManager : MonoBehaviour
 
     private PlayerTurn playerTurn;
     private EnemyTurn enemyTurn;
+    private WeatherTurn weatherTurn;
 
     private StateInterface currentTurn;
 
@@ -61,6 +62,9 @@ public class TurnManager : MonoBehaviour
 
         enemyTurn = GetComponent<EnemyTurn>();
         Debug.Assert(playerTurn != null, "TurnManager couldn't find the EnemyTurn Component");
+
+        weatherTurn = GetComponent<WeatherTurn>();
+        Debug.Assert(weatherTurn != null, "TurnManager couldn't find the WeatherTurn Component");
 
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
@@ -120,6 +124,11 @@ public class TurnManager : MonoBehaviour
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
+                mainCameraController.controlEnabled = false;
+                break;
+
+            case TurnEnums.TurnState.WeatherTurn:
+                currentTurn = weatherTurn;
                 mainCameraController.controlEnabled = false;
                 break;
         }

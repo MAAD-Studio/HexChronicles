@@ -137,7 +137,6 @@ public class WeatherPatch
             if (tile.tileOccupied && !tile.characterOnTile.effectedByWeather)
             {
                 effectedCharacters.Add(tile.characterOnTile);
-                Debug.Log("CHARARACTER EFFECTED: " + tile.characterOnTile.name);
             }
         }
 
@@ -150,8 +149,6 @@ public class WeatherPatch
         {
             int tileChoice = Random.Range(0, tilesMoveable.Count);
             origin = tilesMoveable[tileChoice];
-
-            Debug.Log("WEATHER MOVED TO TILE: " + origin);
         }
     }
 
@@ -159,7 +156,7 @@ public class WeatherPatch
     {
         foreach(Tile tile in tilesUnderAffect)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
+            tile.ChangeTileColor(TileEnums.TileMaterial.weather);
         }
     }
 

@@ -7,7 +7,9 @@ public class TileEnums
         frontier,
         attackable,
         path,
-        selectedChar
+        selectedChar,
+        towerAttack,
+        weather
     }
 
     public enum TileType

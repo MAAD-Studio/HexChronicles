@@ -8,7 +8,6 @@ public class WorldTurnBase : MonoBehaviour, StateInterface
     #region Variables
 
     protected TurnManager turnManager;
-    [SerializeField] protected WeatherManager weatherManager;
 
     #endregion
 
@@ -36,7 +35,7 @@ public class WorldTurnBase : MonoBehaviour, StateInterface
 
     public virtual void UpdateState()
     {
-
+       
     }
 
     #endregion
