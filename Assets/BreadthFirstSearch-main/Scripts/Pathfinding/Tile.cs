@@ -24,6 +24,18 @@ public class Tile : MonoBehaviour
     [HideInInspector] public bool tileHasObject = false;
     [HideInInspector] public bool inFrontier = false;
 
+    public TileEnums.TileMaterial PreviousMaterial
+    {
+        get;
+        private set;
+    }
+
+    public TileEnums.TileMaterial CurrentMaterial
+    {
+        get;
+        private set;
+    }
+
     [HideInInspector] public bool Reachable { get { return !tileOccupied && !tileHasObject && inFrontier; } }
 
     private Renderer tileRenderer;
@@ -58,37 +70,44 @@ public class Tile : MonoBehaviour
     //Changes the material applied to the Tile
     public void ChangeTileColor(TileEnums.TileMaterial tileMat)
     {
+        PreviousMaterial = CurrentMaterial;
         switch (tileMat)
         {
             case TileEnums.TileMaterial.baseMaterial:
                 tileTop.SetActive(false);
                 tileRenderer.material = tileData.baseMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.baseMaterial;
                 break;
 
             case TileEnums.TileMaterial.highlight:
                 tileTop.SetActive(false);
                 tileRenderer.material = tileData.highlightMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.highlight;
                 break;
 
             case TileEnums.TileMaterial.frontier:
                 tileTop.SetActive(true);
                 topRenderer.material = tileData.reachableMaterial;
                 tileRenderer.material = tileData.baseMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.frontier;
                 break;
 
             case TileEnums.TileMaterial.attackable:
                 tileTop.SetActive(false);
                 tileRenderer.material = tileData.attackableMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.attackable;
                 break;
 
             case TileEnums.TileMaterial.path:
                 tileTop.SetActive(false);
                 tileRenderer.material = tileData.pathMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.path;
                 break;
 
             case TileEnums.TileMaterial.selectedChar:
                 tileTop.SetActive(false);
                 tileRenderer.material = tileData.selectedCharMaterial;
+                CurrentMaterial = TileEnums.TileMaterial.selectedChar;
                 break;
         }
     }

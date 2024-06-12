@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1405031332680689403}
-  - component: {fileID: 8100544560541433264}
+  - component: {fileID: 4162341663823411293}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 5868265861852306083}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8100544560541433264
+--- !u!114 &4162341663823411293
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,7 +43,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2867574994839896644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cab153dfa701394dbf49a490ccda094, type: 3}
+  m_Script: {fileID: 11500000, guid: fd0662bd7d3dd8e4dbf6f575bf6027c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tileLayer:
@@ -56,6 +56,9 @@ MonoBehaviour:
   numberToSpawn: 1
   enemyList:
   - {fileID: 3750935538695592370, guid: 8d7491c413cf7bc46a0aaa4c619afd76, type: 3}
+  tileRange: 3
+  damage: 5
+  attackAreaPrefab: {fileID: 1963461499541457055, guid: dea6003340f73e34884a443da3c83c8e, type: 3}
 --- !u!1 &5355782971176402045
 GameObject:
   m_ObjectHideFlags: 0

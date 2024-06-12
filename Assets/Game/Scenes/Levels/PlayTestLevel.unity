@@ -6376,7 +6376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weatherManager: {fileID: 0}
   turnsTillSpawn: 2
-  spawners:
+  towers:
   - {fileID: 462889045}
 --- !u!114 &328114902
 MonoBehaviour:
@@ -8665,8 +8665,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2867574994839896644, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: m_Name
-      value: Spawner
+      value: Tower
       objectReference: {fileID: 0}
+    - target: {fileID: 4162341663823411293, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+      propertyPath: turnManager
+      value: 
+      objectReference: {fileID: 328114900}
     - target: {fileID: 8100544560541433264, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
       propertyPath: turnManager
       value: 
@@ -8683,13 +8687,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &462889045 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8100544560541433264, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+  m_CorrespondingSourceObject: {fileID: 4162341663823411293, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
   m_PrefabInstance: {fileID: 462889043}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cab153dfa701394dbf49a490ccda094, type: 3}
+  m_Script: {fileID: 11500000, guid: fd0662bd7d3dd8e4dbf6f575bf6027c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &465850548
@@ -21245,7 +21249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.04
+      value: 4.44
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -21253,7 +21257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.33
+      value: 19.1
       objectReference: {fileID: 0}
     - target: {fileID: 8362808741999803633, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -34067,6 +34071,10 @@ PrefabInstance:
     - target: {fileID: 3669298068121035929, guid: 539df9bc78d31ef4381b4bf656019c07, type: 3}
       propertyPath: m_Name
       value: Drainer
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669298068121035929, guid: 539df9bc78d31ef4381b4bf656019c07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

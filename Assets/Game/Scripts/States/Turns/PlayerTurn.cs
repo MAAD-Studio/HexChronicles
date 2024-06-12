@@ -165,27 +165,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void ResetTile()
     {
-        if (selectedCharacter != null)
-        {
-            selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
-        }
-
         if (currentTile == null)
         {
             return;
         }
 
-        if (areaPrefab != null && areaPrefab.ContainsTile(currentTile))
+        if(currentTile.CurrentMaterial == TileEnums.TileMaterial.highlight)
         {
-            return;
-        }
-        else if (currentTile.inFrontier)
-        {
-            currentTile.ChangeTileColor(TileEnums.TileMaterial.frontier);
-        }
-        else
-        {
-            currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            currentTile.ChangeTileColor(currentTile.PreviousMaterial);
         }
         currentTile = null;
     }

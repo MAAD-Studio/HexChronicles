@@ -8,7 +8,7 @@ public class TowersTurn : WorldTurnBase
 
     [Header("Spawning Information: ")]
     [SerializeField] private int turnsTillSpawn = 2;
-    [SerializeField] private List<Spawner> spawners = new List<Spawner>();
+    [SerializeField] private List<Tower> towers = new List<Tower>();
 
     bool updateCalled = false;
     bool updateDone = false;
@@ -20,9 +20,9 @@ public class TowersTurn : WorldTurnBase
     protected override void Start()
     {
         base.Start();
-        if(spawners.Count > 0)
+        if(towers.Count > 0)
         {
-            TileObject.objectDestroyed.AddListener(SpawnerDestroyed);
+            TileObject.objectDestroyed.AddListener(TowerDestroyed);
         }
     }
 
@@ -46,36 +46,42 @@ public class TowersTurn : WorldTurnBase
     {
         base.UpdateState();
 
-        if (turnManager.TurnNumber % turnsTillSpawn == 0)
+        if (!updateCalled)
         {
-            if (!updateCalled)
-            {
-                updateCalled = true;
-                //weatherManager.UpdateWeather();
-                StartCoroutine(UpdateSpawners());
-            }
-            else if(updateDone)
-            {
-                turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
-            }
-        }
-        else
-        {
+            updateCalled = true;
             //weatherManager.UpdateWeather();
+            StartCoroutine(UpdateTowers());
+        }
+        else if(updateDone)
+        {
             turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
         }
     }
 
-    private IEnumerator UpdateSpawners()
+    private IEnumerator UpdateTowers()
     {
-        if (turnManager.TurnNumber % turnsTillSpawn == 0)
+        foreach (Tower tower in towers)
         {
-            foreach (Spawner spawner in spawners)
-            {
-                turnManager.mainCameraController.MoveToTargetPosition(spawner.transform.position, true);
+            bool holdOnEnd = false;
 
+            if (turnManager.TurnNumber % turnsTillSpawn == 0)
+            {
+                turnManager.mainCameraController.MoveToTargetPosition(tower.transform.position, true);
                 yield return new WaitForSeconds(0.5f);
-                spawner.AttemptSpawn();
+                tower.AttemptSpawn();
+                holdOnEnd = true;
+            }
+
+            if(tower.CanAttack())
+            {
+                yield return new WaitForSeconds(0.5f);
+                tower.AttemptAttack();
+                holdOnEnd = true;
+            }
+
+            //If something happens the camera holds for a second to show the action
+            if(holdOnEnd)
+            {
                 yield return new WaitForSeconds(0.5f);
             }
         }
@@ -83,25 +89,25 @@ public class TowersTurn : WorldTurnBase
         updateDone = true;
     }
 
-    private void SpawnerDestroyed(TileObject tileObj)
+    private void TowerDestroyed(TileObject tileObj)
     {
-        Spawner spawnerToDestroy = null;
+        Tower towerToDestroy = null;
 
-        foreach(Spawner spawner in spawners)
+        foreach(Tower tower in towers)
         {
-            if(spawner == tileObj)
+            if(tower == tileObj)
             {
-                spawnerToDestroy = spawner;
+                towerToDestroy = tower;
                 break;
             }
         }
 
-        if(spawnerToDestroy != null)
+        if(towerToDestroy != null)
         {
-            spawners.Remove(spawnerToDestroy);
-            if(spawners.Count <= 0)
+            towers.Remove(towerToDestroy);
+            if(towers.Count <= 0)
             {
-                TileObject.objectDestroyed.RemoveListener(SpawnerDestroyed);
+                TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
             }
         }
     }
