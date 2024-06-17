@@ -4,12 +4,25 @@ public class TileEnums
     {
         baseMaterial,
         highlight,
-        frontier,
-        attackable,
         path,
         selectedChar,
+    }
+
+    public enum TileTops
+    {
+        frontier
+    }
+
+    public enum TileEffects
+    {
         towerAttack,
-        weather
+        attackable
+    }
+
+    public enum TileWeather
+    {
+        disabled,
+        rain
     }
 
     public enum TileType

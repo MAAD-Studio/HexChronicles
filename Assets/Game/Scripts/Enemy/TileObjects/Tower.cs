@@ -16,6 +16,7 @@ public class Tower : Spawner
     private AttackArea spawnedAttackArea;
 
     private List<Character> possibleCharacterChoices = new List<Character>();
+    List<Tile> tilesToColor = new List<Tile>();
 
     #endregion
 
@@ -76,12 +77,14 @@ public class Tower : Spawner
                 turnManager.mainCameraController.MoveToTargetPosition(spawnedAttackArea.transform.position, true);
 
                 Tile originTile = possibleCharacterChoices[choice].characterTile;
-                List<Tile> tilesToColor = new List<Tile>(turnManager.pathfinder.FindAdjacentTiles(originTile, true));
-                tilesToColor.Add(originTile);
+                tilesToColor = new List<Tile>(turnManager.pathfinder.FindAdjacentTiles(originTile, true))
+                {
+                    originTile
+                };
 
                 foreach (Tile tile in tilesToColor)
                 {
-                    tile.ChangeTileColor(TileEnums.TileMaterial.towerAttack);
+                    tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, true);
                 }
             }
         }
@@ -93,6 +96,11 @@ public class Tower : Spawner
             foreach (Character character in spawnedAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
             {
                 character.TakeDamage(damage, ElementType.Base);
+            }
+
+            foreach (Tile tile in tilesToColor)
+            {
+                tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);
             }
 
             spawnedAttackArea.DestroySelf();

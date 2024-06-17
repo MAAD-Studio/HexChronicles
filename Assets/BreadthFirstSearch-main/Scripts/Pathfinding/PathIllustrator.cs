@@ -44,7 +44,7 @@ public class PathIllustrator : MonoBehaviour
     {
         foreach (Tile tile in frontier)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, true);
         }
     }
 

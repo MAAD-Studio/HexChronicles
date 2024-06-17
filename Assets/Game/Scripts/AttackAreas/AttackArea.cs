@@ -46,14 +46,7 @@ public class AttackArea : MonoBehaviour
                 tile.objectOnTile.PreviewDamage(0);
             }
 
-            if (tile.inFrontier)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
-            }
-            else
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-            }
+            tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
         }
     }
 
@@ -66,10 +59,7 @@ public class AttackArea : MonoBehaviour
             {
                 tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
             }
-            else
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.attackable);
-            }
+            tile.ChangeTileEffect(TileEnums.TileEffects.attackable, true);
         }
     }
 
