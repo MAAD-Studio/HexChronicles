@@ -49,15 +49,7 @@ public class WeatherManager : MonoBehaviour
         }
 
         Debug.Assert(weather != null, "WeatherManager doesn't have a weather affect to use");
-    }
-
-    void Update()
-    {
-        foreach (WeatherPatch patch in weatherPatches)
-        {
-            patch.ColourArea();
-        }
-    }
+    } 
 
     #endregion
 
@@ -97,6 +89,7 @@ public class WeatherManager : MonoBehaviour
                 patch.EffectCharacters();
                 patch.MoveOrigin();
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
+                patch.ColourArea();
             }
             turnsActive++;
         }

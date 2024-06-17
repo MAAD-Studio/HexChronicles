@@ -129,10 +129,15 @@ public class TileEditor : EditorWindow
         if (GUILayout.Button("Replace Selected Tiles"))
         {
             //Checks if there are any objects selected
-            GameObject selected = (GameObject)Selection.activeObject;
+            var selectedObj = Selection.activeObject;
+            GameObject selected = (GameObject)selectedObj;
+            if (selected != null)
+            {
+                selected = selected.transform.parent.gameObject;
+            }
 
             //Checks if a Prefab has been selected
-            if(selectedPrefab == null)
+            if (selectedPrefab == null)
             {
                 EditorUtility.DisplayDialog("Tile Editor Error", 
                     "You need to select a replacement prefab before you can replace.", "Confirm");
@@ -171,7 +176,13 @@ public class TileEditor : EditorWindow
         if (GUILayout.Button("Delete Selected Tiles"))
         {
             //Checks if there are any objects selected
-            GameObject selected = (GameObject)Selection.activeObject;
+            var selectedObj = Selection.activeObject;
+            GameObject selected = (GameObject)selectedObj;
+            if (selected != null)
+            {
+                selected = selected.transform.parent.gameObject;
+            }
+
             if (selected == null)
             {
                 //Doesn't need to warn about anything
@@ -256,6 +267,7 @@ public class TileEditor : EditorWindow
         if (Selection.objects.Length < 2)
         {
             selectedObject = (GameObject)Selection.activeObject;
+            selectedObject = selectedObject.transform.parent.gameObject;
 
             //Transfers the information over to the new tile
             newTile = Instantiate(selectedPrefab, selectedObject.transform.position, selectedObject.transform.rotation);
@@ -267,9 +279,10 @@ public class TileEditor : EditorWindow
         else
         {
             //Runs through all the selected objects
-            foreach(object tile in Selection.objects)
+            foreach(var tile in Selection.objects)
             {
                 selectedObject = (GameObject)tile;
+                selectedObject = selectedObject.transform.parent.gameObject;
 
                 if(selectedObject.transform.GetComponent<Tile>() != null)
                 {
@@ -307,15 +320,17 @@ public class TileEditor : EditorWindow
         if (Selection.objects.Length < 1)
         {
             selectedObject = (GameObject)Selection.activeObject;
+            selectedObject = selectedObject.transform.parent.gameObject;
 
             DestroyImmediate(selectedObject);
         }
         else
         {
             //Runs through all the selected objects
-            foreach (object tile in Selection.objects)
+            foreach (var tile in Selection.objects)
             {
                 selectedObject = (GameObject)tile;
+                selectedObject = selectedObject.transform.parent.gameObject;
 
                 if (selectedObject.transform.GetComponent<Tile>() != null)
                 {

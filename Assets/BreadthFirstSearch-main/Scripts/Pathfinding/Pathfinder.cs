@@ -184,7 +184,7 @@ public class Pathfinder : MonoBehaviour
         foreach (Tile tile in frontier)
         {
             tile.inFrontier = false;
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, false);
         }
 
         frontier.Clear();

@@ -117,7 +117,7 @@ public class WeatherPatch
         foreach (Tile tile in tilesUnderAffect)
         {
             tile.underWeatherAffect = false;
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            tile.ChangeTileWeather(TileEnums.TileWeather.disabled);
         }
 
         tilesUnderAffect.Clear();
@@ -157,7 +157,7 @@ public class WeatherPatch
     {
         foreach(Tile tile in tilesUnderAffect)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.weather);
+            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
         }
     }
 

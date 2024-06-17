@@ -175,10 +175,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             return;
         }
 
-        if(currentTile.CurrentMaterial == TileEnums.TileMaterial.highlight)
-        {
-            currentTile.ChangeTileColor(currentTile.PreviousMaterial);
-        }
+        currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         currentTile = null;
     }
 
