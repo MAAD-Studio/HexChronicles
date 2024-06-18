@@ -52,10 +52,10 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
-    public event EventHandler OnDamagePreview;
-    public event EventHandler OnUpdateHealthBar;
-    public event EventHandler OnUpdateAttributes;
-    public event EventHandler OnUpdateStatus;
+    [HideInInspector] public UnityEvent DamagePreview = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateHealthBar = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     #endregion
 
@@ -92,7 +92,7 @@ public class Character : MonoBehaviour
     public void PreviewDamage(float damage)
     {
         healthBar.damagePreview = damage;
-        OnDamagePreview?.Invoke(this, EventArgs.Empty);
+        DamagePreview?.Invoke();
     }
 
 
@@ -119,13 +119,13 @@ public class Character : MonoBehaviour
     public void AddStatus(Status status)
     {
         statusList.Add(status);
-        OnUpdateStatus.Invoke(this, EventArgs.Empty);
+        UpdateStatus.Invoke();
     }
 
     public void RemoveStatus(Status status)
     {
         statusList.Remove(status);
-        OnUpdateStatus.Invoke(this, EventArgs.Empty);
+        UpdateStatus.Invoke();
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {
@@ -148,12 +148,12 @@ public class Character : MonoBehaviour
 
     public virtual void InvokeUpdateHealthBar()
     {
-        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+        UpdateHealthBar?.Invoke();
     }
 
     public virtual void InvokeUpdateAttributes()
     {
-        OnUpdateAttributes?.Invoke(this, EventArgs.Empty);
+        UpdateAttributes?.Invoke();
     }
 
     public virtual void TakeDamage(float damage, ElementType type)

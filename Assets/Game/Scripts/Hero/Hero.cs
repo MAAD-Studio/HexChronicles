@@ -35,6 +35,10 @@ public class Hero : Character
         currentSkillCD = (skillCD - 1);
 
         buffModifiers = new List<BuffModifier>();
+
+        UpdateHealthBar?.Invoke();
+        UpdateAttributes?.Invoke();
+        UpdateStatus?.Invoke();
     }
 
     public override void EnterNewTurn()

@@ -41,14 +41,10 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void Start()
     {
-        hero.OnUpdateHealthBar += UpdateHealthBar;
-        hero.OnUpdateAttributes += UpdateAttributes;
-        hero.OnUpdateStatus += UpdateStatus;
-
         SetDefaultState();
     }
 
-    private void UpdateAttributes(object sender, EventArgs e)
+    private void UpdateAttributes()
     {
         foreach (TextMeshProUGUI movement in textMovement)
         {
@@ -64,22 +60,16 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    private void UpdateStatus(object sender, EventArgs e)
+    private void UpdateStatus()
     {
+        string statusString = characterUIConfig.GetStatusTypes(hero).ToString();
         foreach (TextMeshProUGUI status in textStatus)
         {
-            status.text = characterUIConfig.GetStatusTypes(hero).ToString();
+            status.text = statusString;
         }
     }
 
-    private void OnDestroy()
-    {
-        hero.OnUpdateHealthBar -= UpdateHealthBar;
-        hero.OnUpdateAttributes -= UpdateAttributes;
-        hero.OnUpdateStatus -= UpdateStatus;
-    }
-
-    private void UpdateHealthBar(object sender, EventArgs e)
+    private void UpdateHealthBar()
     {
         foreach (Image hp in health)
         {
@@ -106,10 +96,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             element.sprite = characterUIConfig.GetElementSprite(hero.elementType);
         }
 
-        UpdateHealthBar(this, EventArgs.Empty);
-        UpdateAttributes(this, EventArgs.Empty);
-        UpdateStatus(this, EventArgs.Empty);
-
         attackShape.sprite = hero.heroSO.attackShape;
         attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
         attackInfo.ForceMeshUpdate();
@@ -117,6 +103,20 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         skillShape.sprite = hero.heroSO.activeSkill.skillshape;
         skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
         skillInfo.ForceMeshUpdate();
+    }
+
+    private void SubscribeEvents()
+    {
+        hero.UpdateHealthBar.AddListener(UpdateHealthBar);
+        hero.UpdateAttributes.AddListener(UpdateAttributes);
+        hero.UpdateStatus.AddListener(UpdateStatus);
+    }
+
+    private void OnDestroy()
+    {
+        hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
+        hero.UpdateAttributes.RemoveListener(UpdateAttributes);
+        hero.UpdateStatus.RemoveListener(UpdateStatus);
     }
 
     public void UpdateButton()

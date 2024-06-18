@@ -15,7 +15,7 @@ public abstract class HealthBar : MonoBehaviour
 
     protected abstract void Start();
     protected abstract void OnDestroy();
-    protected abstract void UpdateHealthBarPreview(object sender, EventArgs e);
-    protected abstract void UpdateHealthBar(object sender, EventArgs e);
+    protected abstract void UpdateHealthBarPreview();
+    protected abstract void UpdateHealthBar();
 
 }
