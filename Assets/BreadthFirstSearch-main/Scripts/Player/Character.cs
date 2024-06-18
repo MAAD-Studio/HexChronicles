@@ -428,5 +428,13 @@ public class Character : MonoBehaviour
         return tile;
     }
 
+    public void ResetCharacter()
+    {
+        moving = false;
+        statusList.Clear();
+        hasMadeDecision = false;
+        effectedByWeather = false;
+    }
+
     #endregion
 }

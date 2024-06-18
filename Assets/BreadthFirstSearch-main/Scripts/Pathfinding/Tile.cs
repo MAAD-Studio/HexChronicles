@@ -224,7 +224,7 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public virtual void OnTileEnter(Character character)
     {
-        if (tileData.elementsStrongAgainst.Contains(character.elementType))
+        /*if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
             character.defensePercentage += 10;
             if (character.characterType == TurnEnums.CharacterType.Player)
@@ -239,7 +239,7 @@ public class Tile : MonoBehaviour
             {
                 MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage +1", false);
             }
-        }
+        }*/
     }
 
     //Called when a Character stays on a tile
@@ -258,7 +258,7 @@ public class Tile : MonoBehaviour
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
-        if (tileData.elementsStrongAgainst.Contains(character.elementType))
+        /*if (tileData.elementsStrongAgainst.Contains(character.elementType))
         {
             character.defensePercentage -= 10;
             if (character.characterType == TurnEnums.CharacterType.Player)
@@ -273,7 +273,7 @@ public class Tile : MonoBehaviour
             {
                 MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage -1", false);
             }
-        }
+        }*/
     }
 
     public void TransferTileData(Tile tile)

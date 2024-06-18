@@ -86,6 +86,8 @@ public class TurnManager : MonoBehaviour
 
         currentTurn = playerTurn;
         EventBus.Instance.Publish(new OnPlayerTurn());
+
+        WorldTurnBase.Victory.AddListener(SceneReset);
     }
 
     void Update()
@@ -158,6 +160,18 @@ public class TurnManager : MonoBehaviour
         }
 
         Destroy(character.gameObject);
+    }
+
+    private void SceneReset()
+    {
+        turnNumber = 1;
+        currentTurn = playerTurn;
+        WorldTurnBase.Victory.RemoveListener(SceneReset);
+
+        playerTurn.ResetState();
+        enemyTurn.ResetState();
+        worldTurn.ResetState();
+        weatherTurn.ResetState();
     }
 
     #endregion

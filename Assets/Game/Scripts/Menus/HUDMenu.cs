@@ -16,7 +16,7 @@ public class HUDMenu : Menu
         base.Start();
 
         TurnManager.OnLevelDefeat.AddListener(ShowDefeat);
-        TileObject.objectDestroyed.AddListener(ShowVictory);
+        WorldTurnBase.Victory.AddListener(ShowVictory);
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
     }
 
@@ -41,12 +41,12 @@ public class HUDMenu : Menu
     }
 
     // Only For Testing
-    private void ShowVictory(TileObject arg0)
+    private void ShowVictory()
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        TileObject.objectDestroyed.RemoveListener(ShowVictory);
+        WorldTurnBase.Victory.RemoveListener(ShowVictory);
     }
 
     // Only For Testing

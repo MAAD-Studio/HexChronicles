@@ -64,6 +64,7 @@ public class HUDInfo : MonoBehaviour
         SubscribeEvents();
         InstantiateUIElements();
         ButtonsAddListener();
+        WorldTurnBase.Victory.AddListener(FullReset);
     }
 
     private void OnDestroy()
@@ -329,5 +330,12 @@ public class HUDInfo : MonoBehaviour
             objectStatus.Hide();
         }
     }
+
+    private void FullReset()
+    {
+        endTurn.onClick = null;
+        WorldTurnBase.Victory.RemoveListener(FullReset);
+    }
+
     #endregion
 }
