@@ -29,10 +29,5 @@ public class DeathTile : Tile
         }
     }
 
-    public override void OnTileExit(Character character)
-    {
-        //NO EFFECT
-    }
-
     #endregion
 }

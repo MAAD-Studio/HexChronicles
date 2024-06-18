@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -81,7 +82,120 @@ public class Character : MonoBehaviour
     public virtual void PerformBasicAttack(List<Character> targets)
     {
         animator.SetTrigger("attack");
+
+        if (characterTile.tileData.tileType == elementType)
+        {
+            TurnManager turnManager = FindObjectOfType<TurnManager>();
+            ApplyBuffCharacter(turnManager);
+            ApplyStatusAttackArea(targets);
+            ApplyStatusElementalTile(turnManager);
+        }
     }
+
+    public void ApplyBuffCharacter(TurnManager turnManager)
+    {
+        if(elementType == ElementType.Fire)
+        {
+            turnManager.pathfinder.PathTilesInRange(characterTile, 0, 2, true, false);
+            List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+            List<Character> charactersToHit = new List<Character>();
+            foreach(Tile tile in tiles)
+            { 
+                if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+                {
+                    charactersToHit.Add(tile.characterOnTile);
+                }
+            }
+            ApplyStatusAttackArea(charactersToHit);
+        }
+        else if (elementType == ElementType.Water)
+        {
+            currentHealth = maxHealth;
+            InvokeUpdateHealthBar();
+        }
+        else
+        {
+            Status newStatus = new Status();
+            newStatus.effectTurns = 1;
+            newStatus.statusType = Status.StatusTypes.Haste;
+            AddStatus(newStatus);
+        }
+    }
+
+    public void ApplyStatusAttackArea(List<Character> targets)
+    {
+        foreach (Character target in targets)
+        {
+            if (elementType == ElementType.Fire)
+            {
+                AttemptStatusApply(Status.StatusTypes.Burning, target, false);
+            }
+            else if (elementType == ElementType.Water)
+            {
+                AttemptStatusApply(Status.StatusTypes.Wet, target, true);
+            }
+            else
+            {
+                AttemptStatusApply(Status.StatusTypes.Bound, target, true);
+            }
+        }
+    }
+
+    public void ApplyStatusElementalTile(TurnManager turnManager)
+    {
+        Status.StatusTypes chosenType = Status.StatusTypes.None;
+        List<Tile> chosenList = new List<Tile>();
+
+        if (elementType == ElementType.Fire)
+        {
+            chosenType = Status.StatusTypes.Burning;
+            chosenList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        }
+        else if (elementType == ElementType.Water)
+        {
+            chosenType = Status.StatusTypes.Wet;
+            chosenList = turnManager.waterTiles.Cast<Tile>().ToList();
+        }
+        else
+        {
+            chosenType = Status.StatusTypes.Bound;
+            chosenList = turnManager.grassTiles.Cast<Tile>().ToList();
+        }
+
+        foreach(Tile tile in chosenList)
+        {
+            if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+            {
+                if (chosenType == Status.StatusTypes.Burning)
+                {
+                    AttemptStatusApply(chosenType, tile.characterOnTile, false);
+                }
+                else
+                {
+                    AttemptStatusApply(chosenType, tile.characterOnTile, true);
+                }
+            }
+        }
+    }
+
+    public void AttemptStatusApply(Status.StatusTypes statusType, Character target, bool checkOld)
+    {
+        if(checkOld)
+        {
+            Status oldStatus = Status.GrabIfStatusActive(target, statusType);
+            if (oldStatus != null)
+            {
+                oldStatus.effectTurns += 1;
+                return;
+            }
+        }
+
+        Status newStatus = new Status();
+        newStatus.effectTurns = 2;
+        newStatus.statusType = statusType;
+        target.AddStatus(newStatus);
+    }
+
     public virtual void ReleaseActiveSkill(List<Character> targets)
     {
         animator.SetTrigger("skill");
@@ -119,13 +233,15 @@ public class Character : MonoBehaviour
     public void AddStatus(Status status)
     {
         statusList.Add(status);
-        OnUpdateStatus.Invoke(this, EventArgs.Empty);
+        //OnUpdateStatus.Invoke(this, EventArgs.Empty);
     }
 
     public void RemoveStatus(Status status)
     {
         statusList.Remove(status);
-        OnUpdateStatus.Invoke(this, EventArgs.Empty);
+
+        //Breaks Game 
+        //OnUpdateStatus.Invoke(this, EventArgs.Empty);
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {
@@ -158,6 +274,19 @@ public class Character : MonoBehaviour
 
     public virtual void TakeDamage(float damage, ElementType type)
     {
+        if(statusList.Count > 0)
+        {
+            damage += AttackStatusEffect(type);
+        }
+
+        foreach(Status status in statusList)
+        {
+            if(status.statusType == Status.StatusTypes.Bound)
+            {
+                damage += 2;
+            }
+        }
+
         currentHealth -= damage;
 
         if (isHurt) { currentHealth--; }
@@ -172,6 +301,86 @@ public class Character : MonoBehaviour
             animator.SetTrigger("hit");
         }
         InvokeUpdateHealthBar();
+    }
+
+    private int AttackStatusEffect(ElementType type)
+    {
+        int potentialDamageAddOn = 0;
+
+        if(type == ElementType.Base)
+        {
+            return 0;
+        }
+
+        foreach(Status status in statusList)
+        {
+            if(status.statusType == Status.StatusTypes.Burning)
+            {
+                if(type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER BURNING DEALING FIRE DAMAGE");
+                    status.damageAddOn += 1;
+                }
+                else if(type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER BURNING DEALING WATER DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                else
+                {
+                    Debug.Log("CHARACTER BURNING DEALING GRASS DAMAGE");
+                    status.effectTurns++;
+                }
+                break;
+            }
+            else if(status.statusType == Status.StatusTypes.Wet)
+            {
+                if (type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER WET DEALING FIRE DAMAGE");
+                    TakeDamage(1, ElementType.Base);
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER WET DEALING WATER DAMAGE");
+                    status.effectTurns++;
+                }
+                else
+                {
+                    Debug.Log("CHARACTER WET DEALING GRASS DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                break;
+            }
+            else if(status.statusType == Status.StatusTypes.Bound)
+            {
+                if (type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER BOUND DEALING FIRE DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER BOUND DEALING WATER DAMAGE");
+                    status.effectTurns++;
+                }
+                else
+                {
+                    Debug.Log("CHARACTER BOUND DEALING GRASS DAMAGE");
+                    potentialDamageAddOn += 3;
+                }
+                break;
+            }
+        }
+
+        foreach(Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
+        return potentialDamageAddOn;
     }
 
     public virtual void Heal(float heal)

@@ -28,6 +28,12 @@ public class TurnManager : MonoBehaviour
     [Header("WorldTurn Type:")]
     [SerializeField] private WorldTurnBase worldTurn;
 
+    [Header("Tiles:")]
+    [SerializeField] private GameObject gridParent;
+    public List<LavaTile> lavaTiles = new List<LavaTile>();
+    public  List<GrassTile> grassTiles = new List<GrassTile>();
+    public List<WaterTile> waterTiles = new List<WaterTile>();
+
     private PlayerTurn playerTurn;
     private EnemyTurn enemyTurn;
     private WeatherTurn weatherTurn;
@@ -68,6 +74,11 @@ public class TurnManager : MonoBehaviour
 
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
+
+        Debug.Assert(gridParent != null, "TurnManager wasn't given a GridParent");
+        lavaTiles = new List<LavaTile>(gridParent.GetComponentsInChildren<LavaTile>());
+        grassTiles = new List<GrassTile>(gridParent.GetComponentsInChildren<GrassTile>());
+        waterTiles = new List<WaterTile>(gridParent.GetComponentsInChildren<WaterTile>());
 
         characterList.Clear();
         enemyList.Clear();

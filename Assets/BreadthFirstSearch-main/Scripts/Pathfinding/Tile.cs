@@ -19,6 +19,7 @@ public class Tile : MonoBehaviour
 
     [HideInInspector] public Tile parentTile;
     [HideInInspector] public Character characterOnTile;
+    protected int characterTimeOnTile = 0;
     [HideInInspector] public TileObject objectOnTile;
 
     [HideInInspector] public bool tileOccupied = false;
@@ -73,7 +74,7 @@ public class Tile : MonoBehaviour
 
     #endregion
 
-    #region CustomMethods
+    #region TileEffectMethods
 
     //Changes the material applied to the Tile
     public void ChangeTileColor(TileEnums.TileMaterial tileMat)
@@ -222,69 +223,26 @@ public class Tile : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region TileMovementMethods
+
     //Called when a Character enters a tile
     public virtual void OnTileEnter(Character character)
     {
-        /*if (tileData.elementsStrongAgainst.Contains(character.elementType))
-        {
-            character.defensePercentage += 10;
-            character.InvokeUpdateAttributes();
 
-            if (character.characterType == TurnEnums.CharacterType.Player)
-            {
-                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s defense +10%", false);
-            }
-        }
-        else if(tileData.tileType == character.elementType)
-        {
-            character.attackDamage += 1;
-            character.InvokeUpdateAttributes();
-
-            if (character.characterType == TurnEnums.CharacterType.Player)
-            {
-                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage +1", false);
-            }
-        }*/
     }
 
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        if (tileData.elementsWeakAgainst.Contains(character.elementType))
-        {
-            character.movementThisTurn += 1;
-            character.InvokeUpdateAttributes();
-
-            if (character.characterType == TurnEnums.CharacterType.Player)
-            {
-                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s move range +1", false);
-            }
-        }
+        characterTimeOnTile += 1;
     }
 
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
-        /*if (tileData.elementsStrongAgainst.Contains(character.elementType))
-        {
-            character.defensePercentage -= 10;
-            character.InvokeUpdateAttributes();
-
-            if (character.characterType == TurnEnums.CharacterType.Player)
-            {
-                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s defense -10%", false);
-            }
-        }
-        else if (tileData.tileType == character.elementType)
-        {
-            character.attackDamage -= 1;
-            character.InvokeUpdateAttributes();
-
-            if (character.characterType == TurnEnums.CharacterType.Player)
-            {
-                MouseTip.Instance.ShowTip(character.transform.position, $"{character}'s attack damage -1", false);
-            }
-        }*/
+        characterTimeOnTile = 0;
     }
 
     public void TransferTileData(Tile tile)

@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4156400979670192085}
-  - component: {fileID: 3912741567405293726}
   - component: {fileID: 5668366944129534930}
+  - component: {fileID: -8134905841939520142}
   m_Layer: 3
   m_Name: LavaTile
   m_TagString: Untagged
@@ -37,29 +37,6 @@ Transform:
   - {fileID: 6923108604479038735}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3912741567405293726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3667425466784126319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e756be36c92cff47bb1f4e8017253b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileData: {fileID: 11400000, guid: d96b8af968a6c544793290767c6259b1, type: 2}
-  cost: 0
-  weatherCost: 1
-  underWeatherAffect: 0
-  connectedTile: {fileID: 0}
-  parentTile: {fileID: 0}
-  characterOnTile: {fileID: 0}
-  objectOnTile: {fileID: 0}
-  tileOccupied: 0
-  tileHasObject: 0
-  inFrontier: 0
 --- !u!64 &5668366944129534930
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -82,6 +59,29 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
+--- !u!114 &-8134905841939520142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3667425466784126319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5f5b7a2d0b8ad4a9bcf8fc95951de3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileData: {fileID: 11400000, guid: d96b8af968a6c544793290767c6259b1, type: 2}
+  cost: 1
+  weatherCost: 1
+  underWeatherAffect: 0
+  connectedTile: {fileID: 0}
+  parentTile: {fileID: 0}
+  characterOnTile: {fileID: 0}
+  objectOnTile: {fileID: 0}
+  tileOccupied: 0
+  tileHasObject: 0
+  inFrontier: 0
 --- !u!1 &4430219852692735230
 GameObject:
   m_ObjectHideFlags: 0

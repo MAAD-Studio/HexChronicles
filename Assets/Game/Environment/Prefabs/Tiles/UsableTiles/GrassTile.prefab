@@ -92,8 +92,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 885428086317116123}
-  - component: {fileID: -8507927885159219961}
   - component: {fileID: 3457864993437422645}
+  - component: {fileID: 2361453317908805489}
   m_Layer: 3
   m_Name: GrassTile
   m_TagString: Untagged
@@ -120,29 +120,6 @@ Transform:
   - {fileID: 5860133026961983318}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-8507927885159219961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 505103047440314465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e756be36c92cff47bb1f4e8017253b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileData: {fileID: 11400000, guid: 79581d274055f294786890ba672d2773, type: 2}
-  cost: 0
-  weatherCost: 1
-  underWeatherAffect: 0
-  connectedTile: {fileID: 0}
-  parentTile: {fileID: 0}
-  characterOnTile: {fileID: 0}
-  objectOnTile: {fileID: 0}
-  tileOccupied: 0
-  tileHasObject: 0
-  inFrontier: 0
 --- !u!64 &3457864993437422645
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -165,6 +142,29 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5062246478642505140, guid: b36f4310b8ddd9b46a77f19e87387232, type: 3}
+--- !u!114 &2361453317908805489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 505103047440314465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adcc2a9a2d9155046ac5561733851c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileData: {fileID: 11400000, guid: 79581d274055f294786890ba672d2773, type: 2}
+  cost: 1
+  weatherCost: 1
+  underWeatherAffect: 0
+  connectedTile: {fileID: 0}
+  parentTile: {fileID: 0}
+  characterOnTile: {fileID: 0}
+  objectOnTile: {fileID: 0}
+  tileOccupied: 0
+  tileHasObject: 0
+  inFrontier: 0
 --- !u!1 &620478564485325296
 GameObject:
   m_ObjectHideFlags: 0
