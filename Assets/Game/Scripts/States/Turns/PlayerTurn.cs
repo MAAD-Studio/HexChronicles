@@ -127,6 +127,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
     }
 
+    public void ResetState()
+    {
+        FullReset();
+        allowSelection = true;
+        attackType = TurnEnums.PlayerAction.BasicAttack;
+    }
+
     #endregion
 
     #region CustomMethods

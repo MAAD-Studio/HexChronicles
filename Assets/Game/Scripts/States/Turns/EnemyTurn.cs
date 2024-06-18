@@ -59,5 +59,10 @@ public class EnemyTurn : MonoBehaviour, StateInterface
         }
     }
 
+    public void ResetState()
+    {
+
+    }
+
     #endregion
 }

@@ -51,6 +51,11 @@ public class WeatherTurn : MonoBehaviour, StateInterface
         updateDone = false;
     }
 
+    public void ResetState()
+    {
+        weatherManager.FullReset();
+    }
+
     #endregion
 
     #region CustomMethods

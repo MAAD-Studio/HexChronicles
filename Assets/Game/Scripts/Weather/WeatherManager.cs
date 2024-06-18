@@ -105,6 +105,15 @@ public class WeatherManager : MonoBehaviour
         }
     }
 
+    public void FullReset()
+    {
+        turnsActive = 0;
+        foreach (WeatherPatch patch in weatherPatches)
+        {
+            patch.ResetWeatherTiles();
+        }
+    }
+
     #endregion
 
 }

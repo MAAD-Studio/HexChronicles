@@ -5,4 +5,6 @@ public interface StateInterface
     void UpdateState();
 
     void ExitState();
+
+    void ResetState();
 }

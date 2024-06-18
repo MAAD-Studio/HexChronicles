@@ -57,6 +57,12 @@ public class TowersTurn : WorldTurnBase
         }
     }
 
+    public override void ResetState()
+    {
+        base.ResetState();
+
+    }
+
     private IEnumerator UpdateTowers()
     {
         foreach (Tower tower in towers)
@@ -107,6 +113,7 @@ public class TowersTurn : WorldTurnBase
             if(towers.Count <= 0)
             {
                 TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
+                Victory.Invoke();
             }
         }
     }
