@@ -57,4 +57,13 @@ public class HUDMenu : Menu
 
         TurnManager.OnLevelDefeat.RemoveListener(ShowDefeat);
     }
+
+    // Only For Testing
+    public void InvokeVictory()
+    {
+        WorldTurnBase.Victory.Invoke();
+    }
+    public void InvokeDefeat()
+    {
+    }
 }

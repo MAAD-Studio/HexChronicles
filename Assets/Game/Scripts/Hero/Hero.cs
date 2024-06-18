@@ -12,7 +12,7 @@ public class Hero : Character
     public int skillCD = 3;
     public int currentSkillCD;
 
-    public List<BuffModifier> buffModifiers; // Used in battle to modify stats
+    public List<BasicUpgrade> upgradeList; 
 
     protected override void Start()
     {
@@ -34,7 +34,7 @@ public class Hero : Character
         activeSkillArea = activeSkill.shapeArea;
         currentSkillCD = (skillCD - 1);
 
-        buffModifiers = new List<BuffModifier>();
+        upgradeList = new List<BasicUpgrade>();
 
         UpdateHealthBar?.Invoke();
         UpdateAttributes?.Invoke();
@@ -109,68 +109,58 @@ public class Hero : Character
         //passiveSkill.Apply();
     }
 
-    #region Modifiers
-    public void AddModifier(BuffModifier mod)
+    #region Upgrade
+    public void AddUpgrade(BasicUpgrade upgrade)
     {
-        buffModifiers.Add(mod);
+        upgradeList.Add(upgrade);
 
-        switch (mod.attributeType)
+        switch (upgrade.attributeType)
         {
-            case BasicAttributeType.AttackDamage:
-                attackDamage += mod.value;
-                break;
-            /*case BasicAttributeType.AttackRange:
-                heroSO.attributes.attackRange += mod.value;
-                break;*/
             case BasicAttributeType.Health:
-                currentHealth += mod.value;
-                if (currentHealth >= maxHealth)
-                    currentHealth = maxHealth;
-                break;
-            case BasicAttributeType.DefensePercentage:
-                defensePercentage += mod.value;
+                maxHealth += upgrade.value;
                 break;
             case BasicAttributeType.MovementRange:
-                moveDistance += (int)mod.value;
+                moveDistance += upgrade.value;
                 break;
-        }
-    }
-
-    public void RemoveModifier(BuffModifier mod)
-    {
-        buffModifiers.Remove(mod);
-
-        switch (mod.attributeType)
-        {
             case BasicAttributeType.AttackDamage:
-                attackDamage -= mod.value;
-                break;
-            /*case BasicAttributeType.AttackRange:
-                heroSO.attributes.attackRange -= mod.value;
-                break;*/
-            case BasicAttributeType.Health:
-                currentHealth -= mod.value;
-                if (currentHealth < 0)
-                    currentHealth = 0;
+                attackDamage += upgrade.value;
                 break;
             case BasicAttributeType.DefensePercentage:
-                defensePercentage -= mod.value;
+                defensePercentage += upgrade.value;
+                break;
+        }
+    }
+
+    public void RemoveUpgrade(BasicUpgrade upgrade)
+    {
+        upgradeList.Remove(upgrade);
+
+        switch (upgrade.attributeType)
+        {
+            case BasicAttributeType.Health:
+                maxHealth -= upgrade.value;
                 break;
             case BasicAttributeType.MovementRange:
-                moveDistance -= (int)mod.value;
+                moveDistance -= upgrade.value;
+                break;
+            case BasicAttributeType.AttackDamage:
+                attackDamage -= upgrade.value;
+                break;
+            case BasicAttributeType.DefensePercentage:
+                defensePercentage -= upgrade.value;
                 break;
         }
     }
 
-    public void ClearModifiers()
+    public void ClearUpgrades()
     {
-        foreach (var mod in buffModifiers)
+        foreach (var upgrade in upgradeList)
         {
-            RemoveModifier(mod);
+            RemoveUpgrade(upgrade);
         }
-        buffModifiers.Clear();
+        upgradeList.Clear();
     }
 
-    #endregion Modifiers
+    #endregion 
 
 }
