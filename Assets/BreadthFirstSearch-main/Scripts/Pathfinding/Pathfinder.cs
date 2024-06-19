@@ -43,7 +43,6 @@ public class Pathfinder : MonoBehaviour
     public void FindMovementPathsCharacter(Character character, bool illustrate)
     {
         FindPaths(character.characterTile, character.movementThisTurn, character.moveDistance, false, illustrate);
-        Debug.Log("MOVEMENT THIS TURN: " + character.movementThisTurn);
     }
 
     //BreadthFirst searches for what tiles the character can reach
@@ -86,6 +85,7 @@ public class Pathfinder : MonoBehaviour
                 }
             }
         }
+        AddTileToFrontier(origin);
 
         if(illustrate)
         {

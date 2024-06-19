@@ -44,7 +44,7 @@ public class Status
                 break;
 
             case StatusTypes.CannotMove:
-                character.canMove = false;
+                character.movementThisTurn = character.moveDistance;
                 break;
 
             case StatusTypes.CannotAttack:
@@ -56,9 +56,10 @@ public class Status
                 break;
 
             case StatusTypes.Haste:
-                Debug.Log("STATUS MOVEMENT BEFORE: " + character.movementThisTurn);
-                character.movementThisTurn -= 2;
-                Debug.Log("STATUS MOVEMENT AFTER: " + character.movementThisTurn);
+                if(character.movementThisTurn < character.moveDistance)
+                {
+                    character.movementThisTurn -= 2;
+                }
                 break;
 
             default:

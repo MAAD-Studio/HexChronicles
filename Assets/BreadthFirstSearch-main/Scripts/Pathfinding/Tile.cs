@@ -267,10 +267,10 @@ public class Tile : MonoBehaviour
         tile.inFrontier = inFrontier;
         tile.parentTile = parentTile;
 
-        /*if(tile.underWeatherAffect)
+        if(tile.underWeatherAffect)
         {
-            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
-        }*/
+            //tile.ChangeTileWeather(TileEnums.TileWeather.rain);
+        }
     }
 
     public void ReplaceTileWithNew(Tile newTile)
