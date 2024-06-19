@@ -84,16 +84,10 @@ public class Enemy_Maker : Enemy_Base
         {
             return tile;
         }
-
-        TurnManager turnManager = FindObjectOfType<TurnManager>();
-
         GameObject deathTile = Instantiate(deathTilePrefab, tile.transform.position, Quaternion.identity);
         DeathTile deathTileObj = deathTile.GetComponent<DeathTile>();
 
-        tile.TransferTileData(deathTileObj);
-
-        turnManager.pathfinder.frontier.Remove(tile);
-        Destroy(tile.gameObject);
+        tile.ReplaceTileWithNew(deathTileObj);
 
         return deathTile.GetComponent<DeathTile>();
     }

@@ -65,15 +65,10 @@ public class Enemy_Drainer : Enemy_Base
             return tile;
         }
 
-        TurnManager turnManager = FindObjectOfType<TurnManager>();
-
         GameObject baseTile = Instantiate(basePrefab, tile.transform.position, Quaternion.identity);
         Tile baseTileObj = baseTile.GetComponent<Tile>();
 
-        tile.TransferTileData(baseTileObj);
-
-        turnManager.pathfinder.frontier.Remove(tile);
-        Destroy(tile.gameObject);
+        tile.ReplaceTileWithNew(baseTileObj);
 
         return baseTileObj;
     }

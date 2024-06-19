@@ -193,6 +193,7 @@ public class EnemyBrain : MonoBehaviour
                 }
 
                 yield return new WaitForSeconds(0.5f);
+                enemyAttackArea.DestroySelf();
                 while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
                 {
                     yield return new WaitForSeconds(0.5f);
@@ -206,7 +207,6 @@ public class EnemyBrain : MonoBehaviour
             }
 
             //Resets Variables
-            enemyAttackArea.DestroySelf();
             combinations.Clear();
             lowestValue = 100;
         }

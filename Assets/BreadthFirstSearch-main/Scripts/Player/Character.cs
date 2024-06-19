@@ -508,6 +508,10 @@ public class Character : MonoBehaviour
 
             foreach (Tile tile in path)
             {
+                if(tile == null)
+                {
+                    continue;
+                }
                 tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             }
 
@@ -559,7 +563,11 @@ public class Character : MonoBehaviour
 
         turnManager.mainCameraController.controlEnabled = true;
         turnManager.mainCameraController.StopFollowingTarget();
-        turnManager.mainCameraController.MoveToDefault(true);
+
+        if(characterType == TurnEnums.CharacterType.Player)
+        {
+            turnManager.mainCameraController.MoveToDefault(true);
+        }
 
         movementComplete.Invoke(this);
     }

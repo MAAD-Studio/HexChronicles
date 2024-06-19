@@ -49,6 +49,7 @@ public class WeatherManager : MonoBehaviour
         }
 
         Debug.Assert(weather != null, "WeatherManager doesn't have a weather affect to use");
+        Tile.tileReplaced.AddListener(TileReplaced);
     } 
 
     #endregion
@@ -111,6 +112,14 @@ public class WeatherManager : MonoBehaviour
         foreach (WeatherPatch patch in weatherPatches)
         {
             patch.ResetWeatherTiles();
+        }
+    }
+
+    private void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        foreach(WeatherPatch patch in weatherPatches)
+        {
+            patch.TileReplaced(oldTile, newTile);
         }
     }
 

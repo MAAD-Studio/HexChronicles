@@ -99,6 +99,7 @@ public class TurnManager : MonoBehaviour
         EventBus.Instance.Publish(new OnNewLevelStart());
 
         WorldTurnBase.Victory.AddListener(SceneReset);
+        Tile.tileReplaced.AddListener(TileReplaced);
     }
 
     void Update()
@@ -193,6 +194,22 @@ public class TurnManager : MonoBehaviour
         enemyTurn.ResetState();
         worldTurn.ResetState();
         weatherTurn.ResetState();
+    }
+
+    private void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        if (oldTile.tileData.tileType == ElementType.Fire)
+        {
+            lavaTiles.Remove((LavaTile)oldTile);
+        }
+        else if (oldTile.tileData.tileType == ElementType.Water)
+        {
+            waterTiles.Remove((WaterTile)oldTile);
+        }
+        else if (oldTile.tileData.tileType == ElementType.Grass)
+        {
+            grassTiles.Remove((GrassTile)oldTile);
+        }
     }
 
     #endregion

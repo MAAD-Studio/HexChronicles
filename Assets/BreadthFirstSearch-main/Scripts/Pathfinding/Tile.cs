@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 
 public class Tile : MonoBehaviour
 {
@@ -44,6 +46,8 @@ public class Tile : MonoBehaviour
 
     private GameObject tileWeather;
     private Renderer weatherRenderer;
+
+    public static UnityEvent<Tile, Tile> tileReplaced = new UnityEvent<Tile, Tile>();
 
     #endregion
 
@@ -245,6 +249,10 @@ public class Tile : MonoBehaviour
         characterTimeOnTile = 0;
     }
 
+    #endregion
+
+    #region TileReplacement
+
     public void TransferTileData(Tile tile)
     {
         tile.name = name;
@@ -258,6 +266,14 @@ public class Tile : MonoBehaviour
         tile.weatherCost = weatherCost;
         tile.inFrontier = inFrontier;
         tile.parentTile = parentTile;
+    }
+
+    public void ReplaceTileWithNew(Tile newTile)
+    {
+        TransferTileData(newTile);
+        tileReplaced.Invoke(this, newTile);
+
+        Destroy(gameObject);
     }
 
     #endregion

@@ -209,11 +209,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         if (phase == TurnEnums.PlayerPhase.Movement)
         {
+            cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
             FullReset();
         }
         else if (phase == TurnEnums.PlayerPhase.Attack)
         {
-            cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
             areaPrefab.DestroySelf();
             phase = TurnEnums.PlayerPhase.Movement;
         }
@@ -241,6 +241,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             currentTile = hit.transform.GetComponent<Tile>();
             SelectPhase();
+        }
+        else
+        {
+            pathFinder.illustrator.ClearIllustrations();
+            DestroyPhantom();
         }
     }
 

@@ -19,6 +19,16 @@ public class Pathfinder : MonoBehaviour
     {
         illustrator = GetComponent<PathIllustrator>();
         Debug.Assert(illustrator != null, "PathFinder can't find the PathIllustrator component");
+        Tile.tileReplaced.AddListener(TileReplaced);
+    }
+
+    #endregion
+
+    #region CustomMethods
+
+    private void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        frontier.Remove(oldTile);
     }
 
     #endregion

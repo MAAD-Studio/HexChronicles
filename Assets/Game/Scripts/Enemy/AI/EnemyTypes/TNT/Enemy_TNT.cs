@@ -46,7 +46,7 @@ public class Enemy_TNT : Enemy_Base
 
         foreach (Tile tile in potentialTiles)
         {
-            if (tile.tileOccupied && tile.characterOnTile.characterType == TurnEnums.CharacterType.Player)
+            if (tile.tileOccupied && tile.characterOnTile != this)
             {
                 if (tile.cost == 1)
                 {

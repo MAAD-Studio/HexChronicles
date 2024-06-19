@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeatherPatch
@@ -159,6 +160,18 @@ public class WeatherPatch
         {
             tile.ChangeTileWeather(TileEnums.TileWeather.rain);
         }
+    }
+
+    public void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        tilesUnderAffect.Remove(oldTile);
+        tilesUnderAffect.Add(newTile);
+
+        tilesMoveable.Remove(oldTile);
+        tilesMoveable.Add(newTile);
+
+        tilesToIgnore.Remove(oldTile);
+        tilesToIgnore.Add(newTile);
     }
 
     #endregion

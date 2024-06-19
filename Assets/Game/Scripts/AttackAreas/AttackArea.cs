@@ -47,6 +47,7 @@ public class AttackArea : MonoBehaviour
             }
 
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
+            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
         }
     }
 
