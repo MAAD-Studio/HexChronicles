@@ -69,6 +69,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         foreach (TextMeshProUGUI status in textStatus)
         {
             status.text = statusString;
+            status.ForceMeshUpdate();
         }
     }
 
