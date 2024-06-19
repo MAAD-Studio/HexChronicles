@@ -89,7 +89,7 @@ public class Enemy_KingJelly : Enemy_Base
         attackDamage += 1;
         currentHealth += 1;
         maxHealth = currentHealth;
-        base.InvokeUpdateHealthBar();
+        UpdateHealthBar?.Invoke();
     }
 
     #endregion

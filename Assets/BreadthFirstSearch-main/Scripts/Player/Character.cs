@@ -111,7 +111,7 @@ public class Character : MonoBehaviour
         else if (elementType == ElementType.Water)
         {
             currentHealth = maxHealth;
-            InvokeUpdateHealthBar();
+            UpdateHealthBar?.Invoke();
         }
         else
         {
@@ -129,6 +129,7 @@ public class Character : MonoBehaviour
             if (elementType == ElementType.Fire)
             {
                 AttemptStatusApply(Status.StatusTypes.Burning, target, false);
+                MouseTip.Instance.ShowTip(transform.position, "Test get a Burning next turn", false);
             }
             else if (elementType == ElementType.Water)
             {
@@ -241,7 +242,6 @@ public class Character : MonoBehaviour
     {
         statusList.Remove(status);
 
-        //Breaks Game 
         UpdateStatus.Invoke();
 
         if (status.statusType == Status.StatusTypes.Hurt)
@@ -301,7 +301,7 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("hit");
         }
-        InvokeUpdateHealthBar();
+        UpdateHealthBar?.Invoke();
     }
 
     private int AttackStatusEffect(ElementType type)
@@ -345,6 +345,7 @@ public class Character : MonoBehaviour
                 else if (type == ElementType.Water)
                 {
                     Debug.Log("CHARACTER WET DEALING WATER DAMAGE");
+                    MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
                     status.effectTurns++;
                 }
                 else
@@ -392,7 +393,7 @@ public class Character : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        InvokeUpdateHealthBar();
+        UpdateHealthBar?.Invoke();
     }
 
     public virtual void Died()
