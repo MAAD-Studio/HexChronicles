@@ -13,8 +13,8 @@ public class HeroHealthBar : HealthBar
     {
         hero = GetComponentInParent<Hero>();
         hero.healthBar = this;
-        hero.OnDamagePreview += UpdateHealthBarPreview;
-        hero.OnUpdateHealthBar += UpdateHealthBar;
+        hero.DamagePreview.AddListener(UpdateHealthBarPreview);
+        hero.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = hero.heroSO.attributes.name.ToString();
         hpText.text = hero.heroSO.attributes.health + " HP";
@@ -22,23 +22,23 @@ public class HeroHealthBar : HealthBar
         health.fillAmount = 1;
     }
 
-    protected override void UpdateHealthBarPreview(object sender, EventArgs e)
+    protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (hero.currentHealth - damagePreview) / hero.maxHealth;
     }
 
-    protected override void UpdateHealthBar(object sender, EventArgs e)
+    protected override void UpdateHealthBar()
     {
         health.fillAmount = hero.currentHealth / hero.maxHealth;
         hpText.text = hero.currentHealth + " HP";
 
         damagePreview = 0;
-        UpdateHealthBarPreview(this, EventArgs.Empty);
+        UpdateHealthBarPreview();
     }
 
     protected override void OnDestroy()
     {
-        hero.OnDamagePreview -= UpdateHealthBarPreview;
-        hero.OnUpdateHealthBar -= UpdateHealthBar;
+        hero.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }

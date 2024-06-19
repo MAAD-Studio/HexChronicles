@@ -40,11 +40,15 @@ public class WorldMap : Menu
     public void ShowPreGame()
     {
         MenuManager.Instance.ShowMenu(preGameClassifier);
+        MenuManager.Instance.HideMenu(menuClassifier);
     }
 
     public void OnLoadLevel(SceneReference Level)
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
+
+        MenuManager.Instance.HideMenu(menuClassifier);
+        //MenuManager.Instance.ShowMenu(hudClassifier);
 
         SceneLoader.Instance.LoadScene(Level);
         SceneLoader.Instance.UnloadScene(worldMap);
@@ -54,9 +58,7 @@ public class WorldMap : Menu
     {
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
-        MenuManager.Instance.HideMenu(menuClassifier);
-        MenuManager.Instance.HideMenu(preGameClassifier);
-        MenuManager.Instance.ShowMenu(hudClassifier);
+        MenuManager.Instance.ShowMenu(hudClassifier); // Show HUD after scene is loaded
     }
 
     public void OnReturnToMainMenu()

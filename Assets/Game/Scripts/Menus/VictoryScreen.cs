@@ -6,11 +6,23 @@ using UnityEngine.UI;
 public class VictoryScreen : Menu
 {
     [SerializeField] private Button continueButton;
+    [SerializeField] private GameObject upgradeCard;
 
     protected override void Start()
     {
         base.Start();
         continueButton.onClick.AddListener(OnReturnToMap);
+        WorldTurnBase.Victory.AddListener(OnVictory);
+    }
+
+    private void OnVictory()
+    {
+        // Spawn 3 upgrade cards
+        /*for (int i = 0; i < 3; i++)
+        {
+            GameObject card = Instantiate(upgradeCard, transform);
+            card.GetComponent<UpgradeCard>().InitializeUI();
+        }*/
     }
 
     public void OnReturnToMap()

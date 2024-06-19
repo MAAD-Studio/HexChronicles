@@ -17,8 +17,8 @@ public class EnemyHealthBar : HealthBar
     {
         enemy = GetComponentInParent<Enemy_Base>();
         enemy.healthBar = this;
-        enemy.OnDamagePreview += UpdateHealthBarPreview;
-        enemy.OnUpdateHealthBar += UpdateHealthBar;
+        enemy.DamagePreview.AddListener(UpdateHealthBarPreview);
+        enemy.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = enemy.enemySO.name.ToString();
         atkPercentage.text = (100 - enemy.enemySO.attributes.defensePercentage).ToString() + "%";
@@ -27,7 +27,7 @@ public class EnemyHealthBar : HealthBar
         health.fillAmount = 1;
     }
 
-    protected override void UpdateHealthBarPreview(object sender, EventArgs e)
+    protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (enemy.currentHealth - damagePreview) / enemy.maxHealth;
 
@@ -52,18 +52,18 @@ public class EnemyHealthBar : HealthBar
         }
     }
 
-    protected override void UpdateHealthBar(object sender, EventArgs e)
+    protected override void UpdateHealthBar()
     {
         health.fillAmount = enemy.currentHealth / enemy.maxHealth;
         hpText.text = enemy.currentHealth + " HP";
 
         damagePreview = 0;
-        UpdateHealthBarPreview(this, EventArgs.Empty);
+        UpdateHealthBarPreview();
     }
 
     protected override void OnDestroy()
     {
-        enemy.OnDamagePreview -= UpdateHealthBarPreview;
-        enemy.OnUpdateHealthBar -= UpdateHealthBar;
+        enemy.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        enemy.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }

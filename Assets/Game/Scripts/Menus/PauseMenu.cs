@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
 public class PauseMenu : Menu
 {
     public MenuClassifier hudMenuClassifier;
+    public static UnityEvent EndLevel = new UnityEvent();
 
     private void Update()
     {
@@ -29,6 +31,7 @@ public class PauseMenu : Menu
         MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
 
+        EndLevel.Invoke();
         CleanActiveScene();
     }
 
@@ -38,6 +41,7 @@ public class PauseMenu : Menu
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
+        EndLevel.Invoke();
         CleanActiveScene();
     }
 

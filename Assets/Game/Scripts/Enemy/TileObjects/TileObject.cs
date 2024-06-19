@@ -13,9 +13,9 @@ public class TileObject : MonoBehaviour
     [SerializeField] public TileObjectHealthBar healthBar;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
-    
-    public event System.EventHandler OnDamagePreview;
-    public event System.EventHandler OnUpdateHealthBar;
+
+    [HideInInspector] public UnityEvent DamagePreview;
+    [HideInInspector] public UnityEvent UpdateHealthBar;
 
     public virtual void Start()
     {
@@ -31,7 +31,7 @@ public class TileObject : MonoBehaviour
     {
         currentHealth -= attackDamage;
 
-        OnUpdateHealthBar?.Invoke(this, System.EventArgs.Empty);
+        UpdateHealthBar?.Invoke();
 
         if (currentHealth <= 0)
         {
@@ -43,6 +43,6 @@ public class TileObject : MonoBehaviour
     public void PreviewDamage(float damage)
     {
         healthBar.damagePreview = damage;
-        OnDamagePreview?.Invoke(this, System.EventArgs.Empty);
+        DamagePreview?.Invoke();
     }
 }

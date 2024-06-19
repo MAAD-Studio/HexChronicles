@@ -74,7 +74,11 @@ public class EventBus : Singleton<EventBus>
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Error publishing event to listener: {ex.Message}");
+                    Debug.LogError($"Error publishing event to listener: {ex.Message}\n {ex.StackTrace}");
+                    if (ex.InnerException != null)
+                    {
+                        Debug.LogError($"Inner Exception: {ex.InnerException.Message}\n{ex.InnerException.StackTrace}");
+                    }
                     // Consider logging the stack trace or handling the error further as needed.
                 }
             }

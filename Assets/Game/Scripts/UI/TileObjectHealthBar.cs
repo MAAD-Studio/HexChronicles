@@ -11,8 +11,8 @@ public class TileObjectHealthBar : EnemyHealthBar
     {
         tileObject = GetComponentInParent<TileObject>();
         tileObject.healthBar = this;
-        tileObject.OnDamagePreview += UpdateHealthBarPreview;
-        tileObject.OnUpdateHealthBar += UpdateHealthBar;
+        tileObject.DamagePreview.AddListener(UpdateHealthBarPreview);
+        tileObject.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = tileObject.tileObjectData.objectName.ToString();
         atkPercentage.text = (100 - tileObject.tileObjectData.defense).ToString() + "%";
@@ -21,7 +21,7 @@ public class TileObjectHealthBar : EnemyHealthBar
         health.fillAmount = 1;
     }
 
-    protected override void UpdateHealthBarPreview(object sender, EventArgs e)
+    protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (tileObject.currentHealth - damagePreview) / tileObject.tileObjectData.health;
 
@@ -46,18 +46,18 @@ public class TileObjectHealthBar : EnemyHealthBar
         }
     }
 
-    protected override void UpdateHealthBar(object sender, EventArgs e)
+    protected override void UpdateHealthBar()
     {
         health.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
         hpText.text = tileObject.currentHealth + " HP";
 
         damagePreview = 0;
-        UpdateHealthBarPreview(this, EventArgs.Empty);
+        UpdateHealthBarPreview();
     }
 
     protected override void OnDestroy()
     {
-        tileObject.OnDamagePreview -= UpdateHealthBarPreview;
-        tileObject.OnUpdateHealthBar -= UpdateHealthBar;
+        tileObject.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        tileObject.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }
