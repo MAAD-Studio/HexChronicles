@@ -62,6 +62,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         Debug.Assert(mainCam != null, "Playerturn couldn't get a Camera from TurnManager");
 
         SubscribeEvents();
+
+        EventBus.Instance.Publish(new OnPlayerTurn());
     }
 
     private void OnDestroy()

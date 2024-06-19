@@ -81,8 +81,11 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    public void InitializeInfo()
+    public void InitializeInfo(Hero hero)
     {
+        this.hero = hero;
+        SubscribeEvents();
+
         foreach (TextMeshProUGUI name in names)
         {
             name.text = hero.heroSO.attributes.name;

@@ -14,10 +14,15 @@ public class HUDMenu : Menu
     protected override void Start()
     {
         base.Start();
-
-        TurnManager.OnLevelDefeat.AddListener(ShowDefeat);
-        WorldTurnBase.Victory.AddListener(ShowVictory);
+        EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevel);
+        
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
+    }
+
+    private void OnNewLevel(object obj)
+    {
+        TurnManager.LevelDefeat.AddListener(LevelDefeat);
+        WorldTurnBase.Victory.AddListener(LevelVictory);
     }
 
     private void Update()
@@ -41,21 +46,21 @@ public class HUDMenu : Menu
     }
 
     // Only For Testing
-    private void ShowVictory()
+    private void LevelVictory()
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        WorldTurnBase.Victory.RemoveListener(ShowVictory);
+        WorldTurnBase.Victory.RemoveListener(LevelVictory);
     }
 
     // Only For Testing
-    private void ShowDefeat(TurnManager arg0)
+    private void LevelDefeat()
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.DefeatedScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        TurnManager.OnLevelDefeat.RemoveListener(ShowDefeat);
+        TurnManager.LevelDefeat.RemoveListener(LevelDefeat);
     }
 
     // Only For Testing
@@ -65,5 +70,6 @@ public class HUDMenu : Menu
     }
     public void InvokeDefeat()
     {
+        TurnManager.LevelDefeat.Invoke();
     }
 }

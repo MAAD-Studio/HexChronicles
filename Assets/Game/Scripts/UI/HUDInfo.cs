@@ -9,7 +9,6 @@ public class HUDInfo : MonoBehaviour
 {
     private TurnManager turnManager;
     private PlayerTurn playerTurn;
-    private List<Enemy_Base> enemies;
     private List<Hero> heroes = new List<Hero>();
     private Character selectedCharacter;
     private Tile currentTile;
@@ -17,6 +16,7 @@ public class HUDInfo : MonoBehaviour
     [Header("Turn Info")]
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private TextMeshProUGUI turnNumber;
+    [SerializeField] private GameObject turnMessage;
 
     [Header("Hero Info")]
     [SerializeField] private GameObject heroListPanel;
@@ -50,23 +50,9 @@ public class HUDInfo : MonoBehaviour
 
     #region Unity Methods
 
-    private void Start()
+    private void Awake()
     {
-        turnManager = FindObjectOfType<TurnManager>();
-        Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
-        playerTurn = turnManager.GetComponent<PlayerTurn>();
-
-        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
-
-        SubscribeEvents();
-        InstantiateUIElements();
-        ButtonsAddListener();
-        WorldTurnBase.Victory.AddListener(FullReset);
-    }
-
-    private void OnDestroy()
-    {
-        UnsubscribeEvents();
+        EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
     }
 
     private void Update()
@@ -97,35 +83,82 @@ public class HUDInfo : MonoBehaviour
     {
         if (EventBus.Instance != null)
         {
+            //EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
+        WorldTurnBase.Victory.AddListener(OnLevelEnded);
+        TurnManager.LevelDefeat.AddListener(OnLevelEnded);
+        PauseMenu.EndLevel.AddListener(OnLevelEnded);
     }
 
     private void UnsubscribeEvents()
     {
         if (EventBus.Instance != null)
         {
+            //EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
+        WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
+        TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
+        PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
+    }
+
+    private void OnNewLevelStart(object obj)
+    {
+        turnManager = FindObjectOfType<TurnManager>();
+        Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
+        playerTurn = turnManager.GetComponent<PlayerTurn>();
+        Debug.Assert(playerTurn != null, "HUDInfo couldn't find PlayerTurn");
+
+        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
+        
+        SubscribeEvents();
+        InstantiateUIElements();
+        ButtonsAddListener();
+    }
+
+    private void OnLevelEnded()
+    {
+        ResetHUD();
+        UnsubscribeEvents();
     }
 
     private void OnEnemyTurn(object obj)
     {
         currentTurn.text = "ENEMY TURN";
         endTurn.interactable = false;
+
+        foreach (var button in heroButtons)
+        {
+            button.interactable = false;
+        }
+        foreach (var info in characterInfoDict.Values)
+        {
+            info.SetNoActionState();
+        }
     }
 
     private void OnPlayerTurn(object obj)
     {
+        if (gameObject.activeInHierarchy)
+        {
+            turnMessage.gameObject.SetActive(true);
+            StartCoroutine(HideTurnMessage());
+        }
+
         currentTurn.text = "PLAYER TURN";
         endTurn.interactable = true;
 
+        foreach (var button in heroButtons)
+        {
+            button.interactable = true;
+        }
         foreach (var info in characterInfoDict.Values)
         {
             info.UpdateButton();
@@ -133,6 +166,12 @@ public class HUDInfo : MonoBehaviour
 
         activeHeroes = availableHeroes;
         turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
+    }
+
+    private IEnumerator HideTurnMessage()
+    {
+        yield return new WaitForSeconds(0.8f);
+        turnMessage.gameObject.SetActive(false);
     }
 
     private void OnCharacterMadeDecision(object obj)
@@ -164,10 +203,13 @@ public class HUDInfo : MonoBehaviour
 
     #endregion
 
-    #region Initialization Methods
+    #region Initialization and Reset
 
     private void InstantiateUIElements()
     {
+        turnMessage.gameObject.SetActive(false);
+
+        // Create Characters Info:
         foreach (Character character in turnManager.characterList)
         {
             Hero hero = (Hero)character;
@@ -191,11 +233,10 @@ public class HUDInfo : MonoBehaviour
 
             // Add Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
-            info.hero = hero;
             characterInfoDict.Add(gameObject.name, info);
 
             // Set Hero Info:
-            info.InitializeInfo();
+            info.InitializeInfo(hero);
             info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
             info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
         }
@@ -230,6 +271,14 @@ public class HUDInfo : MonoBehaviour
 
     private void ButtonsAddListener()
     {
+        if (endTurn == null)
+        {
+            Debug.LogError("endTurn is null");
+        }
+        if (endTurn.onClick == null)
+        {
+            Debug.LogError("endTurn.onClick is null");
+        }
         endTurn.onClick.AddListener(() =>
         {
             playerTurn.EndTurn();
@@ -239,7 +288,33 @@ public class HUDInfo : MonoBehaviour
         undo.interactable = false;
     }
 
-    
+    private void ResetHUD()
+    {
+        foreach (Transform child in heroListPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in enemyInfoPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in enemyHoverPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in objectInfoPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        heroes.Clear();
+        heroButtons.Clear();
+        characterInfoDict.Clear();
+        availableHeroes = 0;
+        activeHeroes = 0;
+        selectedHero = null;
+        endTurn.onClick.RemoveAllListeners();
+    }
     #endregion
 
     #region Custom Methods
@@ -319,12 +394,6 @@ public class HUDInfo : MonoBehaviour
         {
             objectStatus.Hide();
         }
-    }
-
-    private void FullReset()
-    {
-        endTurn.onClick = null;
-        WorldTurnBase.Victory.RemoveListener(FullReset);
     }
 
     #endregion

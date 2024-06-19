@@ -46,7 +46,7 @@ public class TurnManager : MonoBehaviour
         get { return turnNumber; }
     }
 
-    [HideInInspector] public static UnityEvent<TurnManager> OnLevelDefeat = new UnityEvent<TurnManager>();
+    [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
     [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
 
     #endregion
@@ -83,9 +83,9 @@ public class TurnManager : MonoBehaviour
         }
 
         turnNumber = 1;
-
         currentTurn = playerTurn;
-        EventBus.Instance.Publish(new OnPlayerTurn());
+
+        EventBus.Instance.Publish(new OnNewLevelStart());
 
         WorldTurnBase.Victory.AddListener(SceneReset);
     }
@@ -114,7 +114,7 @@ public class TurnManager : MonoBehaviour
 
                 if (turnNumber == objectiveTurnNumber)
                 {
-                    OnLevelDefeat?.Invoke(this);
+                    LevelDefeat?.Invoke();
                 }
                 break;
 
@@ -151,7 +151,7 @@ public class TurnManager : MonoBehaviour
 
             if (characterList.Count == 0)
             {
-                OnLevelDefeat?.Invoke(this);
+                LevelDefeat?.Invoke();
             }
         }
         else
