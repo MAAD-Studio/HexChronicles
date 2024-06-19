@@ -234,7 +234,7 @@ public class Character : MonoBehaviour
     {
         statusList.Add(status);
 
-        //UpdateStatus.Invoke();
+        UpdateStatus.Invoke();
     }
 
     public void RemoveStatus(Status status)
@@ -242,7 +242,7 @@ public class Character : MonoBehaviour
         statusList.Remove(status);
 
         //Breaks Game 
-        //UpdateStatus.Invoke();
+        UpdateStatus.Invoke();
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {

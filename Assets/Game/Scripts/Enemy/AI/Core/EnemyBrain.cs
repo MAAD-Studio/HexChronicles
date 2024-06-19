@@ -47,10 +47,11 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
+        yield return new WaitForSeconds(1);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
         foreach (Enemy_Base enemy_base in enemies)
         {
-            if(enemy_base == null)
+            if(enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
             {
                 continue;
             }

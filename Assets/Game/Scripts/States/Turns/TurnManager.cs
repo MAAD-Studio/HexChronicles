@@ -156,6 +156,11 @@ public class TurnManager : MonoBehaviour
 
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
+            if(!characterList.Contains(character))
+            {
+                return;
+            }
+
             characterList.Remove(character);
 
             OnCharacterDied?.Invoke(character.name);
@@ -167,6 +172,11 @@ public class TurnManager : MonoBehaviour
         }
         else
         {
+            if(!enemyList.Contains((Enemy_Base)character))
+            {
+                return;
+            }
+
             enemyList.Remove((Enemy_Base)character);
         }
 
