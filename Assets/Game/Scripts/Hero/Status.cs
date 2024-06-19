@@ -56,7 +56,9 @@ public class Status
                 break;
 
             case StatusTypes.Haste:
+                Debug.Log("STATUS MOVEMENT BEFORE: " + character.movementThisTurn);
                 character.movementThisTurn -= 2;
+                Debug.Log("STATUS MOVEMENT AFTER: " + character.movementThisTurn);
                 break;
 
             default:

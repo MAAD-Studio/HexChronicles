@@ -60,12 +60,13 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        animator.SetTrigger("attack");
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        List<Character> targets = new List<Character>(attackArea.CharactersHit(TurnEnums.CharacterType.Player));
+        foreach (Character character in targets)
         {
             transform.LookAt(character.transform.position);
             character.TakeDamage(attackDamage, elementType);
         }
+        PerformBasicAttack(targets);
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

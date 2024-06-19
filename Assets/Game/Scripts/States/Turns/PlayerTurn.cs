@@ -104,12 +104,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         foreach (Character character in turnManager.characterList)
         {
-            character.EnterNewTurn();
             if (character.characterTile != null)
             {
                 character.movementThisTurn = 0;
                 character.characterTile.OnTileStay(character);
             }
+            character.EnterNewTurn();
         }
     }
 

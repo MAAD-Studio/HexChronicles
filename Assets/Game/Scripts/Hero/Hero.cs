@@ -78,13 +78,13 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
-        base.PerformBasicAttack(targets);
-
         foreach (var target in targets)
         {
             target.TakeDamage(attackDamage, elementType);
             target.PreviewDamage(0);
         }
+
+        base.PerformBasicAttack(targets);
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)

@@ -266,6 +266,11 @@ public class Tile : MonoBehaviour
         tile.weatherCost = weatherCost;
         tile.inFrontier = inFrontier;
         tile.parentTile = parentTile;
+
+        /*if(tile.underWeatherAffect)
+        {
+            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
+        }*/
     }
 
     public void ReplaceTileWithNew(Tile newTile)

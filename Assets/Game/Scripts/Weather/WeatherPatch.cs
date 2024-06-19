@@ -84,6 +84,11 @@ public class WeatherPatch
                 }
             }
         }
+
+        foreach(Tile tile in tilesUnderAffect)
+        {
+            tile.underWeatherAffect = true;
+        }
     }
 
     public List<Tile> FindAdjacentTiles(Tile origin, LayerMask tileLayer)
