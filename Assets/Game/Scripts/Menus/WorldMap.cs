@@ -13,6 +13,7 @@ public class WorldMap : Menu
     [SerializeField] private GameObject characterCollection;
     [SerializeField] public SceneReference[] levels;
     [SerializeField] private Button[] levelButtons;
+    private int levelIndex;
 
     protected override void Start()
     {
@@ -23,8 +24,7 @@ public class WorldMap : Menu
         for (int i = 0; i < levels.Length; i++)
         {
             int index = i;
-            //levelButtons[i].onClick.AddListener(() => OnLoadLevel(levels[index]));
-            levelButtons[i].onClick.AddListener(() => ShowPreGame()); // testing
+            levelButtons[i].onClick.AddListener(() => ShowPreGame(index));
         }
     }
 
@@ -36,21 +36,21 @@ public class WorldMap : Menu
         }
     }
 
-    // Only For Testing
-    public void ShowPreGame()
+    public void ShowPreGame(int index)
     {
+        levelIndex = index; // Set level index
         MenuManager.Instance.ShowMenu(preGameClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
     }
 
-    public void OnLoadLevel(SceneReference Level)
+    public void LoadLevel()
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
         MenuManager.Instance.HideMenu(menuClassifier);
         //MenuManager.Instance.ShowMenu(hudClassifier);
 
-        SceneLoader.Instance.LoadScene(Level);
+        SceneLoader.Instance.LoadScene(levels[levelIndex]);
         SceneLoader.Instance.UnloadScene(worldMap);
     }
 
@@ -76,17 +76,14 @@ public class WorldMap : Menu
         SceneLoader.Instance.UnLoadAllLoadedScenes();
     }
 
-    public void OpenCharacterCollection()
+    #region Load WorldMap Scene
+    private void AllScenesUnloaded()
     {
-        characterCollection.SetActive(true);
+        SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
+
+        LoadWorldMap();
     }
 
-    public void CloseCharacterCollection()
-    {
-        characterCollection.SetActive(false);
-    }
-
-    //test
     public void LoadWorldMap()
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
@@ -101,18 +98,17 @@ public class WorldMap : Menu
         MenuManager.Instance.ShowMenu(menuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
     }
+    #endregion
 
-    //test
-    /*public void UnloadWorldMap()
+    #region CharacterCollection
+    public void OpenCharacterCollection()
     {
-        SceneLoader.Instance.UnloadScene(worldMap);
-    }*/
-
-    private void AllScenesUnloaded()
-    {
-        SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
-
-        LoadWorldMap();
-        //SceneLoader.Instance.LoadScene(worldMap); // Not working
+        characterCollection.SetActive(true);
     }
+
+    public void CloseCharacterCollection()
+    {
+        characterCollection.SetActive(false);
+    }
+    #endregion
 }

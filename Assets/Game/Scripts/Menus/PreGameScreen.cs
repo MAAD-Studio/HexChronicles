@@ -8,12 +8,12 @@ using UnityEngine.UI;
 public class PreGameScreen : Menu
 {
     [SerializeField] private Button startButton;
-    public GameObject worldMap; // testing
+    public GameObject worldMap;
 
     protected override void Start()
     {
         base.Start();
-        startButton.onClick.AddListener(OnStartGame);
+        startButton.onClick.AddListener(StartLevel);
     }
 
     private void Update()
@@ -24,11 +24,10 @@ public class PreGameScreen : Menu
         }
     }
 
-    // Only For Testing
-    private void OnStartGame()
+    private void StartLevel()
     {
         WorldMap map = worldMap.GetComponent<WorldMap>();
-        map?.OnLoadLevel(map.levels[0]);
+        map?.LoadLevel();
 
         MenuManager.Instance.HideMenu(menuClassifier);
     }
