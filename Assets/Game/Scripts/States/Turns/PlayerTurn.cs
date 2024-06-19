@@ -215,6 +215,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         else if (phase == TurnEnums.PlayerPhase.Attack)
         {
             areaPrefab.DestroySelf();
+            potentialMovementTile = null;
+            potentialPath = null;
             phase = TurnEnums.PlayerPhase.Movement;
         }
     }
@@ -242,7 +244,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             currentTile = hit.transform.GetComponent<Tile>();
             SelectPhase();
         }
-        else
+        else if(potentialMovementTile == null)
         {
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
