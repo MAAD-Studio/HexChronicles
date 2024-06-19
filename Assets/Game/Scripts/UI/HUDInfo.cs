@@ -138,10 +138,6 @@ public class HUDInfo : MonoBehaviour
         {
             button.interactable = false;
         }
-        foreach (var info in characterInfoDict.Values)
-        {
-            info.SetNoActionState();
-        }
     }
 
     private void OnPlayerTurn(object obj)
@@ -159,10 +155,6 @@ public class HUDInfo : MonoBehaviour
         {
             button.interactable = true;
         }
-        foreach (var info in characterInfoDict.Values)
-        {
-            info.UpdateButton();
-        }
 
         activeHeroes = availableHeroes;
         turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
@@ -170,7 +162,7 @@ public class HUDInfo : MonoBehaviour
 
     private IEnumerator HideTurnMessage()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.5f);
         turnMessage.gameObject.SetActive(false);
     }
 
@@ -235,7 +227,6 @@ public class HUDInfo : MonoBehaviour
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
             characterInfoDict.Add(gameObject.name, info);
 
-            // Set Hero Info:
             info.InitializeInfo(hero);
             info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
             info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());

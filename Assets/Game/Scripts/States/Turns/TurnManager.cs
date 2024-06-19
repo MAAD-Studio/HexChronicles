@@ -112,7 +112,7 @@ public class TurnManager : MonoBehaviour
                 currentTurn = playerTurn;
                 EventBus.Instance.Publish(new OnPlayerTurn());
 
-                if (turnNumber == objectiveTurnNumber)
+                if (turnNumber == objectiveTurnNumber + 1)
                 {
                     LevelDefeat?.Invoke();
                 }

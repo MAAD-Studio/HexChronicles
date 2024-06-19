@@ -39,6 +39,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Button attackBtn;
     public Button skillBtn;
 
+    private bool interactable = true;
+    private bool heroDead = false;
+
     private void Start()
     {
         SetDefaultState();
@@ -110,6 +113,8 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void SubscribeEvents()
     {
+        EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+        EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
         hero.UpdateHealthBar.AddListener(UpdateHealthBar);
         hero.UpdateAttributes.AddListener(UpdateAttributes);
         hero.UpdateStatus.AddListener(UpdateStatus);
@@ -117,9 +122,24 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void OnDestroy()
     {
+        EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
+        EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         hero.UpdateAttributes.RemoveListener(UpdateAttributes);
         hero.UpdateStatus.RemoveListener(UpdateStatus);
+    }
+
+    private void OnPlayerTurn(object obj)
+    {
+        interactable = true;
+        UpdateButton();
+        SetDefaultState();
+    }
+
+    private void OnEnemyTurn(object obj)
+    {
+        interactable = false;
+        SetNoActionState();
     }
 
     public void UpdateButton()
@@ -152,7 +172,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetDefaultState()
     {
-        if (hero.hasMadeDecision)
+        if (!interactable || heroDead)
         {
             return;
         }
@@ -166,7 +186,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetHoverState()
     {
-        if (hero.hasMadeDecision)
+        if (!interactable || heroDead)
         {
             return;
         }
@@ -180,6 +200,11 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetNoActionState()
     {
+        if (heroDead)
+        {
+            return;
+        }
+        interactable = false;
         defaultState.SetActive(false);
         selectedState.SetActive(false);
         noActionState.SetActive(true);
@@ -188,7 +213,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetSelectedState()
     {
-        if (hero.hasMadeDecision)
+        if (!interactable || heroDead)
         {
             return;
         }
@@ -200,6 +225,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetDeadState()
     {
+        heroDead = true;
         defaultState.SetActive(false);
         selectedState.SetActive(false);
         noActionState.SetActive(false);
