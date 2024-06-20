@@ -107,11 +107,13 @@ public class Character : MonoBehaviour
                 }
             }
             ApplyStatusAttackArea(charactersToHit);
+            MouseTip.Instance.ShowTip(transform.position, $"AOE Burn damage", false);
         }
         else if (elementType == ElementType.Water)
         {
             currentHealth = maxHealth;
             UpdateHealthBar?.Invoke();
+            MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
         }
         else
         {
@@ -119,6 +121,7 @@ public class Character : MonoBehaviour
             newStatus.effectTurns = 1;
             newStatus.statusType = Status.StatusTypes.Haste;
             AddStatus(newStatus);
+            MouseTip.Instance.ShowTip(transform.position, $"Got a Haste", false);
         }
     }
 
@@ -129,7 +132,6 @@ public class Character : MonoBehaviour
             if (elementType == ElementType.Fire)
             {
                 AttemptStatusApply(Status.StatusTypes.Burning, target, false);
-                MouseTip.Instance.ShowTip(transform.position, "Test get a Burning next turn", false);
             }
             else if (elementType == ElementType.Water)
             {

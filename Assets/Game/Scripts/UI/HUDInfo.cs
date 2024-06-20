@@ -361,7 +361,7 @@ public class HUDInfo : MonoBehaviour
             Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
 
             enemyHoverUI.SetStats(enemy);
-            enemyHoverUI.gameObject.transform.position = Camera.main.WorldToScreenPoint(enemy.transform.position + new Vector3(0, 2, 0));
+            enemyHoverUI.gameObject.transform.position = Camera.main.WorldToScreenPoint(enemy.transform.position + new Vector3(0, 2.5f, 0));
 
             // Scale based on enemy distance from camera, referenced from LookAtCamera
             float distance = Vector3.Distance(enemy.transform.position, Camera.main.transform.position);

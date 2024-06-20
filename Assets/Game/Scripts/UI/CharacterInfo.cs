@@ -100,7 +100,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         foreach (Image element in elements)
         {
-            element.sprite = characterUIConfig.GetElementSprite(hero.elementType);
+            element.sprite = characterUIConfig.GetElementSprite(hero.heroSO.attributes.elementType);
         }
 
         attackShape.sprite = hero.heroSO.attackShape;
