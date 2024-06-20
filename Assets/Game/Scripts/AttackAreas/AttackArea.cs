@@ -47,7 +47,7 @@ public class AttackArea : MonoBehaviour
             }
 
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            //tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
         }
     }
 
@@ -56,10 +56,10 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
+            /*if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
             {
-                tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
-            }
+                tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
+            }*/
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, true);
         }
     }

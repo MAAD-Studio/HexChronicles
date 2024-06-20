@@ -89,10 +89,6 @@ public class Tile : MonoBehaviour
                 tileRenderer.material = tileData.baseMaterial;
                 break;
 
-            case TileEnums.TileMaterial.highlight:
-                tileRenderer.material = tileData.highlightMaterial;
-                break;
-
             case TileEnums.TileMaterial.path:
                 tileRenderer.material = tileData.pathMaterial;
                 break;
@@ -112,11 +108,15 @@ public class Tile : MonoBehaviour
                 activeTileTops.Add(tileTopType);
             }
 
+            tileTop.SetActive(true);
             switch (tileTopType)
             {
                 case TileEnums.TileTops.frontier:
-                    tileTop.SetActive(true);
                     topRenderer.material = tileData.reachableMaterial;
+                    break;
+
+                case TileEnums.TileTops.highlight:
+                    topRenderer.material = tileData.highlightMaterial;
                     break;
             }
         }

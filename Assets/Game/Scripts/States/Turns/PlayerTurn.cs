@@ -184,7 +184,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             return;
         }
 
-        currentTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+        currentTile.ChangeTileTop(TileEnums.TileTops.highlight, false);
         currentTile = null;
     }
 
@@ -242,6 +242,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
+            if(currentTile.tileOccupied && currentTile.characterOnTile.hasMadeDecision)
+            {
+                //DO NOTHING
+            }
+            else
+            {
+                currentTile.ChangeTileTop(TileEnums.TileTops.highlight, true);
+            }
             SelectPhase();
         }
         else if(potentialMovementTile == null)
@@ -275,11 +283,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (characterType == TurnEnums.CharacterType.Player)
         {
-            if (!inspectionCharacter.hasMadeDecision && allowSelection)
-            {
-                currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight); // Hover tile highlight
-            }
-
             if (Input.GetMouseButtonDown(0))
             {
                 SelectCharacter(inspectionCharacter);
@@ -338,8 +341,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         
         if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
-            currentTile.ChangeTileColor(TileEnums.TileMaterial.highlight);
-
             Tile[] path = new Tile[0];
             if (currentTile.characterOnTile != selectedCharacter)
             {
