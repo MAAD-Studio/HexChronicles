@@ -17,6 +17,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private TextMeshProUGUI turnNumber;
     [SerializeField] private GameObject turnMessage;
+    [SerializeField] private WeatherIndicator weatherIndicator;
 
     [Header("Hero Info")]
     [SerializeField] private GameObject heroListPanel;
@@ -115,9 +116,12 @@ public class HUDInfo : MonoBehaviour
         Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
         playerTurn = turnManager.GetComponent<PlayerTurn>();
         Debug.Assert(playerTurn != null, "HUDInfo couldn't find PlayerTurn");
-
-        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
         
+        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
+
+        WeatherManager weatherManager = turnManager.GetComponent<WeatherManager>();
+        weatherIndicator.Initialize(weatherManager);
+
         SubscribeEvents();
         InstantiateUIElements();
         ButtonsAddListener();

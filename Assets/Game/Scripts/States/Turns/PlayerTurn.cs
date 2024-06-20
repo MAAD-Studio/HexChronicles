@@ -496,6 +496,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             }
 
             phantom.transform.position = currentTile.transform.position;
+            
+            TileEffect tileEffect = phantom.GetComponent<TileEffect>();
+            tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
         }
     }
 
