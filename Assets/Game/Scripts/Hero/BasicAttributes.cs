@@ -29,6 +29,10 @@ public class BasicAttributes
     [Header("Marker Prefabs:")]
     public GameObject hitMarker;
 
+    [Header("ALPHA TEMPORARY MARKER")]
+    public GameObject fireMarker;
+    public GameObject healText;
+
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;
     public float maxMovementRange = 0;

@@ -16,6 +16,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private Camera mainCam;
 
     private Tile currentTile;
+
     public Tile CurrentTile
     {
         get { return currentTile; }
@@ -116,8 +117,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public void UpdateState()
     {
         ResetTile();
-        KeyboardUpdate();
         MouseUpdate();
+        KeyboardUpdate();
     }
 
     public void ExitState()
@@ -151,9 +152,15 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void FullReset()
     {
+        if (currentTile != null)
+        {
+            currentTile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+        }
+
         ResetBoard();
         DestroyPhantom();
         phase = TurnEnums.PlayerPhase.Movement;
+
         selectedCharacter = null;
         currentTile = null;
     }
@@ -169,6 +176,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (selectedCharacter != null)
         {
             selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
         }
 
         if (areaPrefab != null)
@@ -214,6 +222,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
         else if (phase == TurnEnums.PlayerPhase.Attack)
         {
+            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+
             areaPrefab.DestroySelf();
             potentialMovementTile = null;
             potentialPath = null;
@@ -250,6 +260,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 currentTile.ChangeTileTop(TileEnums.TileTops.highlight, true);
             }
+
             SelectPhase();
         }
         else if(potentialMovementTile == null)
@@ -368,6 +379,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
+        if (potentialMovementTile.tileData.tileType == selectedCharacter.elementType)
+        {
+            Tile.HighlightTilesOfType(selectedCharacter.elementType);
+        }
+
         if (!areaPrefab.freeRange)
         {
             areaPrefab.PositionAndRotateAroundCharacter(pathFinder, potentialMovementTile, currentTile);
@@ -429,6 +445,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     {
                         selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, true);
                     }
+
+                    Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
 
                     ResetBoard();
                     allowSelection = false;
@@ -500,6 +518,18 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             
             TileEffect tileEffect = phantom.GetComponent<TileEffect>();
             tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
+
+            if(currentTile != null)
+            {
+                if(selectedCharacter.elementType == currentTile.tileData.tileType)
+                {
+                    phantom.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                }
+                else
+                {
+                    phantom.transform.localScale = new Vector3(1f, 1f, 1f);
+                }
+            }
         }
     }
 
