@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
@@ -234,7 +235,10 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public virtual void OnTileEnter(Character character)
     {
-
+        if(character.elementType == tileData.tileType)
+        {
+            character.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        }
     }
 
     //Called when a Character stays on a tile
@@ -246,6 +250,11 @@ public class Tile : MonoBehaviour
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
+        if (character.elementType == tileData.tileType)
+        {
+            character.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+
         characterTimeOnTile = 0;
     }
 
@@ -279,6 +288,52 @@ public class Tile : MonoBehaviour
         tileReplaced.Invoke(this, newTile);
 
         Destroy(gameObject);
+    }
+
+    public static void HighlightTilesOfType(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> selectedList = new List<Tile>();
+        if(elementType == ElementType.Fire)
+        {
+            selectedList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        }
+        else if(elementType == ElementType.Water)
+        {
+            selectedList = turnManager.waterTiles.Cast<Tile>().ToList();
+        }
+        else if(elementType == ElementType.Grass)
+        {
+            selectedList = turnManager.grassTiles.Cast<Tile>().ToList();
+        }
+
+        foreach(Tile tile in selectedList)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
+        }
+    }
+
+    public static void UnHighlightTilesOfType(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> selectedList = new List<Tile>();
+        if (elementType == ElementType.Fire)
+        {
+            selectedList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        }
+        else if (elementType == ElementType.Water)
+        {
+            selectedList = turnManager.waterTiles.Cast<Tile>().ToList();
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            selectedList = turnManager.grassTiles.Cast<Tile>().ToList();
+        }
+
+        foreach (Tile tile in selectedList)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+        }
     }
 
     #endregion

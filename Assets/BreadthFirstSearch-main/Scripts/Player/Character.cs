@@ -94,16 +94,28 @@ public class Character : MonoBehaviour
 
     public void ApplyBuffCharacter(TurnManager turnManager)
     {
-        if(elementType == ElementType.Fire)
+        Hero thisHero = null;
+        if (characterType == TurnEnums.CharacterType.Player)
+        {
+            thisHero = (Hero)this;
+        }
+
+        if (elementType == ElementType.Fire)
         {
             turnManager.pathfinder.PathTilesInRange(characterTile, 0, 2, true, false);
             List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
             List<Character> charactersToHit = new List<Character>();
-            foreach(Tile tile in tiles)
+
+            foreach (Tile tile in tiles)
             { 
                 if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
                 {
                     charactersToHit.Add(tile.characterOnTile);
+                }
+
+                if(characterType == TurnEnums.CharacterType.Player)
+                {
+                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
                 }
             }
             ApplyStatusAttackArea(charactersToHit);
@@ -114,6 +126,11 @@ public class Character : MonoBehaviour
             currentHealth = maxHealth;
             UpdateHealthBar?.Invoke();
             MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
+
+            if (characterType == TurnEnums.CharacterType.Player)
+            {
+                TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+            }
         }
         else
         {
@@ -400,7 +417,11 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
-        animator.SetTrigger("died");
+        if(animator != null)
+        {
+            animator.SetTrigger("died");
+        }
+  
         Invoke("Destroy", 0.6f);
     }
 

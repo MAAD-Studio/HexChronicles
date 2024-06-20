@@ -57,6 +57,8 @@ public class Enemy_TNT : Enemy_Base
                     tile.characterOnTile.TakeDamage(farRangeDMG, elementType);
                 }
             }
+
+            TemporaryMarker.GenerateMarker(enemySO.attributes.hitMarker, tile.transform.position, 2f, 0.5f);
         }
 
         base.Died();
