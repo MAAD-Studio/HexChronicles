@@ -38,7 +38,6 @@ public class Hero : Character
 
         UpdateHealthBar?.Invoke();
         UpdateAttributes?.Invoke();
-        UpdateStatus?.Invoke();
     }
 
     public override void EnterNewTurn()

@@ -8,32 +8,35 @@ using UnityEngine.UI;
 
 public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public GameObject defaultState;
-    public GameObject selectedState;
-    public GameObject noActionState;
-    public GameObject deadState;
-    public CharacterUIConfig characterUIConfig;
+    [SerializeField] private GameObject defaultState;
+    [SerializeField] private GameObject selectedState;
+    [SerializeField] private GameObject noActionState;
+    [SerializeField] private GameObject deadState;
+    [SerializeField] private CharacterUIConfig characterUIConfig;
 
-    public List<TextMeshProUGUI> names;
-    public List<Image> avatars;
-    public List<Image> elements;
-    public List<TextMeshProUGUI> textMovement;
-    public List<TextMeshProUGUI> textAttack;
-    public List<TextMeshProUGUI> textDef;
-    public List<TextMeshProUGUI> textStatus;
-    [HideInInspector] public Hero hero;
+    [Header("Hero Info")]
+    [SerializeField] private List<TextMeshProUGUI> names;
+    [SerializeField] private List<Image> avatars;
+    [SerializeField] private List<Image> elements;
+    [SerializeField] private List<TextMeshProUGUI> textMovement;
+    [SerializeField] private List<TextMeshProUGUI> textAttack;
+    [SerializeField] private List<TextMeshProUGUI> textDef;
+    [SerializeField] private GameObject statusField;
+    [SerializeField] private GameObject statusPrefab;
+    private List<Status> status;
+    private Hero hero;
 
     [Header("HealthBar")]
-    public List<TextMeshProUGUI> textHP;
-    public List<Image> health;
+    [SerializeField] private List<TextMeshProUGUI> textHP;
+    [SerializeField] private List<Image> health;
 
-    [Header("Hero")]
-    public Image attackShape;
-    public TextMeshProUGUI attackInfo;
+    [Header("Attack and Skill")]
+    [SerializeField] private Image attackShape;
+    [SerializeField] private TextMeshProUGUI attackInfo;
 
-    public Image skillShape;
-    public TextMeshProUGUI skillInfo;
-    public TextMeshProUGUI skillCD;
+    [SerializeField] private Image skillShape;
+    [SerializeField] private TextMeshProUGUI skillInfo;
+    [SerializeField] private TextMeshProUGUI skillCD;
 
     [Header("Buttons")]
     public Button attackBtn;
@@ -45,44 +48,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Start()
     {
         SetDefaultState();
-    }
-
-    private void UpdateAttributes()
-    {
-        foreach (TextMeshProUGUI movement in textMovement)
-        {
-            movement.text = hero.moveDistance.ToString();
-        }
-        foreach (TextMeshProUGUI attack in textAttack)
-        {
-            attack.text = hero.attackDamage.ToString();
-        }
-        foreach (TextMeshProUGUI def in textDef)
-        {
-            def.text = hero.defensePercentage.ToString() + "%";
-        }
-    }
-
-    private void UpdateStatus()
-    {
-        string statusString = characterUIConfig.GetStatusTypes(hero).ToString();
-        foreach (TextMeshProUGUI status in textStatus)
-        {
-            status.text = statusString;
-            status.ForceMeshUpdate();
-        }
-    }
-
-    private void UpdateHealthBar()
-    {
-        foreach (Image hp in health)
-        {
-            hp.fillAmount = hero.currentHealth / hero.maxHealth;
-        }
-        foreach (TextMeshProUGUI hp in textHP)
-        {
-            hp.text = $"{hero.currentHealth} / {hero.maxHealth} HP";
-        }
     }
 
     public void InitializeInfo(Hero hero)
@@ -112,6 +77,63 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         skillInfo.ForceMeshUpdate();
     }
 
+    #region Update Info
+    private void UpdateAttributes()
+    {
+        foreach (TextMeshProUGUI movement in textMovement)
+        {
+            movement.text = hero.moveDistance.ToString();
+        }
+        foreach (TextMeshProUGUI attack in textAttack)
+        {
+            attack.text = hero.attackDamage.ToString();
+        }
+        foreach (TextMeshProUGUI def in textDef)
+        {
+            def.text = hero.defensePercentage.ToString() + "%";
+        }
+    }
+
+    private void UpdateStatus()
+    {
+        List<Status> newStatus = hero.statusList;
+
+        if (status != newStatus)
+        {
+            foreach (Transform child in statusField.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            if (newStatus != null)
+            {
+                foreach (var status in newStatus)
+                {
+                    GameObject statusObject = Instantiate(statusPrefab);
+                    statusObject.transform.SetParent(statusField.transform);
+
+                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                    statusEffect.Initialize(status);
+                }
+            }
+            status = newStatus;
+        }
+    }
+
+    private void UpdateHealthBar()
+    {
+        foreach (Image hp in health)
+        {
+            hp.fillAmount = hero.currentHealth / hero.maxHealth;
+        }
+        foreach (TextMeshProUGUI hp in textHP)
+        {
+            hp.text = $"{hero.currentHealth} / {hero.maxHealth} HP";
+        }
+    }
+    #endregion
+
+    #region Events
     private void SubscribeEvents()
     {
         EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
@@ -170,7 +192,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         SetDefaultState();
     }
+    #endregion
 
+    #region States
     public void SetDefaultState()
     {
         if (!interactable || heroDead)
@@ -227,9 +251,11 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void SetDeadState()
     {
         heroDead = true;
+        statusField.SetActive(false);
         defaultState.SetActive(false);
         selectedState.SetActive(false);
         noActionState.SetActive(false);
         deadState.SetActive(true);
     }
+    #endregion
 }
