@@ -16,7 +16,8 @@ public class HUDInfo : MonoBehaviour
     [Header("Turn Info")]
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private TextMeshProUGUI turnNumber;
-    [SerializeField] private GameObject turnMessage;
+    [SerializeField] private GameObject playerTurnMessage;
+    [SerializeField] private GameObject enemyTurnMessage;
     [SerializeField] private WeatherIndicator weatherIndicator;
 
     [Header("Hero Info")]
@@ -135,9 +136,15 @@ public class HUDInfo : MonoBehaviour
 
     private void OnEnemyTurn(object obj)
     {
+        if (gameObject.activeInHierarchy)
+        {
+            enemyTurnMessage.gameObject.SetActive(true);
+            StartCoroutine(HideTurnMessage(enemyTurnMessage));
+        }
+
         currentTurn.text = "ENEMY TURN";
         endTurn.interactable = false;
-
+        
         foreach (var button in heroButtons)
         {
             button.interactable = false;
@@ -148,8 +155,8 @@ public class HUDInfo : MonoBehaviour
     {
         if (gameObject.activeInHierarchy)
         {
-            turnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage());
+            playerTurnMessage.gameObject.SetActive(true);
+            StartCoroutine(HideTurnMessage(playerTurnMessage));
         }
 
         currentTurn.text = "PLAYER TURN";
@@ -164,7 +171,7 @@ public class HUDInfo : MonoBehaviour
         turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
     }
 
-    private IEnumerator HideTurnMessage()
+    private IEnumerator HideTurnMessage(GameObject turnMessage)
     {
         yield return new WaitForSeconds(0.5f);
         turnMessage.gameObject.SetActive(false);
@@ -203,7 +210,8 @@ public class HUDInfo : MonoBehaviour
 
     private void InstantiateUIElements()
     {
-        turnMessage.gameObject.SetActive(false);
+        playerTurnMessage.gameObject.SetActive(false);
+        enemyTurnMessage.gameObject.SetActive(false);
 
         // Create Characters Info:
         foreach (Character character in turnManager.characterList)
@@ -305,10 +313,13 @@ public class HUDInfo : MonoBehaviour
         heroes.Clear();
         heroButtons.Clear();
         characterInfoDict.Clear();
+
+        endTurn.onClick.RemoveAllListeners();
+        weatherIndicator.ResetWeather();
+
         availableHeroes = 0;
         activeHeroes = 0;
         selectedHero = null;
-        endTurn.onClick.RemoveAllListeners();
     }
     #endregion
 

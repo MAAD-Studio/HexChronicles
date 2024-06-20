@@ -1,6 +1,8 @@
 public struct OnNewLevelStart { }
 public struct OnPlayerTurn { }
 public struct OnEnemyTurn { }
+public struct OnWeatherSpawn { }
+public struct OnWeatherEnded { }
 
 public struct CharacterSelected
 {

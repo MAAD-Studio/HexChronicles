@@ -70,6 +70,8 @@ public class WeatherManager : MonoBehaviour
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
                 patch.ColourArea();
             }
+
+            EventBus.Instance.Publish(new OnWeatherSpawn());
         }
         else
         {
@@ -103,6 +105,8 @@ public class WeatherManager : MonoBehaviour
             {
                 patch.ResetWeatherTiles();
             }
+
+            EventBus.Instance.Publish(new OnWeatherEnded());
         }
     }
 
