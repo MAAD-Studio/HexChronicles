@@ -17,6 +17,10 @@ public class TileObjectHealthBar : EnemyHealthBar
         characterName.text = tileObject.tileObjectData.objectName.ToString();
         atkPercentage.text = (100 - tileObject.tileObjectData.defense).ToString() + "%";
         hpText.text = tileObject.tileObjectData.health + " HP";
+
+        float width = tileObject.tileObjectData.health * 10f;
+        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+        
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
     }
@@ -28,12 +32,12 @@ public class TileObjectHealthBar : EnemyHealthBar
         if (damagePreview != 0)
         {
             gameObject.transform.localScale = scaledUpValue;
-            atkInfoPanel.SetActive(true);
+            //atkInfoPanel.SetActive(true);
         }
         else
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            atkInfoPanel.SetActive(false);
+            //atkInfoPanel.SetActive(false);
         }
 
         if ((tileObject.currentHealth - damagePreview) <= 0)

@@ -18,6 +18,10 @@ public class HeroHealthBar : HealthBar
 
         characterName.text = hero.heroSO.attributes.name.ToString();
         hpText.text = hero.heroSO.attributes.health + " HP";
+
+        float width = hero.heroSO.attributes.health * 10f;
+        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
     }

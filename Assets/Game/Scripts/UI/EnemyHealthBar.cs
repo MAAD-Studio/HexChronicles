@@ -23,6 +23,9 @@ public class EnemyHealthBar : HealthBar
         characterName.text = enemy.enemySO.name.ToString();
         atkPercentage.text = (100 - enemy.enemySO.attributes.defensePercentage).ToString() + "%";
         hpText.text = enemy.enemySO.attributes.health + " HP";
+
+        float width = enemy.enemySO.attributes.health * 10f;
+        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
     }
@@ -34,12 +37,12 @@ public class EnemyHealthBar : HealthBar
         if (damagePreview != 0)
         {
             gameObject.transform.localScale = scaledUpValue;
-            atkInfoPanel.SetActive(true);
+            //atkInfoPanel.SetActive(true);
         }
         else
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            atkInfoPanel.SetActive(false);
+            //atkInfoPanel.SetActive(false);
         }
 
         if ((enemy.currentHealth - damagePreview) <= 0)

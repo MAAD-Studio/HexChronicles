@@ -11,6 +11,7 @@ public abstract class HealthBar : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI hpText;
     [SerializeField] protected Image health;
     [SerializeField] protected Image previewHealth;
+    [SerializeField] protected RectTransform bar;
     [SerializeField] public float damagePreview;
 
     protected abstract void Start();
