@@ -57,8 +57,8 @@ public class EnemyHealthBar : HealthBar
 
     protected override void UpdateHealthBar()
     {
-        health.fillAmount = enemy.currentHealth / enemy.maxHealth;
         hpText.text = enemy.currentHealth + " HP";
+        StartCoroutine(AnimateHealthBar(enemy.currentHealth / enemy.maxHealth));
 
         damagePreview = 0;
         UpdateHealthBarPreview();

@@ -52,8 +52,8 @@ public class TileObjectHealthBar : EnemyHealthBar
 
     protected override void UpdateHealthBar()
     {
-        health.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
         hpText.text = tileObject.currentHealth + " HP";
+        StartCoroutine(AnimateHealthBar(tileObject.currentHealth / tileObject.tileObjectData.health));
 
         damagePreview = 0;
         UpdateHealthBarPreview();

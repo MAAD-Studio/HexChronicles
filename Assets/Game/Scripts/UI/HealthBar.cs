@@ -19,4 +19,16 @@ public abstract class HealthBar : MonoBehaviour
     protected abstract void UpdateHealthBarPreview();
     protected abstract void UpdateHealthBar();
 
+    protected IEnumerator AnimateHealthBar(float targetFillAmount)
+    {
+        float elapsedTime = 0f;
+        float animationDuration = 1f;
+        while (elapsedTime < animationDuration)
+        {
+            health.fillAmount = Mathf.Lerp(health.fillAmount, targetFillAmount, elapsedTime / animationDuration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
 }

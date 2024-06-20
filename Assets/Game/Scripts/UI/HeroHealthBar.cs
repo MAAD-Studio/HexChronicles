@@ -33,8 +33,8 @@ public class HeroHealthBar : HealthBar
 
     protected override void UpdateHealthBar()
     {
-        health.fillAmount = hero.currentHealth / hero.maxHealth;
         hpText.text = hero.currentHealth + " HP";
+        StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth));
 
         damagePreview = 0;
         UpdateHealthBarPreview();
