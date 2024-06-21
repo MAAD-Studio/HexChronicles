@@ -473,7 +473,7 @@ public class Character : MonoBehaviour
         if(path.Length > 0)
         {
             int step = 1;
-            int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
+            int pathLength = path.Length;
             List<Tile> tilesInPath = new List<Tile>(path);
 
             float animationTime = 0f;
