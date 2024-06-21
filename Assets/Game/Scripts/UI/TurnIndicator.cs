@@ -42,6 +42,7 @@ public class TurnIndicator : MonoBehaviour
 
     public void ResetTurn()
     {
+        turnInfos.Clear();
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
