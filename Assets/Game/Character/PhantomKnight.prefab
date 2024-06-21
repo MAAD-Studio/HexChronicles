@@ -1927,9 +1927,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 8339039179272120887}
   icon: {fileID: 6396100527173643585}
-  text: {fileID: 3372073772726405916}
+  text: {fileID: 2269920800909967143}
+  detail: {fileID: 3372073772726405916}
   buffSprite: {fileID: 21300000, guid: 52a3537b959efc34f8adca74e437c66b, type: 3}
   debuffSprite: {fileID: 21300000, guid: 602fde4c22cf4144aa92cbbd7b86c908, type: 3}
+  waterTileBuff:
+    description: a waterTileBuff
+    keywords:
+    - keyword: waterTileBuff
+      color: {r: 0, g: 0.5294118, b: 1, a: 1}
+      bold: 0
+      italic: 0
+  waterTileDebuff:
+    description: waterTileDebuff
+    keywords:
+    - keyword: water
+      color: {r: 0, g: 0.53050137, b: 1, a: 1}
+      bold: 1
+      italic: 0
+  fireTileBuff:
+    description: a fireTileBuff
+    keywords:
+    - keyword: fireTileBuff
+      color: {r: 1, g: 0, b: 0, a: 1}
+      bold: 0
+      italic: 0
+  fireTileDebuff:
+    description: fireTileDebuff
+    keywords:
+    - keyword: fire
+      color: {r: 1, g: 0, b: 0, a: 1}
+      bold: 1
+      italic: 0
+  grassTileBuff:
+    description: a grassTileBuff
+    keywords:
+    - keyword: grassTileBuff
+      color: {r: 0.039849162, g: 1, b: 0, a: 1}
+      bold: 0
+      italic: 0
+  grassTileDebuff:
+    description: grassTileDebuff
+    keywords:
+    - keyword: grass
+      color: {r: 0, g: 1, b: 0, a: 1}
+      bold: 1
+      italic: 0
+  poisonTileDebuff:
+    description: poisonTileDebuff
+    keywords:
+    - keyword: poison
+      color: {r: 0.589, g: 0, b: 0.7100835, a: 1}
+      bold: 1
+      italic: 0
 --- !u!1 &7448955105249341362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3060,6 +3110,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7290260137269602245}
     m_Modifications:
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 92
+      objectReference: {fileID: 0}
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 621962497003700417, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_Name
       value: Tile Effects
@@ -3089,8 +3163,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
-      propertyPath: m_AnchoredPosition.x
+      propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 17.333334
       objectReference: {fileID: 0}
     - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3201,12 +3279,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 92
+      objectReference: {fileID: 0}
+    - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 89.253334
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3222,6 +3304,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7608265586771235074, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
   m_PrefabInstance: {fileID: 8870842680558562038}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2269920800909967143 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7249652569659872721, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
+  m_PrefabInstance: {fileID: 8870842680558562038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3372073772726405916 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6185574593123967466, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
