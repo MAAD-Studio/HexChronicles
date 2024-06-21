@@ -6,6 +6,8 @@ public class Enemy_SoloJelly : Enemy_Base
 {
     #region Variables
 
+    [SerializeField] public GameObject combineText;
+
     #endregion
 
     #region InterfaceMethods

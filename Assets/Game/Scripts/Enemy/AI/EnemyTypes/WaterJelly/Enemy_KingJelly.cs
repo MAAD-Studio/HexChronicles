@@ -10,6 +10,7 @@ public class Enemy_KingJelly : Enemy_Base
     [SerializeField] public int slimeCount = 2;
     [SerializeField] public GameObject masterJellyPrefab;
     [SerializeField] public GameObject soloJellyPrefab;
+    [SerializeField] public GameObject combineText;
 
     #endregion
 
@@ -90,6 +91,7 @@ public class Enemy_KingJelly : Enemy_Base
         currentHealth += 1;
         maxHealth = currentHealth;
         UpdateHealthBar?.Invoke();
+        TemporaryMarker.GenerateMarker(combineText, transform.localPosition, 4f, 1f);
     }
 
     #endregion

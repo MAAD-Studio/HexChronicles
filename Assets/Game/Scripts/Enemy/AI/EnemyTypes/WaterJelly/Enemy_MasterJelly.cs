@@ -7,6 +7,7 @@ public class Enemy_MasterJelly : Enemy_Base
     #region Variables
 
     [SerializeField] private GameObject kingJellyPrefab;
+    [SerializeField] public GameObject combineText;
 
     #endregion
 
@@ -102,6 +103,7 @@ public class Enemy_MasterJelly : Enemy_Base
         DestroySelfEnemy(turnManager);
 
         Debug.Log("MASTER JELLY HAS COMBINED WITH A SOLO JELLY TO PRODUCE A KING");
+        TemporaryMarker.GenerateMarker(combineText, transform.localPosition, 4f, 1f);
     }
 
     #endregion
