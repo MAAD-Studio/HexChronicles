@@ -22,12 +22,20 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private int numberOfPatches = 3;
     [SerializeField] private int turnsToStay = 3;
     private int turnsActive = 0;
+    public int TurnsToStay
+    {
+        get { return turnsToStay; }
+    }
 
     [Header("Weather Generation Controls: ")]
     [SerializeField] private bool effectEntireMap = false;
     [SerializeField] private int maxSpread = 4;
     [SerializeField] private int movementPerTurn = 2;
     [SerializeField] private Weather_Base weather;
+    public string WeatherName
+    {
+        get { return weather.weatherName; }
+    }
 
     #endregion
 

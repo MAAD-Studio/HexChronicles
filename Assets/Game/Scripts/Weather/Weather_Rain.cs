@@ -5,7 +5,11 @@ using UnityEngine;
 public class Weather_Rain : Weather_Base
 {
     #region UnityMethods
-
+    private void Start()
+    {
+        // !!! TEMP USE - from Weather_Base
+        weatherName = "Rain";
+    }
     #endregion
 
     #region CustomMethods

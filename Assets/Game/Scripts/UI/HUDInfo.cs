@@ -15,10 +15,10 @@ public class HUDInfo : MonoBehaviour
 
     [Header("Turn Info")]
     [SerializeField] private TextMeshProUGUI currentTurn;
-    [SerializeField] private TextMeshProUGUI turnNumber;
     [SerializeField] private GameObject playerTurnMessage;
     [SerializeField] private GameObject enemyTurnMessage;
-    [SerializeField] private WeatherIndicator weatherIndicator;
+    [SerializeField] private TurnIndicator turnIndicator;
+    [SerializeField] private WeatherIndicatorWindow weatherWindow;
 
     [Header("Hero Info")]
     [SerializeField] private GameObject heroListPanel;
@@ -88,6 +88,7 @@ public class HUDInfo : MonoBehaviour
             //EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
+            EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
@@ -103,6 +104,7 @@ public class HUDInfo : MonoBehaviour
             //EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
+            EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Unsubscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
@@ -117,11 +119,9 @@ public class HUDInfo : MonoBehaviour
         Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
         playerTurn = turnManager.GetComponent<PlayerTurn>();
         Debug.Assert(playerTurn != null, "HUDInfo couldn't find PlayerTurn");
-        
-        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
 
-        WeatherManager weatherManager = turnManager.GetComponent<WeatherManager>();
-        weatherIndicator.Initialize(weatherManager);
+        turnIndicator.Initialize(turnManager.objectiveTurnNumber);
+        weatherWindow.Start();
 
         SubscribeEvents();
         InstantiateUIElements();
@@ -132,6 +132,15 @@ public class HUDInfo : MonoBehaviour
     {
         ResetHUD();
         UnsubscribeEvents();
+    }
+
+    private void SetWeather(object obj)
+    {
+        WeatherManager weatherManager = FindObjectOfType<WeatherManager>();
+        weatherWindow.ShowWeather(weatherManager);
+        
+        int turns = weatherManager.TurnsToStay;
+        turnIndicator.SetWeatherTurn(turns);
     }
 
     private void OnEnemyTurn(object obj)
@@ -159,6 +168,9 @@ public class HUDInfo : MonoBehaviour
             StartCoroutine(HideTurnMessage(playerTurnMessage));
         }
 
+        turnIndicator.SetCurrentTurn(turnManager.TurnNumber);
+
+        //turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
         currentTurn.text = "PLAYER TURN";
         endTurn.interactable = true;
 
@@ -168,7 +180,6 @@ public class HUDInfo : MonoBehaviour
         }
 
         activeHeroes = availableHeroes;
-        turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
     }
 
     private IEnumerator HideTurnMessage(GameObject turnMessage)
@@ -315,7 +326,7 @@ public class HUDInfo : MonoBehaviour
         characterInfoDict.Clear();
 
         endTurn.onClick.RemoveAllListeners();
-        weatherIndicator.ResetWeather();
+        turnIndicator.ResetTurn();
 
         availableHeroes = 0;
         activeHeroes = 0;
