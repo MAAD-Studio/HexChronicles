@@ -28,6 +28,7 @@ public class BasicAttributes
 
     [Header("Marker Prefabs:")]
     public GameObject hitMarker;
+    public GameObject buffPrefab;
 
     [Header("ALPHA TEMPORARY MARKER")]
     public GameObject fireMarker;

@@ -15,22 +15,25 @@ public class WaterTile : Tile
         base.OnTileStay(character);
         Status status = null;
 
-        if (characterTimeOnTile >= 2)
+        if(character.elementType != tileData.tileType)
         {
-            status = Status.GrabIfStatusActive(character, Status.StatusTypes.Wet);
-            if (status == null)
+            if (characterTimeOnTile >= 2)
             {
-                status = new Status();
-                status.effectTurns = 2;
-                status.statusType = Status.StatusTypes.Wet;
-                characterOnTile.AddStatus(status);
+                status = Status.GrabIfStatusActive(character, Status.StatusTypes.Wet);
+                if (status == null)
+                {
+                    status = new Status();
+                    status.effectTurns = 2;
+                    status.statusType = Status.StatusTypes.Wet;
+                    characterOnTile.AddStatus(status);
+                }
             }
-        }
 
-        if(characterTimeOnTile >= 3 && status != null)
-        {
-            characterOnTile.movementThisTurn += 2;
-            characterOnTile.TakeDamage(1, ElementType.Base);
+            if (characterTimeOnTile >= 3 && status != null)
+            {
+                characterOnTile.movementThisTurn += 2;
+                characterOnTile.TakeDamage(1, ElementType.Base);
+            }
         }
     }
 

@@ -15,21 +15,24 @@ public class GrassTile : Tile
         base.OnTileStay(character);
         Status status = null;
 
-        if (characterTimeOnTile >= 2)
+        if (character.elementType != tileData.tileType)
         {
-            status = Status.GrabIfStatusActive(character, Status.StatusTypes.Bound);
-            if (status == null)
+            if (characterTimeOnTile >= 2)
             {
-                status = new Status();
-                status.effectTurns = 2;
-                status.statusType = Status.StatusTypes.Bound;
-                characterOnTile.AddStatus(status);
+                status = Status.GrabIfStatusActive(character, Status.StatusTypes.Bound);
+                if (status == null)
+                {
+                    status = new Status();
+                    status.effectTurns = 2;
+                    status.statusType = Status.StatusTypes.Bound;
+                    characterOnTile.AddStatus(status);
+                }
             }
-        }
 
-        if (characterTimeOnTile >= 3 && status != null)
-        {
-            
+            if (characterTimeOnTile >= 3 && status != null)
+            {
+
+            }
         }
     }
 

@@ -523,11 +523,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if(selectedCharacter.elementType == currentTile.tileData.tileType)
                 {
-                    phantom.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                    phantom.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+                    selectedCharacter.SpawnBuffPreview(phantom.transform.position, 1f);
                 }
                 else
                 {
                     phantom.transform.localScale = new Vector3(1f, 1f, 1f);
+                    selectedCharacter.DestroyBuffPreview();
                 }
             }
         }
@@ -538,6 +540,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if(phantom != null)
         {
             Destroy(phantom.gameObject);
+        }
+
+        if(selectedCharacter != null)
+        {
+            selectedCharacter.DestroyBuffPreview();
         }
     }
 

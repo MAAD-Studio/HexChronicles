@@ -58,6 +58,8 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
+    private GameObject buffPreview;
+
     #endregion
 
     #region UnityMethods
@@ -522,10 +524,6 @@ public class Character : MonoBehaviour
                 {
                     currentTile.OnTileExit(this);
                 }
-                else
-                {
-                    currentTile.OnTileStay(this);
-                }
 
                 animationTime = 0f;
             }
@@ -687,6 +685,34 @@ public class Character : MonoBehaviour
         statusList.Clear();
         hasMadeDecision = false;
         effectedByWeather = false;
+    }
+
+    public void SpawnBuffPreview(Vector3 location, float height)
+    {
+        if(characterType == TurnEnums.CharacterType.Player)
+        {
+            Hero thisHero = (Hero)this;
+            GameObject buffPrefab = thisHero.heroSO.attributes.buffPrefab;
+            if (buffPrefab != null)
+            {
+                Vector3 potentialLocation = location;
+                potentialLocation.y += height;
+                if(buffPreview != null && buffPreview.transform.localPosition == potentialLocation)
+                {
+                    return;
+                }
+                DestroyBuffPreview();
+                buffPreview = TemporaryMarker.GenerateMarker(buffPrefab, location, height);
+            }
+        }
+    }
+
+    public void DestroyBuffPreview()
+    {
+        if(buffPreview != null)
+        {
+            Destroy(buffPreview);
+        }
     }
 
     #endregion

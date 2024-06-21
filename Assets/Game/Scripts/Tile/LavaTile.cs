@@ -15,22 +15,25 @@ public class LavaTile : Tile
         base.OnTileStay(character);
         Status status = null;
 
-        if (characterTimeOnTile >= 2)
+        if (character.elementType != tileData.tileType)
         {
-            status = Status.GrabIfStatusActive(character, Status.StatusTypes.Burning);
-            if (status == null)
+            if (characterTimeOnTile >= 2)
             {
-                status = new Status();
-                status.effectTurns = 2;
-                status.statusType = Status.StatusTypes.Burning;
-                characterOnTile.AddStatus(status);
+                status = Status.GrabIfStatusActive(character, Status.StatusTypes.Burning);
+                if (status == null)
+                {
+                    status = new Status();
+                    status.effectTurns = 2;
+                    status.statusType = Status.StatusTypes.Burning;
+                    characterOnTile.AddStatus(status);
+                }
             }
-        }
 
-        if (characterTimeOnTile >= 3 && status != null)
-        {
-            status.damageAddOn += 1;
-            characterOnTile.TakeDamage(2, ElementType.Fire);
+            if (characterTimeOnTile >= 3 && status != null)
+            {
+                status.damageAddOn += 1;
+                characterOnTile.TakeDamage(2, ElementType.Fire);
+            }
         }
     }
 
