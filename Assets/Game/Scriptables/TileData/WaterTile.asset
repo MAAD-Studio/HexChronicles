@@ -27,36 +27,34 @@ MonoBehaviour:
   weatherMaterial: {fileID: 2100000, guid: 85364eb603c35944fb2d30241409a406, type: 2}
   tileSprite: {fileID: 21300000, guid: c4ab57d6fbd368f43a2b49aed646a102, type: 3}
   tileEffects:
-    description: 'This is water tile.
+    description: 'Buff: Restores full HP<br>
 
-      Fire ->  -1 Movement
+      De-Buff: Applis Wet effect,<br>affects
+      movement and health
 
-      Grass ->
-      +10% Defense
-
-      Water -> +1 Attack'
+'
     keywords:
-    - keyword: -1
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+    - keyword: Buff
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 1
       italic: 0
-    - keyword: Movement
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
-      bold: 0
-      italic: 0
-    - keyword: +10%
+    - keyword: Restores
       color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
       bold: 1
       italic: 0
-    - keyword: Defense
+    - keyword: De-
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: Wet
+      color: {r: 0, g: 0.23529412, b: 0.54901963, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: movement
       color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 0
       italic: 0
-    - keyword: +1
-      color: {r: 0, g: 0.6117647, b: 0.027450982, a: 1}
-      bold: 1
-      italic: 0
-    - keyword: Attack
+    - keyword: health
       color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 0
       italic: 0
