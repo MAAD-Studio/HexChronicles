@@ -1932,52 +1932,137 @@ MonoBehaviour:
   buffSprite: {fileID: 21300000, guid: 52a3537b959efc34f8adca74e437c66b, type: 3}
   debuffSprite: {fileID: 21300000, guid: 602fde4c22cf4144aa92cbbd7b86c908, type: 3}
   waterTileBuff:
-    description: a waterTileBuff
+    description: Restores full HP
     keywords:
-    - keyword: waterTileBuff
-      color: {r: 0, g: 0.5294118, b: 1, a: 1}
-      bold: 0
-      italic: 0
-  waterTileDebuff:
-    description: waterTileDebuff
-    keywords:
-    - keyword: water
-      color: {r: 0, g: 0.53050137, b: 1, a: 1}
+    - keyword: Restores
+      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
       bold: 1
       italic: 0
-  fireTileBuff:
-    description: a fireTileBuff
+  waterTileDebuff:
+    description: 'If on tile for
+
+      2 turns: Applies Wet effect, -1 Movement<br>
+
+      3
+      turns: Drowns, -1 HP and -2 Movement
+
+'
     keywords:
-    - keyword: fireTileBuff
-      color: {r: 1, g: 0, b: 0, a: 1}
+    - keyword: 2 turns
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: Wet
+      color: {r: 0, g: 0.23529412, b: 0.54901963, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: -1 Movement
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: 3 turns
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: -1 HP
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: -2 Movement
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 0
+      italic: 0
+  fireTileBuff:
+    description: AOE applies burn to nearby enemies for 2 turns
+    keywords:
+    - keyword: AOE
+      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: burn
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: 2 turns
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 0
       italic: 0
   fireTileDebuff:
-    description: fireTileDebuff
+    description: 'If on tile for
+
+      2 turns: Applies burn effect, -1 HP<br>
+
+      3
+      turns: Full burning,<br>-1 HP damage over time for 2 turns'
     keywords:
-    - keyword: fire
-      color: {r: 1, g: 0, b: 0, a: 1}
+    - keyword: 2 turns
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 1
       italic: 0
-  grassTileBuff:
-    description: a grassTileBuff
-    keywords:
-    - keyword: grassTileBuff
-      color: {r: 0.039849162, g: 1, b: 0, a: 1}
+    - keyword: 'burn '
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: -1 HP
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 0
       italic: 0
-  grassTileDebuff:
-    description: grassTileDebuff
+    - keyword: 3 turns
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: -1 HP
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: damage over time
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 0
+      italic: 0
+  grassTileBuff:
+    description: Increase movement by +2
     keywords:
-    - keyword: grass
-      color: {r: 0, g: 1, b: 0, a: 1}
+    - keyword: Increase
+      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: +2
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+  grassTileDebuff:
+    description: 'If on tile for more than 1 turn: Applies bind effect, can''t move
+      and takes +2 damage<br>'
+    keywords:
+    - keyword: more than 1 turn
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: bind
+      color: {r: 0, g: 0.32156864, b: 0.015686275, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: can't move
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: takes +2 damage
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
       bold: 1
       italic: 0
   poisonTileDebuff:
-    description: poisonTileDebuff
+    description: Lose 1HP per tile while walking over
     keywords:
-    - keyword: poison
-      color: {r: 0.589, g: 0, b: 0.7100835, a: 1}
+    - keyword: Lose 1HP
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: per tile
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: walking over
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 1
       italic: 0
 --- !u!1 &7448955105249341362
@@ -3014,7 +3099,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 9
   m_TargetDisplay: 0
 --- !u!114 &7494756845720608878
 MonoBehaviour:
