@@ -16,7 +16,7 @@ public class EnemyHoverUI : MonoBehaviour
 
     public CharacterUIConfig characterUIConfig;
 
-    public void SetStats(Enemy_Base enemy)
+    public void SetEnemyStats(Enemy_Base enemy)
     {
         element.sprite = characterUIConfig.GetElementSprite(enemy.elementType);
         textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
@@ -25,6 +25,16 @@ public class EnemyHoverUI : MonoBehaviour
         textRange.text = $"{enemy.attackDistance}";
         textDef.text = $"{enemy.defensePercentage}%";
         textStatus.text = characterUIConfig.GetStatusTypes(enemy).ToString();
+
+        gameObject.SetActive(true);
+    }
+
+    public void SetObjectStats(TileObject tileObject)
+    {
+        //textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
+        //textDef.text = $"{tileObject.tileObjectData.defense}%";
+        //textStatus.text = GetStatusTypes(tileObject).ToString();
+        //textStatus.text = "";
 
         gameObject.SetActive(true);
     }

@@ -34,9 +34,11 @@ public class EnemyStatsUI : StatsUI
         enemyInfo.text = tileObject.tileObjectData.description.DisplayKeywordDescription();
         enemyInfo.ForceMeshUpdate();
         textHP.text = $"{tileObject.currentHealth} / {tileObject.tileObjectData.health}";
-        textDef.text = $"{tileObject.tileObjectData.defense}%";
+        //textAttack.text = $"{tileObject.tileObjectData.attackDamage}";
+        //textRange.text = $"{tileObject.tileObjectData.attackDistance}";
+        //textDef.text = $"{tileObject.tileObjectData.defense}%";
         //textStatus.text = GetStatusTypes(tileObject).ToString();
-        textStatus.text = "";
+        //textStatus.text = "";
 
         gameObject.SetActive(true);
     }
