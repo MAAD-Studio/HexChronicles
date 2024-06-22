@@ -10,6 +10,11 @@ public class TowersTurn : WorldTurnBase
     [SerializeField] private int turnsTillSpawn = 2;
     [SerializeField] private List<Tower> towers = new List<Tower>();
 
+    public bool HasTowers
+    {
+        get { return towers.Count > 0; }
+    }
+
     bool updateCalled = false;
     bool updateDone = false;
 

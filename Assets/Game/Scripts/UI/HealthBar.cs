@@ -22,7 +22,7 @@ public abstract class HealthBar : MonoBehaviour
     protected IEnumerator AnimateHealthBar(float targetFillAmount)
     {
         float elapsedTime = 0f;
-        float animationDuration = 1f;
+        float animationDuration = 1.5f;
         while (elapsedTime < animationDuration)
         {
             health.fillAmount = Mathf.Lerp(health.fillAmount, targetFillAmount, elapsedTime / animationDuration);

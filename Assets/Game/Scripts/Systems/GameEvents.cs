@@ -1,3 +1,4 @@
+public struct PauseGame { }
 public struct OnNewLevelStart { }
 public struct OnPlayerTurn { }
 public struct OnEnemyTurn { }

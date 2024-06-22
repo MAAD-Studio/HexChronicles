@@ -15,6 +15,7 @@ public class HUDMenu : Menu
     {
         base.Start();
         EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevel);
+        EventBus.Instance.Subscribe<PauseGame>(OnPauseGame);
         
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
     }
@@ -22,6 +23,7 @@ public class HUDMenu : Menu
     private void OnNewLevel(object obj)
     {
         TurnManager.LevelDefeat.AddListener(LevelDefeat);
+        TurnManager.LevelVictory.AddListener(LevelVictory);
         WorldTurnBase.Victory.AddListener(LevelVictory);
     }
 
@@ -29,14 +31,14 @@ public class HUDMenu : Menu
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            OnPauseGame();
+            EventBus.Instance.Publish(new PauseGame());
 
             // TODO: Disable tile selection
 
         }
     }
 
-    public void OnPauseGame()
+    public void OnPauseGame(object obj)
     {
         if (pauseMenu.gameObject.activeInHierarchy == false)
         {
@@ -51,6 +53,13 @@ public class HUDMenu : Menu
         MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
+        UnsubscribeEvents();
+    }
+
+    private void UnsubscribeEvents()
+    {
+        TurnManager.LevelDefeat.RemoveListener(LevelDefeat);
+        TurnManager.LevelVictory.RemoveListener(LevelVictory);
         WorldTurnBase.Victory.RemoveListener(LevelVictory);
     }
 
@@ -60,7 +69,7 @@ public class HUDMenu : Menu
         MenuManager.Instance.ShowMenu(MenuManager.Instance.DefeatedScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        TurnManager.LevelDefeat.RemoveListener(LevelDefeat);
+        UnsubscribeEvents();
     }
 
     // Only For Testing

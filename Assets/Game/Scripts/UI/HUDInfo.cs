@@ -52,6 +52,7 @@ public class HUDInfo : MonoBehaviour
     private TileInfo tileInfo;
 
     [Header("Buttons")]
+    [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
     [SerializeField] private Button undo;
 
@@ -90,13 +91,13 @@ public class HUDInfo : MonoBehaviour
     {
         while (true)
         {
-            Debug.Log("Tile Waiting");
+            //Debug.Log("Tile Waiting");
             yield return new WaitForSeconds(1f);
             if (selectedTile != currentTile)
             {
                 tileInfo.Hide();
                 hideTileInfoCoroutine = null;
-                Debug.Log("Tile Hided");
+                //Debug.Log("Tile Hided");
 
                 yield break;
             }
@@ -105,14 +106,14 @@ public class HUDInfo : MonoBehaviour
 
     IEnumerator HideStatusInfo()
     {
-        Debug.Log("Status Waiting");
+        //Debug.Log("Status Waiting");
         yield return new WaitForSeconds(1f);
         if (selectedTile != currentTile)
         {
             enemyStatus.Hide();
             objectStatus.Hide();
             hideStatusInfoCoroutine = null;
-            Debug.Log("Status Hided");
+            //Debug.Log("Status Hided");
 
             yield break;
         }
@@ -132,6 +133,7 @@ public class HUDInfo : MonoBehaviour
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
+        TurnManager.LevelVictory.AddListener(OnLevelEnded);
         TurnManager.LevelDefeat.AddListener(OnLevelEnded);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
     }
@@ -148,6 +150,7 @@ public class HUDInfo : MonoBehaviour
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
+        TurnManager.LevelVictory.RemoveListener(OnLevelEnded);
         TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
     }
@@ -333,14 +336,8 @@ public class HUDInfo : MonoBehaviour
 
     private void ButtonsAddListener()
     {
-        if (endTurn == null)
-        {
-            Debug.LogError("endTurn is null");
-        }
-        if (endTurn.onClick == null)
-        {
-            Debug.LogError("endTurn.onClick is null");
-        }
+        pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
+        
         endTurn.onClick.AddListener(() =>
         {
             playerTurn.EndTurn();
@@ -374,6 +371,7 @@ public class HUDInfo : MonoBehaviour
         characterInfoDict.Clear();
 
         endTurn.onClick.RemoveAllListeners();
+        endTurn.GetComponent<Image>().color = Color.white;
         turnIndicator.ResetTurn();
 
         availableHeroes = 0;
@@ -423,12 +421,13 @@ public class HUDInfo : MonoBehaviour
             }
         }
 
-        // Clicked on tile:
+        //wip
+        // Clicked on tile: 
         if (Input.GetMouseButtonDown(0))
         { 
             tileInfo.SetTileInfo(currentTile);
 
-            Debug.Log("Tile Clicked");
+            //Debug.Log("Tile Clicked");
 
             selectedTile = currentTile;
 
@@ -455,7 +454,7 @@ public class HUDInfo : MonoBehaviour
             // Clicked show status panel
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Debug.Log("Enemy Clicked");
+                //Debug.Log("Enemy Clicked");
                 enemyStatus.SetEnemyStats(enemy);
                 objectStatus.Hide();
 
@@ -487,16 +486,16 @@ public class HUDInfo : MonoBehaviour
             // Clicked show status panel
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Debug.Log("Object Clicked");
+                //Debug.Log("Object Clicked");
                 objectStatus.SetObjectStats(tileObject);
                 enemyStatus.Hide();
 
-                /*if (hideStatusInfoCoroutine != null)
+                if (hideStatusInfoCoroutine != null)
                 {
                     StopCoroutine(hideStatusInfoCoroutine);
                 }
 
-                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());*/
+                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());
             }
         }
         else

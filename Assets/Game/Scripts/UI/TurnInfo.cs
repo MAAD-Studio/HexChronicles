@@ -18,6 +18,7 @@ public class TurnInfo : MonoBehaviour
     [SerializeField] private Color rainColor;
 
     [HideInInspector] public bool isWeather = false;
+    private UITip tip;
 
     public void Initialize(int turn, int totalTurns)
     {
@@ -26,6 +27,9 @@ public class TurnInfo : MonoBehaviour
 
         textIndicator.SetActive(false);
         weatherBar.gameObject.SetActive(false);
+
+        tip = GetComponent<UITip>();
+        tip.enabled = false;
     }
 
     public void CurrentTurn()
@@ -36,6 +40,7 @@ public class TurnInfo : MonoBehaviour
         if (isWeather)
         {
             weatherBar.gameObject.SetActive(true);
+            tip.enabled = true;
         }
     }
 
@@ -49,6 +54,8 @@ public class TurnInfo : MonoBehaviour
     {
         textIndicator.SetActive(false);
         bar.color = overColor;
+        tip.HideTooltip();
+        tip.enabled = false;
 
         if (isWeather)
         {

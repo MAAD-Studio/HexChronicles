@@ -37,6 +37,7 @@ public class TurnManager : MonoBehaviour
     private PlayerTurn playerTurn;
     private EnemyTurn enemyTurn;
     private WeatherTurn weatherTurn;
+    private TowersTurn towersTurn;
 
     private StateInterface currentTurn;
 
@@ -52,6 +53,7 @@ public class TurnManager : MonoBehaviour
         get { return turnNumber; }
     }
 
+    [HideInInspector] public static UnityEvent LevelVictory = new UnityEvent();
     [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
     [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
 
@@ -71,6 +73,9 @@ public class TurnManager : MonoBehaviour
 
         weatherTurn = GetComponent<WeatherTurn>();
         Debug.Assert(weatherTurn != null, "TurnManager couldn't find the WeatherTurn Component");
+
+        towersTurn = GetComponent<TowersTurn>();
+        Debug.Assert(towersTurn != null, "TurnManager couldn't find the TowersTurn Component");
 
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
@@ -179,6 +184,11 @@ public class TurnManager : MonoBehaviour
             }
 
             enemyList.Remove((Enemy_Base)character);
+
+            if (enemyList.Count == 0 && towersTurn.HasTowers == false)
+            {
+                LevelVictory?.Invoke();
+            }
         }
 
         Destroy(character.gameObject);

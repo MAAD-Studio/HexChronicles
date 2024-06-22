@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 7950788700351348756}
   - component: {fileID: 3934302460436823650}
   - component: {fileID: 7549755950169703269}
+  - component: {fileID: 4682903680550413316}
   - component: {fileID: 1986574570241104375}
   - component: {fileID: 8048812302168560795}
   m_Layer: 5
@@ -212,6 +213,19 @@ MonoBehaviour:
   comingColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   rainColor: {r: 0.23529412, g: 0.6039216, b: 0.65882355, a: 1}
   isWeather: 0
+--- !u!114 &4682903680550413316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406292354211388802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8022eff44c9179149aaab0eab3aec138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipObject: {fileID: 281244836516839997}
 --- !u!114 &1986574570241104375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,7 +433,6 @@ GameObject:
   - component: {fileID: 9200701790233290603}
   - component: {fileID: 1133850566370375522}
   - component: {fileID: 2947320310525221628}
-  - component: {fileID: 2770309836790862665}
   m_Layer: 5
   m_Name: Weather Turn
   m_TagString: Untagged
@@ -486,19 +499,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2770309836790862665
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2246868682963771367}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8022eff44c9179149aaab0eab3aec138, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tipObject: {fileID: 281244836516839997}
 --- !u!1 &5505042310420228305
 GameObject:
   m_ObjectHideFlags: 0
