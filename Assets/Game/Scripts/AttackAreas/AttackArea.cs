@@ -13,6 +13,8 @@ public class AttackArea : MonoBehaviour
     [SerializeField] public bool freeRange = false;
     [SerializeField] public ElementType effectedTileType;
 
+    [SerializeField] public float maxHittableRange = 1f;
+
     #endregion
 
     #region UnityMethods
@@ -44,14 +46,8 @@ public class AttackArea : MonoBehaviour
                 tile.objectOnTile.PreviewDamage(0);
             }
 
-            if (tile.inFrontier)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.frontier);
-            }
-            else
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-            }
+            tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
+            //tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
         }
     }
 
@@ -60,14 +56,11 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
+            /*if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
             {
-                tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
-            }
-            else
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.attackable);
-            }
+                tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
+            }*/
+            tile.ChangeTileEffect(TileEnums.TileEffects.attackable, true);
         }
     }
 

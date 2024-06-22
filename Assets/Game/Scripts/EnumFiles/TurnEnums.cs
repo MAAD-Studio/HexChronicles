@@ -5,6 +5,7 @@ public class TurnEnums
         PlayerTurn,
         EnemyTurn,
         WorldTurn,
+        WeatherTurn
     }
 
     public enum WorldTurns

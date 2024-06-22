@@ -13,32 +13,36 @@ public class HeroHealthBar : HealthBar
     {
         hero = GetComponentInParent<Hero>();
         hero.healthBar = this;
-        hero.OnDamagePreview += UpdateHealthBarPreview;
-        hero.OnUpdateHealthBar += UpdateHealthBar;
+        hero.DamagePreview.AddListener(UpdateHealthBarPreview);
+        hero.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = hero.heroSO.attributes.name.ToString();
         hpText.text = hero.heroSO.attributes.health + " HP";
+
+        float width = hero.heroSO.attributes.health * 10f;
+        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
     }
 
-    protected override void UpdateHealthBarPreview(object sender, EventArgs e)
+    protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (hero.currentHealth - damagePreview) / hero.maxHealth;
     }
 
-    protected override void UpdateHealthBar(object sender, EventArgs e)
+    protected override void UpdateHealthBar()
     {
-        health.fillAmount = hero.currentHealth / hero.maxHealth;
         hpText.text = hero.currentHealth + " HP";
+        StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth));
 
         damagePreview = 0;
-        UpdateHealthBarPreview(this, EventArgs.Empty);
+        UpdateHealthBarPreview();
     }
 
     protected override void OnDestroy()
     {
-        hero.OnDamagePreview -= UpdateHealthBarPreview;
-        hero.OnUpdateHealthBar -= UpdateHealthBar;
+        hero.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }

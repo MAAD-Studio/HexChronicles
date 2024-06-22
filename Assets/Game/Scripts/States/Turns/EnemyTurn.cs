@@ -30,13 +30,9 @@ public class EnemyTurn : MonoBehaviour, StateInterface
     {
         RunEnemyAI = true;
 
-        // Apply Enemy's Status
         foreach (Enemy_Base enemy in turnManager.enemyList)
         {
-            if (enemy.statusList.Count > 0)
-            {
-                enemy.ApplyStatus();
-            }
+            enemy.EnterNewTurn();
         }
     }
 
@@ -58,9 +54,14 @@ public class EnemyTurn : MonoBehaviour, StateInterface
 
         if (turnManager.enemyBrain.DecisionMakingFinished)
         {
-            turnManager.mainCameraController.UnSelectCharacter();
+            turnManager.mainCameraController.StopFollowingTarget();
             turnManager.SwitchState(TurnEnums.TurnState.WorldTurn);
         }
+    }
+
+    public void ResetState()
+    {
+
     }
 
     #endregion

@@ -6,6 +6,9 @@ public class Weather_Base : MonoBehaviour
 {
     #region Variables
 
+    // !!! TEMP USE - Consider add enum for weather types
+    [HideInInspector] public string weatherName;
+
     [SerializeField] protected Status.StatusTypes statusEffect = Status.StatusTypes.CannotMove;
     [Range(0f, 10f)]
     [SerializeField] protected int effectTurns = 1;

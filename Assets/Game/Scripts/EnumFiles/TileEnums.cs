@@ -3,11 +3,26 @@ public class TileEnums
     public enum TileMaterial
     {
         baseMaterial,
-        highlight,
-        frontier,
-        attackable,
         path,
-        selectedChar
+        selectedChar,
+    }
+
+    public enum TileTops
+    {
+        frontier,
+        highlight
+    }
+
+    public enum TileEffects
+    {
+        towerAttack,
+        attackable
+    }
+
+    public enum TileWeather
+    {
+        disabled,
+        rain
     }
 
     public enum TileType
@@ -18,6 +33,7 @@ public class TileEnums
         water,
         snow,
         mountain,
-        swamp
+        swamp,
+        death
     }
 }

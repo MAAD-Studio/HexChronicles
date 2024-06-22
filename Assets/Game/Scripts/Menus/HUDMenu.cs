@@ -14,24 +14,31 @@ public class HUDMenu : Menu
     protected override void Start()
     {
         base.Start();
-
-        TurnManager.OnLevelDefeat.AddListener(ShowDefeat);
-        TileObject.objectDestroyed.AddListener(ShowVictory);
+        EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevel);
+        EventBus.Instance.Subscribe<PauseGame>(OnPauseGame);
+        
         pauseMenu = MenuManager.Instance.GetMenu<Menu>(pauseMenuClassifier);
+    }
+
+    private void OnNewLevel(object obj)
+    {
+        TurnManager.LevelDefeat.AddListener(LevelDefeat);
+        TurnManager.LevelVictory.AddListener(LevelVictory);
+        WorldTurnBase.Victory.AddListener(LevelVictory);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            OnPauseGame();
+            EventBus.Instance.Publish(new PauseGame());
 
             // TODO: Disable tile selection
 
         }
     }
 
-    public void OnPauseGame()
+    public void OnPauseGame(object obj)
     {
         if (pauseMenu.gameObject.activeInHierarchy == false)
         {
@@ -41,20 +48,37 @@ public class HUDMenu : Menu
     }
 
     // Only For Testing
-    private void ShowVictory(TileObject arg0)
+    private void LevelVictory()
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        TileObject.objectDestroyed.RemoveListener(ShowVictory);
+        UnsubscribeEvents();
+    }
+
+    private void UnsubscribeEvents()
+    {
+        TurnManager.LevelDefeat.RemoveListener(LevelDefeat);
+        TurnManager.LevelVictory.RemoveListener(LevelVictory);
+        WorldTurnBase.Victory.RemoveListener(LevelVictory);
     }
 
     // Only For Testing
-    private void ShowDefeat(TurnManager arg0)
+    private void LevelDefeat()
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.DefeatedScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        TurnManager.OnLevelDefeat.RemoveListener(ShowDefeat);
+        UnsubscribeEvents();
+    }
+
+    // Only For Testing
+    public void InvokeVictory()
+    {
+        WorldTurnBase.Victory.Invoke();
+    }
+    public void InvokeDefeat()
+    {
+        TurnManager.LevelDefeat.Invoke();
     }
 }

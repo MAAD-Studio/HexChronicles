@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(TurnManager))]
 public class WorldTurnBase : MonoBehaviour, StateInterface
@@ -8,7 +9,7 @@ public class WorldTurnBase : MonoBehaviour, StateInterface
     #region Variables
 
     protected TurnManager turnManager;
-    [SerializeField] protected WeatherManager weatherManager;
+    public static UnityEvent Victory = new UnityEvent();
 
     #endregion
 
@@ -36,7 +37,12 @@ public class WorldTurnBase : MonoBehaviour, StateInterface
 
     public virtual void UpdateState()
     {
+       
+    }
 
+    public virtual void ResetState()
+    {
+        
     }
 
     #endregion

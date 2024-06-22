@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeatherPatch
@@ -83,6 +84,11 @@ public class WeatherPatch
                 }
             }
         }
+
+        foreach(Tile tile in tilesUnderAffect)
+        {
+            tile.underWeatherAffect = true;
+        }
     }
 
     public List<Tile> FindAdjacentTiles(Tile origin, LayerMask tileLayer)
@@ -117,7 +123,7 @@ public class WeatherPatch
         foreach (Tile tile in tilesUnderAffect)
         {
             tile.underWeatherAffect = false;
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            tile.ChangeTileWeather(TileEnums.TileWeather.disabled);
         }
 
         tilesUnderAffect.Clear();
@@ -128,6 +134,7 @@ public class WeatherPatch
         {
             character.effectedByWeather = false;
         }
+        effectedCharacters.Clear();
     }
 
     public void EffectCharacters()
@@ -137,7 +144,6 @@ public class WeatherPatch
             if (tile.tileOccupied && !tile.characterOnTile.effectedByWeather)
             {
                 effectedCharacters.Add(tile.characterOnTile);
-                Debug.Log("CHARARACTER EFFECTED: " + tile.characterOnTile.name);
             }
         }
 
@@ -150,8 +156,6 @@ public class WeatherPatch
         {
             int tileChoice = Random.Range(0, tilesMoveable.Count);
             origin = tilesMoveable[tileChoice];
-
-            Debug.Log("WEATHER MOVED TO TILE: " + origin);
         }
     }
 
@@ -159,8 +163,20 @@ public class WeatherPatch
     {
         foreach(Tile tile in tilesUnderAffect)
         {
-            tile.ChangeTileColor(TileEnums.TileMaterial.highlight);
+            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
         }
+    }
+
+    public void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        tilesUnderAffect.Remove(oldTile);
+        tilesUnderAffect.Add(newTile);
+
+        tilesMoveable.Remove(oldTile);
+        tilesMoveable.Add(newTile);
+
+        tilesToIgnore.Remove(oldTile);
+        tilesToIgnore.Add(newTile);
     }
 
     #endregion

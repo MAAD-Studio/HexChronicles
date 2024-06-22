@@ -15,13 +15,24 @@ public class BasicAttributes
     public float attackDamage = 0;
     public int attackRange = 0;
     public float defensePercentage = 0;
+    [SerializeField] public TurnEnums.CharacterType characterType;
 
-    [Header("Element")]
+    [Header("Elements:")]
     public ElementType elementType;
+    public ElementType elementWeakAgainst;
+    public ElementType elementStrongAgainst;
 
-    [Header("Marker Info:")]
+    [Header("Area Prefabs:")]
+    [HideInInspector] public AttackArea basicAttackArea;
+    [HideInInspector] public AttackArea activeSkillArea;
+
+    [Header("Marker Prefabs:")]
     public GameObject hitMarker;
-    public GameObject missText;
+    public GameObject buffPrefab;
+
+    [Header("ALPHA TEMPORARY MARKER")]
+    public GameObject fireMarker;
+    public GameObject healText;
 
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;

@@ -14,49 +14,35 @@ public class Enemy_Gangsta : Enemy_Base
 
     #endregion
 
-    #region UnityMethods
-
-    #endregion
-
     #region InterfaceMethods
 
-    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager)
+    public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        int valueOfMovement = -100;
-        //Calculates the value based on if its getting closer or further away from characters
-        foreach (Character character in turnManager.characterList)
-        {
-            int distanceTile = (int)Vector3.Distance(tile.transform.position, character.transform.position);
-            int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, character.transform.position);
-            int tileValue = distanceEnemy - distanceTile;
-
-            if (valueOfMovement < tileValue)
-            {
-                valueOfMovement = tileValue;
-            }
-        }
-        return valueOfMovement * 2;
+        return base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
     }
 
-    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager)
+    public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
         int valueOfAttack = 0;
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             valueOfAttack += 5;
-            foreach(Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
+
+            //Bias towards remaining on current tile
+            if (currentTile == characterTile)
+            {
+                valueOfAttack += 30;
+            }
+
+            //Bias towards hitting targets surrounded by other gangstas
+            foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true))
             {
                 if(tile.tileOccupied && tile.characterOnTile.GetComponent<Enemy_Gangsta>() != null)
                 {
-                    valueOfAttack += 10;
+                    valueOfAttack += 15;
                     break;
                 }
             }
-        }
-
-        foreach (Character character in attackArea.CharactersHit(characterType))
-        {
-            valueOfAttack -= 2;
         }
 
         return valueOfAttack;
@@ -69,11 +55,9 @@ public class Enemy_Gangsta : Enemy_Base
         foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
         {
             transform.LookAt(character.transform.position);
-
             character.TakeDamage(attackDamage, elementType);
 
             List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
-
             foreach(Tile tile in adjacentTiles)
             {
                 if(!tile.tileOccupied)
@@ -102,15 +86,10 @@ public class Enemy_Gangsta : Enemy_Base
                 Character target = followUpComboList[followUpsPerformed].target;
                 Enemy_Gangsta follower = followUpComboList[followUpsPerformed].follower;
 
-                transform.LookAt(target.transform);
                 follower.FollowUpAttack(target);
-
-                TemporaryMarker.GenerateMarker(followUpText, follower.transform.position, 2f, 0.5f);
-                TemporaryMarker.GenerateMarker(followUpMarker, target.transform.position, 4f, 0.5f);
             }
 
             followUpsPerformed++;
-
             return true;
         }
         else
@@ -121,10 +100,17 @@ public class Enemy_Gangsta : Enemy_Base
         }
     }
 
+    #endregion
+
+    #region CustomMethods
+
     private void FollowUpAttack(Character character)
     {
         transform.LookAt(character.transform.position);
         character.TakeDamage(attackDamage, elementType);
+
+        TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);
+        TemporaryMarker.GenerateMarker(followUpMarker, character.transform.position, 4f, 0.5f);
     }
 
     #endregion

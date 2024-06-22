@@ -23,6 +23,9 @@ public class TileSO : ScriptableObject
     public Material pathMaterial;
     public Material selectedCharMaterial;
 
+    public Material towerAttackMaterial;
+    public Material weatherMaterial;
+
     public Sprite tileSprite;
     public KeywordDescription tileEffects;
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn))]
+[RequireComponent(typeof(PlayerTurn), typeof(EnemyTurn), typeof(WeatherTurn))]
 public class TurnManager : MonoBehaviour
 {
     #region Variables
@@ -28,13 +28,21 @@ public class TurnManager : MonoBehaviour
     [Header("WorldTurn Type:")]
     [SerializeField] private WorldTurnBase worldTurn;
 
+    [Header("Tiles:")]
+    [SerializeField] private GameObject gridParent;
+    public List<LavaTile> lavaTiles = new List<LavaTile>();
+    public  List<GrassTile> grassTiles = new List<GrassTile>();
+    public List<WaterTile> waterTiles = new List<WaterTile>();
+
     private PlayerTurn playerTurn;
     private EnemyTurn enemyTurn;
+    private WeatherTurn weatherTurn;
+    private TowersTurn towersTurn;
 
     private StateInterface currentTurn;
 
     private int turnNumber;
-    private int objectiveTurnNumber = 8;
+    public int objectiveTurnNumber = 8;
 
     public StateInterface CurrentTurn
     {
@@ -45,7 +53,9 @@ public class TurnManager : MonoBehaviour
         get { return turnNumber; }
     }
 
-    [HideInInspector] public static UnityEvent<TurnManager> OnLevelDefeat = new UnityEvent<TurnManager>();
+    [HideInInspector] public static UnityEvent LevelVictory = new UnityEvent();
+    [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
+    [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
 
     #endregion
 
@@ -61,8 +71,19 @@ public class TurnManager : MonoBehaviour
         enemyTurn = GetComponent<EnemyTurn>();
         Debug.Assert(playerTurn != null, "TurnManager couldn't find the EnemyTurn Component");
 
+        weatherTurn = GetComponent<WeatherTurn>();
+        Debug.Assert(weatherTurn != null, "TurnManager couldn't find the WeatherTurn Component");
+
+        towersTurn = GetComponent<TowersTurn>();
+        Debug.Assert(towersTurn != null, "TurnManager couldn't find the TowersTurn Component");
+
         mainCameraController = mainCam.GetComponent<CameraController>();
         Debug.Assert(mainCameraController != null, "The Camera given to TurnManager doesn't have a Camera Controller");
+
+        Debug.Assert(gridParent != null, "TurnManager wasn't given a GridParent");
+        lavaTiles = new List<LavaTile>(gridParent.GetComponentsInChildren<LavaTile>());
+        grassTiles = new List<GrassTile>(gridParent.GetComponentsInChildren<GrassTile>());
+        waterTiles = new List<WaterTile>(gridParent.GetComponentsInChildren<WaterTile>());
 
         characterList.Clear();
         enemyList.Clear();
@@ -78,8 +99,12 @@ public class TurnManager : MonoBehaviour
         }
 
         turnNumber = 1;
-
         currentTurn = playerTurn;
+
+        EventBus.Instance.Publish(new OnNewLevelStart());
+
+        WorldTurnBase.Victory.AddListener(SceneReset);
+        Tile.tileReplaced.AddListener(TileReplaced);
     }
 
     void Update()
@@ -94,29 +119,36 @@ public class TurnManager : MonoBehaviour
     public void SwitchState(TurnEnums.TurnState state)
     {
         currentTurn.ExitState();
-        mainCameraController.SetCamToDefault();
+        mainCameraController.MoveToDefault(true);
 
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
-                mainCameraController.allowControl = true;
+                mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
+                EventBus.Instance.Publish(new OnPlayerTurn());
 
-                if (turnNumber == objectiveTurnNumber)
+                if (turnNumber == objectiveTurnNumber + 1)
                 {
-                    OnLevelDefeat?.Invoke(this);
+                    LevelDefeat?.Invoke();
                 }
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
-                mainCameraController.allowControl = false;
+                EventBus.Instance.Publish(new OnEnemyTurn());
+                mainCameraController.controlEnabled = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
-                mainCameraController.allowControl = false;
+                mainCameraController.controlEnabled = false;
+                break;
+
+            case TurnEnums.TurnState.WeatherTurn:
+                currentTurn = weatherTurn;
+                mainCameraController.controlEnabled = false;
                 break;
         }
 
@@ -130,19 +162,64 @@ public class TurnManager : MonoBehaviour
 
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
+            if(!characterList.Contains(character))
+            {
+                return;
+            }
+
             characterList.Remove(character);
+
+            OnCharacterDied?.Invoke(character.name);
 
             if (characterList.Count == 0)
             {
-                OnLevelDefeat?.Invoke(this);
+                LevelDefeat?.Invoke();
             }
         }
         else
         {
+            if(!enemyList.Contains((Enemy_Base)character))
+            {
+                return;
+            }
+
             enemyList.Remove((Enemy_Base)character);
+
+            if (enemyList.Count == 0 && towersTurn.HasTowers == false)
+            {
+                LevelVictory?.Invoke();
+            }
         }
 
         Destroy(character.gameObject);
+    }
+
+    private void SceneReset()
+    {
+        turnNumber = 1;
+        currentTurn = playerTurn;
+        WorldTurnBase.Victory.RemoveListener(SceneReset);
+
+        playerTurn.ResetState();
+        enemyTurn.ResetState();
+        worldTurn.ResetState();
+        weatherTurn.ResetState();
+    }
+
+    private void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        if (oldTile.tileData.tileType == ElementType.Fire)
+        {
+            lavaTiles.Remove((LavaTile)oldTile);
+        }
+        else if (oldTile.tileData.tileType == ElementType.Water)
+        {
+            waterTiles.Remove((WaterTile)oldTile);
+        }
+        else if (oldTile.tileData.tileType == ElementType.Grass)
+        {
+            grassTiles.Remove((GrassTile)oldTile);
+        }
     }
 
     #endregion

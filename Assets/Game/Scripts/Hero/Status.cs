@@ -14,17 +14,20 @@ public class Status
         Blessing, // Heal 2
         Hurt, // Take +1 damage
         CannotMove,
-        CannotAttack
+        CannotAttack,
+        Wet,
+        Haste
     }
     public StatusTypes statusType;
     public int effectTurns;
+    public int damageAddOn = 0;
 
     public void Apply(Character character)
     {
         switch (statusType)
         {
             case StatusTypes.Burning:
-                character.TakeDamage(1, ElementType.Poison);
+                character.TakeDamage(1 + damageAddOn, ElementType.Poison);
                 break;
 
             case StatusTypes.Bound:
@@ -41,16 +44,39 @@ public class Status
                 break;
 
             case StatusTypes.CannotMove:
-                character.canMove = false;
+                character.movementThisTurn = character.moveDistance;
                 break;
 
             case StatusTypes.CannotAttack:
                 character.canAttack = false;
                 break;
 
+            case StatusTypes.Wet:
+                character.movementThisTurn += 1;
+                break;
+
+            case StatusTypes.Haste:
+                if(character.movementThisTurn < character.moveDistance)
+                {
+                    character.movementThisTurn -= 2;
+                }
+                break;
+
             default:
                 break;
         }
         effectTurns -= 1;
+    }
+
+    public static Status GrabIfStatusActive(Character character, Status.StatusTypes type)
+    {
+        foreach (Status status in character.statusList)
+        {
+            if (status.statusType == type)
+            {
+                return status;
+            }
+        }
+        return null;
     }
 }

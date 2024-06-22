@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
@@ -14,9 +16,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
-    [HideInInspector] public bool hasMoved = false;
     [HideInInspector] public bool canMove = true;
-    [HideInInspector] public bool needsToPath = true;
 
     [Header("Character Attack Info:")]
     [SerializeField] public int attackDistance = 2;
@@ -30,10 +30,12 @@ public class Character : MonoBehaviour
     [HideInInspector] public float maxHealth = 0f;
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
-    public ElementType elementType;
-    public ElementType elementWeakAgainst;
     [SerializeField] protected Animator animator;
     [SerializeField] public HealthBar healthBar;
+    [HideInInspector] public ElementType elementType;
+    [HideInInspector] public ElementType elementWeakAgainst;
+    [HideInInspector] public ElementType elementStrongAgainst;
+
 
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
@@ -43,6 +45,7 @@ public class Character : MonoBehaviour
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
+    private List<Status> statusToRemove = new List<Status>();
     [HideInInspector] public bool isHurt = false;
 
     [HideInInspector] public bool effectedByWeather = false;
@@ -50,8 +53,12 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
-    public event EventHandler OnDamagePreview;
-    public event EventHandler OnUpdateHealthBar;
+    [HideInInspector] public UnityEvent DamagePreview = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateHealthBar = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
+    [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
+
+    private GameObject buffPreview;
 
     #endregion
 
@@ -77,7 +84,140 @@ public class Character : MonoBehaviour
     public virtual void PerformBasicAttack(List<Character> targets)
     {
         animator.SetTrigger("attack");
+
+        if (characterTile.tileData.tileType == elementType)
+        {
+            TurnManager turnManager = FindObjectOfType<TurnManager>();
+            ApplyBuffCharacter(turnManager);
+            ApplyStatusAttackArea(targets);
+            ApplyStatusElementalTile(turnManager);
+        }
     }
+
+    public void ApplyBuffCharacter(TurnManager turnManager)
+    {
+        Hero thisHero = null;
+        if (characterType == TurnEnums.CharacterType.Player)
+        {
+            thisHero = (Hero)this;
+        }
+
+        if (elementType == ElementType.Fire)
+        {
+            turnManager.pathfinder.PathTilesInRange(characterTile, 0, 2, true, false);
+            List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+            List<Character> charactersToHit = new List<Character>();
+
+            foreach (Tile tile in tiles)
+            { 
+                if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+                {
+                    charactersToHit.Add(tile.characterOnTile);
+                }
+
+                if(characterType == TurnEnums.CharacterType.Player)
+                {
+                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                }
+            }
+            ApplyStatusAttackArea(charactersToHit);
+            MouseTip.Instance.ShowTip(transform.position, $"AOE Burn damage", false);
+        }
+        else if (elementType == ElementType.Water)
+        {
+            currentHealth = maxHealth;
+            UpdateHealthBar?.Invoke();
+            MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
+
+            if (characterType == TurnEnums.CharacterType.Player)
+            {
+                TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+            }
+        }
+        else
+        {
+            Status newStatus = new Status();
+            newStatus.effectTurns = 1;
+            newStatus.statusType = Status.StatusTypes.Haste;
+            AddStatus(newStatus);
+            MouseTip.Instance.ShowTip(transform.position, $"Got a Haste", false);
+        }
+    }
+
+    public void ApplyStatusAttackArea(List<Character> targets)
+    {
+        foreach (Character target in targets)
+        {
+            if (elementType == ElementType.Fire)
+            {
+                AttemptStatusApply(Status.StatusTypes.Burning, target, false);
+            }
+            else if (elementType == ElementType.Water)
+            {
+                AttemptStatusApply(Status.StatusTypes.Wet, target, true);
+            }
+            else
+            {
+                AttemptStatusApply(Status.StatusTypes.Bound, target, true);
+            }
+        }
+    }
+
+    public void ApplyStatusElementalTile(TurnManager turnManager)
+    {
+        Status.StatusTypes chosenType = Status.StatusTypes.None;
+        List<Tile> chosenList = new List<Tile>();
+
+        if (elementType == ElementType.Fire)
+        {
+            chosenType = Status.StatusTypes.Burning;
+            chosenList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        }
+        else if (elementType == ElementType.Water)
+        {
+            chosenType = Status.StatusTypes.Wet;
+            chosenList = turnManager.waterTiles.Cast<Tile>().ToList();
+        }
+        else
+        {
+            chosenType = Status.StatusTypes.Bound;
+            chosenList = turnManager.grassTiles.Cast<Tile>().ToList();
+        }
+
+        foreach(Tile tile in chosenList)
+        {
+            if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+            {
+                if (chosenType == Status.StatusTypes.Burning)
+                {
+                    AttemptStatusApply(chosenType, tile.characterOnTile, false);
+                }
+                else
+                {
+                    AttemptStatusApply(chosenType, tile.characterOnTile, true);
+                }
+            }
+        }
+    }
+
+    public void AttemptStatusApply(Status.StatusTypes statusType, Character target, bool checkOld)
+    {
+        if(checkOld)
+        {
+            Status oldStatus = Status.GrabIfStatusActive(target, statusType);
+            if (oldStatus != null)
+            {
+                oldStatus.effectTurns += 1;
+                return;
+            }
+        }
+
+        Status newStatus = new Status();
+        newStatus.effectTurns = 2;
+        newStatus.statusType = statusType;
+        target.AddStatus(newStatus);
+    }
+
     public virtual void ReleaseActiveSkill(List<Character> targets)
     {
         animator.SetTrigger("skill");
@@ -88,8 +228,9 @@ public class Character : MonoBehaviour
     public void PreviewDamage(float damage)
     {
         healthBar.damagePreview = damage;
-        OnDamagePreview?.Invoke(this, EventArgs.Empty);
+        DamagePreview?.Invoke();
     }
+
 
     public virtual void EnterNewTurn()
     {
@@ -101,20 +242,28 @@ public class Character : MonoBehaviour
 
     public virtual void EndTurn()
     {
+        foreach (Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
         movementThisTurn = 0;
         canMove = true;
-        canAttack = true;
-        hasMoved = false;
     }
 
     public void AddStatus(Status status)
     {
         statusList.Add(status);
+
+        UpdateStatus.Invoke();
     }
 
     public void RemoveStatus(Status status)
     {
         statusList.Remove(status);
+
+        UpdateStatus.Invoke();
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {
@@ -130,13 +279,36 @@ public class Character : MonoBehaviour
 
             if (status.effectTurns == 0)
             {
-                RemoveStatus(status);
+                statusToRemove.Add(status);
             }
         }
     }
 
+    public virtual void InvokeUpdateHealthBar()
+    {
+        UpdateHealthBar?.Invoke();
+    }
+
+    public virtual void InvokeUpdateAttributes()
+    {
+        UpdateAttributes?.Invoke();
+    }
+
     public virtual void TakeDamage(float damage, ElementType type)
     {
+        if(statusList.Count > 0)
+        {
+            damage += AttackStatusEffect(type);
+        }
+
+        foreach(Status status in statusList)
+        {
+            if(status.statusType == Status.StatusTypes.Bound)
+            {
+                damage += 2;
+            }
+        }
+
         currentHealth -= damage;
 
         if (isHurt) { currentHealth--; }
@@ -150,7 +322,88 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("hit");
         }
-        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+        UpdateHealthBar?.Invoke();
+    }
+
+    private int AttackStatusEffect(ElementType type)
+    {
+        int potentialDamageAddOn = 0;
+
+        if(type == ElementType.Base)
+        {
+            return 0;
+        }
+
+        foreach(Status status in statusList)
+        {
+            if(status.statusType == Status.StatusTypes.Burning)
+            {
+                if(type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER BURNING DEALING FIRE DAMAGE");
+                    status.damageAddOn += 1;
+                }
+                else if(type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER BURNING DEALING WATER DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                else
+                {
+                    Debug.Log("CHARACTER BURNING DEALING GRASS DAMAGE");
+                    status.effectTurns++;
+                }
+                break;
+            }
+            else if(status.statusType == Status.StatusTypes.Wet)
+            {
+                if (type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER WET DEALING FIRE DAMAGE");
+                    TakeDamage(1, ElementType.Base);
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER WET DEALING WATER DAMAGE");
+                    MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
+                    status.effectTurns++;
+                }
+                else
+                {
+                    Debug.Log("CHARACTER WET DEALING GRASS DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                break;
+            }
+            else if(status.statusType == Status.StatusTypes.Bound)
+            {
+                if (type == ElementType.Fire)
+                {
+                    Debug.Log("CHARACTER BOUND DEALING FIRE DAMAGE");
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    Debug.Log("CHARACTER BOUND DEALING WATER DAMAGE");
+                    status.effectTurns++;
+                }
+                else
+                {
+                    Debug.Log("CHARACTER BOUND DEALING GRASS DAMAGE");
+                    potentialDamageAddOn += 3;
+                }
+                break;
+            }
+        }
+
+        foreach(Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
+        return potentialDamageAddOn;
     }
 
     public virtual void Heal(float heal)
@@ -161,12 +414,16 @@ public class Character : MonoBehaviour
         {
             currentHealth = maxHealth;
         }
-        OnUpdateHealthBar?.Invoke(this, EventArgs.Empty);
+        UpdateHealthBar?.Invoke();
     }
 
     public virtual void Died()
     {
-        animator.SetTrigger("died");
+        if(animator != null)
+        {
+            animator.SetTrigger("died");
+        }
+  
         Invoke("Destroy", 0.6f);
     }
 
@@ -196,131 +453,43 @@ public class Character : MonoBehaviour
         }
     }
 
-    //Carries the character through a path
-    IEnumerator MoveThroughPath(Tile[] path)
-    {
-        int step = 1;
-        int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
-
-        List<Tile> tilesInPath = new List<Tile>();
-        foreach(Tile tile in path)
-        {
-            tilesInPath.Add(tile);
-        }
-
-        characterTile.OnTileExit(this);
-        Tile currentTile = path[0];
-        tilesInPath.Remove(currentTile);
-
-        float animationTime = 0f;
-        const float distanceToNext = 0.05f;
-
-        //While we still have points in the path to cover
-        while (step < pathLength)
-        {
-
-            yield return null;
-
-            foreach (Tile tile in tilesInPath)
-            {
-                tile.ChangeTileColor(TileEnums.TileMaterial.path);
-            }
-
-            Vector3 nextTilePosition = path[step].transform.position;
-
-            //Moves and roates towards the next point
-            MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
-            animationTime += Time.deltaTime;
-
-            //Checks if we are close enough to move onto the next point
-            if (Vector3.Distance(transform.position, nextTilePosition) > distanceToNext)
-            {
-                continue;
-            }
-
-            movementThisTurn += (int)path[step].tileData.tileCost;
-
-            //Moves onto the next point
-            currentTile = path[step];
-            currentTile.OnTileEnter(this);
-            tilesInPath.Remove(path[step]);
-            path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-
-            step++;
-
-            //Checks if we have arrived at the last tile, if not it triggers OnTileExit
-            if(step < pathLength)
-            {
-                currentTile.OnTileExit(this);
-            }
-            else
-            {
-                currentTile.OnTileStay(this);
-            }
-
-            animationTime = 0f;
-
-
-        }
-
-        foreach(Tile tile in path)
-        {
-            tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
-        }
-
-        //Plants the character down onto the newest tile
-        FinalizeTileChoice(path[pathLength - 1]);
-
-        animator.SetBool("walking", false);
-    }
-
-    //Starts the process of moving the character to a new location
-    public void Move(Tile[] _path)
-    {
-        moving = true;
-        animator.SetBool("walking", true);
-
-        characterTile.tileOccupied = false;
-        StartCoroutine(MoveThroughPath(_path));
-    }
-
-    public void ExecuteCharacterAction(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    //Starts the process of Moving and Attacking with the Character
+    public void MoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
     {
         if(path.Length > 0)
         {
             moving = true;
             animator.SetBool("walking", true);
-            characterTile.tileOccupied = false;
+            turnManager.mainCameraController.controlEnabled = false;
         }
 
-        StartCoroutine(MoveAndAttack(path, turnManager, targetTile, activeSkillUse));
+        StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse));
     }
 
-    private IEnumerator MoveAndAttack(Tile[] path, TurnManager turnManager, Tile targetTile, bool activeSkillUse)
+    //Moves the character if a path is provided and performs an attack if a Tile is provided
+    private IEnumerator PerformMoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
     {
+        //Moves the Character
         if(path.Length > 0)
         {
             int step = 1;
-            int pathLength = Mathf.Clamp(path.Length, 0, moveDistance + 1);
-
-            List<Tile> tilesInPath = new List<Tile>();
-            foreach (Tile tile in path)
-            {
-                tilesInPath.Add(tile);
-            }
-
-            characterTile.OnTileExit(this);
-            Tile currentTile = path[0];
-            tilesInPath.Remove(currentTile);
+            int pathLength = path.Length;
+            List<Tile> tilesInPath = new List<Tile>(path);
 
             float animationTime = 0f;
             const float distanceToNext = 0.05f;
+            turnManager.mainCameraController.FollowTarget(transform, true);
 
-            //While we still have points in the path to cover
-            while (step < pathLength)
+            characterTile.tileOccupied = false;
+            characterTile.characterOnTile = null;
+            characterTile.OnTileExit(this);
+
+            Tile currentTile = path[0];
+            tilesInPath.Remove(currentTile);
+
+            while(step < pathLength)
             {
                 yield return null;
-                turnManager.mainCameraController.SetCamToSelectedCharacter(this);
 
                 foreach (Tile tile in tilesInPath)
                 {
@@ -338,12 +507,13 @@ public class Character : MonoBehaviour
                 {
                     continue;
                 }
-
                 movementThisTurn += (int)path[step].tileData.tileCost;
 
                 //Moves onto the next point
                 currentTile = path[step];
                 currentTile.OnTileEnter(this);
+                currentTile = WalkOntoTileEffect(currentTile);
+
                 tilesInPath.Remove(path[step]);
                 path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
@@ -360,51 +530,82 @@ public class Character : MonoBehaviour
 
             foreach (Tile tile in path)
             {
+                if(tile == null)
+                {
+                    continue;
+                }
                 tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             }
 
+            characterTile = null;
+            transform.position += new Vector3(0, 0.2f, 0);
 
-            //Plants the character down onto the newest tile
-            FinalizeTileChoice(path[pathLength - 1]);
+            yield return null;
+            FindTile();
+
+            animator.SetBool("walking", false);
         }
 
-        animator.SetBool("walking", false);
-
-        AttackArea attackAreaPrefab = Instantiate(basicAttackArea);
-        attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, targetTile);
-        yield return new WaitForSeconds(0.03f);
-        attackAreaPrefab.DetectArea(true, true);
-
-        Hero thisHero = (Hero)this;
-
-        foreach(Character character in attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        //Makes the character attack
+        if(attackTargetTile != null && characterType != TurnEnums.CharacterType.Enemy)
         {
-            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
+            Hero thisHero = (Hero)this;
+
+            AttackArea attackAreaPrefab;
+            if (activeSkillUse)
+            {
+                attackAreaPrefab = Instantiate(activeSkillArea);
+            }
+            else
+            {
+                attackAreaPrefab = Instantiate(basicAttackArea);
+            }
+            attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
+            yield return new WaitForSeconds(0.03f);
+            attackAreaPrefab.DetectArea(true, true);
+
+            transform.LookAt(attackAreaPrefab.transform.position);
+
+            List<Character> enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+            List<TileObject> objectsHit = attackAreaPrefab.ObjectsHit();
+            if (activeSkillUse)
+            {
+                ReleaseActiveSkill(enemiesHit);
+            }
+            else
+            {
+                PerformBasicAttack(enemiesHit);
+            }
+            PerformBasicAttackObjects(objectsHit);
+            GenerateHitMarkers(thisHero, enemiesHit, objectsHit);
+
+            yield return new WaitForSeconds(0.5f);
+            attackAreaPrefab.DestroySelf();
         }
 
-        foreach(TileObject tileObj in attackAreaPrefab.ObjectsHit())
+        turnManager.mainCameraController.controlEnabled = true;
+        turnManager.mainCameraController.StopFollowingTarget();
+
+        if(characterType == TurnEnums.CharacterType.Player)
         {
-            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+            turnManager.mainCameraController.MoveToDefault(true);
         }
-
-        transform.LookAt(attackAreaPrefab.transform.position);
-
-        if(activeSkillUse)
-        {
-            ReleaseActiveSkill(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-        }
-        else
-        {
-            PerformBasicAttack(attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
-        }
-        PerformBasicAttackObjects(attackAreaPrefab.ObjectsHit());
-
-        yield return new WaitForSeconds(0.5f);
-        attackAreaPrefab.DestroySelf();
 
         movementComplete.Invoke(this);
     }
 
+    //Generates the HitMarker prefab over hit Enemies and Objects
+    public void GenerateHitMarkers(Hero thisHero, List<Character> enemiesHit, List<TileObject> objectsHit)
+    {
+        foreach (Character character in enemiesHit)
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
+        }
+        foreach (TileObject tileObj in objectsHit)
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+        }
+    }
 
     //Moves and Rotates the character
     void MoveAndRotate(Vector3 origin, Vector3 destination, float duration)
@@ -457,7 +658,8 @@ public class Character : MonoBehaviour
         if (tiles != null && tiles.Count != 0)
         {
             Tile[] path = tiles.ToArray();
-            Move(path);
+            TurnManager turnManager = FindObjectOfType<TurnManager>();
+            MoveAndAttack(path, null, turnManager, false);
             // TODO: rotate after move, fix movement reduced next turn
             //StartCoroutine(RotateBack());
         }
@@ -470,6 +672,47 @@ public class Character : MonoBehaviour
             yield return null;
         }
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5.0f);
+    }
+
+    protected virtual Tile WalkOntoTileEffect(Tile tile)
+    {
+        return tile;
+    }
+
+    public void ResetCharacter()
+    {
+        moving = false;
+        statusList.Clear();
+        hasMadeDecision = false;
+        effectedByWeather = false;
+    }
+
+    public void SpawnBuffPreview(Vector3 location, float height)
+    {
+        if(characterType == TurnEnums.CharacterType.Player)
+        {
+            Hero thisHero = (Hero)this;
+            GameObject buffPrefab = thisHero.heroSO.attributes.buffPrefab;
+            if (buffPrefab != null)
+            {
+                Vector3 potentialLocation = location;
+                potentialLocation.y += height;
+                if(buffPreview != null && buffPreview.transform.localPosition == potentialLocation)
+                {
+                    return;
+                }
+                DestroyBuffPreview();
+                buffPreview = TemporaryMarker.GenerateMarker(buffPrefab, location, height);
+            }
+        }
+    }
+
+    public void DestroyBuffPreview()
+    {
+        if(buffPreview != null)
+        {
+            Destroy(buffPreview);
+        }
     }
 
     #endregion

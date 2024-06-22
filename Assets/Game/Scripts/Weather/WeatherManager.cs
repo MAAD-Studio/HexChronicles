@@ -22,12 +22,20 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private int numberOfPatches = 3;
     [SerializeField] private int turnsToStay = 3;
     private int turnsActive = 0;
+    public int TurnsToStay
+    {
+        get { return turnsToStay; }
+    }
 
     [Header("Weather Generation Controls: ")]
     [SerializeField] private bool effectEntireMap = false;
     [SerializeField] private int maxSpread = 4;
     [SerializeField] private int movementPerTurn = 2;
     [SerializeField] private Weather_Base weather;
+    public string WeatherName
+    {
+        get { return weather.weatherName; }
+    }
 
     #endregion
 
@@ -49,15 +57,8 @@ public class WeatherManager : MonoBehaviour
         }
 
         Debug.Assert(weather != null, "WeatherManager doesn't have a weather affect to use");
-    }
-
-    void Update()
-    {
-        foreach (WeatherPatch patch in weatherPatches)
-        {
-            patch.ColourArea();
-        }
-    }
+        Tile.tileReplaced.AddListener(TileReplaced);
+    } 
 
     #endregion
 
@@ -72,15 +73,13 @@ public class WeatherManager : MonoBehaviour
 
             foreach(WeatherPatch patch in weatherPatches)
             {
-                /*for(int i = 0; i < 10; i++)
-                {
-
-                }*/
                 int tileChoice = Random.Range(0, tilesOnMap.Count);
                 patch.origin = tilesOnMap[tileChoice];
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
                 patch.ColourArea();
             }
+
+            EventBus.Instance.Publish(new OnWeatherSpawn());
         }
         else
         {
@@ -101,12 +100,12 @@ public class WeatherManager : MonoBehaviour
                 patch.EffectCharacters();
                 patch.MoveOrigin();
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
+                patch.ColourArea();
             }
             turnsActive++;
         }
         else
         {
-            Debug.Log("WEATHER LEAVING");
             turnsActive = 0;
             weatherActive = false;
 
@@ -114,12 +113,27 @@ public class WeatherManager : MonoBehaviour
             {
                 patch.ResetWeatherTiles();
             }
+
+            EventBus.Instance.Publish(new OnWeatherEnded());
         }
     }
 
+    public void FullReset()
+    {
+        turnsActive = 0;
+        foreach (WeatherPatch patch in weatherPatches)
+        {
+            patch.ResetWeatherTiles();
+        }
+    }
 
-
-    
+    private void TileReplaced(Tile oldTile, Tile newTile)
+    {
+        foreach(WeatherPatch patch in weatherPatches)
+        {
+            patch.TileReplaced(oldTile, newTile);
+        }
+    }
 
     #endregion
 

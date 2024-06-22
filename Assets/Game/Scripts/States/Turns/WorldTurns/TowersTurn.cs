@@ -8,7 +8,12 @@ public class TowersTurn : WorldTurnBase
 
     [Header("Spawning Information: ")]
     [SerializeField] private int turnsTillSpawn = 2;
-    [SerializeField] private List<Spawner> spawners = new List<Spawner>();
+    [SerializeField] private List<Tower> towers = new List<Tower>();
+
+    public bool HasTowers
+    {
+        get { return towers.Count > 0; }
+    }
 
     bool updateCalled = false;
     bool updateDone = false;
@@ -20,9 +25,9 @@ public class TowersTurn : WorldTurnBase
     protected override void Start()
     {
         base.Start();
-        if(spawners.Count > 0)
+        if(towers.Count > 0)
         {
-            TileObject.objectDestroyed.AddListener(SpawnerDestroyed);
+            TileObject.objectDestroyed.AddListener(TowerDestroyed);
         }
     }
 
@@ -40,44 +45,53 @@ public class TowersTurn : WorldTurnBase
         base.ExitState();
         updateCalled = false;
         updateDone = false;
-
-        turnManager.mainCameraController.UnSelectObject();
     }
 
     public override void UpdateState()
     {
         base.UpdateState();
 
-        if (turnManager.TurnNumber % turnsTillSpawn == 0)
+        if (!updateCalled)
         {
-            if (!updateCalled)
-            {
-                updateCalled = true;
-                //weatherManager.UpdateWeather();
-                StartCoroutine(UpdateSpawners());
-            }
-            else if(updateDone)
-            {
-                turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
-            }
+            updateCalled = true;
+            StartCoroutine(UpdateTowers());
         }
-        else
+        else if(updateDone)
         {
-            //weatherManager.UpdateWeather();
-            turnManager.SwitchState(TurnEnums.TurnState.PlayerTurn);
+            turnManager.SwitchState(TurnEnums.TurnState.WeatherTurn);
         }
     }
 
-    private IEnumerator UpdateSpawners()
+    public override void ResetState()
     {
-        if (turnManager.TurnNumber % turnsTillSpawn == 0)
-        {
-            foreach (Spawner spawner in spawners)
-            {
-                turnManager.mainCameraController.SetCamToObject(spawner);
+        base.ResetState();
 
+    }
+
+    private IEnumerator UpdateTowers()
+    {
+        foreach (Tower tower in towers)
+        {
+            bool holdOnEnd = false;
+
+            if (turnManager.TurnNumber % turnsTillSpawn == 0)
+            {
+                turnManager.mainCameraController.MoveToTargetPosition(tower.transform.position, true);
                 yield return new WaitForSeconds(0.5f);
-                spawner.AttemptSpawn();
+                tower.AttemptSpawn();
+                holdOnEnd = true;
+            }
+
+            if(tower.CanAttack())
+            {
+                yield return new WaitForSeconds(0.5f);
+                tower.AttemptAttack();
+                holdOnEnd = true;
+            }
+
+            //If something happens the camera holds for a second to show the action
+            if(holdOnEnd)
+            {
                 yield return new WaitForSeconds(0.5f);
             }
         }
@@ -85,25 +99,26 @@ public class TowersTurn : WorldTurnBase
         updateDone = true;
     }
 
-    private void SpawnerDestroyed(TileObject tileObj)
+    private void TowerDestroyed(TileObject tileObj)
     {
-        Spawner spawnerToDestroy = null;
+        Tower towerToDestroy = null;
 
-        foreach(Spawner spawner in spawners)
+        foreach(Tower tower in towers)
         {
-            if(spawner == tileObj)
+            if(tower == tileObj)
             {
-                spawnerToDestroy = spawner;
+                towerToDestroy = tower;
                 break;
             }
         }
 
-        if(spawnerToDestroy != null)
+        if(towerToDestroy != null)
         {
-            spawners.Remove(spawnerToDestroy);
-            if(spawners.Count <= 0)
+            towers.Remove(towerToDestroy);
+            if(towers.Count <= 0)
             {
-                TileObject.objectDestroyed.RemoveListener(SpawnerDestroyed);
+                TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
+                Victory.Invoke();
             }
         }
     }

@@ -2,28 +2,39 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PreGameScreen : Menu
 {
     [SerializeField] private Button startButton;
-    public GameObject worldMap; // testing
+    public GameObject worldMap;
 
     protected override void Start()
     {
         base.Start();
-        startButton.onClick.AddListener(OnStartGame);
+        startButton.onClick.AddListener(StartLevel);
     }
 
-    // Only For Testing
-    private void OnStartGame()
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            ClosePreGame();
+        }
+    }
+
+    private void StartLevel()
     {
         WorldMap map = worldMap.GetComponent<WorldMap>();
-        map?.OnLoadLevel(map.levels[0]);
+        map?.LoadLevel();
+
+        MenuManager.Instance.HideMenu(menuClassifier);
     }
 
     public void ClosePreGame()
     {
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.WorldMapClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
     }
 }

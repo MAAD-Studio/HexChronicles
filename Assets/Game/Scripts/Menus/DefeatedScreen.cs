@@ -17,5 +17,15 @@ public class DefeatedScreen : Menu
     {
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
+
+        CleanActiveScene();
+    }
+
+    private void CleanActiveScene()
+    {
+        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            Destroy(go);
+        }
     }
 }

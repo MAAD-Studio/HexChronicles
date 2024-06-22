@@ -11,29 +11,33 @@ public class TileObjectHealthBar : EnemyHealthBar
     {
         tileObject = GetComponentInParent<TileObject>();
         tileObject.healthBar = this;
-        tileObject.OnDamagePreview += UpdateHealthBarPreview;
-        tileObject.OnUpdateHealthBar += UpdateHealthBar;
+        tileObject.DamagePreview.AddListener(UpdateHealthBarPreview);
+        tileObject.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = tileObject.tileObjectData.objectName.ToString();
         atkPercentage.text = (100 - tileObject.tileObjectData.defense).ToString() + "%";
         hpText.text = tileObject.tileObjectData.health + " HP";
+
+        float width = tileObject.tileObjectData.health * 10f;
+        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+        
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
     }
 
-    protected override void UpdateHealthBarPreview(object sender, EventArgs e)
+    protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (tileObject.currentHealth - damagePreview) / tileObject.tileObjectData.health;
 
         if (damagePreview != 0)
         {
             gameObject.transform.localScale = scaledUpValue;
-            atkInfoPanel.SetActive(true);
+            //atkInfoPanel.SetActive(true);
         }
         else
         {
             gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            atkInfoPanel.SetActive(false);
+            //atkInfoPanel.SetActive(false);
         }
 
         if ((tileObject.currentHealth - damagePreview) <= 0)
@@ -46,18 +50,18 @@ public class TileObjectHealthBar : EnemyHealthBar
         }
     }
 
-    protected override void UpdateHealthBar(object sender, EventArgs e)
+    protected override void UpdateHealthBar()
     {
-        health.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
         hpText.text = tileObject.currentHealth + " HP";
+        StartCoroutine(AnimateHealthBar(tileObject.currentHealth / tileObject.tileObjectData.health));
 
         damagePreview = 0;
-        UpdateHealthBarPreview(this, EventArgs.Empty);
+        UpdateHealthBarPreview();
     }
 
     protected override void OnDestroy()
     {
-        tileObject.OnDamagePreview -= UpdateHealthBarPreview;
-        tileObject.OnUpdateHealthBar -= UpdateHealthBar;
+        tileObject.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        tileObject.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }

@@ -47,94 +47,126 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        foreach (Enemy_Base enemy_base in turnManager.enemyList)
+        yield return new WaitForSeconds(1);
+        Enemy_Base[] enemies = turnManager.enemyList.ToArray();
+        foreach (Enemy_Base enemy_base in enemies)
         {
-            yield return new WaitForSeconds(0.01f);
+            if(enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
+            {
+                continue;
+            }
+
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
-            turnManager.mainCameraController.SetCamToSelectedCharacter(enemy_base);
+            turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
 
             //Calculates the tiles the character can move onto
             turnManager.pathfinder.ResetPathFinder();
-            turnManager.pathfinder.FindPaths(enemy_base);
-            foreach (Tile tile in turnManager.pathfinder.frontier)
+            turnManager.pathfinder.FindMovementPathsCharacter(enemy_base, false);
+
+            List<Tile> usableTiles = new List<Tile>();
+            usableTiles = turnManager.pathfinder.frontier;
+            usableTiles.Add(enemy_base.characterTile);
+            foreach (Tile tile in usableTiles)
             {
-                int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager);
-
-                //Runs through all the Tiles adjacent to the current Movement tile
-                foreach (Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
+                bool checkAttacks = false;
+                Character currentClosest = null;
+                float charDistance = 1000f;
+                foreach (Character character in turnManager.characterList)
                 {
-                    //Positions and Rotates the AttackArea object
-                    enemyAttackArea.transform.position = adjacentTile.transform.position;
-                    Vector3 rotation = DetermineAttackAreaRotation(adjacentTile, tile);
-                    enemyAttackArea.transform.eulerAngles = rotation;
+                    float newDistance = Vector3.Distance(character.transform.position, tile.transform.position);
 
-                    //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
-                    yield return new WaitForSeconds(0.03f);
-                    enemyAttackArea.DetectArea(false, false);
-
-                    valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager);
-
-                    //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
-                    if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                    //Checks if we should analyzing potential attack options
+                    if (newDistance <= enemyAttackArea.maxHittableRange)
                     {
-                        rotation = nullVector;
+                        checkAttacks = true;
                     }
 
-                    if (combinations.Count < 5)
+                    //Grabs the closest character
+                    if(newDistance < charDistance)
                     {
-                        AddCombination(tile, adjacentTile, rotation, valueOfCombination);
+                        charDistance = newDistance;
+                        currentClosest = character;
                     }
-                    else
+                }
+
+                int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
+                if (checkAttacks == true)
+                {
+                    //Runs through all the Tiles adjacent to the current Movement tile
+                    foreach (Tile adjacentTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
                     {
-                        //Only attempts to replace another combination if one of the previous ones is worse or equal in value
-                        if (valueOfCombination >= lowestValue)
+                        //Positions and Rotates the AttackArea object
+                        enemyAttackArea.transform.position = adjacentTile.transform.position;
+                        Vector3 rotation = DetermineAttackAreaRotation(adjacentTile, tile);
+                        enemyAttackArea.transform.eulerAngles = rotation;
+
+                        //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
+                        yield return new WaitForSeconds(0.02f);
+                        enemyAttackArea.DetectArea(false, false);
+
+                        valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
+
+                        //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
+                        if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
                         {
-                            //Finds all the combinations of the lowest value
-                            foreach (KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
-                            {
-                                if (comboValues.Value.value == lowestValue)
-                                {
-                                    inThreatKeys.Add(comboValues.Key);
-                                }
-                            }
+                            rotation = nullVector;
+                        }
 
-                            if (inThreatKeys.Count == 0)
-                            {
-                                continue;
-                            }
-
-                            //Determines how the combination dispute should be settled
-                            if (valueOfCombination == lowestValue)
-                            {
-                                SettleValueConflict(tile, adjacentTile, rotation, valueOfCombination, true);
-                            }
-                            else if (inThreatKeys.Count == 1)
-                            {
-                                RemoveCombination(inThreatKeys[0]);
-                                AddCombination(tile, adjacentTile, rotation, valueOfCombination);
-                            }
-                            else
-                            {
-                                SettleValueConflict(tile, adjacentTile, rotation, valueOfCombination, false);
-                            }
-
-                            inThreatKeys.Clear();
+                        if (combinations.Count < 5)
+                        {
+                            AddCombination(tile, adjacentTile, rotation, valueOfCombination);
+                        }
+                        else
+                        {
+                            CheckIfComboKeep(tile, adjacentTile, rotation, valueOfCombination);
                         }
                     }
                 }
+                else
+                {
+                    if(combinations.Count < 5)
+                    {
+                        AddCombination(tile, tile, nullVector, valueOfCombination);
+                    }
+                    else
+                    {
+                        CheckIfComboKeep(tile, tile, nullVector, valueOfCombination);
+                    }
+                }
             }
-            yield return new WaitForSeconds(0.01f);
 
+            int id = -1;
             //Picks the final choice to execute
-            IfAttacksClearNon();
-            int combinationChoice = PickCombination();
+            if (!IfAttacksClearNon())
+            {
+                int highestValue = -100;
+
+                foreach(KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
+                {
+                    if(comboValues.Value.value > highestValue)
+                    {
+                        id = comboValues.Key;
+                        highestValue = comboValues.Value.value;
+                    }
+                }
+            }
+
+            int combinationChoice = 0;
+            if(id != -1)
+            {
+                combinationChoice = id;
+            }
+            else
+            {
+                combinationChoice = PickCombination();
+            }
 
             //Executes the Movement portion than the Action portion on movement completion
             if (combinations.TryGetValue(combinationChoice, out MoveAttackCombo finalCombo))
             {
                 Tile[] path = turnManager.pathfinder.PathBetween(finalCombo.movementTile, enemy_base.characterTile);
-                enemy_base.Move(path);
+                enemy_base.MoveAndAttack(path, null, turnManager, false);
 
                 //Waits for the enemy to finish its movement
                 while (enemy_base.moving)
@@ -149,7 +181,7 @@ public class EnemyBrain : MonoBehaviour
                     enemyAttackArea.transform.eulerAngles = finalCombo.attackRotation;
 
                     //IMPORTANT YIELD which lets the triggers update
-                    yield return new WaitForSeconds(0.03f);
+                    yield return new WaitForSeconds(0.02f);
                     enemyAttackArea.DetectArea(true, false);
 
                     foreach (Character character in enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
@@ -158,15 +190,16 @@ public class EnemyBrain : MonoBehaviour
                     }
 
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
-                    yield return new WaitForSeconds(0.5f);
+                }
 
-                    while(enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
-                    {
-                        yield return new WaitForSeconds(0.5f);
-                    }
-
+                yield return new WaitForSeconds(0.5f);
+                enemyAttackArea.DestroySelf();
+                while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
+                {
                     yield return new WaitForSeconds(0.5f);
                 }
+
+                yield return new WaitForSeconds(0.5f);
             }
             else
             {
@@ -174,7 +207,6 @@ public class EnemyBrain : MonoBehaviour
             }
 
             //Resets Variables
-            enemyAttackArea.DestroySelf();
             combinations.Clear();
             lowestValue = 100;
         }
@@ -234,6 +266,45 @@ public class EnemyBrain : MonoBehaviour
         }
     }
 
+    //Checks if we should be keeping a new Combo
+    private void CheckIfComboKeep(Tile moveTile, Tile attackTile, Vector3 attackRotation, int combinationValue)
+    {
+        //Only attempts to replace another combination if one of the previous ones is worse or equal in value
+        if (combinationValue >= lowestValue)
+        {
+            //Finds all the combinations of the lowest value
+            foreach (KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
+            {
+                if (comboValues.Value.value == lowestValue)
+                {
+                    inThreatKeys.Add(comboValues.Key);
+                }
+            }
+
+            if (inThreatKeys.Count == 0)
+            {
+                return;
+            }
+
+            //Determines how the combination dispute should be settled
+            if (combinationValue == lowestValue)
+            {
+                SettleValueConflict(moveTile, attackTile, attackRotation, combinationValue, true);
+            }
+            else if (inThreatKeys.Count == 1)
+            {
+                RemoveCombination(inThreatKeys[0]);
+                AddCombination(moveTile, attackTile, attackRotation, combinationValue);
+            }
+            else
+            {
+                SettleValueConflict(moveTile, attackTile, attackRotation, combinationValue, false);
+            }
+
+            inThreatKeys.Clear();
+        }
+    }
+
     //Decides what combinations to keep when attempting to add a new one
     private void SettleValueConflict(Tile moveTile, Tile attackTile, Vector3 attackRotation, int combinationValue, bool newAtThreat)
     {
@@ -287,7 +358,7 @@ public class EnemyBrain : MonoBehaviour
     }
 
     //If there is a final combination that results in an Attack being performed all non attacking combinations are discarded
-    private void IfAttacksClearNon()
+    private bool IfAttacksClearNon()
     {
         bool attackingComboFound = false;
         List<int> keysToRemove = new List<int>();
@@ -310,6 +381,11 @@ public class EnemyBrain : MonoBehaviour
             {
                 RemoveCombination(key);
             }
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

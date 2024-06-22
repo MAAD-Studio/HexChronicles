@@ -5,7 +5,11 @@ using UnityEngine;
 public class Weather_Rain : Weather_Base
 {
     #region UnityMethods
-
+    private void Start()
+    {
+        // !!! TEMP USE - from Weather_Base
+        weatherName = "Rain";
+    }
     #endregion
 
     #region CustomMethods
@@ -17,7 +21,7 @@ public class Weather_Rain : Weather_Base
             Status newStatus = new Status();
             newStatus.statusType = statusEffect;
             newStatus.effectTurns = effectTurns;
-            character.statusList.Add(newStatus);
+            character.AddStatus(newStatus);
             character.effectedByWeather = true;
         }
     }

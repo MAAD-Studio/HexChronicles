@@ -18,43 +18,43 @@ MonoBehaviour:
   elementsWeakAgainst: 00000000
   elementsStrongAgainst: 02000000
   baseMaterial: {fileID: 2100000, guid: a5c80ef3148192f46a31e4ed62e6ba8e, type: 2}
-  highlightMaterial: {fileID: 2100000, guid: d4333d75eefeaf942a7ba56162a518b6, type: 2}
+  highlightMaterial: {fileID: 2100000, guid: 227cb936ebfecb84688f9a00f91d8533, type: 2}
   reachableMaterial: {fileID: 2100000, guid: 266951257370e4341bd1fbdc1445dd50, type: 2}
   attackableMaterial: {fileID: 2100000, guid: 3c08e2167a293204cafcafbc0687e785, type: 2}
   pathMaterial: {fileID: 2100000, guid: f8df88c3965cd984faa2281c722f2b24, type: 2}
   selectedCharMaterial: {fileID: 2100000, guid: 4e96cd8f525878c41a380d1fcc598014, type: 2}
+  towerAttackMaterial: {fileID: 2100000, guid: ab0805c29743227478e3c43433900e4a, type: 2}
+  weatherMaterial: {fileID: 2100000, guid: 85364eb603c35944fb2d30241409a406, type: 2}
   tileSprite: {fileID: 21300000, guid: c4ab57d6fbd368f43a2b49aed646a102, type: 3}
   tileEffects:
-    description: 'This is water tile.
+    description: 'Buff: Restores full HP<br>
 
-      Fire ->  -1 Movement
+      De-Buff: Applis Wet effect,<br>affects
+      movement and health
 
-      Grass ->
-      +10% Defense
-
-      Water -> +1 Attack'
+'
     keywords:
-    - keyword: -1
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+    - keyword: Buff
+      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
       bold: 1
       italic: 0
-    - keyword: Movement
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
-      bold: 0
-      italic: 0
-    - keyword: +10%
+    - keyword: Restores
       color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
       bold: 1
       italic: 0
-    - keyword: Defense
+    - keyword: De-
       color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
-      bold: 0
-      italic: 0
-    - keyword: +1
-      color: {r: 0, g: 0.6117647, b: 0.027450982, a: 1}
       bold: 1
       italic: 0
-    - keyword: Attack
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+    - keyword: Wet
+      color: {r: 0, g: 0.23529412, b: 0.54901963, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: movement
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      bold: 0
+      italic: 0
+    - keyword: health
+      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
       bold: 0
       italic: 0

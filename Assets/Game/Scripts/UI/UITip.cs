@@ -7,7 +7,7 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject tipObject;
 
-    void Start()
+    void OnEnable()
     {
         HideTooltip();
     }
@@ -35,6 +35,6 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void UpdateTooltipPosition(Vector2 position)
     {
-        transform.position = position;
+        tipObject.transform.position = position;
     }
 }
