@@ -87,37 +87,6 @@ public class HUDInfo : MonoBehaviour
         }
     }
 
-    IEnumerator  HideTileInfo()
-    {
-        while (true)
-        {
-            //Debug.Log("Tile Waiting");
-            yield return new WaitForSeconds(1f);
-            if (selectedTile != currentTile)
-            {
-                tileInfo.Hide();
-                hideTileInfoCoroutine = null;
-                //Debug.Log("Tile Hided");
-
-                yield break;
-            }
-        }
-    }
-
-    IEnumerator HideStatusInfo()
-    {
-        //Debug.Log("Status Waiting");
-        yield return new WaitForSeconds(1f);
-        if (selectedTile != currentTile)
-        {
-            enemyStatus.Hide();
-            objectStatus.Hide();
-            hideStatusInfoCoroutine = null;
-            //Debug.Log("Status Hided");
-
-            yield break;
-        }
-    }
     #endregion
 
     #region Events
@@ -421,13 +390,10 @@ public class HUDInfo : MonoBehaviour
             }
         }
 
-        //wip
         // Clicked on tile: 
         if (Input.GetMouseButtonDown(0))
         { 
             tileInfo.SetTileInfo(currentTile);
-
-            //Debug.Log("Tile Clicked");
 
             selectedTile = currentTile;
 
@@ -452,9 +418,8 @@ public class HUDInfo : MonoBehaviour
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
             // Clicked show status panel
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Input.GetMouseButtonDown(0))
             {
-                //Debug.Log("Enemy Clicked");
                 enemyStatus.SetEnemyStats(enemy);
                 objectStatus.Hide();
 
@@ -484,9 +449,8 @@ public class HUDInfo : MonoBehaviour
             objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
             
             // Clicked show status panel
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Input.GetMouseButtonDown(0))
             {
-                //Debug.Log("Object Clicked");
                 objectStatus.SetObjectStats(tileObject);
                 enemyStatus.Hide();
 
@@ -501,6 +465,37 @@ public class HUDInfo : MonoBehaviour
         else
         {
             objectHoverUI.Hide();
+        }
+    }
+
+    IEnumerator HideTileInfo()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+
+            if (selectedTile != currentTile)
+            {
+                tileInfo.Hide();
+                hideTileInfoCoroutine = null;
+                yield break;
+            }
+        }
+    }
+
+    IEnumerator HideStatusInfo()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+
+            if (selectedTile != currentTile)
+            {
+                enemyStatus.Hide();
+                objectStatus.Hide();
+                hideStatusInfoCoroutine = null;
+                yield break;
+            }
         }
     }
 
