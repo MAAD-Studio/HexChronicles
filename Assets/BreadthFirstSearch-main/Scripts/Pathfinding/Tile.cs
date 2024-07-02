@@ -280,6 +280,11 @@ public class Tile : MonoBehaviour
         {
             //tile.ChangeTileWeather(TileEnums.TileWeather.rain);
         }
+
+        if(characterOnTile != null)
+        {
+            characterOnTile.characterTile = tile;
+        }
     }
 
     public void ReplaceTileWithNew(Tile newTile)

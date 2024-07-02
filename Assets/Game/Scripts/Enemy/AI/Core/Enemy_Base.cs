@@ -15,6 +15,7 @@ public class Enemy_Base : Character, EnemyInterface
     protected override void Start()
     {
         base.Start();
+
         moveDistance = enemySO.attributes.movementRange;
         attackDamage = enemySO.attributes.attackDamage;
         defensePercentage = enemySO.attributes.defensePercentage;
@@ -31,6 +32,11 @@ public class Enemy_Base : Character, EnemyInterface
     #endregion
 
     #region InterfaceMethods
+
+    public virtual void PreCalculations(TurnManager turnManager)
+    {
+        
+    }
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
@@ -102,6 +108,11 @@ public class Enemy_Base : Character, EnemyInterface
         characterTile.tileOccupied = false;
         characterTile.characterOnTile = null;
         Destroy(gameObject);
+    }
+
+    public virtual void ActionCleanup()
+    {
+        
     }
 
     #endregion

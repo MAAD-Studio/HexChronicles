@@ -7,41 +7,56 @@ public class Enemy_SoloJelly : Enemy_Base
     #region Variables
 
     [SerializeField] public GameObject combineText;
+    Enemy_Base closestJelly = null;
 
     #endregion
 
     #region InterfaceMethods
 
+    public override void PreCalculations(TurnManager turnManager)
+    {
+        base.PreCalculations(turnManager);
+
+        bool foundMaster = false;
+        float distanceToJelly = 1000f;
+        foreach (Enemy_Base enemy in turnManager.enemyList)
+        {
+            float newDistance;
+            bool examineEnemy = false;
+            if(enemy.GetComponent<Enemy_MasterJelly>() != null)
+            {
+                examineEnemy = true;
+                foundMaster = true;
+            }
+            else if(!foundMaster && enemy.GetComponent<Enemy_KingJelly>())
+            {
+                examineEnemy = true;
+            }
+
+            if(examineEnemy)
+            {
+                newDistance = Vector3.Distance(transform.position, enemy.transform.position);
+
+                if(newDistance < distanceToJelly)
+                {
+                    distanceToJelly = newDistance;
+                    closestJelly = enemy;
+                }
+            }
+        }
+    }
+
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
         int valueOfMovement = -100;
 
-        foreach(Enemy_Base enemyChar in turnManager.enemyList)
+        if(closestJelly != null)
         {
-            if(enemyChar == this)
-            {
-                continue;
-            }
+            int distanceTile = (int)Vector3.Distance(tile.transform.position, closestJelly.transform.position);
+            int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestJelly.transform.position);
+            int tileValue = distanceEnemy - distanceTile;
 
-            Enemy_MasterJelly masterJelly = enemyChar.GetComponent<Enemy_MasterJelly>();
-            Enemy_KingJelly kingJelly = enemyChar.GetComponent<Enemy_KingJelly>();
-
-            if(masterJelly != null || kingJelly != null)
-            {
-                int distanceTile = (int)Vector3.Distance(tile.transform.position, enemyChar.transform.position);
-                int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, enemyChar.transform.position);
-                int tileValue = distanceEnemy - distanceTile;
-
-                if(masterJelly != null)
-                {
-                    tileValue += 2;
-                }
-
-                if (valueOfMovement < tileValue)
-                {
-                    valueOfMovement = tileValue;
-                }
-            }
+            valueOfMovement = tileValue;
         }
 
         return valueOfMovement * 2;
@@ -97,6 +112,13 @@ public class Enemy_SoloJelly : Enemy_Base
         }
 
         return false;
+    }
+
+    public override void ActionCleanup()
+    {
+        base.ActionCleanup();
+
+        closestJelly = null;
     }
 
     #endregion

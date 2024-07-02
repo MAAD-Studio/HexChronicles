@@ -17,6 +17,8 @@ public class TileObject : MonoBehaviour
     [HideInInspector] public UnityEvent DamagePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
 
+    protected Tile attachedTile;
+
     public virtual void Start()
     {
         currentHealth =  tileObjectData.health;
@@ -24,6 +26,21 @@ public class TileObject : MonoBehaviour
         { 
             healthBar = GetComponentInChildren<TileObjectHealthBar>();
             healthBar.tileObject = this;
+        }
+
+        if (attachedTile != null)
+        {
+            FinalizeTileChoice(attachedTile);
+            return;
+        }
+        else if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 50f, tileLayer))
+        {
+            FinalizeTileChoice(hit.transform.GetComponent<Tile>());
+            return;
+        }
+        else
+        {
+            Debug.Assert(attachedTile != null, $"{name} couldn't find a tile under it to attach onto");
         }
     }
 
@@ -36,6 +53,10 @@ public class TileObject : MonoBehaviour
         if (currentHealth <= 0)
         {
             objectDestroyed.Invoke(this);
+
+            attachedTile.objectOnTile = null;
+            attachedTile.tileHasObject = false;
+
             Destroy(gameObject);
         }
     }
@@ -45,4 +66,18 @@ public class TileObject : MonoBehaviour
         healthBar.damagePreview = damage;
         DamagePreview?.Invoke();
     }
+
+    #region breadthFirstMethods
+
+    //Used for attaching the spawner onto the tile under it
+    public void FinalizeTileChoice(Tile tile)
+    {
+        transform.position = tile.transform.position;
+        attachedTile = tile;
+
+        tile.tileHasObject = true;
+        tile.objectOnTile = this;
+    }
+
+    #endregion
 }

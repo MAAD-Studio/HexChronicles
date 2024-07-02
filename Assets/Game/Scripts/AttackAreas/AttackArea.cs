@@ -10,6 +10,8 @@ public class AttackArea : MonoBehaviour
     private List<TileReporter> tileReporters = new List<TileReporter>();
     private List<Tile> reporterTiles = new List<Tile>();
 
+    public TileReporter originReporter;
+
     [SerializeField] public bool freeRange = false;
     [SerializeField] public ElementType effectedTileType;
 
@@ -25,6 +27,8 @@ public class AttackArea : MonoBehaviour
         {
             tileReporters.Add(reporter);
         }
+
+        Debug.Assert(originReporter != null, "AttackArea doesn't have an origin TileReporter");
     }
 
     #endregion
@@ -68,8 +72,9 @@ public class AttackArea : MonoBehaviour
     public void DetectArea(bool illustrate, bool highlightOccupied)
     {
         ResetArea();
-
         reporterTiles.Clear();
+
+        originReporter.CheckBlockages(false);
         foreach (TileReporter reporter in tileReporters)
         {
             if(reporter.currentTile != null)

@@ -8,9 +8,30 @@ public class TileReporter : MonoBehaviour
 
     [HideInInspector] public Tile currentTile;
 
+    public List<TileReporter> children = new List<TileReporter>();
+
     #endregion
 
     #region UnityMethods
+
+    public void CheckBlockages(bool parentNull)
+    {
+        bool tileNull = false;
+        if(parentNull)
+        {
+            currentTile = null;
+            tileNull = true;
+        }
+        else if(currentTile == null)
+        {
+            tileNull = true;
+        }
+
+        foreach (TileReporter tile in children)
+        {
+            tile.CheckBlockages(tileNull);
+        }
+    }
 
     private void OnTriggerStay(Collider other)
     {

@@ -7,6 +7,7 @@ public class Enemy_Drainer : Enemy_Base
     #region Variables
 
     [SerializeField] GameObject basePrefab;
+    [SerializeField] GameObject drainTextPrefab;
 
     #endregion
 
@@ -50,6 +51,8 @@ public class Enemy_Drainer : Enemy_Base
         {
             ConvertToBaseTile(tile);
         }
+
+        TemporaryMarker.GenerateMarker(drainTextPrefab, transform.position, 3f, 1f);
 
         return false;
     }
