@@ -20,7 +20,7 @@ public class Status
     }
     public StatusTypes statusType;
     public int effectTurns;
-    public int damageAddOn = 0;
+    [HideInInspector] public int damageAddOn = 0;
 
     public void Apply(Character character)
     {

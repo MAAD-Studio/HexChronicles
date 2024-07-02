@@ -14,10 +14,15 @@ public abstract class HealthBar : MonoBehaviour
     [SerializeField] protected RectTransform bar;
     [SerializeField] public float damagePreview;
 
+    [SerializeField] protected GameObject statusField;
+    [SerializeField] protected GameObject statusPrefab;
+    protected List<Status> status;
+
     protected abstract void Start();
     protected abstract void OnDestroy();
     protected abstract void UpdateHealthBarPreview();
     protected abstract void UpdateHealthBar();
+    protected abstract void UpdateStatus();
 
     protected IEnumerator AnimateHealthBar(float targetFillAmount)
     {

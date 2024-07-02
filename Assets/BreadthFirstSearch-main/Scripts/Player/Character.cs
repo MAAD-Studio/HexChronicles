@@ -282,16 +282,7 @@ public class Character : MonoBehaviour
                 statusToRemove.Add(status);
             }
         }
-    }
-
-    public virtual void InvokeUpdateHealthBar()
-    {
-        UpdateHealthBar?.Invoke();
-    }
-
-    public virtual void InvokeUpdateAttributes()
-    {
-        UpdateAttributes?.Invoke();
+        UpdateStatus?.Invoke();
     }
 
     public virtual void TakeDamage(float damage, ElementType type)

@@ -19,6 +19,7 @@ public class EnemyHealthBar : HealthBar
         enemy.healthBar = this;
         enemy.DamagePreview.AddListener(UpdateHealthBarPreview);
         enemy.UpdateHealthBar.AddListener(UpdateHealthBar);
+        enemy.UpdateStatus.AddListener(UpdateStatus);
 
         characterName.text = enemy.enemySO.name.ToString();
         atkPercentage.text = (100 - enemy.enemySO.attributes.defensePercentage).ToString() + "%";
@@ -64,9 +65,34 @@ public class EnemyHealthBar : HealthBar
         UpdateHealthBarPreview();
     }
 
+    protected override void UpdateStatus()
+    {
+        List<Status> newStatus = enemy.statusList;
+
+        if (status != newStatus)
+        {
+            foreach (Transform child in statusField.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            if (newStatus != null)
+            {
+                foreach (var status in newStatus)
+                {
+                    GameObject statusObject = Instantiate(statusPrefab, statusField.transform, false);
+                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                    statusEffect.Initialize(status);
+                }
+            }
+            status = newStatus;
+        }
+    }
+
     protected override void OnDestroy()
     {
         enemy.DamagePreview.RemoveListener(UpdateHealthBarPreview);
         enemy.UpdateHealthBar.RemoveListener(UpdateHealthBar);
+        enemy.UpdateStatus.RemoveListener(UpdateStatus);
     }
 }

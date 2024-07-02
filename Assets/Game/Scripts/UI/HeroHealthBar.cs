@@ -15,6 +15,7 @@ public class HeroHealthBar : HealthBar
         hero.healthBar = this;
         hero.DamagePreview.AddListener(UpdateHealthBarPreview);
         hero.UpdateHealthBar.AddListener(UpdateHealthBar);
+        hero.UpdateStatus.AddListener(UpdateStatus);
 
         characterName.text = hero.heroSO.attributes.name.ToString();
         hpText.text = hero.heroSO.attributes.health + " HP";
@@ -40,9 +41,34 @@ public class HeroHealthBar : HealthBar
         UpdateHealthBarPreview();
     }
 
+    protected override void UpdateStatus()
+    {
+        List<Status> newStatus = hero.statusList;
+
+        if (status != newStatus)
+        {
+            foreach (Transform child in statusField.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            if (newStatus != null)
+            {
+                foreach (var status in newStatus)
+                {
+                    GameObject statusObject = Instantiate(statusPrefab, statusField.transform, false);
+                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                    statusEffect.Initialize(status);
+                }
+            }
+            status = newStatus;
+        }
+    }
+
     protected override void OnDestroy()
     {
         hero.DamagePreview.RemoveListener(UpdateHealthBarPreview);
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
+        hero.UpdateStatus.RemoveListener(UpdateStatus);
     }
 }
