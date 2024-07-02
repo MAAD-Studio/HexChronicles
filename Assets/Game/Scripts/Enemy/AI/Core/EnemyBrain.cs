@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.Timeline;
 
 public class EnemyBrain : MonoBehaviour
@@ -56,6 +57,10 @@ public class EnemyBrain : MonoBehaviour
                 continue;
             }
 
+            Debug.Log(enemy_base.name + " is thinking...");
+
+            enemy_base.PreCalculations(turnManager);
+
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
 
             turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
@@ -67,30 +72,34 @@ public class EnemyBrain : MonoBehaviour
             List<Tile> usableTiles = new List<Tile>();
             usableTiles = turnManager.pathfinder.frontier;
             usableTiles.Add(enemy_base.characterTile);
+
+            Character currentClosest = null;
+            float charDistance = 1000f;
+            foreach (Character character in turnManager.characterList)
+            {
+                float newDistance = Vector3.Distance(character.transform.position, enemy_base.transform.position);
+
+                //Grabs the closest character
+                if (newDistance < charDistance)
+                {
+                    charDistance = newDistance;
+                    currentClosest = character;
+                }
+            }
+
             foreach (Tile tile in usableTiles)
             {
+                int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
+
                 bool checkAttacks = false;
-                Character currentClosest = null;
-                float charDistance = 1000f;
-                foreach (Character character in turnManager.characterList)
+                float newDistance = Vector3.Distance(currentClosest.transform.position, tile.transform.position);
+
+                //Checks if we should analyzing potential attack options
+                if (newDistance <= enemyAttackArea.maxHittableRange)
                 {
-                    float newDistance = Vector3.Distance(character.transform.position, tile.transform.position);
-
-                    //Checks if we should analyzing potential attack options
-                    if (newDistance <= enemyAttackArea.maxHittableRange)
-                    {
-                        checkAttacks = true;
-                    }
-
-                    //Grabs the closest character
-                    if(newDistance < charDistance)
-                    {
-                        charDistance = newDistance;
-                        currentClosest = character;
-                    }
+                    checkAttacks = true;
                 }
 
-                int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
                 if (checkAttacks == true)
                 {
                     //Runs through all the Tiles adjacent to the current Movement tile
@@ -153,12 +162,21 @@ public class EnemyBrain : MonoBehaviour
             }
 
             int combinationChoice = 0;
+            int comboValue = 0;
             if(id != -1)
             {
-                combinationChoice = id;
+                foreach(KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
+                {
+                    if(comboValues.Value.value > comboValue)
+                    {
+                        combinationChoice = comboValues.Key;
+                        comboValue = comboValues.Value.value;
+                    }
+                }
             }
             else
             {
+ 
                 combinationChoice = PickCombination();
             }
 
@@ -209,6 +227,8 @@ public class EnemyBrain : MonoBehaviour
             //Resets Variables
             combinations.Clear();
             lowestValue = 100;
+
+            enemy_base.ActionCleanup();
         }
 
         turnManager.pathfinder.ResetPathFinder();

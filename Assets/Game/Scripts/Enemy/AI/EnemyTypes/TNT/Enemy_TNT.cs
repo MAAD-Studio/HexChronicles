@@ -46,7 +46,7 @@ public class Enemy_TNT : Enemy_Base
 
         foreach (Tile tile in potentialTiles)
         {
-            if (tile.tileOccupied && tile.characterOnTile != this)
+            if (tile.tileOccupied && tile.characterOnTile != this && tile.characterOnTile.currentHealth > 0)
             {
                 if (tile.cost == 1)
                 {

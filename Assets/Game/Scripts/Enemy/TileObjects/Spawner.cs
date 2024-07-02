@@ -7,8 +7,6 @@ public class Spawner : TileObject
 {
     #region Variables
 
-    private Tile attachedTile;
-
     [Header("Spawning Info: ")]
     [SerializeField] private int numberToSpawn = 1;
     [SerializeField] private List<Enemy_Base> enemyList;
@@ -22,21 +20,6 @@ public class Spawner : TileObject
         base.Start();
         Debug.Assert(turnManager != null, "Spawner doesn't have a turnManager provided");
         Debug.Assert(enemyList != null, "Spawner doesn't have any provided enemies for spawning");
-
-        if (attachedTile != null)
-        {
-            FinalizeTileChoice(attachedTile);
-            return;
-        }
-        else if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 50f, tileLayer))
-        {
-            FinalizeTileChoice(hit.transform.GetComponent<Tile>());
-            return;
-        }
-        else
-        {
-            Debug.Assert(attachedTile != null, "Spawner couldn't find a tile under it to attach onto");
-        }
     }
 
     #endregion
@@ -72,20 +55,6 @@ public class Spawner : TileObject
     public override void TakeDamage(float attackDamage)
     {
         base.TakeDamage(attackDamage);
-    }
-
-    #endregion
-
-    #region breadthFirstMethods
-
-    //Used for attaching the spawner onto the tile under it
-    public void FinalizeTileChoice(Tile tile)
-    {
-        transform.position = tile.transform.position;
-        attachedTile = tile;
-
-        tile.tileHasObject = true;
-        tile.objectOnTile = this;
     }
 
     #endregion
