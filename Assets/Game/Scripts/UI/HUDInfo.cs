@@ -312,8 +312,7 @@ public class HUDInfo : MonoBehaviour
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         });
-        //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
-        undo.interactable = false;
+        undo.onClick.AddListener(() => playerTurn.UndoAction());
     }
 
     private void ResetHUD()

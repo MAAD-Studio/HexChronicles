@@ -9,6 +9,8 @@ public class Enemy_Base : Character, EnemyInterface
     [Header("Enemy Specific:")]
     public EnemyAttributesSO enemySO;
 
+    public EnemyType enemyType;
+
     #endregion
 
     #region UnityMethods

@@ -39,6 +39,11 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
+            if(tile == null)
+            {
+                continue;
+            }
+
             // Reset preview on enemy healthbar
             if (tile.tileOccupied && tile.characterOnTile != null)
             {

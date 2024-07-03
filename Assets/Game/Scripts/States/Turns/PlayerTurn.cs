@@ -123,6 +123,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void ExitState()
     {
+        UndoManager.Instance.ClearData();
+
         foreach (Character character in turnManager.characterList)
         {
             character.EndTurn();
@@ -140,6 +142,21 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     #endregion
 
     #region CustomMethods
+
+    public void UndoAction()
+    {
+        if(allowSelection)
+        {
+            if (UndoManager.Instance.DataStored)
+            {
+                UndoManager.Instance.RestoreState();
+            }
+            else
+            {
+                Debug.Log("No Data Stored In UndoManager");
+            }
+        }
+    }
 
     public void EndTurn()
     {
@@ -210,6 +227,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         else if(Input.GetMouseButtonDown(1) && selectedCharacter != null)
         {
             MoveBackAPhase();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            UndoAction();
         }
     }
 
@@ -417,6 +439,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
+                    UndoManager.Instance.ClearData();
+                    UndoManager.Instance.StoreHero((Hero)selectedCharacter);
+
+                    foreach(Enemy_Base enemy in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+                    {
+                        UndoManager.Instance.StoreEnemy(enemy);
+                    }
+
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
 

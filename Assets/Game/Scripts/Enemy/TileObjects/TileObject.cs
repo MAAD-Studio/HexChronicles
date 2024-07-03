@@ -13,9 +13,12 @@ public class TileObject : MonoBehaviour
     [SerializeField] public TileObjectHealthBar healthBar;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
+    [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
 
     [HideInInspector] public UnityEvent DamagePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
+
+    public ObjectType objectType;
 
     protected Tile attachedTile;
 
