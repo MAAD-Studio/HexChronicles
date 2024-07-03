@@ -72,8 +72,8 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
         attackInfo.ForceMeshUpdate();
 
-        skillShape.sprite = hero.heroSO.activeSkill.skillshape;
-        skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
+        skillShape.sprite = hero.heroSO.activeSkillSO.skillshape;
+        skillInfo.text = hero.heroSO.activeSkillSO.description.DisplayKeywordDescription();
         skillInfo.ForceMeshUpdate();
     }
 

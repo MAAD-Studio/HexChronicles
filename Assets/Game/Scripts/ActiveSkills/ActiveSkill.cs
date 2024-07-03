@@ -8,19 +8,10 @@ public class ActiveSkill
 {
     #region Variables
 
-    public Sprite icon;
-    public string skillName;
-    public KeywordDescription description;
-    public Sprite skillshape;
-    public AttackArea shapeArea;
-    public GameObject particleEffect;
-    public GameObject soundEffect;
+    private SkillEffect skillEffect;
+    private int skillEffectValue;
 
-    public SkillEffect skillEffect;
-    public int skillEffectValue;
-
-    public Status status = new Status();
-
+    private Status status = new Status();
     //public ReleaseTypes releaseTypes; // Not used yet
 
     private List<Character> targets;
@@ -29,6 +20,13 @@ public class ActiveSkill
     [HideInInspector] public List<Tile> affectedTiles = new List<Tile>();
 
     #endregion
+
+    public void Initialize(ActiveSkillSO newSkill)
+    {
+        skillEffect = newSkill.skillEffect;
+        skillEffectValue = newSkill.skillEffectValue;
+        status = newSkill.status;
+    }
 
     #region Enum
 
@@ -104,12 +102,6 @@ public class ActiveSkill
         {
             // TODO
         }
-    }
-
-    // Method to clone the ActiveSkill
-    public ActiveSkill Clone()
-    {
-        return (ActiveSkill)this.MemberwiseClone();
     }
 
     public void GetTargets()
