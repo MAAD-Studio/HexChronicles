@@ -8,7 +8,7 @@ public class Hero : Character
     public HeroAttributesSO heroSO;
 
     // Active skill
-    [HideInInspector] public ActiveSkill activeSkill;
+    [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
     public int skillCD = 3;
     public int currentSkillCD;
 
@@ -29,9 +29,9 @@ public class Hero : Character
 
         basicAttackArea = heroSO.attackArea;
 
-        activeSkill = heroSO.activeSkill.Clone();
         activeSkill.thisCharacter = this;
-        activeSkillArea = activeSkill.shapeArea;
+        activeSkill.Initialize(heroSO.activeSkillSO);
+        activeSkillArea = heroSO.activeSkillSO.shapeArea;
         currentSkillCD = (skillCD - 1);
 
         upgradeList = new List<BasicUpgrade>();

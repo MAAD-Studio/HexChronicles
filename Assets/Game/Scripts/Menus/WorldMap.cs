@@ -41,6 +41,9 @@ public class WorldMap : Menu
         levelIndex = index; // Set level index
         MenuManager.Instance.ShowMenu(preGameClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
+
+        PreGameScreen preGameScreen = MenuManager.Instance.GetMenu<PreGameScreen>(preGameClassifier);
+        preGameScreen.UpdatePreGameScreen(levelIndex);
     }
 
     public void LoadLevel()
