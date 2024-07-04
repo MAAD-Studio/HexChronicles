@@ -110,16 +110,27 @@ public class Tower : Spawner
 
     public override void TakeDamage(float attackDamage)
     {
-        base.TakeDamage(attackDamage);
+        currentHealth -= attackDamage;
 
-        if (currentHealth <= 0 && spawnedAttackArea != null)
+        UpdateHealthBar?.Invoke();
+
+        if (currentHealth <= 0)
         {
-            spawnedAttackArea.DestroySelf();
-
-            foreach (Tile tile in tilesToColor)
+            if(spawnedAttackArea != null)
             {
-                tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);
+                foreach (Tile tile in tilesToColor)
+                {
+                    tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);
+                }
+                spawnedAttackArea.DestroySelf();
             }
+
+            objectDestroyed.Invoke(this);
+
+            attachedTile.objectOnTile = null;
+            attachedTile.tileHasObject = false;
+
+            Destroy(gameObject);
         }
     }
 
