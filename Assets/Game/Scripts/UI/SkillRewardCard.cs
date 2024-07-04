@@ -20,7 +20,7 @@ public class SkillRewardCard : MonoBehaviour
 
     private void Start()
     {
-        button.onClick.AddListener(() => AddSkill());
+        button.onClick.AddListener(() => OnSelected());
     }
 
     public void SetSkillDisplay(ActiveSkillSO skill)
@@ -32,19 +32,10 @@ public class SkillRewardCard : MonoBehaviour
         description.text = skill.description.DisplayKeywordDescription();
     }
 
-    private void AddSkill()
+    private void OnSelected()
     {
-        switch (skill.elementType)
-        {
-            case ElementType.Fire:
-                ActiveSkillCollection.Instance.fireSkills.Add(skill);
-                break;
-            case ElementType.Grass:
-                ActiveSkillCollection.Instance.grassSkills.Add(skill);
-                break;
-            case ElementType.Water:
-                ActiveSkillCollection.Instance.waterSkills.Add(skill);
-                break;
-        }
+        ActiveSkillCollection.Instance.PlayerAddSkill(skill);
+
+        button.interactable = false;
     }
 }

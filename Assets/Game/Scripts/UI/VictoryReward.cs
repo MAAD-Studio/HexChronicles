@@ -27,7 +27,7 @@ public class VictoryReward : MonoBehaviour
 
             // Select a random element skill
             ElementType elementType = (ElementType)Random.Range(0, 3);
-            card.GetComponent<SkillRewardCard>().SetSkillDisplay(ActiveSkillCollection.Instance.GetRandomSkill(elementType));
+            card.GetComponent<SkillRewardCard>().SetSkillDisplay(ActiveSkillCollection.Instance.GetRandomSkillReward(elementType));
         }
     }
 

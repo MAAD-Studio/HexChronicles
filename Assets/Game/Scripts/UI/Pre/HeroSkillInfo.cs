@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class HeroSkillInfo : MonoBehaviour
 {
-    [SerializeField] private Button heroSkillBtn;
+    [SerializeField] public Button heroSkillBtn;
     [SerializeField] private Image avatar;
     [SerializeField] private Image element;
     [SerializeField] private Image skillShape;
@@ -21,7 +20,7 @@ public class HeroSkillInfo : MonoBehaviour
 
     private ActiveSkillSO selectedActiveSkill;
 
-    public event Action<HeroAttributesSO> OnHeroSelected;
+    public event Action<HeroSkillInfo,HeroAttributesSO> OnHeroSelected;
 
     void Start()
     {
@@ -33,6 +32,7 @@ public class HeroSkillInfo : MonoBehaviour
     {
         avatar.sprite = heroSO.attributes.avatar;
         element.sprite = characterUIConfig.GetElementSprite(heroSO.attributes.elementType);
+        skillShape.sprite = heroSO.activeSkillSO.skillshape;
         nameText.text = heroSO.attributes.name;
         attack.text = heroSO.attributes.attackDamage.ToString();
         movement.text = heroSO.attributes.movementRange.ToString();
@@ -52,6 +52,13 @@ public class HeroSkillInfo : MonoBehaviour
             }
         }
 
-        OnHeroSelected?.Invoke(heroSO);
+        OnHeroSelected?.Invoke(this, heroSO);
+    }
+
+    public void SkillSelected(ActiveSkillSO skill)
+    {
+        selectedActiveSkill = skill;
+        skillShape.sprite = skill.skillshape;
+        heroSO.SetActiveSkill(skill);
     }
 }

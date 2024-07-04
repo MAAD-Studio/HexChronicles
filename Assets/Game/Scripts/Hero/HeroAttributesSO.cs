@@ -16,6 +16,5 @@ public class HeroAttributesSO : ScriptableObject
     public void SetActiveSkill(ActiveSkillSO newSkill)
     {
         activeSkillSO = newSkill;
-        Debug.Log($"{attributes.name} has selected {newSkill.skillName}");
     }
 }
