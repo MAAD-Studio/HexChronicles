@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static TurnEnums;
 
 public class TileObject : MonoBehaviour
 {
@@ -24,6 +25,11 @@ public class TileObject : MonoBehaviour
 
     public virtual void Start()
     {
+        if(turnManager == null)
+        {
+            turnManager = FindObjectOfType<TurnManager>();
+        }
+
         currentHealth =  tileObjectData.health;
         if (healthBar == null) 
         { 
@@ -80,6 +86,21 @@ public class TileObject : MonoBehaviour
 
         tile.tileHasObject = true;
         tile.objectOnTile = this;
+    }
+
+    public void FindTile()
+    {
+        if (attachedTile != null)
+        {
+            FinalizeTileChoice(attachedTile);
+            return;
+        }
+
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 50f, tileLayer))
+        {
+            FinalizeTileChoice(hit.transform.GetComponent<Tile>());
+            return;
+        }
     }
 
     #endregion

@@ -439,13 +439,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
-                    UndoManager.Instance.ClearData();
-                    UndoManager.Instance.StoreHero((Hero)selectedCharacter);
-
-                    foreach(Enemy_Base enemy in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
-                    {
-                        UndoManager.Instance.StoreEnemy(enemy);
-                    }
+                    StoreAttackData();
 
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
@@ -483,6 +477,22 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     attackType = TurnEnums.PlayerAction.BasicAttack;
                 }
             }
+        }
+    }
+
+    private void StoreAttackData()
+    {
+        UndoManager.Instance.ClearData();
+        UndoManager.Instance.StoreHero((Hero)selectedCharacter);
+
+        foreach (Enemy_Base enemy in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        {
+            UndoManager.Instance.StoreEnemy(enemy);
+        }
+
+        foreach(TileObject tileObj in areaPrefab.ObjectsHit())
+        {
+            UndoManager.Instance.StoreTileObject(tileObj);
         }
     }
 

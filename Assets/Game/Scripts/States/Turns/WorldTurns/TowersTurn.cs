@@ -32,7 +32,6 @@ public class TowersTurn : WorldTurnBase
         {
             TileObject.objectDestroyed.AddListener(TowerDestroyed);
             TileObject.objectCreated.AddListener(TowerCreated);
-            StoreTileObject.AddListener(StoreTowerData);
         }
     }
 
@@ -124,7 +123,6 @@ public class TowersTurn : WorldTurnBase
             {
                 TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
                 TileObject.objectCreated.RemoveListener(TowerCreated);
-                StoreTileObject.RemoveListener(StoreTowerData);
                 Victory.Invoke();
             }
         }
@@ -136,12 +134,6 @@ public class TowersTurn : WorldTurnBase
         {
             towers.Add((Tower)tileObj);
         }
-    }
-
-    private void StoreTowerData(TileObject tileObj)
-    {
-        List<TileObject> referenceList = new List<TileObject>(towers);
-        //UndoManager.Instance.StoreTileObject(tileObj, referenceList);
     }
 
     #endregion

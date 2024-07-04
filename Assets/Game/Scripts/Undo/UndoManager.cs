@@ -27,6 +27,9 @@ public class UndoManager : Singleton<UndoManager>
     public GameObject grassTilePrefab;
     public GameObject deathTilePrefab;
 
+    [Header("Object Prefabs")]
+    public GameObject towerPrefab;
+
     private List<UndoData_Hero> heroList = new List<UndoData_Hero>();
     private List<UndoData_Enemies> enemyList = new List<UndoData_Enemies>();
     private List<UndoData_TileObject> tileObjectsList = new List<UndoData_TileObject>();
@@ -55,6 +58,14 @@ public class UndoManager : Singleton<UndoManager>
         Debug.Assert(kingJellyPrefab != null, "UndoManager hasn't been provided a KingJelly Prefab");
         Debug.Assert(drainerPrefab != null, "UndoManager hasn't been provided a Drainer Prefab");
         Debug.Assert(makerPrefab != null, "UndoManager hasn't been provided a Maker Prefab");
+
+        Debug.Assert(baseTilePrefab != null, "UndoManager hasn't been provided a BaseTile Prefab");
+        Debug.Assert(fireTilePrefab != null, "UndoManager hasn't been provided a FireTile Prefab");
+        Debug.Assert(waterTilePrefab != null, "UndoManager hasn't been provided a WaterTile Prefab");
+        Debug.Assert(grassTilePrefab != null, "UndoManager hasn't been provided a GrassTile Prefab");
+        Debug.Assert(deathTilePrefab != null, "UndoManager hasn't been provided a DeathTile Prefab");
+
+        Debug.Assert(towerPrefab != null, "UndoManager hasn't been provided a Tower Prefab");
     }
 
     void Update()
@@ -125,11 +136,15 @@ public class UndoManager : Singleton<UndoManager>
 
         UndoData_TileObject tileObjData = new UndoData_TileObject();
 
+        tileObjData.involvedObject = tileObj;
+
         tileObjData.position = tileObj.transform.position;
         tileObjData.position.y += 1f;
 
         tileObjData.type = tileObj.objectType;
         tileObjData.currentHealth = tileObj.currentHealth;
+
+        tileObjectsList.Add(tileObjData);
     }
 
     public void StoreTile(Tile newTile, ElementType oldTilesType)
@@ -165,6 +180,7 @@ public class UndoManager : Singleton<UndoManager>
         RestoreTileData();
         RestoreHeroData(turnManager);
         RestoreEnemyData(turnManager);
+        RestoreTileObjectData();
 
         ClearData();
     }
@@ -240,6 +256,22 @@ public class UndoManager : Singleton<UndoManager>
         foreach(UndoData_TileObject data in tileObjectsList)
         {
             TileObject currentObject;
+            if(data.involvedObject != null)
+            {
+                currentObject = data.involvedObject;
+            }
+            else
+            {
+                currentObject = GenerateTileObject(data.type);
+            }
+
+            currentObject.currentHealth = data.currentHealth;
+            currentObject.UpdateHealthBar?.Invoke();
+
+            currentObject.transform.position = data.position;
+            currentObject.FindTile();
+
+            TileObject.objectCreated.Invoke(currentObject);
         }
     }
 
@@ -325,6 +357,26 @@ public class UndoManager : Singleton<UndoManager>
         }
 
         return generatedEnemy;
+    }
+
+    private TileObject GenerateTileObject(ObjectType type)
+    {
+        TileObject generatedObject;
+
+        switch(type)
+        {
+            case ObjectType.Tower:
+                generatedObject = Instantiate(towerPrefab).GetComponent<TileObject>();
+                Debug.Assert(generatedObject != null, "The Tower Prefab in UndoManager is not a Tile Object");
+                break;
+
+            default:
+                generatedObject = Instantiate(towerPrefab).GetComponent<TileObject>();
+                Debug.Assert(generatedObject != null, "The Tower Prefab in UndoManager is not a Tile Object");
+                break;
+        }
+
+        return generatedObject;
     }
 
     private Tile GenerateTile(ElementType type)

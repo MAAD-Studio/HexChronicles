@@ -108,5 +108,20 @@ public class Tower : Spawner
         }
     }
 
+    public override void TakeDamage(float attackDamage)
+    {
+        base.TakeDamage(attackDamage);
+
+        if (currentHealth <= 0 && spawnedAttackArea != null)
+        {
+            spawnedAttackArea.DestroySelf();
+
+            foreach (Tile tile in tilesToColor)
+            {
+                tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);
+            }
+        }
+    }
+
     #endregion
 }
