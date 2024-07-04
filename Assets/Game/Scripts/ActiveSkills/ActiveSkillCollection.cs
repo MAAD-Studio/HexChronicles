@@ -33,10 +33,22 @@ public class ActiveSkillCollection : Singleton<ActiveSkillCollection>
         switch (elementType)
         {
             case ElementType.Fire:
+                if (remainFireSkills.Count == 0)
+                {
+                    return null;
+                }
                 return remainFireSkills[Random.Range(0, remainFireSkills.Count)];
             case ElementType.Grass:
+                if (remainGrassSkills.Count == 0)
+                {
+                    return null;
+                }
                 return remainGrassSkills[Random.Range(0, remainGrassSkills.Count)];
             case ElementType.Water:
+                if (remainWaterSkills.Count == 0)
+                {
+                    return null;
+                }
                 return remainWaterSkills[Random.Range(0, remainWaterSkills.Count)];
             default:
                 return null;
