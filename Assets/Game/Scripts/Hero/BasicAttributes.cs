@@ -33,6 +33,7 @@ public class BasicAttributes
     [Header("ALPHA TEMPORARY MARKER")]
     public GameObject fireMarker;
     public GameObject healText;
+    public GameObject attackAreaPreview;
 
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 
 
 [RequireComponent(typeof(TurnManager))]
@@ -27,6 +28,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         get { return selectedCharacter; }
     }
+
+    private Character selectedEnemy;
+    private GameObject attackRangePreview;
 
     private AttackArea areaPrefab;
 
@@ -172,6 +176,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (currentTile != null)
         {
             currentTile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+        }
+
+        if(selectedEnemy != null)
+        {
+            selectedEnemy = null;
+            DespawnAreaPreview();
         }
 
         ResetBoard();
@@ -321,6 +331,62 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 SelectCharacter(inspectionCharacter);
             }
         }
+        else
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                SelectEnemy(inspectionCharacter);
+            }
+        }
+    }
+
+    public void SelectEnemy(Character character)
+    {
+        if(currentTile == null)
+        {
+            currentTile = character.characterTile;
+        }
+
+        if(allowSelection)
+        {
+            if(selectedEnemy == null)
+            {
+                GrabEnemy();
+            }
+            else if(selectedEnemy != character)
+            {
+                DespawnAreaPreview();
+                GrabEnemy();
+            }
+            else
+            {
+                selectedEnemy = null;
+                DespawnAreaPreview();
+            }
+        }
+    }
+
+    public void GrabEnemy()
+    {
+        selectedEnemy = currentTile.characterOnTile;
+        SpawnAreaPreview((Enemy_Base)selectedEnemy);
+    }
+
+    public void SpawnAreaPreview(Enemy_Base enemy)
+    {
+        if(attackRangePreview == null)
+        {
+            attackRangePreview = Instantiate(enemy.attackAreaPreview, enemy.transform.position, Quaternion.identity);
+        }
+    }
+
+    public void DespawnAreaPreview()
+    {
+        if (attackRangePreview != null)
+        {
+            Destroy(attackRangePreview);
+            attackRangePreview = null;
+        }
     }
 
     public void SelectCharacter(Character character)
@@ -461,7 +527,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
                     DestroyPhantom();
 
-                    if(attackType == TurnEnums.PlayerAction.BasicAttack)
+                    if (selectedEnemy != null)
+                    {
+                        selectedEnemy = null;
+                        DespawnAreaPreview();
+                    }
+
+                    if (attackType == TurnEnums.PlayerAction.BasicAttack)
                     {
                         selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, false);
                     }

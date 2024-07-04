@@ -76,6 +76,11 @@ public class TileObject : MonoBehaviour
         DamagePreview?.Invoke();
     }
 
+    public virtual void Undo(UndoData_TileObjCustomInfo data)
+    {
+
+    }
+
     #region breadthFirstMethods
 
     //Used for attaching the spawner onto the tile under it
