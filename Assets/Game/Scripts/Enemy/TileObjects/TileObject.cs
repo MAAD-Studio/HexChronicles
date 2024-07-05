@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static TurnEnums;
 
 public class TileObject : MonoBehaviour
 {
@@ -13,14 +14,22 @@ public class TileObject : MonoBehaviour
     [SerializeField] public TileObjectHealthBar healthBar;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
+    [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
 
     [HideInInspector] public UnityEvent DamagePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
+
+    public ObjectType objectType;
 
     protected Tile attachedTile;
 
     public virtual void Start()
     {
+        if(turnManager == null)
+        {
+            turnManager = FindObjectOfType<TurnManager>();
+        }
+
         currentHealth =  tileObjectData.health;
         if (healthBar == null) 
         { 
@@ -67,6 +76,11 @@ public class TileObject : MonoBehaviour
         DamagePreview?.Invoke();
     }
 
+    public virtual void Undo(UndoData_TileObjCustomInfo data)
+    {
+
+    }
+
     #region breadthFirstMethods
 
     //Used for attaching the spawner onto the tile under it
@@ -77,6 +91,21 @@ public class TileObject : MonoBehaviour
 
         tile.tileHasObject = true;
         tile.objectOnTile = this;
+    }
+
+    public void FindTile()
+    {
+        if (attachedTile != null)
+        {
+            FinalizeTileChoice(attachedTile);
+            return;
+        }
+
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 50f, tileLayer))
+        {
+            FinalizeTileChoice(hit.transform.GetComponent<Tile>());
+            return;
+        }
     }
 
     #endregion

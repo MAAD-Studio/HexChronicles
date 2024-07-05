@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TowersTurn : WorldTurnBase
 {
@@ -9,6 +10,8 @@ public class TowersTurn : WorldTurnBase
     [Header("Spawning Information: ")]
     [SerializeField] private int turnsTillSpawn = 2;
     [SerializeField] private List<Tower> towers = new List<Tower>();
+
+    [HideInInspector] public static UnityEvent<TileObject> StoreTileObject = new UnityEvent<TileObject>();
 
     public bool HasTowers
     {
@@ -28,6 +31,7 @@ public class TowersTurn : WorldTurnBase
         if(towers.Count > 0)
         {
             TileObject.objectDestroyed.AddListener(TowerDestroyed);
+            TileObject.objectCreated.AddListener(TowerCreated);
         }
     }
 
@@ -118,8 +122,17 @@ public class TowersTurn : WorldTurnBase
             if(towers.Count <= 0)
             {
                 TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
+                TileObject.objectCreated.RemoveListener(TowerCreated);
                 Victory.Invoke();
             }
+        }
+    }
+
+    private void TowerCreated(TileObject tileObj)
+    {
+        if(tileObj.objectType == ObjectType.Tower)
+        {
+            towers.Add((Tower)tileObj);
         }
     }
 

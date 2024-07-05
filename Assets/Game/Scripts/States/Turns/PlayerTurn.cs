@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 
 
 [RequireComponent(typeof(TurnManager))]
@@ -27,6 +28,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         get { return selectedCharacter; }
     }
+
+    private Character selectedEnemy;
+    private GameObject attackRangePreview;
 
     private AttackArea areaPrefab;
 
@@ -123,6 +127,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void ExitState()
     {
+        UndoManager.Instance.ClearData();
+
         foreach (Character character in turnManager.characterList)
         {
             character.EndTurn();
@@ -141,6 +147,21 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     #region CustomMethods
 
+    public void UndoAction()
+    {
+        if(allowSelection)
+        {
+            if (UndoManager.Instance.DataStored)
+            {
+                UndoManager.Instance.RestoreState();
+            }
+            else
+            {
+                Debug.Log("No Data Stored In UndoManager");
+            }
+        }
+    }
+
     public void EndTurn()
     {
         if(allowSelection)
@@ -155,6 +176,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (currentTile != null)
         {
             currentTile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+        }
+
+        if(selectedEnemy != null)
+        {
+            selectedEnemy = null;
+            AttackPreviewer.Instance.ClearAttackArea();
         }
 
         ResetBoard();
@@ -210,6 +237,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         else if(Input.GetMouseButtonDown(1) && selectedCharacter != null)
         {
             MoveBackAPhase();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            UndoAction();
         }
     }
 
@@ -299,6 +331,45 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 SelectCharacter(inspectionCharacter);
             }
         }
+        else
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                SelectEnemy(inspectionCharacter);
+            }
+        }
+    }
+
+    public void SelectEnemy(Character character)
+    {
+        if(currentTile == null)
+        {
+            currentTile = character.characterTile;
+        }
+
+        if(allowSelection)
+        {
+            if(selectedEnemy == null)
+            {
+                GrabEnemy((Enemy_Base)character);
+            }
+            else if(selectedEnemy != character)
+            {
+                AttackPreviewer.Instance.ClearAttackArea();
+                GrabEnemy((Enemy_Base)character);
+            }
+            else
+            {
+                selectedEnemy = null;
+                AttackPreviewer.Instance.ClearAttackArea();
+            }
+        }
+    }
+
+    public void GrabEnemy(Enemy_Base enemy)
+    {
+        selectedEnemy = currentTile.characterOnTile;
+        AttackPreviewer.Instance.PreviewMoveAttackArea(enemy);
     }
 
     public void SelectCharacter(Character character)
@@ -379,6 +450,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
+        if (selectedEnemy != null)
+        {
+            selectedEnemy = null;
+            AttackPreviewer.Instance.ClearAttackArea();
+        }
+
         if (potentialMovementTile.tileData.tileType == selectedCharacter.elementType)
         {
             Tile.HighlightTilesOfType(selectedCharacter.elementType);
@@ -417,6 +494,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
+                    StoreAttackData();
+
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
 
@@ -437,7 +516,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
                     DestroyPhantom();
 
-                    if(attackType == TurnEnums.PlayerAction.BasicAttack)
+                    if (attackType == TurnEnums.PlayerAction.BasicAttack)
                     {
                         selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, false);
                     }
@@ -453,6 +532,22 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     attackType = TurnEnums.PlayerAction.BasicAttack;
                 }
             }
+        }
+    }
+
+    private void StoreAttackData()
+    {
+        UndoManager.Instance.ClearData();
+        UndoManager.Instance.StoreHero((Hero)selectedCharacter);
+
+        foreach (Enemy_Base enemy in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
+        {
+            UndoManager.Instance.StoreEnemy(enemy);
+        }
+
+        foreach(TileObject tileObj in areaPrefab.ObjectsHit())
+        {
+            UndoManager.Instance.StoreTileObject(tileObj);
         }
     }
 

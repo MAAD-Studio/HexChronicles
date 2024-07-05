@@ -9,6 +9,10 @@ public class Enemy_Base : Character, EnemyInterface
     [Header("Enemy Specific:")]
     public EnemyAttributesSO enemySO;
 
+    public EnemyType enemyType;
+
+    public PreviewOrigin attackAreaPreview;
+
     #endregion
 
     #region UnityMethods
@@ -27,6 +31,8 @@ public class Enemy_Base : Character, EnemyInterface
         currentHealth = maxHealth;
 
         basicAttackArea = enemySO.attackArea;
+
+        attackAreaPreview = enemySO.attributes.attackAreaPreview;
     }
 
     #endregion

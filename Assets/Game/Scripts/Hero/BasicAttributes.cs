@@ -23,6 +23,7 @@ public class BasicAttributes
     public ElementType elementStrongAgainst;
 
     [Header("Area Prefabs:")]
+    public PreviewOrigin attackAreaPreview;
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
 
@@ -30,7 +31,7 @@ public class BasicAttributes
     public GameObject hitMarker;
     public GameObject buffPrefab;
 
-    [Header("ALPHA TEMPORARY MARKER")]
+    [Header("Temporary Markers")]
     public GameObject fireMarker;
     public GameObject healText;
 

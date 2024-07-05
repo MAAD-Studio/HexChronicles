@@ -108,5 +108,62 @@ public class Tower : Spawner
         }
     }
 
+    public override void TakeDamage(float attackDamage)
+    {
+        currentHealth -= attackDamage;
+
+        UpdateHealthBar?.Invoke();
+
+        if (currentHealth <= 0)
+        {
+            if(spawnedAttackArea != null)
+            {
+                foreach (Tile tile in tilesToColor)
+                {
+                    tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);
+                }
+                spawnedAttackArea.DestroySelf();
+            }
+
+            objectDestroyed.Invoke(this);
+
+            attachedTile.objectOnTile = null;
+            attachedTile.tileHasObject = false;
+
+            Destroy(gameObject);
+        }
+    }
+
+    public UndoData_Tower CustomUndoData()
+    {
+        UndoData_Tower data = new UndoData_Tower();
+        if (spawnedAttackArea != null)
+        {
+            data.attacking = true;
+            data.attackAreaPosition = spawnedAttackArea.transform.position;
+        }
+        else
+        {
+            data.attacking = false;
+        }
+
+        return data;
+    }
+
+    public override void Undo(UndoData_TileObjCustomInfo data)
+    {
+        if(spawnedAttackArea == null)
+        {
+            UndoData_Tower towerData = (UndoData_Tower)data;
+
+            spawnedAttackArea = Instantiate(attackAreaPrefab, towerData.attackAreaPosition, Quaternion.identity);
+
+            foreach (Tile tile in tilesToColor)
+            {
+                tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, true);
+            }
+        }
+    }
+
     #endregion
 }

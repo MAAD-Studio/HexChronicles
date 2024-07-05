@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.ScrollRect;
 
 public class AttackArea : MonoBehaviour
 {
@@ -39,6 +38,11 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
+            if(tile == null)
+            {
+                continue;
+            }
+
             // Reset preview on enemy healthbar
             if (tile.tileOccupied && tile.characterOnTile != null)
             {
