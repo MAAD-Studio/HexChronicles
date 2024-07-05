@@ -167,10 +167,10 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void UpdateButton()
     {
-        if (hero.currentSkillCD > 0)
+        if (hero.CurrentSkillCD > 0)
         {
             skillBtn.interactable = false;
-            skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
+            skillCD.text = $"(On Cooldown - {hero.CurrentSkillCD} turns)";
             attackBtn.interactable = false;
         }
         else

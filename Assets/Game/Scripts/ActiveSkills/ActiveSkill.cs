@@ -84,7 +84,7 @@ public class ActiveSkill
             foreach (var target in targets)
             {
                 Hero heroTarget = (Hero)target;
-                heroTarget.currentSkillCD -= skillEffectValue;
+                heroTarget.CurrentSkillCD -= skillEffectValue;
             }
         }
 

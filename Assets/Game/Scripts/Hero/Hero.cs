@@ -10,7 +10,12 @@ public class Hero : Character
     // Active skill
     [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
     public int skillCD = 3;
-    public int currentSkillCD;
+    private int currentSkillCD = 3;
+    public int CurrentSkillCD
+    {
+        get { return currentSkillCD; }
+        set { currentSkillCD = value; }
+    }
 
     public List<BasicUpgrade> upgradeList; 
 
