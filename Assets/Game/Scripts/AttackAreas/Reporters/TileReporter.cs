@@ -49,5 +49,10 @@ public class TileReporter : MonoBehaviour
         currentTile = null;
     }
 
+    public virtual void ExecuteAddOnEffect()
+    {
+
+    }
+
     #endregion
 }

@@ -555,6 +555,7 @@ public class Character : MonoBehaviour
             attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
             yield return new WaitForSeconds(0.03f);
             attackAreaPrefab.DetectArea(true, true);
+            attackAreaPrefab.ExecuteAddOnEffects();
 
             transform.LookAt(attackAreaPrefab.transform.position);
 

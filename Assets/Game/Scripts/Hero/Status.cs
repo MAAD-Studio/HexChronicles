@@ -16,7 +16,8 @@ public class Status
         CannotMove,
         CannotAttack,
         Wet,
-        Haste
+        Haste,
+        Shield
     }
     public StatusTypes statusType;
     public int effectTurns;
