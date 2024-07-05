@@ -28,6 +28,7 @@ public class Hero : Character
         currentHealth = maxHealth;
 
         basicAttackArea = heroSO.attackArea;
+        defaultScale = heroSO.attributes.defaultScale;
 
         activeSkill.thisCharacter = this;
         activeSkill.Initialize(heroSO.activeSkillSO);

@@ -35,6 +35,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public ElementType elementType;
     [HideInInspector] public ElementType elementWeakAgainst;
     [HideInInspector] public ElementType elementStrongAgainst;
+    [HideInInspector] public Vector3 defaultScale;
 
 
     [Header("Tile LayerMask:")]

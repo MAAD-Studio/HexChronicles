@@ -18,11 +18,14 @@ public class Weather_Rain : Weather_Base
     {
         foreach(Character character in characters)
         {
-            Status newStatus = new Status();
-            newStatus.statusType = statusEffect;
-            newStatus.effectTurns = effectTurns;
-            character.AddStatus(newStatus);
-            character.effectedByWeather = true;
+            if(Status.GrabIfStatusActive(character, statusEffect) == null)
+            {
+                Status newStatus = new Status();
+                newStatus.statusType = statusEffect;
+                newStatus.effectTurns = effectTurns;
+                character.AddStatus(newStatus);
+                character.effectedByWeather = true;
+            }
         }
     }
 

@@ -33,6 +33,7 @@ public class Enemy_Base : Character, EnemyInterface
         basicAttackArea = enemySO.attackArea;
 
         attackAreaPreview = enemySO.attributes.attackAreaPreview;
+        defaultScale = enemySO.attributes.defaultScale;
     }
 
     #endregion

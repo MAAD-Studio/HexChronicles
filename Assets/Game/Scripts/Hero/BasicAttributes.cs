@@ -16,6 +16,7 @@ public class BasicAttributes
     public int attackRange = 0;
     public float defensePercentage = 0;
     [SerializeField] public TurnEnums.CharacterType characterType;
+    public Vector3 defaultScale = Vector3.one;
 
     [Header("Elements:")]
     public ElementType elementType;

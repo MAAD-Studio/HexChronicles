@@ -237,7 +237,7 @@ public class Tile : MonoBehaviour
     {
         if(character.elementType == tileData.tileType)
         {
-            character.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+            character.transform.localScale = character.defaultScale + new Vector3(0.25f, 0.25f, 0.25f);
         }
     }
 
@@ -252,7 +252,7 @@ public class Tile : MonoBehaviour
     {
         if (character.elementType == tileData.tileType)
         {
-            character.transform.localScale = new Vector3(1f, 1f, 1f);
+            character.transform.localScale = character.defaultScale;
         }
 
         characterTimeOnTile = 0;
