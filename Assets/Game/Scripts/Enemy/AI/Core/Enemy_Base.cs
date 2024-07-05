@@ -11,7 +11,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     public EnemyType enemyType;
 
-    public GameObject attackAreaPreview;
+    public PreviewOrigin attackAreaPreview;
 
     #endregion
 

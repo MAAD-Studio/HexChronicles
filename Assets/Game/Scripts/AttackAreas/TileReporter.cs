@@ -36,9 +36,11 @@ public class TileReporter : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         Tile newTile = other.GetComponent<Tile>();
-        if(newTile != null)
-        {
-            currentTile = newTile;
+        currentTile = newTile;
+
+        if(currentTile != null && currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.General)
+        { 
+            currentTile = null;
         }
     }
 

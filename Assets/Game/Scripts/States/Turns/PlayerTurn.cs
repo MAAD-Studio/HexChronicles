@@ -181,7 +181,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if(selectedEnemy != null)
         {
             selectedEnemy = null;
-            DespawnAreaPreview();
+            AttackPreviewer.Instance.ClearAttackArea();
         }
 
         ResetBoard();
@@ -351,42 +351,25 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             if(selectedEnemy == null)
             {
-                GrabEnemy();
+                GrabEnemy((Enemy_Base)character);
             }
             else if(selectedEnemy != character)
             {
-                DespawnAreaPreview();
-                GrabEnemy();
+                AttackPreviewer.Instance.ClearAttackArea();
+                GrabEnemy((Enemy_Base)character);
             }
             else
             {
                 selectedEnemy = null;
-                DespawnAreaPreview();
+                AttackPreviewer.Instance.ClearAttackArea();
             }
         }
     }
 
-    public void GrabEnemy()
+    public void GrabEnemy(Enemy_Base enemy)
     {
         selectedEnemy = currentTile.characterOnTile;
-        SpawnAreaPreview((Enemy_Base)selectedEnemy);
-    }
-
-    public void SpawnAreaPreview(Enemy_Base enemy)
-    {
-        if(attackRangePreview == null)
-        {
-            attackRangePreview = Instantiate(enemy.attackAreaPreview, enemy.transform.position, Quaternion.identity);
-        }
-    }
-
-    public void DespawnAreaPreview()
-    {
-        if (attackRangePreview != null)
-        {
-            Destroy(attackRangePreview);
-            attackRangePreview = null;
-        }
+        AttackPreviewer.Instance.PreviewMoveAttackArea(enemy);
     }
 
     public void SelectCharacter(Character character)
@@ -467,6 +450,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
+        if (selectedEnemy != null)
+        {
+            selectedEnemy = null;
+            AttackPreviewer.Instance.ClearAttackArea();
+        }
+
         if (potentialMovementTile.tileData.tileType == selectedCharacter.elementType)
         {
             Tile.HighlightTilesOfType(selectedCharacter.elementType);
@@ -526,12 +515,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     }
 
                     DestroyPhantom();
-
-                    if (selectedEnemy != null)
-                    {
-                        selectedEnemy = null;
-                        DespawnAreaPreview();
-                    }
 
                     if (attackType == TurnEnums.PlayerAction.BasicAttack)
                     {

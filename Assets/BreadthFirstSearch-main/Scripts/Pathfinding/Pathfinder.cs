@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(PathIllustrator))]
-public class Pathfinder : MonoBehaviour
+public class Pathfinder : Singleton<Pathfinder>
 {
     #region Variables
 
@@ -37,18 +38,24 @@ public class Pathfinder : MonoBehaviour
 
     public void PathTilesInRange(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate)
     {
-        FindPaths(origin, originCost, maxRange, includeOccupied, illustrate);
+        ResetPathFinder();
+        AddTilesToFrontier(PathFind(origin, originCost, maxRange, includeOccupied, illustrate, false));
     }
 
     public void FindMovementPathsCharacter(Character character, bool illustrate)
     {
-        FindPaths(character.characterTile, character.movementThisTurn, character.moveDistance, false, illustrate);
+        ResetPathFinder();
+        AddTilesToFrontier(PathFind(character.characterTile, character.movementThisTurn, character.moveDistance, false, illustrate, false));
     }
 
-    //BreadthFirst searches for what tiles the character can reach
-    private void FindPaths(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate)
+    public List<Tile> ReturnMovementTiles(Character character)
     {
-        ResetPathFinder();
+        return PathFind(character.characterTile, character.movementThisTurn, character.moveDistance, false, false, true);
+    }
+
+    private List<Tile> PathFind(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate, bool ignoreFrontier)
+    {
+        List<Tile> movementTiles = new List<Tile>();
 
         //Grabs and sets the origin tile
         Queue<Tile> openTiles = new Queue<Tile>();
@@ -69,7 +76,7 @@ public class Pathfinder : MonoBehaviour
                 newCost = currentTile.cost + adjacentTile.tileData.tileCost;
 
                 //If the adjacent tile has already been added to the list of tile to check ignore it
-                if (openTiles.Contains(adjacentTile) || frontier.Contains(adjacentTile))
+                if (openTiles.Contains(adjacentTile) || movementTiles.Contains(adjacentTile))
                 {
                     continue;
                 }
@@ -77,39 +84,51 @@ public class Pathfinder : MonoBehaviour
                 adjacentTile.cost = newCost;
 
                 //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
-                if (IsValidTile(adjacentTile, maxRange, includeOccupied))
+                if (IsValidTile(adjacentTile, maxRange, ignoreFrontier))
                 {
-                    adjacentTile.parentTile = currentTile;
+                    if(!ignoreFrontier)
+                    {
+                        adjacentTile.parentTile = currentTile;
+                    }
+
                     openTiles.Enqueue(adjacentTile);
-                    AddTileToFrontier(adjacentTile);
+                    movementTiles.Add(adjacentTile);
                 }
             }
         }
-        AddTileToFrontier(origin);
+        movementTiles.Add(origin);
 
-        if(illustrate)
+        if (illustrate)
         {
             //Once we confirm what tiles can be reached we illustrate them
-            illustrator.IllustrateFrontier(frontier);
+            illustrator.IllustrateFrontier(movementTiles);
         }
+
+        return movementTiles;
     }
 
     //Checks if a tile is valid for reaching
-    bool IsValidTile(Tile tile, int maxCost, bool includeOccupied)
+    bool IsValidTile(Tile tile, int maxCost, bool includeFrontier)
     {
-        if (!frontier.Contains(tile) && tile.cost <= maxCost && tile.tileData.walkable)
+        if(frontier.Contains(tile) && !includeFrontier)
+        {
+            return false;
+        }
+        else if(tile.cost <= maxCost && tile.tileData.walkable)
         {
             return true;
         }
-
         return false;
     }
 
     //Adds a tile into the frontier
-    void AddTileToFrontier(Tile tile)
+    void AddTilesToFrontier(List<Tile> tiles)
     {
-        tile.inFrontier = true;
-        frontier.Add(tile);
+        foreach(Tile tile in tiles)
+        {
+            tile.inFrontier = true;
+            frontier.Add(tile);
+        }
     }
 
     //Finds any tiles adjacent to the current tile
