@@ -78,11 +78,11 @@ public class AttackArea : MonoBehaviour
         ResetArea();
         reporterTiles.Clear();
 
-        if(originReporter != null)
+        if (originReporter != null)
         {
             originReporter.CheckBlockages(false);
         }
-        
+
         foreach (TileReporter reporter in tileReporters)
         {
             if(reporter.currentTile != null)
@@ -91,7 +91,7 @@ public class AttackArea : MonoBehaviour
             }
         }
 
-        if(illustrate)
+        if (illustrate)
         {
             ColourArea(highlightOccupied);
         }
