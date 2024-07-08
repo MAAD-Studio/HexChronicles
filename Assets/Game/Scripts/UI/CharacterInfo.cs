@@ -23,7 +23,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private List<TextMeshProUGUI> textDef;
     [SerializeField] private GameObject statusField;
     [SerializeField] private GameObject statusPrefab;
-    private List<Status> status;
     private Hero hero;
 
     [Header("HealthBar")]
@@ -98,25 +97,21 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         List<Status> newStatus = hero.statusList;
 
-        if (status != newStatus)
+        foreach (Transform child in statusField.transform)
         {
-            foreach (Transform child in statusField.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(child.gameObject);
+        }
 
-            if (newStatus != null)
+        if (newStatus != null)
+        {
+            foreach (var status in newStatus)
             {
-                foreach (var status in newStatus)
-                {
-                    GameObject statusObject = Instantiate(statusPrefab);
-                    statusObject.transform.SetParent(statusField.transform);
+                GameObject statusObject = Instantiate(statusPrefab);
+                statusObject.transform.SetParent(statusField.transform);
 
-                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
-                    statusEffect.Initialize(status);
-                }
+                StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                statusEffect.Initialize(status);
             }
-            status = newStatus;
         }
     }
 
@@ -234,6 +229,19 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         selectedState.SetActive(false);
         noActionState.SetActive(true);
         deadState.SetActive(false);
+    }
+
+    public void SetRestoreState()
+    {
+        interactable = true;
+        if (heroDead)
+        {
+            heroDead = false;
+        }
+        SetDefaultState();
+        UpdateAttributes();
+        UpdateHealthBar();
+        UpdateStatus();
     }
 
     public void SetSelectedState()

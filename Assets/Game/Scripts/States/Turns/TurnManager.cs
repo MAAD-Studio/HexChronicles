@@ -57,7 +57,7 @@ public class TurnManager : MonoBehaviour
 
     [HideInInspector] public static UnityEvent LevelVictory = new UnityEvent();
     [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
-    [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
+    [HideInInspector] public static UnityEvent<Character> OnCharacterDied = new UnityEvent<Character>();
 
     #endregion
 
@@ -188,7 +188,7 @@ public class TurnManager : MonoBehaviour
 
             characterList.Remove(character);
 
-            OnCharacterDied?.Invoke(character.name);
+            OnCharacterDied?.Invoke(character);
 
             if (characterList.Count == 0)
             {

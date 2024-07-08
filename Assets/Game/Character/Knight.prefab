@@ -1274,7 +1274,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!95 &8591538072208304518
 Animator:
   serializedVersion: 5
@@ -1326,6 +1326,7 @@ MonoBehaviour:
   elementType: 0
   elementWeakAgainst: 0
   elementStrongAgainst: 0
+  defaultScale: {x: 0, y: 0, z: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1349,25 +1350,9 @@ MonoBehaviour:
       m_Calls: []
   heroSO: {fileID: 11400000, guid: df0f9560b70b1d3459c04e7916265c39, type: 2}
   activeSkill:
-    icon: {fileID: 0}
-    skillName: 
-    description:
-      description: 
-      keywords: []
-    skillshape: {fileID: 0}
-    shapeArea: {fileID: 0}
-    particleEffect: {fileID: 0}
-    soundEffect: {fileID: 0}
-    skillEffect: 0
-    skillEffectValue: 0
-    status:
-      statusType: 0
-      effectTurns: 0
-      damageAddOn: 0
     thisCharacter: {fileID: 0}
     affectedTiles: []
   skillCD: 3
-  currentSkillCD: 0
   upgradeList: []
 --- !u!1 &4068752844551533863
 GameObject:
@@ -3037,6 +3022,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 754219718529274353, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813019808387096317, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813019808387096317, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813019808387096317, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813019808387096317, guid: 38026296ae5bb1545a7a3ba722e53916, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}

@@ -16,7 +16,6 @@ public abstract class HealthBar : MonoBehaviour
 
     [SerializeField] protected GameObject statusField;
     [SerializeField] protected GameObject statusPrefab;
-    protected List<Status> status;
 
     protected abstract void Start();
     protected abstract void OnDestroy();

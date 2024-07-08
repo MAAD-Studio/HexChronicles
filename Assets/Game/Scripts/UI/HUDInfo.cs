@@ -98,7 +98,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
-            EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+            EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
@@ -115,7 +115,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
-            EventBus.Instance.Unsubscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+            EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
@@ -199,29 +199,44 @@ public class HUDInfo : MonoBehaviour
         turnMessage.gameObject.SetActive(false);
     }
 
-    private void OnCharacterMadeDecision(object obj)
+    private void OnUpdateCharacterDecision(object obj)
     {
-        CharacterHasMadeDecision decisionData = (CharacterHasMadeDecision)obj;
-        if (characterInfoDict.TryGetValue(decisionData.character.name, out var info))
+        UpdateCharacterDecision decisionData = (UpdateCharacterDecision)obj;
+        Hero hero = (Hero)decisionData.character;
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
-            info.SetNoActionState();
+            if (decisionData.hasMadeDecision)
+            {
+                info.SetNoActionState();
+                activeHeroes--;
+
+            }
+            else
+            {
+                info.SetRestoreState();
+                activeHeroes++;
+            }
         }
-        activeHeroes--;
 
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
         }
+        else
+        {
+            endTurn.GetComponent<Image>().color = Color.white;
+        }
     }
 
-    private void CharacterDied(string arg0)
+    private void CharacterDied(Character arg0)
     {
-        if (characterInfoDict.TryGetValue(arg0, out var info))
+        Hero hero = (Hero)arg0;
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
             info.SetDeadState();
         }
 
-        heroButtons.Remove(heroButtons.Find(x => x.name == arg0));
+        heroButtons.Remove(heroButtons.Find(x => x.name == hero.heroSO.name));
 
         availableHeroes--;
     }
@@ -259,7 +274,7 @@ public class HUDInfo : MonoBehaviour
 
             // Add Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
-            characterInfoDict.Add(gameObject.name, info);
+            characterInfoDict.Add(hero.heroSO.name, info);
 
             info.InitializeInfo(hero);
             info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());

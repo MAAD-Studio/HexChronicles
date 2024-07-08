@@ -647,7 +647,7 @@ public class Character : MonoBehaviour
     //Plants the character down onto the tile they are overtop of
     public void FinalizeTileChoice(Tile tile)
     {
-        transform.position = tile.transform.position + new Vector3(0, 0.1f, 0);
+        transform.position = tile.transform.position + new Vector3(0, 0.2f, 0);
         characterTile = tile;
 
         moving = false;

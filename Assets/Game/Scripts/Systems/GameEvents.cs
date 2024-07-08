@@ -10,9 +10,10 @@ public struct CharacterSelected
     public Character character;
 }
 
-public struct CharacterHasMadeDecision
+public struct UpdateCharacterDecision
 {
     public Character character;
+    public bool hasMadeDecision;
 }
 
 

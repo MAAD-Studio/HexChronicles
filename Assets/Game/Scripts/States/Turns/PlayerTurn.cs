@@ -499,7 +499,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     selectedCharacter.hasMadeDecision = true;
                     phase = TurnEnums.PlayerPhase.Execution;
 
-                    EventBus.Instance.Publish(new CharacterHasMadeDecision { character = selectedCharacter });
+                    EventBus.Instance.Publish(new UpdateCharacterDecision { character = selectedCharacter, hasMadeDecision = true });
 
                     if(pathFinder == null)
                     {

@@ -16,12 +16,14 @@ public class CharacterUIConfig : ScriptableObject
     [SerializeField] private Sprite wet;
     [SerializeField] private Sprite haste;
     [SerializeField] private Sprite bound;
+    [SerializeField] private Sprite shield;
 
     [Header("Status Description")]
     [TextArea(3, 10)] public string burningDetail;
     [TextArea(3, 10)] public string wetDetail;
     [TextArea(3, 10)] public string hasteDetail;
     [TextArea(3, 10)] public string boundDetail;
+    [TextArea(3, 10)] public string shieldDetail;
 
 
     public Sprite GetElementSprite(ElementType element)
@@ -93,6 +95,10 @@ public class CharacterUIConfig : ScriptableObject
         {
             return bound;
         }
+        else if (status.statusType == Status.StatusTypes.Shield)
+        {
+            return shield;
+        }
         return null;
     }
 
@@ -113,6 +119,10 @@ public class CharacterUIConfig : ScriptableObject
         else if (status.statusType == Status.StatusTypes.Bound)
         {
             return boundDetail;
+        }
+        else if (status.statusType == Status.StatusTypes.Shield)
+        {
+            return shieldDetail;
         }
         return null;
     }

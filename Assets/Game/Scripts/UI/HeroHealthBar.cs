@@ -45,23 +45,19 @@ public class HeroHealthBar : HealthBar
     {
         List<Status> newStatus = hero.statusList;
 
-        if (status != newStatus)
+        foreach (Transform child in statusField.transform)
         {
-            foreach (Transform child in statusField.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(child.gameObject);
+        }
 
-            if (newStatus != null)
+        if (newStatus != null)
+        {
+            foreach (var status in newStatus)
             {
-                foreach (var status in newStatus)
-                {
-                    GameObject statusObject = Instantiate(statusPrefab, statusField.transform, false);
-                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
-                    statusEffect.Initialize(status);
-                }
+                GameObject statusObject = Instantiate(statusPrefab, statusField.transform, false);
+                StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                statusEffect.Initialize(status);
             }
-            status = newStatus;
         }
     }
 
