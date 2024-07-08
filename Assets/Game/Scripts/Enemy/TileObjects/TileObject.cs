@@ -8,7 +8,7 @@ public class TileObject : MonoBehaviour
 {
     [Header("Setup Info:")]
     [SerializeField] protected LayerMask tileLayer;
-    [SerializeField] protected TurnManager turnManager;
+    protected TurnManager turnManager;
     [SerializeField] public TileObjectSO tileObjectData;
     [HideInInspector] public float currentHealth = 0f;
     [SerializeField] public TileObjectHealthBar healthBar;
@@ -25,10 +25,7 @@ public class TileObject : MonoBehaviour
 
     public virtual void Start()
     {
-        if(turnManager == null)
-        {
-            turnManager = FindObjectOfType<TurnManager>();
-        }
+        turnManager = FindObjectOfType<TurnManager>();
 
         currentHealth =  tileObjectData.health;
         if (healthBar == null) 
@@ -55,6 +52,11 @@ public class TileObject : MonoBehaviour
 
     public virtual void TakeDamage(float attackDamage)
     {
+        if(objectType == ObjectType.ElementalWall)
+        {
+            return;
+        }
+
         currentHealth -= attackDamage;
 
         UpdateHealthBar?.Invoke();
@@ -72,6 +74,11 @@ public class TileObject : MonoBehaviour
 
     public void PreviewDamage(float damage)
     {
+        if (objectType == ObjectType.ElementalWall)
+        {
+            return;
+        }
+
         healthBar.damagePreview = damage;
         DamagePreview?.Invoke();
     }
@@ -79,6 +86,11 @@ public class TileObject : MonoBehaviour
     public virtual void Undo(UndoData_TileObjCustomInfo data)
     {
 
+    }
+
+    public virtual bool CheckDestruction()
+    {
+        return false;
     }
 
     #region breadthFirstMethods

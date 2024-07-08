@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Character : MonoBehaviour
 {
@@ -542,8 +543,8 @@ public class Character : MonoBehaviour
         if(attackTargetTile != null && characterType != TurnEnums.CharacterType.Enemy)
         {
             Hero thisHero = (Hero)this;
-
             AttackArea attackAreaPrefab;
+
             if (activeSkillUse)
             {
                 attackAreaPrefab = Instantiate(activeSkillArea);
@@ -568,18 +569,32 @@ public class Character : MonoBehaviour
 
             transform.LookAt(attackAreaPrefab.transform.position);
 
-            List<Character> enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+            List<Character> enemiesHit = new List<Character>();
+            List<Character> heroesHit = new List<Character>();
             List<TileObject> objectsHit = attackAreaPrefab.ObjectsHit();
+
+            if(attackAreaPrefab.hitsEnemies)
+            {
+                enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+            }
+            if(attackAreaPrefab.hitsHeroes)
+            {
+                heroesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Player);
+            }
+
             if (activeSkillUse)
             {
                 ReleaseActiveSkill(enemiesHit);
+                ReleaseActiveSkill(heroesHit);
             }
             else
             {
                 PerformBasicAttack(enemiesHit);
+                PerformBasicAttack(heroesHit);
             }
             PerformBasicAttackObjects(objectsHit);
-            GenerateHitMarkers(thisHero, enemiesHit, objectsHit);
+
+            GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
 
             yield return new WaitForSeconds(0.5f);
             attackAreaPrefab.DestroySelf();
@@ -597,7 +612,7 @@ public class Character : MonoBehaviour
     }
 
     //Generates the HitMarker prefab over hit Enemies and Objects
-    public void GenerateHitMarkers(Hero thisHero, List<Character> enemiesHit, List<TileObject> objectsHit)
+    public void GenerateHitMarkers(Hero thisHero, List<Character> enemiesHit, List<Character> heroesHit, List<TileObject> objectsHit)
     {
         foreach (Character character in enemiesHit)
         {
@@ -606,6 +621,10 @@ public class Character : MonoBehaviour
         foreach (TileObject tileObj in objectsHit)
         {
             TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, tileObj.transform.position, 2.5f, 0.5f);
+        }
+        foreach (Character character in heroesHit)
+        {
+            TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.hitMarker, character.transform.position, 1.5f, 0.5f);
         }
     }
 
@@ -664,6 +683,59 @@ public class Character : MonoBehaviour
             MoveAndAttack(path, null, turnManager, false, Vector3.zero);
             // TODO: rotate after move, fix movement reduced next turn
             //StartCoroutine(RotateBack());
+        }
+    }
+
+    public void DragTowards(Tile dragTile, int damage)
+    {
+        Pathfinder pathFinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
+
+        Tile currentTile = characterTile;
+        float curDistance = Vector3.Distance(currentTile.transform.position, dragTile.transform.position);
+
+        while (currentTile != dragTile)
+        {
+            float inspectDistance = 100f;
+            Tile chosenTile = null;
+
+            foreach(Tile tile in pathFinder.FindAdjacentTiles(currentTile, true))
+            {
+                float newDistance = Vector3.Distance(tile.transform.position, dragTile.transform.position);
+                if (newDistance < inspectDistance)
+                {
+                    chosenTile = tile;
+                    curDistance = newDistance;
+                }
+            }
+
+            if(chosenTile.tileOccupied || inspectDistance >= curDistance || chosenTile == null)
+            {
+                break;
+            }
+
+            currentTile = chosenTile;
+            curDistance = Vector3.Distance(currentTile.transform.position, dragTile.transform.position);
+        }
+
+        characterTile.characterOnTile = null;
+        characterTile.tileOccupied = false;
+        characterTile = null;
+
+        transform.position = currentTile.transform.position + new Vector3(0, 0.2f, 0);
+        FindTile();
+
+        TakeDamage(damage, ElementType.Base);
+
+        Status status = Status.GrabIfStatusActive(this, Status.StatusTypes.Wet);
+        if(status == null)
+        {
+            status = new Status();
+            status.effectTurns = 1;
+            status.statusType = Status.StatusTypes.Wet;
+        }
+        else
+        {
+            status.effectTurns += 1;
         }
     }
 

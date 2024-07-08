@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5687939888059196798}
   - component: {fileID: 7768337534104619440}
   m_Layer: 0
-  m_Name: ActiveSkill_Drown
+  m_Name: ActiveSkill_Whirlpool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originReporters:
-  - {fileID: 6239007013587197944}
-  freeRange: 1
-  onlySingleTileType: 1
+  - {fileID: 2487411784421302149}
+  freeRange: 0
+  onlySingleTileType: 0
   effectedTileType: 1
   hitsEnemies: 1
   hitsHeroes: 0
@@ -88,7 +88,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2131961665999135640, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 2131961665999135640, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
       propertyPath: m_LocalRotation.w
@@ -122,24 +122,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hex
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 105281272630646749, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2527453207961919248, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2487411784421302149}
   m_SourcePrefab: {fileID: 100100000, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
 --- !u!4 &5365283343288986557 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2131961665999135640, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
   m_PrefabInstance: {fileID: 6333027618823047205}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6239007013587197944 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 105281272630646749, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
+--- !u!1 &8426303476028561205 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2527453207961919248, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
   m_PrefabInstance: {fileID: 6333027618823047205}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+--- !u!114 &2487411784421302149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8426303476028561205}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc7182300fe9bc04d8f2f8b476cc4905, type: 3}
+  m_Script: {fileID: 11500000, guid: cc02abdaf5620534c976fd25fb355888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentTile: {fileID: 0}
+  children: []
+  dragRange: 2
+  damage: 0

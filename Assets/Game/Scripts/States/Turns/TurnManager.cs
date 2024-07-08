@@ -30,9 +30,11 @@ public class TurnManager : MonoBehaviour
 
     [Header("Tiles:")]
     [SerializeField] private GameObject gridParent;
-    public List<LavaTile> lavaTiles = new List<LavaTile>();
-    public  List<GrassTile> grassTiles = new List<GrassTile>();
-    public List<WaterTile> waterTiles = new List<WaterTile>();
+    [HideInInspector] public List<LavaTile> lavaTiles = new List<LavaTile>();
+    [HideInInspector] public  List<GrassTile> grassTiles = new List<GrassTile>();
+    [HideInInspector] public List<WaterTile> waterTiles = new List<WaterTile>();
+
+    [HideInInspector] public List<TileObject> temporaryTileObjects = new List<TileObject>();
 
     private PlayerTurn playerTurn;
     private EnemyTurn enemyTurn;
@@ -125,6 +127,23 @@ public class TurnManager : MonoBehaviour
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
+
+                List<TileObject> tileObjectsToDestroy = new List<TileObject>();
+                foreach(TileObject tileObj in temporaryTileObjects)
+                {
+                    if(tileObj.CheckDestruction())
+                    {
+                        tileObjectsToDestroy.Add(tileObj);
+                    }
+                }
+
+                foreach(TileObject tileObj in tileObjectsToDestroy)
+                {
+                    temporaryTileObjects.Remove(tileObj);
+                    Destroy(tileObj.gameObject);
+                }
+                tileObjectsToDestroy.Clear();
+
                 mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
                 EventBus.Instance.Publish(new OnPlayerTurn());

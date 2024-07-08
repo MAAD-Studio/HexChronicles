@@ -1,5 +1,6 @@
 public enum ObjectType
 {
     General,
-    Tower
+    Tower,
+    ElementalWall
 }
