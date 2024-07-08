@@ -39,7 +39,7 @@ public class TileReporter : MonoBehaviour
         currentTile = newTile;
 
         if(currentTile != null && currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.General)
-        { 
+        {
             currentTile = null;
         }
     }
@@ -47,6 +47,11 @@ public class TileReporter : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         currentTile = null;
+    }
+
+    public virtual void ExecuteAddOnEffect()
+    {
+
     }
 
     #endregion

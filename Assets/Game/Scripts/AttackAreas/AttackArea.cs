@@ -12,6 +12,8 @@ public class AttackArea : MonoBehaviour
     public TileReporter originReporter;
 
     [SerializeField] public bool freeRange = false;
+
+    [SerializeField] public bool onlySingleTileType = false;
     [SerializeField] public ElementType effectedTileType;
 
     [SerializeField] public float maxHittableRange = 1f;
@@ -27,7 +29,7 @@ public class AttackArea : MonoBehaviour
             tileReporters.Add(reporter);
         }
 
-        Debug.Assert(originReporter != null, "AttackArea doesn't have an origin TileReporter");
+        //Debug.Assert(originReporter != null, "AttackArea doesn't have an origin TileReporter");
     }
 
     #endregion
@@ -78,7 +80,11 @@ public class AttackArea : MonoBehaviour
         ResetArea();
         reporterTiles.Clear();
 
-        originReporter.CheckBlockages(false);
+        if (originReporter != null)
+        {
+            originReporter.CheckBlockages(false);
+        }
+
         foreach (TileReporter reporter in tileReporters)
         {
             if(reporter.currentTile != null)
@@ -87,9 +93,18 @@ public class AttackArea : MonoBehaviour
             }
         }
 
-        if(illustrate)
+        if (illustrate)
         {
             ColourArea(highlightOccupied);
+        }
+    }
+
+    //Triggers any additonal effects for the attack shape
+    public void ExecuteAddOnEffects()
+    {
+        foreach(TileReporter reporter in tileReporters)
+        {
+            reporter.ExecuteAddOnEffect();
         }
     }
 

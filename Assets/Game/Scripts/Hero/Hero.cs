@@ -62,6 +62,15 @@ public class Hero : Character
     {
         int hitResult = UnityEngine.Random.Range(0, 101);
 
+        Status shield = Status.GrabIfStatusActive(this, Status.StatusTypes.Shield);
+        if (shield != null)
+        {
+            Debug.Log("SHIELDED FROM 5 DAMAGE");
+            damage -= 5;
+            MathF.Max(0, damage);
+            RemoveStatus(shield);
+        }
+
         if (elementWeakAgainst == type && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);

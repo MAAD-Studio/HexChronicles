@@ -184,7 +184,7 @@ public class EnemyBrain : MonoBehaviour
             if (combinations.TryGetValue(combinationChoice, out MoveAttackCombo finalCombo))
             {
                 Tile[] path = turnManager.pathfinder.PathBetween(finalCombo.movementTile, enemy_base.characterTile);
-                enemy_base.MoveAndAttack(path, null, turnManager, false);
+                enemy_base.MoveAndAttack(path, null, turnManager, false, Vector3.zero);
 
                 //Waits for the enemy to finish its movement
                 while (enemy_base.moving)

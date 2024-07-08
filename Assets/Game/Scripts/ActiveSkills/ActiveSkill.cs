@@ -38,7 +38,8 @@ public class ActiveSkill
         AddStatus = 1 << 2, 
         ReduceCD = 1 << 3,
         Push = 1 << 4,
-        ChangeTileType = 1 << 5 
+        ChangeTileType = 1 << 5,
+        Shield = 1 <<6 
     }
 
     public enum ReleaseTypes
@@ -98,7 +99,18 @@ public class ActiveSkill
             }
         }
 
-        if ((skillEffect & SkillEffect.ChangeTileType) != 0)
+        if ((skillEffect & SkillEffect.Shield) != 0)
+        {
+            if(Status.GrabIfStatusActive(thisCharacter, Status.StatusTypes.Shield) == null)
+            {
+                Status shieldStatus = new Status();
+                shieldStatus.effectTurns = skillEffectValue;
+                shieldStatus.statusType = Status.StatusTypes.Shield;
+                thisCharacter.AddStatus(shieldStatus);
+            }
+        }
+
+            if ((skillEffect & SkillEffect.ChangeTileType) != 0)
         {
             // TODO
         }
