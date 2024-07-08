@@ -9,13 +9,21 @@ public class AttackArea : MonoBehaviour
     private List<TileReporter> tileReporters = new List<TileReporter>();
     private List<Tile> reporterTiles = new List<Tile>();
 
-    public TileReporter originReporter;
+    public List<TileReporter> originReporters = new List<TileReporter>();
 
+    [Header("Movement: ")]
     [SerializeField] public bool freeRange = false;
 
+    [Header("Tile Targeting: ")]
     [SerializeField] public bool onlySingleTileType = false;
     [SerializeField] public ElementType effectedTileType;
 
+    [Header("Effect Targeting: ")]
+    [SerializeField] public bool hitsEnemies = true;
+    [SerializeField] public bool hitsHeroes = true;
+    [SerializeField] public bool hitsTileObjects = true;
+
+    [Header("Range: ")]
     [SerializeField] public float maxHittableRange = 1f;
 
     #endregion
@@ -80,9 +88,16 @@ public class AttackArea : MonoBehaviour
         ResetArea();
         reporterTiles.Clear();
 
-        if (originReporter != null)
+        if (originReporters != null)
         {
-            originReporter.CheckBlockages(false);
+            foreach(TileReporter tileReporter in originReporters)
+            {
+                if (tileReporter == null)
+                {
+                    continue;
+                }
+                tileReporter.CheckBlockages(false);
+            }
         }
 
         foreach (TileReporter reporter in tileReporters)

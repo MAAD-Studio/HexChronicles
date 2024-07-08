@@ -50,12 +50,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6c8a01116d9f4f4a898d14dfbf2c731, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originReporter: {fileID: 6239007013587197944}
+  originReporters:
+  - {fileID: 6239007013587197944}
+  - {fileID: 5354523810698758974}
+  - {fileID: 2821704978633527277}
   freeRange: 0
+  onlySingleTileType: 0
   effectedTileType: 0
+  hitsEnemies: 1
+  hitsHeroes: 0
+  hitsTileObjects: 1
   maxHittableRange: 1
-  skillData: {fileID: 11400000, guid: a07a1f5998a1aa5429290a7e06a765db, type: 2}
-  basicDamage: 0
 --- !u!1001 &1983021602270666675
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -435,7 +440,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 105281272630646749, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
       propertyPath: children.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 105281272630646749, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
       propertyPath: children.Array.data[0]

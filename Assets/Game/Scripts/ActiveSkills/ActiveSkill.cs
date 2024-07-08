@@ -39,7 +39,7 @@ public class ActiveSkill
         ReduceCD = 1 << 3,
         Push = 1 << 4,
         ChangeTileType = 1 << 5,
-        Shield = 1 <<6 
+        Shield = 1 <<6,
     }
 
     public enum ReleaseTypes
@@ -68,6 +68,7 @@ public class ActiveSkill
         {
             foreach (var target in targets)
             {
+                Debug.Log("Target Healed: " + target.name);
                 target.Heal(skillEffectValue);
             }
         }
@@ -110,7 +111,7 @@ public class ActiveSkill
             }
         }
 
-            if ((skillEffect & SkillEffect.ChangeTileType) != 0)
+        if ((skillEffect & SkillEffect.ChangeTileType) != 0)
         {
             // TODO
         }
