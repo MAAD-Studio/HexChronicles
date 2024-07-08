@@ -11,6 +11,7 @@ public class Pathfinder : Singleton<Pathfinder>
     [SerializeField] public LayerMask tileLayer;
     [HideInInspector] public PathIllustrator illustrator;
     [HideInInspector] public List<Tile> frontier = new List<Tile>();
+    private Character characterToCheck = null;
 
     #endregion
 
@@ -45,7 +46,9 @@ public class Pathfinder : Singleton<Pathfinder>
     public void FindMovementPathsCharacter(Character character, bool illustrate)
     {
         ResetPathFinder();
+        characterToCheck = character;
         AddTilesToFrontier(PathFind(character.characterTile, character.movementThisTurn, character.moveDistance, false, illustrate, false));
+        characterToCheck = null;
     }
 
     public List<Tile> ReturnMovementTiles(Character character)
@@ -156,6 +159,14 @@ public class Pathfinder : Singleton<Pathfinder>
                 if (includeOccupied || !hitTile.tileOccupied && !hitTile.tileHasObject)
                 {
                     adjacentTiles.Add(hitTile);
+                }
+                else if(characterToCheck != null && hitTile.tileHasObject && hitTile.objectOnTile.objectType == ObjectType.ElementalWall)
+                {
+                    ElementalWall elementalWall = (ElementalWall)hitTile.objectOnTile;
+                    if(elementalWall.elementType == characterToCheck.elementType)
+                    {
+                        adjacentTiles.Add(hitTile);
+                    }
                 }
             }
         }

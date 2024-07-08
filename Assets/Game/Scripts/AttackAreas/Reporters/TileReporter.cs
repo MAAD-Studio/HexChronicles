@@ -14,6 +14,11 @@ public class TileReporter : MonoBehaviour
 
     #region UnityMethods
 
+    public virtual void Start()
+    {
+
+    }
+
     public void CheckBlockages(bool parentNull)
     {
         bool tileNull = false;
@@ -51,7 +56,7 @@ public class TileReporter : MonoBehaviour
 
     public virtual void ExecuteAddOnEffect()
     {
-
+        
     }
 
     #endregion
