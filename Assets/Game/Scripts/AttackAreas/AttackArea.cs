@@ -12,6 +12,8 @@ public class AttackArea : MonoBehaviour
     public TileReporter originReporter;
 
     [SerializeField] public bool freeRange = false;
+
+    [SerializeField] public bool onlySingleTileType = false;
     [SerializeField] public ElementType effectedTileType;
 
     [SerializeField] public float maxHittableRange = 1f;

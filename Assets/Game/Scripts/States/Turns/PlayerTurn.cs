@@ -492,7 +492,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
-                if (!areaPrefab.freeRange || currentTile.tileData.tileType == areaPrefab.effectedTileType)
+                if (!areaPrefab.freeRange || areaPrefab.onlySingleTileType && currentTile.tileData.tileType == areaPrefab.effectedTileType)
                 {
                     StoreAttackData();
 
@@ -518,11 +518,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
                     if (attackType == TurnEnums.PlayerAction.BasicAttack)
                     {
-                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, false);
+                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, false, Vector3.zero);
                     }
                     else
                     {
-                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, true);
+                        selectedCharacter.MoveAndAttack(potentialPath, currentTile, turnManager, true, currentTile.transform.position);
                     }
 
                     Tile.UnHighlightTilesOfType(selectedCharacter.elementType);

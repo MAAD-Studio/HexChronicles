@@ -38,11 +38,6 @@ public class TileReporter : MonoBehaviour
         Tile newTile = other.GetComponent<Tile>();
         currentTile = newTile;
 
-        if(currentTile == null)
-        {
-            Debug.Log("WOWZA WOZA WOZA woowza");
-        }
-
         if(currentTile != null && currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.General)
         {
             currentTile = null;

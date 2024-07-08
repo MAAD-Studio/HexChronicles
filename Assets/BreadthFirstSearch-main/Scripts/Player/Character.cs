@@ -446,7 +446,7 @@ public class Character : MonoBehaviour
     }
 
     //Starts the process of Moving and Attacking with the Character
-    public void MoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
+    public void MoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse, Vector3 tilePos)
     {
         if(path.Length > 0)
         {
@@ -455,11 +455,11 @@ public class Character : MonoBehaviour
             turnManager.mainCameraController.controlEnabled = false;
         }
 
-        StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse));
+        StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse, tilePos));
     }
 
     //Moves the character if a path is provided and performs an attack if a Tile is provided
-    private IEnumerator PerformMoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse)
+    private IEnumerator PerformMoveAndAttack(Tile[] path, Tile attackTargetTile, TurnManager turnManager, bool activeSkillUse, Vector3 tilePos)
     {
         //Moves the Character
         if(path.Length > 0)
@@ -547,12 +547,21 @@ public class Character : MonoBehaviour
             if (activeSkillUse)
             {
                 attackAreaPrefab = Instantiate(activeSkillArea);
+                if(attackAreaPrefab.freeRange)
+                {
+                    attackAreaPrefab.transform.position = tilePos;
+                }
+                else
+                {
+                    attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
+                }
             }
             else
             {
                 attackAreaPrefab = Instantiate(basicAttackArea);
+                attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
             }
-            attackAreaPrefab.PositionAndRotateAroundCharacter(turnManager.pathfinder, characterTile, attackTargetTile);
+
             yield return new WaitForSeconds(0.03f);
             attackAreaPrefab.DetectArea(true, true);
             attackAreaPrefab.ExecuteAddOnEffects();
@@ -652,7 +661,7 @@ public class Character : MonoBehaviour
         {
             Tile[] path = tiles.ToArray();
             TurnManager turnManager = FindObjectOfType<TurnManager>();
-            MoveAndAttack(path, null, turnManager, false);
+            MoveAndAttack(path, null, turnManager, false, Vector3.zero);
             // TODO: rotate after move, fix movement reduced next turn
             //StartCoroutine(RotateBack());
         }
