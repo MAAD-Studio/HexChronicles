@@ -116,6 +116,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             }
             character.EnterNewTurn();
         }
+
+        cameraController.controlEnabled = true;
     }
 
     public void UpdateState()
@@ -134,6 +136,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             character.EndTurn();
             character.hasMadeDecision = false;
         }
+
+        cameraController.controlEnabled = false;
     }
 
     public void ResetState()

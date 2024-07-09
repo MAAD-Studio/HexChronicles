@@ -653,7 +653,10 @@ public class Character : MonoBehaviour
             attackAreaPrefab.DestroySelf();
         }
 
-        turnManager.mainCameraController.controlEnabled = true;
+        if(turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
+        {
+            turnManager.mainCameraController.controlEnabled = true;
+        }
         turnManager.mainCameraController.StopFollowingTarget();
 
         if(characterType == TurnEnums.CharacterType.Player)

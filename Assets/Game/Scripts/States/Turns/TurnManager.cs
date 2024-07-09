@@ -42,10 +42,15 @@ public class TurnManager : MonoBehaviour
     private TowersTurn towersTurn;
 
     private StateInterface currentTurn;
+    private TurnEnums.TurnState turnType;
 
     private int turnNumber;
     public int objectiveTurnNumber = 8;
 
+    public TurnEnums.TurnState TurnType
+    {
+        get { return turnType; }
+    }
     public StateInterface CurrentTurn
     {
         get { return currentTurn; }
@@ -102,6 +107,7 @@ public class TurnManager : MonoBehaviour
 
         turnNumber = 1;
         currentTurn = playerTurn;
+        turnType = TurnEnums.TurnState.PlayerTurn;
 
         EventBus.Instance.Publish(new OnNewLevelStart());
 
@@ -126,27 +132,13 @@ public class TurnManager : MonoBehaviour
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
-                turnNumber++;
-
-                List<TileObject> tileObjectsToDestroy = new List<TileObject>();
-                foreach(TileObject tileObj in temporaryTileObjects)
-                {
-                    if(tileObj.CheckDestruction())
-                    {
-                        tileObjectsToDestroy.Add(tileObj);
-                    }
-                }
-
-                foreach(TileObject tileObj in tileObjectsToDestroy)
-                {
-                    temporaryTileObjects.Remove(tileObj);
-                    Destroy(tileObj.gameObject);
-                }
-                tileObjectsToDestroy.Clear();
-
-                mainCameraController.controlEnabled = true;
-                currentTurn = playerTurn;
                 EventBus.Instance.Publish(new OnPlayerTurn());
+                currentTurn = playerTurn;
+                turnType = TurnEnums.TurnState.PlayerTurn;
+
+                turnNumber++;
+                CheckTemporaryObjects();
+                mainCameraController.controlEnabled = true;
 
                 if (turnNumber == objectiveTurnNumber + 1)
                 {
@@ -155,18 +147,21 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
-                currentTurn = enemyTurn;
                 EventBus.Instance.Publish(new OnEnemyTurn());
+                currentTurn = enemyTurn;
+                turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
+                turnType = TurnEnums.TurnState.WorldTurn;
                 mainCameraController.controlEnabled = false;
                 break;
 
             case TurnEnums.TurnState.WeatherTurn:
                 currentTurn = weatherTurn;
+                turnType = TurnEnums.TurnState.WeatherTurn;
                 mainCameraController.controlEnabled = false;
                 break;
         }
@@ -239,6 +234,25 @@ public class TurnManager : MonoBehaviour
         {
             grassTiles.Remove((GrassTile)oldTile);
         }
+    }
+
+    private void CheckTemporaryObjects()
+    {
+        List<TileObject> tileObjectsToDestroy = new List<TileObject>();
+        foreach (TileObject tileObj in temporaryTileObjects)
+        {
+            if (tileObj.CheckDestruction())
+            {
+                tileObjectsToDestroy.Add(tileObj);
+            }
+        }
+
+        foreach (TileObject tileObj in tileObjectsToDestroy)
+        {
+            temporaryTileObjects.Remove(tileObj);
+            Destroy(tileObj.gameObject);
+        }
+        tileObjectsToDestroy.Clear();
     }
 
     #endregion
