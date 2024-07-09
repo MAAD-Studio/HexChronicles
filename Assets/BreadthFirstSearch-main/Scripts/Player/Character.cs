@@ -59,7 +59,6 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     private GameObject buffPreview;
-    //private GameObject statusVFX;
 
     #endregion
 
@@ -332,6 +331,7 @@ public class Character : MonoBehaviour
             }
         }
         UpdateStatus?.Invoke();
+        UpdateAttributes?.Invoke();
     }
 
     public virtual void TakeDamage(float damage, ElementType type)

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [Header("States")]
     [SerializeField] private GameObject defaultState;
     [SerializeField] private GameObject selectedState;
     [SerializeField] private GameObject noActionState;
@@ -43,6 +44,11 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool interactable = true;
     private bool heroDead = false;
 
+    [Header("StartValue")]
+    private float startAttack;
+    private int startMovement;
+
+
     private void Start()
     {
         SetDefaultState();
@@ -52,6 +58,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         this.hero = hero;
         SubscribeEvents();
+
+        startAttack = hero.heroSO.attributes.attackDamage;
+        startMovement = hero.heroSO.attributes.movementRange;
 
         foreach (TextMeshProUGUI name in names)
         {
@@ -80,11 +89,40 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         foreach (TextMeshProUGUI movement in textMovement)
         {
-            movement.text = hero.moveDistance.ToString();
+            int newMove = hero.moveDistance - hero.movementThisTurn;
+            if (newMove > startMovement) // Show buff text in green
+            {
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.green)}>{newMove - startMovement}</color>";
+                movement.text = $"{startMovement} + {buffValue}";
+            }
+            else if (newMove < startMovement) // Show debuff text in red
+            {
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.red)}>{startMovement - newMove}</color>";
+                movement.text = $"{startMovement} - {deBuffValue}";
+            }
+            else
+            {
+                movement.text = newMove.ToString();
+            }
         }
+
         foreach (TextMeshProUGUI attack in textAttack)
         {
-            attack.text = hero.attackDamage.ToString();
+            float newAttack = hero.attackDamage;
+            if (newAttack > startAttack)
+            {
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.green)}>{newAttack - startAttack}</color>";
+                attack.text = $"{startAttack} + {buffValue}";
+            }
+            else if (newAttack < startAttack)
+            {
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.red)}>{startAttack - newAttack}</color>";
+                attack.text = $"{startAttack} - {deBuffValue}";
+            }
+            else
+            {
+                attack.text = newAttack.ToString();
+            }
         }
         foreach (TextMeshProUGUI def in textDef)
         {
