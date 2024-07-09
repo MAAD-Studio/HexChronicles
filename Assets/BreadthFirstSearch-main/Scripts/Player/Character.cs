@@ -91,7 +91,6 @@ public class Character : MonoBehaviour
         if (characterTile.tileData.tileType == elementType)
         {
             TurnManager turnManager = FindObjectOfType<TurnManager>();
-            ApplyBuffCharacter(turnManager);
             ApplyStatusAttackArea(targets);
             ApplyStatusElementalTile(turnManager);
         }
@@ -588,6 +587,11 @@ public class Character : MonoBehaviour
 
             yield return null;
             FindTile();
+
+            if(characterTile.tileData.tileType == elementType)
+            {
+                ApplyBuffCharacter(turnManager);
+            }
 
             animator.SetBool("walking", false);
         }
