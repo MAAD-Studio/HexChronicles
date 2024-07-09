@@ -7,7 +7,7 @@ public class Hero : Character
     [Header("Hero Specific:")]
     public HeroAttributesSO heroSO;
 
-    // Active skill
+    [Header("Active skill:")]
     [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
     public int skillCD = 3;
     private int currentSkillCD = 3;
@@ -17,6 +17,7 @@ public class Hero : Character
         set { currentSkillCD = value; }
     }
 
+    [Header("Upgrades:")]
     public List<BasicUpgrade> upgradeList; 
 
     protected override void Start()
@@ -94,6 +95,21 @@ public class Hero : Character
     {
         foreach (var target in targets)
         {
+            if (elementType == ElementType.Fire)
+            {
+            }
+            else if (elementType == ElementType.Water)
+            {
+                GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
+                Destroy(vfx, 3f);
+            }
+            else if (elementType == ElementType.Grass)
+            {
+                GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+                vfx.transform.LookAt(target.transform.position);
+                Destroy(vfx, 3f);
+            }
+
             target.TakeDamage(attackDamage, elementType);
             target.PreviewDamage(0);
         }

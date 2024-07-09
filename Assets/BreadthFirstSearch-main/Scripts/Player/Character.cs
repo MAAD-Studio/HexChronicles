@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.TextCore.Text;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Character : MonoBehaviour
 {
@@ -25,13 +22,14 @@ public class Character : MonoBehaviour
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
     [HideInInspector] public bool canAttack = true;
+    [SerializeField] protected GameObject attackVFX;
 
-    [Header("Character Basic Attributes:")]
+    [Header("Character Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
     [HideInInspector] public float maxHealth = 0f;
     [HideInInspector] public float attackDamage = 0;
     [HideInInspector] public float defensePercentage = 0;
-    [SerializeField] protected Animator animator;
+    [HideInInspector] protected Animator animator;
     [SerializeField] public HealthBar healthBar;
     [HideInInspector] public ElementType elementType;
     [HideInInspector] public ElementType elementWeakAgainst;
@@ -61,6 +59,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     private GameObject buffPreview;
+    //private GameObject statusVFX;
 
     #endregion
 
@@ -70,6 +69,8 @@ public class Character : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null, "Can not find Animatior Component on Character");
+
+        Debug.Assert(attackVFX != null, $"Can not find attackVFX on {name}");
 
         FindTile();
     }
@@ -256,9 +257,55 @@ public class Character : MonoBehaviour
 
     public void AddStatus(Status status)
     {
+        ShowEffect(status);
         statusList.Add(status);
 
         UpdateStatus.Invoke();
+    }
+
+    public void ShowEffect(Status status)
+    {
+        GameObject vfx = null;
+        switch (status.statusType)
+        {
+            case Status.StatusTypes.Burning:
+                vfx = Instantiate(Config.Instance.characterUIConfig.burningVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.Bound:
+                vfx = Instantiate(Config.Instance.characterUIConfig.boundVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.Blessing:
+                break;
+
+            case Status.StatusTypes.Hurt:
+                break;
+
+            case Status.StatusTypes.CannotMove:
+                break;
+
+            case Status.StatusTypes.CannotAttack:
+                break;
+
+            case Status.StatusTypes.Wet:
+                break;
+
+            case Status.StatusTypes.Haste:
+                break;
+
+            case Status.StatusTypes.Shield:
+                break;
+
+            default:
+                break;
+        }
+
+        if (vfx != null)
+        {
+            StatusVFX statusVFX = vfx.GetComponent<StatusVFX>();
+            statusVFX.Initialize(status.effectTurns, characterType == TurnEnums.CharacterType.Player);
+        }
     }
 
     public void RemoveStatus(Status status)

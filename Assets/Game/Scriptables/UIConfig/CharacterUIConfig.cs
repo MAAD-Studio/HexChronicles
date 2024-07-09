@@ -18,6 +18,13 @@ public class CharacterUIConfig : ScriptableObject
     public Sprite bound;
     public Sprite shield;
 
+    [Header("Status VFX")]
+    public GameObject burningVFX;
+    //public GameObject wetVFX;
+    //public GameObject hasteVFX;
+    public GameObject boundVFX;
+    //public GameObject shieldVFX;
+
     [Header("Status Description")]
     [TextArea(3, 10)] public string burningDetail;
     [TextArea(3, 10)] public string wetDetail;

@@ -107,6 +107,31 @@ public class Config : Singleton<Config>
         return null;
     }
 
+    public GameObject GetStatusVFX(Status status)
+    {
+        if (status.statusType == Status.StatusTypes.Burning)
+        {
+            return characterUIConfig.burningVFX;
+        }
+        else if (status.statusType == Status.StatusTypes.Wet)
+        {
+            //return characterUIConfig.wetVFX;
+        }
+        else if (status.statusType == Status.StatusTypes.Haste)
+        {
+            //return characterUIConfig.hasteVFX;
+        }
+        else if (status.statusType == Status.StatusTypes.Bound)
+        {
+            return characterUIConfig.boundVFX;
+        }
+        else if (status.statusType == Status.StatusTypes.Shield)
+        {
+            //return characterUIConfig.shieldVFX;
+        }
+        return null;
+    }
+
     public string GetStatusTypes(Character character)
     {
         if (character.statusList.Count != 0)
