@@ -83,13 +83,22 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        List<Character> targets = new List<Character>(attackArea.CharactersHit(TurnEnums.CharacterType.Player));
-        foreach (Character character in targets)
+        List<Character> charactersToCheck;
+        if (!mindControl)
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
+
+        foreach (Character character in charactersToCheck)
         {
             transform.LookAt(character.transform.position);
             character.TakeDamage(attackDamage, elementType);
         }
-        PerformBasicAttack(targets);
+        PerformBasicAttack(charactersToCheck);
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

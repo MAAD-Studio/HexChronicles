@@ -62,11 +62,18 @@ public class Enemy_Gangsta : Enemy_Base
     {
         base.ExecuteAttack(attackArea, turnManager);
 
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        List<Character> charactersToCheck;
+        if (!mindControl)
         {
-            transform.LookAt(character.transform.position);
-            character.TakeDamage(attackDamage, elementType);
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
 
+        foreach (Character character in charactersToCheck)
+        {
             List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
             foreach(Tile tile in adjacentTiles)
             {
@@ -116,6 +123,15 @@ public class Enemy_Gangsta : Enemy_Base
 
     private void FollowUpAttack(Character character)
     {
+        if(mindControl && character.characterType == TurnEnums.CharacterType.Player)
+        {
+            return;
+        }
+        else if(!mindControl && character.characterType == TurnEnums.CharacterType.Enemy)
+        {
+            return;
+        }
+
         transform.LookAt(character.transform.position);
         character.TakeDamage(attackDamage, elementType);
 

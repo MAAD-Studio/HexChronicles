@@ -92,6 +92,11 @@ public class EnemyBrain : MonoBehaviour
 
             foreach (Character character in charactersToCheck)
             {
+                if (character == enemy_base)
+                {
+                    continue;
+                }
+
                 float newDistance = Vector3.Distance(character.transform.position, enemy_base.transform.position);
 
                 //Grabs the closest character
@@ -132,7 +137,11 @@ public class EnemyBrain : MonoBehaviour
                         valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
 
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
-                        if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        {
+                            rotation = nullVector;
+                        }
+                        else if(mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Enemy).Count == 0)
                         {
                             rotation = nullVector;
                         }
