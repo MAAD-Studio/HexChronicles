@@ -554,6 +554,12 @@ public class Character : MonoBehaviour
                 currentTile.OnTileEnter(this);
                 currentTile = WalkOntoTileEffect(currentTile);
 
+                if(currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.PoisonCloud)
+                {
+                    PoisonCloud poison = (PoisonCloud)currentTile.objectOnTile;
+                    TakeDamage(poison.Damage, ElementType.Poison);
+                }
+
                 tilesInPath.Remove(path[step]);
                 path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 

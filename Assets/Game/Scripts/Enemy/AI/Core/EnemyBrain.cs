@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.Timeline;
@@ -69,13 +70,27 @@ public class EnemyBrain : MonoBehaviour
             turnManager.pathfinder.ResetPathFinder();
             turnManager.pathfinder.FindMovementPathsCharacter(enemy_base, false);
 
-            List<Tile> usableTiles = new List<Tile>();
-            usableTiles = turnManager.pathfinder.frontier;
-            usableTiles.Add(enemy_base.characterTile);
+            List<Tile> usableTiles = new List<Tile>(turnManager.pathfinder.frontier)
+            {
+                enemy_base.characterTile,
+            };
+
+            bool mindControl = (Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.MindControl) != null);
 
             Character currentClosest = null;
             float charDistance = 1000f;
-            foreach (Character character in turnManager.characterList)
+
+            List<Character> charactersToCheck;
+            if(!mindControl)
+            {
+                charactersToCheck = turnManager.characterList;
+            }
+            else
+            {
+                charactersToCheck = turnManager.enemyList.ToList<Character>();
+            }
+
+            foreach (Character character in charactersToCheck)
             {
                 float newDistance = Vector3.Distance(character.transform.position, enemy_base.transform.position);
 

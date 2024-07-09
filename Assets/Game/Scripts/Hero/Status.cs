@@ -17,7 +17,8 @@ public class Status
         CannotAttack,
         Wet,
         Haste,
-        Shield
+        Shield,
+        MindControl
     }
     public StatusTypes statusType;
     public int effectTurns;

@@ -23,8 +23,18 @@ public class Enemy_Gangsta : Enemy_Base
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
+        List<Character> charactersToCheck;
+        if(!mindControl)
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
+
         int valueOfAttack = 0;
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        foreach (Character character in charactersToCheck)
         {
             valueOfAttack += 5;
 

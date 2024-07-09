@@ -243,6 +243,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             UndoAction();
         }
+
+        if(Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            SwitchToSpecialAttack();
+        }
     }
 
     public void MoveBackAPhase()
