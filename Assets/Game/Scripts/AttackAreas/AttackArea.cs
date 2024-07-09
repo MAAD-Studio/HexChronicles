@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.VisualScripting.Metadata;
 
 public class AttackArea : MonoBehaviour
 {
@@ -37,7 +38,21 @@ public class AttackArea : MonoBehaviour
             tileReporters.Add(reporter);
         }
 
-        //Debug.Assert(originReporter != null, "AttackArea doesn't have an origin TileReporter");
+        List<TileReporter> reportersToRemove = new List<TileReporter>();
+        foreach(TileReporter reporter in originReporters)
+        {
+            if (reporter == null)
+            {
+                reportersToRemove.Add(reporter);
+                Debug.LogWarning("(" + transform.parent.name + ") had a null origin reporter.");
+            }
+        }
+
+        foreach (TileReporter reporter in reportersToRemove)
+        {
+            originReporters.Remove(reporter);
+        }
+        reportersToRemove.Clear();
     }
 
     #endregion
@@ -65,7 +80,6 @@ public class AttackArea : MonoBehaviour
             }
 
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
-            //tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
         }
     }
 
@@ -74,10 +88,6 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            /*if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
-            {
-                tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
-            }*/
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, true);
         }
     }
