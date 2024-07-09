@@ -60,6 +60,14 @@ public class EnemyBrain : MonoBehaviour
 
             Debug.Log(enemy_base.name + " is thinking...");
 
+            turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
+
+            if(Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.Bound) != null)
+            {
+                yield return new WaitForSeconds(0.5f);
+                continue;
+            }
+
             enemy_base.PreCalculations(turnManager);
 
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
