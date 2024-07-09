@@ -256,7 +256,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void MoveBackAPhase()
     {
-        if(selectedCharacter != null)
+        if (selectedEnemy != null)
+        {
+            selectedEnemy = null;
+            AttackPreviewer.Instance.ClearAttackArea();
+            return;
+        }
+
+        if (selectedCharacter != null)
         {
             if (phase == TurnEnums.PlayerPhase.Movement)
             {
@@ -272,12 +279,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 potentialPath = null;
                 phase = TurnEnums.PlayerPhase.Movement;
             }
-        }
-
-        if (selectedEnemy != null)
-        {
-            selectedEnemy = null;
-            AttackPreviewer.Instance.ClearAttackArea();
         }
     }
 
