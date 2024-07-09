@@ -14,17 +14,15 @@ public class EnemyHoverUI : MonoBehaviour
     public TextMeshProUGUI textDef;
     public TextMeshProUGUI textStatus;
 
-    public CharacterUIConfig characterUIConfig;
-
     public void SetEnemyStats(Enemy_Base enemy)
     {
-        element.sprite = characterUIConfig.GetElementSprite(enemy.elementType);
+        element.sprite = Config.Instance.GetElementSprite(enemy.elementType);
         textHP.text = $"{enemy.currentHealth} / {enemy.maxHealth}";
         textAttack.text = $"{enemy.attackDamage}";
         textMovement.text = $"{enemy.moveDistance}";
         textRange.text = $"{enemy.attackDistance}";
         textDef.text = $"{enemy.defensePercentage}%";
-        textStatus.text = characterUIConfig.GetStatusTypes(enemy).ToString();
+        textStatus.text = Config.Instance.GetStatusTypes(enemy).ToString();
 
         gameObject.SetActive(true);
     }

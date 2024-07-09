@@ -6,17 +6,17 @@ using UnityEngine;
 public class CharacterUIConfig : ScriptableObject
 {
     [Header("Element Sprites")]
-    [SerializeField] private Sprite fire;
-    [SerializeField] private Sprite water;
-    [SerializeField] private Sprite grass;
-    [SerializeField] private Sprite poison;
+    public Sprite fire;
+    public Sprite water;
+    public Sprite grass;
+    public Sprite poison;
     
     [Header("Status Sprites")]
-    [SerializeField] private Sprite burning;
-    [SerializeField] private Sprite wet;
-    [SerializeField] private Sprite haste;
-    [SerializeField] private Sprite bound;
-    [SerializeField] private Sprite shield;
+    public Sprite burning;
+    public Sprite wet;
+    public Sprite haste;
+    public Sprite bound;
+    public Sprite shield;
 
     [Header("Status Description")]
     [TextArea(3, 10)] public string burningDetail;
@@ -24,121 +24,4 @@ public class CharacterUIConfig : ScriptableObject
     [TextArea(3, 10)] public string hasteDetail;
     [TextArea(3, 10)] public string boundDetail;
     [TextArea(3, 10)] public string shieldDetail;
-
-
-    public Sprite GetElementSprite(ElementType element)
-    {
-        if (element == ElementType.Fire)
-        {
-            return fire;
-        }
-        else if (element == ElementType.Water)
-        {
-            return water;
-        }
-        else if (element == ElementType.Grass)
-        {
-            return grass;
-        }
-        else if (element == ElementType.Poison)
-        {
-            return poison;
-        }
-        return null;
-    }
-
-    public List<Sprite> GetStatusSprites(Character character)
-    {
-        if (character.statusList.Count != 0)
-        {
-            List<Sprite> statusList = new List<Sprite>();
-            foreach (var status in character.statusList)
-            {
-                if (status.statusType == Status.StatusTypes.Burning)
-                {
-                    statusList.Add(burning);
-                }
-                else if (status.statusType == Status.StatusTypes.Wet)
-                {
-                    statusList.Add(wet);
-                }
-                else if (status.statusType == Status.StatusTypes.Haste)
-                {
-                    statusList.Add(haste);
-                }
-                else if (status.statusType == Status.StatusTypes.Bound)
-                {
-                    statusList.Add(bound);
-                }
-            }
-            return statusList;
-        }
-
-        return null;
-    }
-
-    public Sprite GetStatusSprite(Status status)
-    {
-        if (status.statusType == Status.StatusTypes.Burning)
-        {
-            return burning;
-        }
-        else if (status.statusType == Status.StatusTypes.Wet)
-        {
-            return wet;
-        }
-        else if (status.statusType == Status.StatusTypes.Haste)
-        {
-            return haste;
-        }
-        else if (status.statusType == Status.StatusTypes.Bound)
-        {
-            return bound;
-        }
-        else if (status.statusType == Status.StatusTypes.Shield)
-        {
-            return shield;
-        }
-        return null;
-    }
-
-    public string GetStatusExplain(Status status)
-    {
-        if (status.statusType == Status.StatusTypes.Burning)
-        {
-            return burningDetail;
-        }
-        else if (status.statusType == Status.StatusTypes.Wet)
-        {
-            return wetDetail;
-        }
-        else if (status.statusType == Status.StatusTypes.Haste)
-        {
-            return hasteDetail;
-        }
-        else if (status.statusType == Status.StatusTypes.Bound)
-        {
-            return boundDetail;
-        }
-        else if (status.statusType == Status.StatusTypes.Shield)
-        {
-            return shieldDetail;
-        }
-        return null;
-    }
-
-    public string GetStatusTypes(Character character)
-    {
-        if (character.statusList.Count != 0)
-        {
-            string statusList = "";
-            foreach (var status in character.statusList)
-            {
-                statusList += status.statusType.ToString() + ", ";
-            }
-            return statusList;
-        }
-
-        return "";
-    }
 }

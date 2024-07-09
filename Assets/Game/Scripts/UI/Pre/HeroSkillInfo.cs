@@ -15,7 +15,6 @@ public class HeroSkillInfo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI attack;
     [SerializeField] private TextMeshProUGUI movement;
 
-    [SerializeField] private CharacterUIConfig characterUIConfig;
     [SerializeField] private HeroAttributesSO heroSO;
 
     private ActiveSkillSO selectedActiveSkill;
@@ -31,7 +30,7 @@ public class HeroSkillInfo : MonoBehaviour
     private void SetUIDisplay()
     {
         avatar.sprite = heroSO.attributes.avatar;
-        element.sprite = characterUIConfig.GetElementSprite(heroSO.attributes.elementType);
+        element.sprite = Config.Instance.GetElementSprite(heroSO.attributes.elementType);
         skillShape.sprite = heroSO.activeSkillSO.skillshape;
         nameText.text = heroSO.attributes.name;
         attack.text = heroSO.attributes.attackDamage.ToString();

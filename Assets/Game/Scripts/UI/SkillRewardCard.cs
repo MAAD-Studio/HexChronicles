@@ -15,7 +15,6 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private Image element;
     [SerializeField] private TextMeshProUGUI skillName;
     [SerializeField] private TextMeshProUGUI description;
-    [SerializeField] private CharacterUIConfig characterUIConfig;
 
     private ActiveSkillSO skill;
     private bool isSelectable = true;
@@ -28,7 +27,7 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void SetSkillDisplay(ActiveSkillSO skill)
     {
         this.skill = skill;
-        element.sprite = characterUIConfig.GetElementSprite(skill.elementType);
+        element.sprite = Config.Instance.GetElementSprite(skill.elementType);
         skillshape.sprite = skill.skillshape;
         skillName.text = skill.skillName;
         description.text = skill.description.DisplayKeywordDescription();

@@ -12,7 +12,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private GameObject selectedState;
     [SerializeField] private GameObject noActionState;
     [SerializeField] private GameObject deadState;
-    [SerializeField] private CharacterUIConfig characterUIConfig;
 
     [Header("Hero Info")]
     [SerializeField] private List<TextMeshProUGUI> names;
@@ -64,7 +63,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         foreach (Image element in elements)
         {
-            element.sprite = characterUIConfig.GetElementSprite(hero.heroSO.attributes.elementType);
+            element.sprite = Config.Instance.GetElementSprite(hero.heroSO.attributes.elementType);
         }
 
         attackShape.sprite = hero.heroSO.attackShape;

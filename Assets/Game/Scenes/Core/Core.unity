@@ -678,6 +678,79 @@ MonoBehaviour:
   OnRefreshMenu:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1316527205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1316527208}
+  - component: {fileID: 1316527207}
+  - component: {fileID: 1316527206}
+  m_Layer: 0
+  m_Name: Config
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1316527206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316527205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf8853ef837cc945add7ec365e1fb70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allFireSkills:
+  - {fileID: 11400000, guid: a07a1f5998a1aa5429290a7e06a765db, type: 2}
+  - {fileID: 11400000, guid: a35ced3ca61c17040ad94bd577f40489, type: 2}
+  - {fileID: 11400000, guid: 2c4238ac6217ec74f9e7443fbf13f07a, type: 2}
+  allGrassSkills:
+  - {fileID: 11400000, guid: 69ae9e193e95b3a4aa629b1bf424be2f, type: 2}
+  - {fileID: 11400000, guid: f9eacc14ab1de68458543cc1d445be9f, type: 2}
+  - {fileID: 11400000, guid: c0ac4980f238c87419f63369f58b0394, type: 2}
+  allWaterSkills:
+  - {fileID: 11400000, guid: 5f90ab19f69ac2945a75cd64edf784e5, type: 2}
+  - {fileID: 11400000, guid: 7d59db3dceae63f41a2f0a132d0c4da1, type: 2}
+  - {fileID: 11400000, guid: 104efb91358849044bcd7368ec650297, type: 2}
+  playerFireSkills: []
+  playerGrassSkills: []
+  PlayerWaterSkills: []
+--- !u!114 &1316527207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316527205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c60d563a8418ef4cacd487227a8282e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterUIConfig: {fileID: 11400000, guid: 2e21759f4f7ee614f95134b0edd79891, type: 2}
+--- !u!4 &1316527208
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316527205}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1417576039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,65 +1092,6 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
---- !u!1 &1958070021
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1958070023}
-  - component: {fileID: 1958070022}
-  m_Layer: 0
-  m_Name: ActiveSkillCollection
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1958070022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958070021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cf8853ef837cc945add7ec365e1fb70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allFireSkills:
-  - {fileID: 11400000, guid: a07a1f5998a1aa5429290a7e06a765db, type: 2}
-  - {fileID: 11400000, guid: a35ced3ca61c17040ad94bd577f40489, type: 2}
-  - {fileID: 11400000, guid: 2c4238ac6217ec74f9e7443fbf13f07a, type: 2}
-  allGrassSkills:
-  - {fileID: 11400000, guid: 69ae9e193e95b3a4aa629b1bf424be2f, type: 2}
-  - {fileID: 11400000, guid: f9eacc14ab1de68458543cc1d445be9f, type: 2}
-  - {fileID: 11400000, guid: c0ac4980f238c87419f63369f58b0394, type: 2}
-  allWaterSkills:
-  - {fileID: 11400000, guid: 5f90ab19f69ac2945a75cd64edf784e5, type: 2}
-  - {fileID: 11400000, guid: 7d59db3dceae63f41a2f0a132d0c4da1, type: 2}
-  - {fileID: 11400000, guid: 104efb91358849044bcd7368ec650297, type: 2}
-  playerFireSkills: []
-  playerGrassSkills: []
-  PlayerWaterSkills: []
---- !u!4 &1958070023
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958070021}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1995386213
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,7 +1547,7 @@ SceneRoots:
   - {fileID: 781148562}
   - {fileID: 1546695460}
   - {fileID: 2141660163}
-  - {fileID: 1958070023}
+  - {fileID: 1316527208}
   - {fileID: 1417576044}
   - {fileID: 114785480}
   - {fileID: 1603573015}

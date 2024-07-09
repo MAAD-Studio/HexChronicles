@@ -9,14 +9,13 @@ public class StatusEffect : MonoBehaviour
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI effectTurns;
     [SerializeField] private TextMeshProUGUI effectDetail;
-    [SerializeField] private CharacterUIConfig characterUIConfig;
 
     public void Initialize(Status status)
     {
         transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
 
-        icon.sprite = characterUIConfig.GetStatusSprite(status);
+        icon.sprite = Config.Instance.GetStatusSprite(status);
         effectTurns.text = status.effectTurns.ToString();
-        effectDetail.text = characterUIConfig.GetStatusExplain(status);
+        effectDetail.text = Config.Instance.GetStatusExplain(status);
     }
 }

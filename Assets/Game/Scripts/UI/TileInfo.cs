@@ -11,12 +11,10 @@ public class TileInfo : MonoBehaviour
     public TextMeshProUGUI tileName;
     public TextMeshProUGUI tileEffects;
 
-    public CharacterUIConfig characterUIConfig;
-
     public void SetTileInfo(Tile tile)
     {
         tileImage.sprite = tile.tileData.tileSprite;
-        tileElement.sprite = characterUIConfig.GetElementSprite(tile.tileData.tileType);
+        tileElement.sprite = Config.Instance.GetElementSprite(tile.tileData.tileType);
         if (tileElement.sprite == null) { tileElement.gameObject.SetActive(false); }
         else { tileElement.gameObject.SetActive(true); }
         tileName.text = tile.tileData.name;
