@@ -116,6 +116,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             }
             character.EnterNewTurn();
         }
+
+        cameraController.controlEnabled = true;
     }
 
     public void UpdateState()
@@ -134,6 +136,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             character.EndTurn();
             character.hasMadeDecision = false;
         }
+
+        cameraController.controlEnabled = false;
     }
 
     public void ResetState()
@@ -230,11 +234,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             EndTurn();
         }
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && selectedCharacter != null)
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             MoveBackAPhase();
         }
-        else if(Input.GetMouseButtonDown(1) && selectedCharacter != null)
+        else if(Input.GetMouseButtonDown(1))
         {
             MoveBackAPhase();
         }
@@ -243,23 +247,38 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             UndoAction();
         }
+
+        if(Input.GetKeyDown(KeyCode.Keypad0))
+        {
+            SwitchToSpecialAttack();
+        }
     }
 
     public void MoveBackAPhase()
     {
-        if (phase == TurnEnums.PlayerPhase.Movement)
+        if (selectedEnemy != null)
         {
-            cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
-            FullReset();
+            selectedEnemy = null;
+            AttackPreviewer.Instance.ClearAttackArea();
+            return;
         }
-        else if (phase == TurnEnums.PlayerPhase.Attack)
-        {
-            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
 
-            areaPrefab.DestroySelf();
-            potentialMovementTile = null;
-            potentialPath = null;
-            phase = TurnEnums.PlayerPhase.Movement;
+        if (selectedCharacter != null)
+        {
+            if (phase == TurnEnums.PlayerPhase.Movement)
+            {
+                cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
+                FullReset();
+            }
+            else if (phase == TurnEnums.PlayerPhase.Attack)
+            {
+                Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+
+                areaPrefab.DestroySelf();
+                potentialMovementTile = null;
+                potentialPath = null;
+                phase = TurnEnums.PlayerPhase.Movement;
+            }
         }
     }
 

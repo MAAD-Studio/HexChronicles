@@ -6,7 +6,7 @@ public class TileReporter_TempObjectMaker : TileReporter
 {
     #region Variables
 
-    [SerializeField] private TileObject objectToSpawn;
+    [SerializeField] protected TileObject objectToSpawn;
 
     #endregion
 

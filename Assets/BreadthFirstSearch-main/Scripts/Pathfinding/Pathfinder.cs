@@ -155,15 +155,23 @@ public class Pathfinder : Singleton<Pathfinder>
             if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
             {
                 Tile hitTile = hit.transform.GetComponent<Tile>();
+                TileObject tileObj = hitTile.objectOnTile;
 
                 if (includeOccupied || !hitTile.tileOccupied && !hitTile.tileHasObject)
                 {
                     adjacentTiles.Add(hitTile);
                 }
-                else if(characterToCheck != null && hitTile.tileHasObject && hitTile.objectOnTile.objectType == ObjectType.ElementalWall)
+                else if(characterToCheck != null && tileObj != null)
                 {
-                    ElementalWall elementalWall = (ElementalWall)hitTile.objectOnTile;
-                    if(elementalWall.elementType == characterToCheck.elementType)
+                    if(tileObj.objectType == ObjectType.ElementalWall)
+                    {
+                        ElementalWall elementalWall = (ElementalWall)hitTile.objectOnTile;
+                        if (elementalWall.elementType == characterToCheck.elementType)
+                        {
+                            adjacentTiles.Add(hitTile);
+                        }
+                    }
+                    else if(tileObj.objectType == ObjectType.PoisonCloud)
                     {
                         adjacentTiles.Add(hitTile);
                     }

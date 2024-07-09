@@ -90,7 +90,6 @@ public class Character : MonoBehaviour
         if (characterTile.tileData.tileType == elementType)
         {
             TurnManager turnManager = FindObjectOfType<TurnManager>();
-            ApplyBuffCharacter(turnManager);
             ApplyStatusAttackArea(targets);
             ApplyStatusElementalTile(turnManager);
         }
@@ -554,6 +553,12 @@ public class Character : MonoBehaviour
                 currentTile.OnTileEnter(this);
                 currentTile = WalkOntoTileEffect(currentTile);
 
+                if(currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.PoisonCloud)
+                {
+                    PoisonCloud poison = (PoisonCloud)currentTile.objectOnTile;
+                    TakeDamage(poison.Damage, ElementType.Poison);
+                }
+
                 tilesInPath.Remove(path[step]);
                 path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
@@ -582,6 +587,11 @@ public class Character : MonoBehaviour
 
             yield return null;
             FindTile();
+
+            if(characterTile.tileData.tileType == elementType)
+            {
+                ApplyBuffCharacter(turnManager);
+            }
 
             animator.SetBool("walking", false);
         }
@@ -647,7 +657,10 @@ public class Character : MonoBehaviour
             attackAreaPrefab.DestroySelf();
         }
 
-        turnManager.mainCameraController.controlEnabled = true;
+        if(turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
+        {
+            turnManager.mainCameraController.controlEnabled = true;
+        }
         turnManager.mainCameraController.StopFollowingTarget();
 
         if(characterType == TurnEnums.CharacterType.Player)

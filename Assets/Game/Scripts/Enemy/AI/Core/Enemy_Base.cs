@@ -8,10 +8,10 @@ public class Enemy_Base : Character, EnemyInterface
 
     [Header("Enemy Specific:")]
     public EnemyAttributesSO enemySO;
-
     public EnemyType enemyType;
-
     public PreviewOrigin attackAreaPreview;
+
+    protected bool mindControl = false;
 
     #endregion
 
@@ -42,7 +42,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void PreCalculations(TurnManager turnManager)
     {
-        
+        mindControl = (Status.GrabIfStatusActive(this, Status.StatusTypes.MindControl) != null);
     }
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
@@ -56,8 +56,18 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
+        List<Character> charactersToCheck;
+        if (!mindControl)
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
+
         int valueOfAttack = 0;
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        foreach (Character character in charactersToCheck)
         {
             valueOfAttack += 5;
 
@@ -73,13 +83,22 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
-        List<Character> targets = new List<Character>(attackArea.CharactersHit(TurnEnums.CharacterType.Player));
-        foreach (Character character in targets)
+        List<Character> charactersToCheck;
+        if (!mindControl)
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
+
+        foreach (Character character in charactersToCheck)
         {
             transform.LookAt(character.transform.position);
             character.TakeDamage(attackDamage, elementType);
         }
-        PerformBasicAttack(targets);
+        PerformBasicAttack(charactersToCheck);
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
