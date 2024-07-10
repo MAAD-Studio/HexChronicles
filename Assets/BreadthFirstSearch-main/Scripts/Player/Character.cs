@@ -98,9 +98,15 @@ public class Character : MonoBehaviour
     public void ApplyBuffCharacter(TurnManager turnManager)
     {
         Hero thisHero = null;
+        Enemy_Base thisEnemy = null;
+
         if (characterType == TurnEnums.CharacterType.Player)
         {
             thisHero = (Hero)this;
+        }
+        else
+        {
+            thisEnemy = (Enemy_Base)this;
         }
 
         if (elementType == ElementType.Fire)
@@ -110,15 +116,23 @@ public class Character : MonoBehaviour
             List<Character> charactersToHit = new List<Character>();
 
             foreach (Tile tile in tiles)
-            { 
-                if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+            {
+                Character characterOnTile = tile.characterOnTile;
+                if (characterOnTile != null && characterOnTile.characterType != characterType)
                 {
                     charactersToHit.Add(tile.characterOnTile);
                 }
 
                 if(characterType == TurnEnums.CharacterType.Player)
                 {
-                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    if(thisHero != null)
+                    {
+                        TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    }
+                    else
+                    {
+                        TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    }
                 }
             }
             ApplyStatusAttackArea(charactersToHit);
@@ -132,7 +146,14 @@ public class Character : MonoBehaviour
 
             if (characterType == TurnEnums.CharacterType.Player)
             {
-                TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+                if(thisHero != null)
+                {
+                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+                }
+                else
+                {
+                    TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.healText, transform.position, 4f, 0.5f);
+                }
             }
         }
         else
@@ -166,8 +187,8 @@ public class Character : MonoBehaviour
 
     public void ApplyStatusElementalTile(TurnManager turnManager)
     {
-        Status.StatusTypes chosenType = Status.StatusTypes.None;
-        List<Tile> chosenList = new List<Tile>();
+        Status.StatusTypes chosenType;
+        List<Tile> chosenList;
 
         if (elementType == ElementType.Fire)
         {

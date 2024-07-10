@@ -87,10 +87,12 @@ public class Enemy_Base : Character, EnemyInterface
         if (!mindControl)
         {
             charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+            PerformBasicAttack(charactersToCheck);
         }
         else
         {
             charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+            PerformBasicAttack(charactersToCheck);
         }
 
         foreach (Character character in charactersToCheck)
@@ -98,7 +100,6 @@ public class Enemy_Base : Character, EnemyInterface
             transform.LookAt(character.transform.position);
             character.TakeDamage(attackDamage, elementType);
         }
-        PerformBasicAttack(charactersToCheck);
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
