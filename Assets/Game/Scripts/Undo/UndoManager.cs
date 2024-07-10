@@ -128,6 +128,9 @@ public class UndoManager : Singleton<UndoManager>
         data.position = character.transform.position;
         data.position.y += 1f;
         data.rotation = character.transform.rotation;
+
+        Debug.Log("----------------" + "\nSTORING CHARACTER" + "\n----------------");
+        Debug.Log(character.name + " Position: " + data.position);
     }
 
     public void StoreTileObject(TileObject tileObj)
@@ -207,7 +210,7 @@ public class UndoManager : Singleton<UndoManager>
             currentHero.upgradeList = new List<BasicUpgrade>(data.upgradeList);
 
             EventBus.Instance.Publish(new UpdateCharacterDecision { 
-                character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
+               character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
 
             StartCoroutine(RestoreCharacterData(data, currentHero));
         }
@@ -252,6 +255,7 @@ public class UndoManager : Singleton<UndoManager>
 
         character.transform.position = data.position;
         character.transform.rotation = data.rotation;
+
         character.FindTile();
     }
 
