@@ -98,6 +98,12 @@ public class Enemy_Base : Character, EnemyInterface
         foreach (Character character in charactersToCheck)
         {
             transform.LookAt(character.transform.position);
+
+            // Spawn attack vfx
+            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.forward = transform.forward;
+            Destroy(vfx, 3f);
+
             character.TakeDamage(attackDamage, elementType);
         }
     }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6847147098537815919}
   m_Layer: 0
   m_Name: SoloJelly
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56,15 +56,16 @@ MonoBehaviour:
   basicAttackArea: {fileID: 0}
   activeSkillArea: {fileID: 0}
   canAttack: 1
+  attackVFX: {fileID: 3781339320553724212, guid: 6596e6744951c48439bd87d4e8a0a5c7, type: 3}
   currentHealth: 0
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
-  animator: {fileID: 0}
   healthBar: {fileID: 0}
   elementType: 0
   elementWeakAgainst: 0
   elementStrongAgainst: 0
+  defaultScale: {x: 0, y: 0, z: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -88,6 +89,7 @@ MonoBehaviour:
       m_Calls: []
   enemySO: {fileID: 11400000, guid: bb905975b80cc9442baa979a905940a8, type: 2}
   enemyType: 2
+  attackAreaPreview: {fileID: 0}
   combineText: {fileID: 0}
 --- !u!95 &6847147098537815919
 Animator:

@@ -133,6 +133,12 @@ public class Enemy_Gangsta : Enemy_Base
         }
 
         transform.LookAt(character.transform.position);
+
+        // Spawn attack vfx
+        GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+        vfx.transform.forward = transform.forward;
+        Destroy(vfx, 3f);
+
         character.TakeDamage(attackDamage, elementType);
 
         TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);

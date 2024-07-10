@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 349600838865155844}
   m_Layer: 0
   m_Name: MasterJelly
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -56,15 +56,16 @@ MonoBehaviour:
   basicAttackArea: {fileID: 0}
   activeSkillArea: {fileID: 0}
   canAttack: 1
+  attackVFX: {fileID: 3781339320553724212, guid: 6596e6744951c48439bd87d4e8a0a5c7, type: 3}
   currentHealth: 0
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
-  animator: {fileID: 0}
   healthBar: {fileID: 0}
   elementType: 0
   elementWeakAgainst: 0
   elementStrongAgainst: 0
+  defaultScale: {x: 0, y: 0, z: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -88,6 +89,7 @@ MonoBehaviour:
       m_Calls: []
   enemySO: {fileID: 11400000, guid: 72f57f59339edee46acbe060be8fec8f, type: 2}
   enemyType: 3
+  attackAreaPreview: {fileID: 0}
   kingJellyPrefab: {fileID: 1396050993153667789, guid: 4e459c1bc76bb5a4a811e9dc35e24b60, type: 3}
   combineText: {fileID: 6415229933004430637, guid: 5866cc52494017c44b7f884634142fe0, type: 3}
 --- !u!95 &349600838865155844

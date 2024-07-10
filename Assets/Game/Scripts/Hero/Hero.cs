@@ -95,8 +95,12 @@ public class Hero : Character
     {
         foreach (var target in targets)
         {
+            // Spawn attack vfx
             if (elementType == ElementType.Fire)
             {
+                GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+                vfx.transform.LookAt(transform.forward);
+                Destroy(vfx, 3f);
             }
             else if (elementType == ElementType.Water)
             {
@@ -110,6 +114,7 @@ public class Hero : Character
                 Destroy(vfx, 3f);
             }
 
+            // Attack target
             target.TakeDamage(attackDamage, elementType);
             target.PreviewDamage(0);
         }

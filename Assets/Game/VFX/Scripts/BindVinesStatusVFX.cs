@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindVinesEffect : StatusVFX
+public class BindVinesStatusVFX : StatusVFX
 {
     private Material mat;
     private float grow = 0.0f;
