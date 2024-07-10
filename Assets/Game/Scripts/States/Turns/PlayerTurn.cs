@@ -566,7 +566,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         foreach(TileObject tileObj in areaPrefab.ObjectsHit())
         {
-            UndoManager.Instance.StoreTileObject(tileObj);
+            UndoManager.Instance.StoreTileObject(tileObj, false);
         }
     }
 

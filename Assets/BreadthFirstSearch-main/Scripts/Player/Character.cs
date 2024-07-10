@@ -765,11 +765,11 @@ public class Character : MonoBehaviour
                 if (newDistance < inspectDistance)
                 {
                     chosenTile = tile;
-                    curDistance = newDistance;
+                    inspectDistance = newDistance;
                 }
             }
 
-            if(chosenTile.tileOccupied || inspectDistance >= curDistance || chosenTile == null)
+            if(chosenTile == null || chosenTile.tileOccupied || inspectDistance >= curDistance)
             {
                 break;
             }

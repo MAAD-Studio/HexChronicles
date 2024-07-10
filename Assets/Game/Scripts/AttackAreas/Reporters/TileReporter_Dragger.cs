@@ -24,6 +24,7 @@ public class TileReporter_Dragger : TileReporter
             Character character = tile.characterOnTile;
             if(character != null && character.characterType == TurnEnums.CharacterType.Enemy)
             {
+                UndoManager.Instance.StoreEnemy((Enemy_Base)character);
                 character.DragTowards(currentTile, damage);
             }
         }

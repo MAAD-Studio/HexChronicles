@@ -21,7 +21,10 @@ public class TileReporter_PoisonGenerator :TileReporter_TempObjectMaker
                 return;
             }
 
-            turnManager.temporaryTileObjects.Add(Instantiate(objectToSpawn, tile.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity));
+            TileObject newObj = Instantiate(objectToSpawn, tile.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+            turnManager.temporaryTileObjects.Add(newObj);
+
+            UndoManager.Instance.StoreTileObject(newObj, true);
         }
     }
 

@@ -7,28 +7,28 @@ public class UndoManager : Singleton<UndoManager>
     #region Variables
 
     [Header("Hero Prefabs")]
-    public GameObject fireHeroPrefab;
-    public GameObject waterHeroPrefab;
-    public GameObject grassHeroPrefab;
+    [SerializeField] private GameObject fireHeroPrefab;
+    [SerializeField] private GameObject waterHeroPrefab;
+    [SerializeField] private GameObject grassHeroPrefab;
 
     [Header("Enemy Prefabs")]
-    public GameObject gangstaPrefab;
-    public GameObject tntPrefab;
-    public GameObject soloJellyPrefab;
-    public GameObject masterJellyPrefab;
-    public GameObject kingJellyPrefab;
-    public GameObject drainerPrefab;
-    public GameObject makerPrefab;
+    [SerializeField] private GameObject gangstaPrefab;
+    [SerializeField] private GameObject tntPrefab;
+    [SerializeField] private GameObject soloJellyPrefab;
+    [SerializeField] private GameObject masterJellyPrefab;
+    [SerializeField] private GameObject kingJellyPrefab;
+    [SerializeField] private GameObject drainerPrefab;
+    [SerializeField] private GameObject makerPrefab;
 
     [Header("Tile Prefabs")]
-    public GameObject baseTilePrefab;
-    public GameObject fireTilePrefab;
-    public GameObject waterTilePrefab;
-    public GameObject grassTilePrefab;
-    public GameObject deathTilePrefab;
+    [SerializeField] private GameObject baseTilePrefab;
+    [SerializeField] private GameObject fireTilePrefab;
+    [SerializeField] private GameObject waterTilePrefab;
+    [SerializeField] private GameObject grassTilePrefab;
+    [SerializeField] private GameObject deathTilePrefab;
 
     [Header("Object Prefabs")]
-    public GameObject towerPrefab;
+    [SerializeField] private GameObject towerPrefab;
 
     private List<UndoData_Hero> heroList = new List<UndoData_Hero>();
     private List<UndoData_Enemies> enemyList = new List<UndoData_Enemies>();
@@ -128,17 +128,16 @@ public class UndoManager : Singleton<UndoManager>
         data.position = character.transform.position;
         data.position.y += 1f;
         data.rotation = character.transform.rotation;
-
-        Debug.Log("----------------" + "\nSTORING CHARACTER" + "\n----------------");
-        Debug.Log(character.name + " Position: " + data.position);
     }
 
-    public void StoreTileObject(TileObject tileObj)
+    public void StoreTileObject(TileObject tileObj, bool destroy)
     {
         DataStored = true;
 
         UndoData_TileObject tileObjData = new UndoData_TileObject();
-
+        
+        tileObjData.destroy = true;
+      
         tileObjData.involvedObject = tileObj;
 
         tileObjData.position = tileObj.transform.position;
@@ -183,7 +182,7 @@ public class UndoManager : Singleton<UndoManager>
         RestoreTileData();
         RestoreHeroData(turnManager);
         RestoreEnemyData(turnManager);
-        RestoreTileObjectData();
+        RestoreTileObjectData(turnManager);
 
         ClearData();
     }
@@ -209,8 +208,8 @@ public class UndoManager : Singleton<UndoManager>
             currentHero.hasMadeDecision = data.hasMadeDecision;
             currentHero.upgradeList = new List<BasicUpgrade>(data.upgradeList);
 
-            //EventBus.Instance.Publish(new UpdateCharacterDecision { 
-            //   character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
+            EventBus.Instance.Publish(new UpdateCharacterDecision { 
+               character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
 
             StartCoroutine(RestoreCharacterData(data, currentHero));
         }
@@ -260,7 +259,7 @@ public class UndoManager : Singleton<UndoManager>
         character.FindTile();
     }
 
-    private void RestoreTileObjectData()
+    private void RestoreTileObjectData(TurnManager turnManager)
     {
         foreach(UndoData_TileObject data in tileObjectsList)
         {
@@ -268,6 +267,14 @@ public class UndoManager : Singleton<UndoManager>
             if(data.involvedObject != null)
             {
                 currentObject = data.involvedObject;
+                if(data.destroy)
+                {
+                    turnManager.temporaryTileObjects.Remove(currentObject);
+                    currentObject.AttachedTile.tileHasObject = false;
+                    currentObject.AttachedTile.objectOnTile = null;
+                    Destroy(currentObject.gameObject);
+                    continue;
+                }
             }
             else
             {

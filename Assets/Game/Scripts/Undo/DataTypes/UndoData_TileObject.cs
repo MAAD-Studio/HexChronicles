@@ -10,6 +10,7 @@ public class UndoData_TileObject
     public Vector3 position;
     public ObjectType type;
     public float currentHealth;
+    public bool destroy;
 
     #endregion
 }
