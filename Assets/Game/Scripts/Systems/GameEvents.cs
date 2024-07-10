@@ -16,9 +16,9 @@ public struct UpdateCharacterDecision
     public bool hasMadeDecision;
 }
 
-public struct OnRestoreCharacterData
+public struct OnRestoreHeroData
 {
-    public Character character;
+    public Hero hero;
 }
 
 #region Setting changed events

@@ -99,7 +99,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
-            EventBus.Instance.Subscribe<OnRestoreCharacterData>(RestoreCharacterData);
+            EventBus.Instance.Subscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
@@ -117,7 +117,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
-            EventBus.Instance.Unsubscribe<OnRestoreCharacterData>(RestoreCharacterData);
+            EventBus.Instance.Unsubscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
@@ -220,10 +220,10 @@ public class HUDInfo : MonoBehaviour
 
     // Used for update info while restoring hero data
     // If the hero is already dead and respawned, the characterinfo should be updated
-    private void RestoreCharacterData(object obj) 
+    private void RestoreHeroData(object obj) 
     {
-        OnRestoreCharacterData data = (OnRestoreCharacterData)obj;
-        Hero hero = (Hero)data.character;
+        OnRestoreHeroData data = (OnRestoreHeroData)obj;
+        Hero hero = data.hero;
 
         if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
