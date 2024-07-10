@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7127727935108921467}
   - component: {fileID: 8696491989205683154}
   m_Layer: 0
-  m_Name: Water_Attack_Effect
+  m_Name: Water_Attack_SingleBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8904435345584388774}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -51,28 +51,46 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.6
+      - m_Value: 1.85
         m_Name: Core Thickness
         m_Overridden: 1
       - m_Value: 0.8
         m_Name: Trail Lifetime
         m_Overridden: 0
-      - m_Value: 1.48
+      - m_Value: 1.04
         m_Name: TrailSize
         m_Overridden: 1
-      - m_Value: 2.2
+      - m_Value: 0.1
         m_Name: Radius
-        m_Overridden: 0
-      - m_Value: 2
+        m_Overridden: 1
+      - m_Value: 1
         m_Name: Rate
         m_Overridden: 1
       - m_Value: 3
         m_Name: MeteorLifetime
         m_Overridden: 0
+      - m_Value: 1.48
+        m_Name: Foam Texture Power
+        m_Overridden: 1
     m_Vector2f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.23, y: -0.2}
+        m_Name: Foam Intensity
+        m_Overridden: 1
+      - m_Value: {x: 0.4, y: 0.42}
+        m_Name: Beam Intensity
+        m_Overridden: 1
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0, y: 15, z: 0}
+        m_Name: StartPos
+        m_Overridden: 1
+      - m_Value: {x: 0, y: -80, z: 0}
+        m_Name: Direction
+        m_Overridden: 1
+      - m_Value: {x: 0.96, y: 0.4, z: 0.5}
+        m_Name: Foam IntensityMin
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -88,7 +106,10 @@ VisualEffect:
     m_NamedObject:
       m_Array: []
     m_Bool:
-      m_Array: []
+      m_Array:
+      - m_Value: 1
+        m_Name: Single Beam
+        m_Overridden: 1
 --- !u!73398921 &8696491989205683154
 VFXRenderer:
   serializedVersion: 1
