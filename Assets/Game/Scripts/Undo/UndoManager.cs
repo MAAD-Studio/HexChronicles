@@ -209,8 +209,8 @@ public class UndoManager : Singleton<UndoManager>
             currentHero.hasMadeDecision = data.hasMadeDecision;
             currentHero.upgradeList = new List<BasicUpgrade>(data.upgradeList);
 
-            EventBus.Instance.Publish(new UpdateCharacterDecision { 
-               character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
+            //EventBus.Instance.Publish(new UpdateCharacterDecision { 
+            //   character = currentHero, hasMadeDecision = currentHero.hasMadeDecision });
 
             StartCoroutine(RestoreCharacterData(data, currentHero));
         }
@@ -249,6 +249,7 @@ public class UndoManager : Singleton<UndoManager>
 
         character.statusList = new List<Status>(data.statusList);
 
+        EventBus.Instance.Publish(new OnRestoreCharacterData { character = character });
         character.UpdateHealthBar?.Invoke();
         character.UpdateAttributes?.Invoke();
         character.UpdateStatus?.Invoke();

@@ -14,6 +14,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private GameObject noActionState;
     [SerializeField] private GameObject deadState;
 
+    [SerializeField] private Color buffColor = new Color(0f, 0.8f, 0f);
+    [SerializeField] private Color debuffColor = Color.red;
+
     [Header("Hero Info")]
     [SerializeField] private List<TextMeshProUGUI> names;
     [SerializeField] private List<Image> avatars;
@@ -56,8 +59,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void InitializeInfo(Hero hero)
     {
-        this.hero = hero;
-        SubscribeEvents();
+        AssignHero(hero);
 
         startAttack = hero.heroSO.attributes.attackDamage;
         startMovement = hero.heroSO.attributes.movementRange;
@@ -84,6 +86,12 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         skillInfo.ForceMeshUpdate();
     }
 
+    public void AssignHero(Hero hero)
+    {
+        this.hero = hero;
+        SubscribeEvents();
+    }
+
     #region Update Info
     private void UpdateAttributes()
     {
@@ -92,13 +100,13 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             int newMove = hero.moveDistance - hero.movementThisTurn;
             if (newMove > startMovement) // Show buff text in green
             {
-                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.green)}>{newMove - startMovement}</color>";
-                movement.text = $"{startMovement} + {buffValue}";
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(buffColor)}> + {newMove - startMovement}</color>";
+                movement.text = $"{startMovement}{buffValue}";
             }
             else if (newMove < startMovement) // Show debuff text in red
             {
-                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.red)}>{startMovement - newMove}</color>";
-                movement.text = $"{startMovement} - {deBuffValue}";
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(debuffColor)}> - {startMovement - newMove}</color>";
+                movement.text = $"{startMovement}{deBuffValue}";
             }
             else
             {
@@ -111,13 +119,13 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             float newAttack = hero.attackDamage;
             if (newAttack > startAttack)
             {
-                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.green)}>{newAttack - startAttack}</color>";
-                attack.text = $"{startAttack} + {buffValue}";
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(buffColor)}> + {newAttack - startAttack}</color>";
+                attack.text = $"{startAttack}{buffValue}";
             }
             else if (newAttack < startAttack)
             {
-                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(Color.red)}>{startAttack - newAttack}</color>";
-                attack.text = $"{startAttack} - {deBuffValue}";
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(debuffColor)}> - {startAttack - newAttack}</color>";
+                attack.text = $"{startAttack}{deBuffValue}";
             }
             else
             {
@@ -175,13 +183,18 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         hero.UpdateStatus.AddListener(UpdateStatus);
     }
 
-    private void OnDestroy()
+    private void UnsubscribeEvents()
     {
         EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
         EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         hero.UpdateAttributes.RemoveListener(UpdateAttributes);
         hero.UpdateStatus.RemoveListener(UpdateStatus);
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
     }
 
     private void OnPlayerTurn(object obj)
@@ -226,6 +239,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
     #endregion
 
+
     #region States
     public void SetDefaultState()
     {
@@ -268,17 +282,24 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         deadState.SetActive(false);
     }
 
-    public void SetRestoreState()
+    public void SetRestoreState(Hero hero)
     {
-        interactable = true;
-        if (heroDead)
+        if (heroDead) // Assign dead first to prevent the return
         {
             heroDead = false;
+            UnsubscribeEvents();
+            AssignHero(hero);
         }
-        SetDefaultState();
-        UpdateAttributes();
-        UpdateHealthBar();
-        UpdateStatus();
+
+        interactable = !hero.hasMadeDecision;
+        if (interactable)
+        {
+            SetDefaultState();
+        }
+        else
+        {
+            SetNoActionState();
+        }
     }
 
     public void SetSelectedState()

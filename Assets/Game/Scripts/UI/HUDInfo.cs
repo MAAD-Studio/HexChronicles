@@ -99,6 +99,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Subscribe<OnRestoreCharacterData>(RestoreCharacterData);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
@@ -116,6 +117,7 @@ public class HUDInfo : MonoBehaviour
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Unsubscribe<OnRestoreCharacterData>(RestoreCharacterData);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
@@ -199,21 +201,35 @@ public class HUDInfo : MonoBehaviour
         turnMessage.gameObject.SetActive(false);
     }
 
+    // Used for update info after character has made decision
     private void OnUpdateCharacterDecision(object obj)
     {
-        UpdateCharacterDecision decisionData = (UpdateCharacterDecision)obj;
-        Hero hero = (Hero)decisionData.character;
+        UpdateCharacterDecision data = (UpdateCharacterDecision)obj;
+        Hero hero = (Hero)data.character;
         if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
-            if (decisionData.hasMadeDecision)
-            {
-                info.SetNoActionState();
-                activeHeroes--;
+            info.SetNoActionState();
+        }
+        activeHeroes--;
 
-            }
-            else
+        if (activeHeroes == 0)
+        {
+            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+        }
+    }
+
+    // Used for update info while restoring hero data
+    // If the hero is already dead and respawned, the characterinfo should be updated
+    private void RestoreCharacterData(object obj) 
+    {
+        OnRestoreCharacterData data = (OnRestoreCharacterData)obj;
+        Hero hero = (Hero)data.character;
+
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
+        {
+            info.SetRestoreState(hero);
+            if (hero.hasMadeDecision == false)
             {
-                info.SetRestoreState();
                 activeHeroes++;
             }
         }
