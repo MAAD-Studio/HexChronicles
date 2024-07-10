@@ -22,5 +22,10 @@ public class Weather_Base : MonoBehaviour
         
     }
 
+    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    {
+
+    }
+
     #endregion
 }
