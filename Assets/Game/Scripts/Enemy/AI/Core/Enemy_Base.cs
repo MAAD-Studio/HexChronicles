@@ -148,5 +148,22 @@ public class Enemy_Base : Character, EnemyInterface
         
     }
 
+    public virtual Character LikelyTarget()
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        Character closestCharacter = null;
+        float distance = 1000f;
+        foreach (Character character in turnManager.characterList)
+        {
+            float newDistance = Vector3.Distance(transform.position, character.transform.position);
+            if (newDistance < distance)
+            {
+                distance = newDistance;
+                closestCharacter = character;
+            }
+        }
+        return closestCharacter;
+    }
+
     #endregion
 }

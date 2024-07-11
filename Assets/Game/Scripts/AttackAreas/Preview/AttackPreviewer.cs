@@ -24,6 +24,10 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     [SerializeField] private GameObject movementTop;
     [SerializeField] private GameObject attackTop;
 
+    [Header("Marker Prefabs: ")]
+    [SerializeField] private GameObject targetMarker;
+    private GameObject spawnedMarker;
+
     #endregion
 
     #region UnityMethods
@@ -65,6 +69,14 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
             {
                 CheckAttackSpawns(tile, previewArea, pointsToCheck);
             }
+        }
+
+        //Spawns an indicator over the cloest enemy to display who the enemy is likely to target
+        Character closestCharacter = enemy.LikelyTarget();
+
+        if(closestCharacter != null)
+        {
+            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position + new Vector3(0, 5f, 0), Quaternion.identity);
         }
     }
 
@@ -137,6 +149,11 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
         checkedTiles.Clear();
         tileTops.Clear();
+
+        if (spawnedMarker != null)
+        {
+            Destroy(spawnedMarker);
+        }
     }
 
     public void PreviewAttackAreaTower(Tower tileObj)
