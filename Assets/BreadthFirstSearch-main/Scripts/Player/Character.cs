@@ -324,7 +324,7 @@ public class Character : MonoBehaviour
         {
             vfx.transform.SetParent(transform);
             StatusVFX statusVFX = vfx.GetComponent<StatusVFX>();
-            statusVFX.Initialize(status.effectTurns, characterType == TurnEnums.CharacterType.Player);
+            statusVFX.Initialize(this, status.effectTurns);
         }
     }
 
