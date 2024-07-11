@@ -6,6 +6,7 @@ public class ArrowEffect : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
     [SerializeField] private float destroyAfterCollide = 0.5f;
+    [SerializeField] private GameObject trail;
 
     void Update()
     {
@@ -16,6 +17,8 @@ public class ArrowEffect : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
+            speed = speed / 2;
+            trail.SetActive(false);
             Destroy(gameObject, destroyAfterCollide);
         }
     }

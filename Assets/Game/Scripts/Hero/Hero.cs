@@ -111,7 +111,7 @@ public class Hero : Character
             {
                 GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
                 vfx.transform.LookAt(target.transform.position);
-                Destroy(vfx, 3f);
+                //Destroy(vfx, 3f);
             }
 
             // Attack target
