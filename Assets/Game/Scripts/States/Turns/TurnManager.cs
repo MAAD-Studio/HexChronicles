@@ -132,11 +132,10 @@ public class TurnManager : MonoBehaviour
         switch (state)
         {
             case TurnEnums.TurnState.PlayerTurn:
-                EventBus.Instance.Publish(new OnPlayerTurn());
+                turnNumber++;
                 currentTurn = playerTurn;
                 turnType = TurnEnums.TurnState.PlayerTurn;
 
-                turnNumber++;
                 CheckTemporaryObjects();
                 mainCameraController.controlEnabled = true;
 
@@ -144,13 +143,14 @@ public class TurnManager : MonoBehaviour
                 {
                     LevelDefeat?.Invoke();
                 }
+                EventBus.Instance.Publish(new OnPlayerTurn());
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
-                EventBus.Instance.Publish(new OnEnemyTurn());
                 currentTurn = enemyTurn;
                 turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
+                EventBus.Instance.Publish(new OnEnemyTurn());
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
