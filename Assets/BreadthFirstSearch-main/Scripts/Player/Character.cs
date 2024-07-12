@@ -158,10 +158,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            Status newStatus = new Status();
-            newStatus.effectTurns = 1;
-            newStatus.statusType = Status.StatusTypes.Haste;
-            AddStatus(newStatus);
+            AttemptStatusApply(this, Status.StatusTypes.Haste, 1);
             MouseTip.Instance.ShowTip(transform.position, $"Got a Haste", false);
         }
     }
@@ -172,15 +169,15 @@ public class Character : MonoBehaviour
         {
             if (elementType == ElementType.Fire)
             {
-                AttemptStatusApply(Status.StatusTypes.Burning, target, false);
+                AttemptStatusApply(target, Status.StatusTypes.Burning, 2);
             }
             else if (elementType == ElementType.Water)
             {
-                AttemptStatusApply(Status.StatusTypes.Wet, target, true);
+                AttemptStatusApply(target, Status.StatusTypes.Wet, 2);
             }
             else
             {
-                AttemptStatusApply(Status.StatusTypes.Bound, target, true);
+                AttemptStatusApply(target, Status.StatusTypes.Bound, 2);
             }
         }
     }
@@ -210,32 +207,23 @@ public class Character : MonoBehaviour
         {
             if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
             {
-                if (chosenType == Status.StatusTypes.Burning)
-                {
-                    AttemptStatusApply(chosenType, tile.characterOnTile, false);
-                }
-                else
-                {
-                    AttemptStatusApply(chosenType, tile.characterOnTile, true);
-                }
+                AttemptStatusApply(tile.characterOnTile, chosenType, 2);
             }
         }
     }
 
-    public void AttemptStatusApply(Status.StatusTypes statusType, Character target, bool checkOld)
+    public void AttemptStatusApply(Character target, Status.StatusTypes statusType, int effectTurns)
     {
-        if(checkOld)
+        Status oldStatus = Status.GrabIfStatusActive(target, statusType);
+        if (oldStatus != null)
         {
-            Status oldStatus = Status.GrabIfStatusActive(target, statusType);
-            if (oldStatus != null)
-            {
-                oldStatus.effectTurns += 1;
-                return;
-            }
+            oldStatus.effectTurns += 1;
+            UpdateStatus.Invoke();
+            return;
         }
 
         Status newStatus = new Status();
-        newStatus.effectTurns = 2;
+        newStatus.effectTurns = effectTurns;
         newStatus.statusType = statusType;
         target.AddStatus(newStatus);
     }
@@ -274,7 +262,7 @@ public class Character : MonoBehaviour
         canMove = true;
     }
 
-    public void AddStatus(Status status)
+    public void AddStatus(Status status) // Consider make this private method
     {
         ShowEffect(status);
         statusList.Add(status);
