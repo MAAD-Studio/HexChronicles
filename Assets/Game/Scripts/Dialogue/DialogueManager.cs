@@ -7,7 +7,8 @@ using UnityEngine;
 public class DialogueManager : MonoBehaviour
 {
     [SerializeField] private DialogueSpeaker[] speakers;
-    [SerializeField] private DialogueWindow dialogueWindow;
+    [SerializeField] private GameObject dialogueWindowPrefab;
+    private DialogueWindow dialogueWindow;
 
     private Queue<Dialogue> dialogues;
 
@@ -16,23 +17,16 @@ public class DialogueManager : MonoBehaviour
         dialogues = new Queue<Dialogue>();
     }
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            DisplayNextSentence();
-        }
-    }
-
     public void StartDialogue(Dialogue[] newDialogues)
     {
         dialogues.Clear();
-
         foreach (Dialogue dialogue in newDialogues)
         {
             dialogues.Enqueue(dialogue);
         }
 
+        dialogueWindow = Instantiate(dialogueWindowPrefab, transform).GetComponent<DialogueWindow>();
+        dialogueWindow.next.onClick.AddListener(DisplayNextSentence);
         DisplayNextSentence();
     }
 
@@ -51,6 +45,7 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        Destroy(dialogueWindow.gameObject);
         Debug.Log("End of Story");
     }
 }

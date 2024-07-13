@@ -6,6 +6,7 @@ using TMPro;
 
 public class DialogueWindow : MonoBehaviour
 {
+    public Button next;
     [SerializeField] private Image avatar;
     [SerializeField] private Image element;
     [SerializeField] private TextMeshProUGUI speakerName;

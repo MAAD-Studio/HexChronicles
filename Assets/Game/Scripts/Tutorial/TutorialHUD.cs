@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class TutorialHUD : MonoBehaviour
 {
+    [Header("Tutorial")]
+    [SerializeField] private TabGroup tutorialSummary;
+    [SerializeField] private Button question;
+
     [Header("Turn Info")]
     [SerializeField] private GameObject playerTurnMessage;
     [SerializeField] private GameObject enemyTurnMessage;
@@ -30,7 +34,8 @@ public class TutorialHUD : MonoBehaviour
 
     private void Start()
     {
-        DialogueTrigger dialogueTrigger = FindObjectOfType<DialogueTrigger>();
-        dialogueTrigger.TriggerDialogue();
+        EventBus.Instance.Publish(new OnTutorialStart());
+        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
+
     }
 }

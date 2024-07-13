@@ -80892,6 +80892,61 @@ MonoBehaviour:
   tileOccupied: 0
   tileHasObject: 0
   inFrontier: 0
+--- !u!1 &1930254585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1930254587}
+  - component: {fileID: 1930254588}
+  m_Layer: 0
+  m_Name: Tutorial Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1930254587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930254585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1930254588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930254585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbc1e10a25cc65a45b0a995d5a383d84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnManager: {fileID: 328114900}
+  currentPhase: 0
+  startDialogue:
+  - speakerID: 0
+    sentence: aaaaa
+  - speakerID: 1
+    sentence: bbbb
+  - speakerID: 1
+    sentence: ccc
+  - speakerID: 0
+    sentence: ddddd
 --- !u!1 &1932657490
 GameObject:
   m_ObjectHideFlags: 0
@@ -88848,3 +88903,4 @@ SceneRoots:
   - {fileID: 682367757}
   - {fileID: 1538519598}
   - {fileID: 868057735}
+  - {fileID: 1930254587}
