@@ -23,6 +23,20 @@ public class TileEffect : MonoBehaviour
     [SerializeField] private KeywordDescription grassTileDebuff;
     [SerializeField] private KeywordDescription poisonTileDebuff;
 
+    private void Start()
+    {
+        EventBus.Instance.Subscribe<OnAttackPhase>(OnAttackPhase);
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.Instance.Unsubscribe<OnAttackPhase>(OnAttackPhase);
+    }
+
+    private void OnAttackPhase(object obj)
+    {
+        panel.SetActive(false);
+    }
 
     public void SetEffect(ElementType characterType, ElementType tileType)
     {

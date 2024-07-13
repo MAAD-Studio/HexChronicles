@@ -539,6 +539,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
+        EventBus.Instance.Publish(new OnAttackPhase());
+
         if (selectedEnemy != null)
         {
             selectedEnemy = null;
