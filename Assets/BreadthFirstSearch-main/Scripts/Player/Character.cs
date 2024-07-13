@@ -22,7 +22,6 @@ public class Character : MonoBehaviour
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
     [HideInInspector] public bool canAttack = true;
-    [SerializeField] protected GameObject attackVFX;
 
     [Header("Character Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
@@ -36,12 +35,15 @@ public class Character : MonoBehaviour
     [HideInInspector] public ElementType elementStrongAgainst;
     [HideInInspector] public Vector3 defaultScale;
 
-
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
+
+    [Header("Prefabs:")]
+    [SerializeField] protected GameObject attackVFX;
+    [SerializeField] protected GameObject damagePrefab;
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
@@ -371,6 +373,11 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("hit");
         }
+
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(damage);
+
         UpdateHealthBar?.Invoke();
     }
 
