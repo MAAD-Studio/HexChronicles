@@ -74,6 +74,7 @@ public class WorldMap : Menu
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.HUDMenuClassifier);
+        MenuManager.Instance.HideMenu(MenuManager.Instance.TutorialHUDClassifier);
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
         SceneLoader.Instance.UnLoadAllLoadedScenes();
