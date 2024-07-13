@@ -1,4 +1,5 @@
 public struct PauseGame { }
+public struct OnTutorialStart { }
 public struct OnNewLevelStart { }
 public struct OnPlayerTurn { }
 public struct OnAttackPhase { }

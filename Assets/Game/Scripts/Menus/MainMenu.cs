@@ -7,10 +7,10 @@ public class MainMenu : Menu
 {
     public SceneReference Tutorial;
     public SceneReference Map;
-    public MenuClassifier hudClassifier;
+    public MenuClassifier tutorialHUDClassifier;
     public MenuClassifier mapClassifier;
 
-    public void OnStartGame()
+    public void OnStartTutorial()
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
@@ -22,7 +22,7 @@ public class MainMenu : Menu
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
         MenuManager.Instance.HideMenu(menuClassifier);
-        MenuManager.Instance.ShowMenu(hudClassifier);
+        MenuManager.Instance.ShowMenu(tutorialHUDClassifier);
     }
 
     public void OnContinueGame()
@@ -39,6 +39,7 @@ public class MainMenu : Menu
 
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.HUDMenuClassifier);
+        MenuManager.Instance.HideMenu(MenuManager.Instance.TutorialHUDClassifier);
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
         SceneLoader.Instance.UnLoadAllLoadedScenes();
