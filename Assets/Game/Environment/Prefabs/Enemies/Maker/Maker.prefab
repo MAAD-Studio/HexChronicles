@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 1275399015605480794}
   m_Layer: 0
   m_Name: Maker
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -201,16 +201,18 @@ MonoBehaviour:
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
-  animator: {fileID: 0}
   healthBar: {fileID: 0}
   elementType: 0
   elementWeakAgainst: 0
   elementStrongAgainst: 0
+  defaultScale: {x: 0, y: 0, z: 0}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
   moving: 0
   characterTile: {fileID: 0}
+  attackVFX: {fileID: 3781339320553724212, guid: 6596e6744951c48439bd87d4e8a0a5c7, type: 3}
+  damagePrefab: {fileID: 6740108802365226543, guid: a0e63a1228446d0479a5c817d2370528, type: 3}
   statusList: []
   isHurt: 0
   effectedByWeather: 0
@@ -229,6 +231,7 @@ MonoBehaviour:
       m_Calls: []
   enemySO: {fileID: 11400000, guid: 1688a20593ce0d44ba0ec8229a7b0751, type: 2}
   enemyType: 6
+  attackAreaPreview: {fileID: 0}
   deathTilePrefab: {fileID: 5947859453143795796, guid: d9fe5d13c7dd68d45a1cf49d3fff33b6, type: 3}
 --- !u!95 &1275399015605480794
 Animator:

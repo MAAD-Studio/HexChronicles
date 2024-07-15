@@ -16,7 +16,21 @@ public class TileReporter : MonoBehaviour
 
     public virtual void Start()
     {
+        List<TileReporter> reportersToRemove = new List<TileReporter>();
+        foreach(TileReporter reporter in children)
+        {
+            if(reporter == null)
+            {
+                reportersToRemove.Add(reporter);
+                Debug.LogWarning("(" + name + ") in (" + transform.parent.name + ") had a null child.");
+            }
+        }
 
+        foreach(TileReporter reporter in reportersToRemove)
+        {
+            children.Remove(reporter);
+        }
+        reportersToRemove.Clear();
     }
 
     public void CheckBlockages(bool parentNull)
@@ -32,9 +46,9 @@ public class TileReporter : MonoBehaviour
             tileNull = true;
         }
 
-        foreach (TileReporter tile in children)
+        foreach (TileReporter reporter in children)
         {
-            tile.CheckBlockages(tileNull);
+            reporter.CheckBlockages(tileNull);
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class AttackPreviewer : Singleton<AttackPreviewer>
 {
@@ -10,6 +11,9 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
     private List<Tile> checkedTiles = new List<Tile>();
     private List<GameObject> tileTops = new List<GameObject>();
+
+    private List<Tile> tileObjCheckedTiles = new List<Tile>();
+    private List<GameObject> tileObjTileTops = new List<GameObject>();
 
     [Header("Spawn Info: ")]
     [SerializeField] private LayerMask tileLayer;
@@ -19,6 +23,10 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     [Header("Top Prefabs: ")]
     [SerializeField] private GameObject movementTop;
     [SerializeField] private GameObject attackTop;
+
+    [Header("Marker Prefabs: ")]
+    [SerializeField] private GameObject targetMarker;
+    private GameObject spawnedMarker;
 
     #endregion
 
@@ -61,6 +69,14 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
             {
                 CheckAttackSpawns(tile, previewArea, pointsToCheck);
             }
+        }
+
+        //Spawns an indicator over the cloest enemy to display who the enemy is likely to target
+        Character closestCharacter = enemy.LikelyTarget();
+
+        if(closestCharacter != null)
+        {
+            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position + new Vector3(0, 5f, 0), Quaternion.identity);
         }
     }
 
@@ -133,6 +149,55 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
         checkedTiles.Clear();
         tileTops.Clear();
+
+        if (spawnedMarker != null)
+        {
+            Destroy(spawnedMarker);
+        }
+    }
+
+    public void PreviewAttackAreaTower(Tower tileObj)
+    {
+        List<Tile> edgeTiles;
+        List<Tile> nextSet = new List<Tile>();
+
+        tileObjCheckedTiles.Add(tileObj.AttachedTile);
+        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.AttachedTile, false);
+
+        for(int i = 0; i < tileObj.TileRange; i++)
+        {
+            foreach(Tile tile in edgeTiles)
+            {
+                Vector3 position = tile.transform.position;
+                position.y = spawnHeight;
+
+                tileObjTileTops.Add(Instantiate(attackTop, position, Quaternion.identity));
+                tileObjCheckedTiles.Add(tile);
+
+                foreach(Tile adjTile in Pathfinder.Instance.FindAdjacentTiles(tile, false))
+                {
+                    if(!tileObjCheckedTiles.Contains(adjTile))
+                    {
+                        nextSet.Add(adjTile);
+                    }
+                }
+            }
+
+            edgeTiles.Clear();
+            edgeTiles = new List<Tile>(nextSet);
+            nextSet.Clear();
+        }
+    }
+
+    public void ClearAttackAreaTower()
+    {
+        foreach (GameObject top in tileObjTileTops)
+        {
+            Destroy(top);
+        }
+
+        tileObjCheckedTiles.Clear();
+        tileObjTileTops.Clear();
     }
 
     #endregion

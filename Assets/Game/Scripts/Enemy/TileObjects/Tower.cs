@@ -10,6 +10,11 @@ public class Tower : Spawner
     [SerializeField] private int tileRange = 3;
     private float actualRange;
 
+    public int TileRange
+    {
+        get { return tileRange; }
+    }
+
     [SerializeField] private int damage = 5;
 
     [SerializeField] private AttackArea attackAreaPrefab;

@@ -37,6 +37,8 @@ public class WeatherManager : MonoBehaviour
         get { return weather.weatherName; }
     }
 
+    private TurnManager turnManager;
+
     #endregion
 
     #region UnityMethods
@@ -58,6 +60,8 @@ public class WeatherManager : MonoBehaviour
 
         Debug.Assert(weather != null, "WeatherManager doesn't have a weather affect to use");
         Tile.tileReplaced.AddListener(TileReplaced);
+
+        turnManager = FindObjectOfType<TurnManager>();
     } 
 
     #endregion
@@ -98,6 +102,7 @@ public class WeatherManager : MonoBehaviour
             foreach(WeatherPatch patch in weatherPatches)
             {
                 patch.EffectCharacters();
+                patch.EffectTiles(turnManager);
                 patch.MoveOrigin();
                 patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
                 patch.ColourArea();

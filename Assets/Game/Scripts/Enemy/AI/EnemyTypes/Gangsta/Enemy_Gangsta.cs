@@ -23,8 +23,18 @@ public class Enemy_Gangsta : Enemy_Base
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
     {
+        List<Character> charactersToCheck;
+        if(!mindControl)
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
+
         int valueOfAttack = 0;
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        foreach (Character character in charactersToCheck)
         {
             valueOfAttack += 5;
 
@@ -52,11 +62,18 @@ public class Enemy_Gangsta : Enemy_Base
     {
         base.ExecuteAttack(attackArea, turnManager);
 
-        foreach (Character character in attackArea.CharactersHit(TurnEnums.CharacterType.Player))
+        List<Character> charactersToCheck;
+        if (!mindControl)
         {
-            transform.LookAt(character.transform.position);
-            character.TakeDamage(attackDamage, elementType);
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
+        }
+        else
+        {
+            charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
+        }
 
+        foreach (Character character in charactersToCheck)
+        {
             List<Tile> adjacentTiles = turnManager.pathfinder.FindAdjacentTiles(character.characterTile, true);
             foreach(Tile tile in adjacentTiles)
             {
@@ -106,7 +123,22 @@ public class Enemy_Gangsta : Enemy_Base
 
     private void FollowUpAttack(Character character)
     {
+        if(mindControl && character.characterType == TurnEnums.CharacterType.Player)
+        {
+            return;
+        }
+        else if(!mindControl && character.characterType == TurnEnums.CharacterType.Enemy)
+        {
+            return;
+        }
+
         transform.LookAt(character.transform.position);
+
+        // Spawn attack vfx
+        GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+        vfx.transform.forward = transform.forward;
+        Destroy(vfx, 3f);
+
         character.TakeDamage(attackDamage, elementType);
 
         TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);

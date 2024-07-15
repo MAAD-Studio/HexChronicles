@@ -22,7 +22,6 @@ public class Character : MonoBehaviour
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
     [HideInInspector] public bool canAttack = true;
-    [SerializeField] protected GameObject attackVFX;
 
     [Header("Character Attributes:")]
     [HideInInspector] public float currentHealth = 0f;
@@ -36,12 +35,15 @@ public class Character : MonoBehaviour
     [HideInInspector] public ElementType elementStrongAgainst;
     [HideInInspector] public Vector3 defaultScale;
 
-
     [Header("Tile LayerMask:")]
     [SerializeField] private LayerMask tileLayer;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
+
+    [Header("Prefabs:")]
+    [SerializeField] protected GameObject attackVFX;
+    [SerializeField] protected GameObject damagePrefab;
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
@@ -59,7 +61,6 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     private GameObject buffPreview;
-    //private GameObject statusVFX;
 
     #endregion
 
@@ -91,7 +92,6 @@ public class Character : MonoBehaviour
         if (characterTile.tileData.tileType == elementType)
         {
             TurnManager turnManager = FindObjectOfType<TurnManager>();
-            ApplyBuffCharacter(turnManager);
             ApplyStatusAttackArea(targets);
             ApplyStatusElementalTile(turnManager);
         }
@@ -100,9 +100,15 @@ public class Character : MonoBehaviour
     public void ApplyBuffCharacter(TurnManager turnManager)
     {
         Hero thisHero = null;
+        Enemy_Base thisEnemy = null;
+
         if (characterType == TurnEnums.CharacterType.Player)
         {
             thisHero = (Hero)this;
+        }
+        else
+        {
+            thisEnemy = (Enemy_Base)this;
         }
 
         if (elementType == ElementType.Fire)
@@ -112,15 +118,23 @@ public class Character : MonoBehaviour
             List<Character> charactersToHit = new List<Character>();
 
             foreach (Tile tile in tiles)
-            { 
-                if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+            {
+                Character characterOnTile = tile.characterOnTile;
+                if (characterOnTile != null && characterOnTile.characterType != characterType)
                 {
                     charactersToHit.Add(tile.characterOnTile);
                 }
 
                 if(characterType == TurnEnums.CharacterType.Player)
                 {
-                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    if(thisHero != null)
+                    {
+                        TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    }
+                    else
+                    {
+                        TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
+                    }
                 }
             }
             ApplyStatusAttackArea(charactersToHit);
@@ -134,15 +148,19 @@ public class Character : MonoBehaviour
 
             if (characterType == TurnEnums.CharacterType.Player)
             {
-                TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+                if(thisHero != null)
+                {
+                    TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.healText, transform.position, 4f, 0.5f);
+                }
+                else
+                {
+                    TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.healText, transform.position, 4f, 0.5f);
+                }
             }
         }
         else
         {
-            Status newStatus = new Status();
-            newStatus.effectTurns = 1;
-            newStatus.statusType = Status.StatusTypes.Haste;
-            AddStatus(newStatus);
+            AttemptStatusApply(this, Status.StatusTypes.Haste, 1);
             MouseTip.Instance.ShowTip(transform.position, $"Got a Haste", false);
         }
     }
@@ -153,23 +171,23 @@ public class Character : MonoBehaviour
         {
             if (elementType == ElementType.Fire)
             {
-                AttemptStatusApply(Status.StatusTypes.Burning, target, false);
+                AttemptStatusApply(target, Status.StatusTypes.Burning, 2);
             }
             else if (elementType == ElementType.Water)
             {
-                AttemptStatusApply(Status.StatusTypes.Wet, target, true);
+                AttemptStatusApply(target, Status.StatusTypes.Wet, 2);
             }
             else
             {
-                AttemptStatusApply(Status.StatusTypes.Bound, target, true);
+                AttemptStatusApply(target, Status.StatusTypes.Bound, 2);
             }
         }
     }
 
     public void ApplyStatusElementalTile(TurnManager turnManager)
     {
-        Status.StatusTypes chosenType = Status.StatusTypes.None;
-        List<Tile> chosenList = new List<Tile>();
+        Status.StatusTypes chosenType;
+        List<Tile> chosenList;
 
         if (elementType == ElementType.Fire)
         {
@@ -191,32 +209,23 @@ public class Character : MonoBehaviour
         {
             if(tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
             {
-                if (chosenType == Status.StatusTypes.Burning)
-                {
-                    AttemptStatusApply(chosenType, tile.characterOnTile, false);
-                }
-                else
-                {
-                    AttemptStatusApply(chosenType, tile.characterOnTile, true);
-                }
+                AttemptStatusApply(tile.characterOnTile, chosenType, 2);
             }
         }
     }
 
-    public void AttemptStatusApply(Status.StatusTypes statusType, Character target, bool checkOld)
+    public void AttemptStatusApply(Character target, Status.StatusTypes statusType, int effectTurns)
     {
-        if(checkOld)
+        Status oldStatus = Status.GrabIfStatusActive(target, statusType);
+        if (oldStatus != null)
         {
-            Status oldStatus = Status.GrabIfStatusActive(target, statusType);
-            if (oldStatus != null)
-            {
-                oldStatus.effectTurns += 1;
-                return;
-            }
+            oldStatus.effectTurns += 1;
+            UpdateStatus.Invoke();
+            return;
         }
 
         Status newStatus = new Status();
-        newStatus.effectTurns = 2;
+        newStatus.effectTurns = effectTurns;
         newStatus.statusType = statusType;
         target.AddStatus(newStatus);
     }
@@ -255,7 +264,7 @@ public class Character : MonoBehaviour
         canMove = true;
     }
 
-    public void AddStatus(Status status)
+    public void AddStatus(Status status) // Consider make this private method
     {
         ShowEffect(status);
         statusList.Add(status);
@@ -303,8 +312,9 @@ public class Character : MonoBehaviour
 
         if (vfx != null)
         {
+            vfx.transform.SetParent(transform);
             StatusVFX statusVFX = vfx.GetComponent<StatusVFX>();
-            statusVFX.Initialize(status.effectTurns, characterType == TurnEnums.CharacterType.Player);
+            statusVFX.Initialize(this, status.effectTurns);
         }
     }
 
@@ -332,6 +342,7 @@ public class Character : MonoBehaviour
             }
         }
         UpdateStatus?.Invoke();
+        UpdateAttributes?.Invoke();
     }
 
     public virtual void TakeDamage(float damage, ElementType type)
@@ -362,7 +373,43 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("hit");
         }
+
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(damage);
+
         UpdateHealthBar?.Invoke();
+    }
+
+    //Used to help preview the expected damage from an Attack
+    public int AddedOnDamagePreview(ElementType enemyType)
+    {
+        int potentialDamageAddOn = 0;
+
+        if (enemyType == ElementType.Base)
+        {
+            return 0;
+        }
+
+        foreach (Status status in statusList)
+        {
+            if (status.statusType == Status.StatusTypes.Wet)
+            {
+                if (enemyType == ElementType.Fire)
+                {
+                    potentialDamageAddOn++;
+                }
+            }
+            if (status.statusType == Status.StatusTypes.Bound)
+            {
+                if (enemyType == ElementType.Grass)
+                {
+                    potentialDamageAddOn += 3;
+                }
+            }
+        }
+
+        return potentialDamageAddOn;
     }
 
     private int AttackStatusEffect(ElementType type)
@@ -380,17 +427,14 @@ public class Character : MonoBehaviour
             {
                 if(type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER BURNING DEALING FIRE DAMAGE");
                     status.damageAddOn += 1;
                 }
                 else if(type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER BURNING DEALING WATER DAMAGE");
                     statusToRemove.Add(status);
                 }
                 else
                 {
-                    Debug.Log("CHARACTER BURNING DEALING GRASS DAMAGE");
                     status.effectTurns++;
                 }
                 break;
@@ -399,19 +443,16 @@ public class Character : MonoBehaviour
             {
                 if (type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER WET DEALING FIRE DAMAGE");
                     TakeDamage(1, ElementType.Base);
                     statusToRemove.Add(status);
                 }
                 else if (type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER WET DEALING WATER DAMAGE");
                     MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
                     status.effectTurns++;
                 }
                 else
                 {
-                    Debug.Log("CHARACTER WET DEALING GRASS DAMAGE");
                     statusToRemove.Add(status);
                 }
                 break;
@@ -420,17 +461,14 @@ public class Character : MonoBehaviour
             {
                 if (type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER BOUND DEALING FIRE DAMAGE");
                     statusToRemove.Add(status);
                 }
                 else if (type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER BOUND DEALING WATER DAMAGE");
                     status.effectTurns++;
                 }
                 else
                 {
-                    Debug.Log("CHARACTER BOUND DEALING GRASS DAMAGE");
                     potentialDamageAddOn += 3;
                 }
                 break;
@@ -554,6 +592,12 @@ public class Character : MonoBehaviour
                 currentTile.OnTileEnter(this);
                 currentTile = WalkOntoTileEffect(currentTile);
 
+                if(currentTile.tileHasObject && currentTile.objectOnTile.objectType == ObjectType.PoisonCloud)
+                {
+                    PoisonCloud poison = (PoisonCloud)currentTile.objectOnTile;
+                    TakeDamage(poison.Damage, ElementType.Poison);
+                }
+
                 tilesInPath.Remove(path[step]);
                 path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
 
@@ -582,6 +626,11 @@ public class Character : MonoBehaviour
 
             yield return null;
             FindTile();
+
+            if(characterTile.tileData.tileType == elementType)
+            {
+                ApplyBuffCharacter(turnManager);
+            }
 
             animator.SetBool("walking", false);
         }
@@ -647,7 +696,10 @@ public class Character : MonoBehaviour
             attackAreaPrefab.DestroySelf();
         }
 
-        turnManager.mainCameraController.controlEnabled = true;
+        if(turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
+        {
+            turnManager.mainCameraController.controlEnabled = true;
+        }
         turnManager.mainCameraController.StopFollowingTarget();
 
         if(characterType == TurnEnums.CharacterType.Player)
@@ -751,11 +803,11 @@ public class Character : MonoBehaviour
                 if (newDistance < inspectDistance)
                 {
                     chosenTile = tile;
-                    curDistance = newDistance;
+                    inspectDistance = newDistance;
                 }
             }
 
-            if(chosenTile.tileOccupied || inspectDistance >= curDistance || chosenTile == null)
+            if(chosenTile == null || chosenTile.tileOccupied || inspectDistance >= curDistance)
             {
                 break;
             }

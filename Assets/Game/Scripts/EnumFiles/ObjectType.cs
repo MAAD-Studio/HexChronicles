@@ -2,5 +2,6 @@ public enum ObjectType
 {
     General,
     Tower,
-    ElementalWall
+    ElementalWall,
+    PoisonCloud
 }

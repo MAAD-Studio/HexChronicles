@@ -6,7 +6,7 @@ public class TileReporter_TempObjectMaker : TileReporter
 {
     #region Variables
 
-    [SerializeField] private TileObject objectToSpawn;
+    [SerializeField] protected TileObject objectToSpawn;
 
     #endregion
 
@@ -33,7 +33,11 @@ public class TileReporter_TempObjectMaker : TileReporter
         if (currentTile.tileHasObject == false && currentTile.tileOccupied == false)
         {
             TurnManager turnManager = FindObjectOfType<TurnManager>();
-            turnManager.temporaryTileObjects.Add(Instantiate(objectToSpawn, currentTile.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity));
+
+            TileObject newObj = Instantiate(objectToSpawn, currentTile.transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+            turnManager.temporaryTileObjects.Add(newObj);
+
+            UndoManager.Instance.StoreTileObject(newObj, true);
         }
     }
 

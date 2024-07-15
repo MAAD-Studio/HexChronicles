@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.Timeline;
@@ -59,6 +60,14 @@ public class EnemyBrain : MonoBehaviour
 
             Debug.Log(enemy_base.name + " is thinking...");
 
+            turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
+
+            if(Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.Bound) != null)
+            {
+                yield return new WaitForSeconds(0.5f);
+                continue;
+            }
+
             enemy_base.PreCalculations(turnManager);
 
             AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
@@ -69,14 +78,33 @@ public class EnemyBrain : MonoBehaviour
             turnManager.pathfinder.ResetPathFinder();
             turnManager.pathfinder.FindMovementPathsCharacter(enemy_base, false);
 
-            List<Tile> usableTiles = new List<Tile>();
-            usableTiles = turnManager.pathfinder.frontier;
-            usableTiles.Add(enemy_base.characterTile);
+            List<Tile> usableTiles = new List<Tile>(turnManager.pathfinder.frontier)
+            {
+                enemy_base.characterTile,
+            };
+
+            bool mindControl = (Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.MindControl) != null);
 
             Character currentClosest = null;
             float charDistance = 1000f;
-            foreach (Character character in turnManager.characterList)
+
+            List<Character> charactersToCheck;
+            if(!mindControl)
             {
+                charactersToCheck = turnManager.characterList;
+            }
+            else
+            {
+                charactersToCheck = turnManager.enemyList.ToList<Character>();
+            }
+
+            foreach (Character character in charactersToCheck)
+            {
+                if (character == enemy_base)
+                {
+                    continue;
+                }
+
                 float newDistance = Vector3.Distance(character.transform.position, enemy_base.transform.position);
 
                 //Grabs the closest character
@@ -117,7 +145,11 @@ public class EnemyBrain : MonoBehaviour
                         valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
 
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
-                        if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        {
+                            rotation = nullVector;
+                        }
+                        else if(mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Enemy).Count == 0)
                         {
                             rotation = nullVector;
                         }

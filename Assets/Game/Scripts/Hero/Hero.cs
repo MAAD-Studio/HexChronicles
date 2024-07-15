@@ -95,26 +95,34 @@ public class Hero : Character
     {
         foreach (var target in targets)
         {
-            if (elementType == ElementType.Fire)
-            {
-            }
-            else if (elementType == ElementType.Water)
-            {
-                GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
-                Destroy(vfx, 3f);
-            }
-            else if (elementType == ElementType.Grass)
-            {
-                GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
-                vfx.transform.LookAt(target.transform.position);
-                Destroy(vfx, 3f);
-            }
+            SpawnAttackVFX(target);
 
             target.TakeDamage(attackDamage, elementType);
             target.PreviewDamage(0);
         }
 
         base.PerformBasicAttack(targets);
+    }
+
+    private void SpawnAttackVFX(Character target)
+    {
+        if (elementType == ElementType.Fire)
+        {
+            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.LookAt(transform.forward);
+            Destroy(vfx, 3f);
+        }
+        else if (elementType == ElementType.Water)
+        {
+            GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
+            Destroy(vfx, 3f);
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.LookAt(target.transform.position);
+            //Destroy(vfx, 3f);
+        }
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)

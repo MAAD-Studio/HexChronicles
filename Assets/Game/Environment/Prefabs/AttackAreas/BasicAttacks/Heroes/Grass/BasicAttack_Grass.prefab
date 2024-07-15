@@ -48,9 +48,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6c8a01116d9f4f4a898d14dfbf2c731, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originReporter: {fileID: 5033625903802606839}
+  originReporters: []
   freeRange: 0
+  onlySingleTileType: 0
   effectedTileType: 0
+  hitsEnemies: 1
+  hitsHeroes: 0
+  hitsTileObjects: 1
   maxHittableRange: 1
 --- !u!1001 &633811172999505765
 PrefabInstance:
@@ -295,17 +299,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
---- !u!114 &5033625903802606839 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 105281272630646749, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}
-  m_PrefabInstance: {fileID: 4948612482005300010}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc7182300fe9bc04d8f2f8b476cc4905, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &6429802177541017778 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2131961665999135640, guid: 7b7fc23f5d61e794eb4fa13e68466dec, type: 3}

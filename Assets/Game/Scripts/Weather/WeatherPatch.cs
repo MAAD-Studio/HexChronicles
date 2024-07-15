@@ -150,6 +150,24 @@ public class WeatherPatch
         weather.ApplyEffect(effectedCharacters);
     }
 
+    public void EffectTiles(TurnManager turnManager)
+    {
+        List<Tile> potentialEffectTiles = new List<Tile>();
+        foreach (Tile tile in tilesUnderAffect)
+        {
+            if (tile.tileData.tileType != ElementType.Base)
+            {
+                potentialEffectTiles.Add(tile);
+            }
+        }
+
+        if (potentialEffectTiles.Count > 0)
+        {
+            int tileChoice = Random.Range(0, potentialEffectTiles.Count);
+            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager);
+        }
+    }
+
     public void MoveOrigin()
     {
         if (tilesMoveable.Count > 0)

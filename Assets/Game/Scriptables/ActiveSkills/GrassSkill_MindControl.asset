@@ -10,31 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55930587f00bce84c9e54da35735816a, type: 3}
-  m_Name: GrassSkill 2
+  m_Name: GrassSkill_MindControl
   m_EditorClassIdentifier: 
   elementType: 2
   icon: {fileID: 21300000, guid: 41d33c175aee740449ed283feb2f53d7, type: 3}
-  skillName: Grass 2
+  skillName: Mind Control
   description:
-    description: 'Bound the enemies
-
-      Bound: Lose 1 turn of action'
+    description: Make enemies in the attack area attack other enemies for 2 turns.
     keywords:
-    - keyword: Bound
+    - keyword: attack other enemies
       color: {r: 0.6784314, g: 0.019607844, b: 0.8784314, a: 1}
       bold: 1
       italic: 0
-    - keyword: 1 turn
+    - keyword: 2 turns
       color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
       bold: 1
       italic: 0
-  skillshape: {fileID: 21300000, guid: 41d33c175aee740449ed283feb2f53d7, type: 3}
-  shapeArea: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+  skillshape: {fileID: 21300000, guid: f122d3885cf97df4fa1a98ce0e58b80b, type: 3}
+  shapeArea: {fileID: 3827415136764973267, guid: 9ebad85d5cdc61146ae6958dc52f700d, type: 3}
   particleEffect: {fileID: 0}
   soundEffect: {fileID: 0}
   skillEffect: 4
-  skillEffectValue: 0
+  skillEffectValue: 2
   status:
-    statusType: 2
-    effectTurns: 1
+    statusType: 10
+    effectTurns: 2
     damageAddOn: 0

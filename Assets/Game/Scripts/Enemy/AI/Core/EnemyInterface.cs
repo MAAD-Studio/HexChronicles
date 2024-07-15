@@ -15,4 +15,6 @@ public interface EnemyInterface
     public bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager);
 
     public void ActionCleanup();
+
+    public Character LikelyTarget();
 }

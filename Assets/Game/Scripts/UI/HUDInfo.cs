@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.InputSystem;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -15,7 +14,8 @@ public class HUDInfo : MonoBehaviour
     private Tile selectedTile;
     private Coroutine hideTileInfoCoroutine;
     private Coroutine hideStatusInfoCoroutine;
-    
+    private bool showInfos = true;
+
     [Header("Turn Info")]
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private GameObject playerTurnMessage;
@@ -96,15 +96,18 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Subscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Subscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
         TurnManager.LevelVictory.AddListener(OnLevelEnded);
         TurnManager.LevelDefeat.AddListener(OnLevelEnded);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
+        Character.movementComplete.AddListener(RestoreShowingInfos);
     }
 
     private void UnsubscribeEvents()
@@ -113,15 +116,18 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Unsubscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
             EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Unsubscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
         TurnManager.LevelVictory.RemoveListener(OnLevelEnded);
         TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
+        Character.movementComplete.RemoveListener(RestoreShowingInfos);
     }
 
     private void OnNewLevelStart(object obj)
@@ -199,21 +205,51 @@ public class HUDInfo : MonoBehaviour
         turnMessage.gameObject.SetActive(false);
     }
 
+    private void OnAttackPhase(object obj)
+    {
+        // Disable some UI elements
+        showInfos = false;
+        StopAllCoroutines();
+        //tileInfo.Hide();
+        enemyStatus.Hide();
+        objectStatus.Hide();
+        enemyHoverUI.Hide();
+    }
+
+    private void RestoreShowingInfos(Character arg0)
+    {
+        showInfos = true;
+    }
+
+    // Used for update info after character has made decision
     private void OnUpdateCharacterDecision(object obj)
     {
-        UpdateCharacterDecision decisionData = (UpdateCharacterDecision)obj;
-        Hero hero = (Hero)decisionData.character;
+        UpdateCharacterDecision data = (UpdateCharacterDecision)obj;
+        Hero hero = (Hero)data.character;
         if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
-            if (decisionData.hasMadeDecision)
-            {
-                info.SetNoActionState();
-                activeHeroes--;
+            info.SetNoActionState();
+        }
+        activeHeroes--;
 
-            }
-            else
+        if (activeHeroes == 0)
+        {
+            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+        }
+    }
+
+    // Used for update info while restoring hero data
+    // If the hero is already dead and respawned, the characterinfo should be updated
+    private void RestoreHeroData(object obj) 
+    {
+        OnRestoreHeroData data = (OnRestoreHeroData)obj;
+        Hero hero = data.hero;
+
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
+        {
+            info.SetRestoreState(hero);
+            if (hero.hasMadeDecision == false)
             {
-                info.SetRestoreState();
                 activeHeroes++;
             }
         }
@@ -240,8 +276,8 @@ public class HUDInfo : MonoBehaviour
 
         availableHeroes--;
     }
-
     #endregion
+
 
     #region Initialization and Reset
 
@@ -432,7 +468,7 @@ public class HUDInfo : MonoBehaviour
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
             // Clicked show status panel
-            if (Input.GetMouseButtonDown(0))
+            if (showInfos && Input.GetMouseButtonDown(0))
             {
                 enemyStatus.SetEnemyStats(enemy);
                 objectStatus.Hide();
@@ -463,7 +499,7 @@ public class HUDInfo : MonoBehaviour
             objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
             
             // Clicked show status panel
-            if (Input.GetMouseButtonDown(0))
+            if (showInfos && Input.GetMouseButtonDown(0))
             {
                 objectStatus.SetObjectStats(tileObject);
                 enemyStatus.Hide();
