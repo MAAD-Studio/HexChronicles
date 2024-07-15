@@ -97,7 +97,13 @@ public class Hero : Character
         {
             SpawnAttackVFX(target);
 
-            target.TakeDamage(attackDamage, elementType);
+            int actualDamage = (int)attackDamage;
+            if(Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
+            {
+                attackDamage += 1;
+            }
+
+            target.TakeDamage(actualDamage, elementType);
             target.PreviewDamage(0);
         }
 

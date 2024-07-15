@@ -8,8 +8,12 @@ public class Weather_Base : MonoBehaviour
 
     // !!! TEMP USE - Consider add enum for weather types
     [HideInInspector] public string weatherName;
+    [SerializeField] public ElementType weatherType;
+    [SerializeField] public Material weatherMaterial;
 
-    [SerializeField] protected Status.StatusTypes statusEffect = Status.StatusTypes.CannotMove;
+    [SerializeField] protected Status.StatusTypes statusEffect = Status.StatusTypes.None;
+    [SerializeField] protected Status.StatusTypes secondaryEffect = Status.StatusTypes.None;
+    [SerializeField] public TileEnums.TileWeather weatherStyle = TileEnums.TileWeather.rain;
     [Range(0f, 10f)]
     [SerializeField] protected int effectTurns = 1;
 
@@ -22,7 +26,7 @@ public class Weather_Base : MonoBehaviour
         
     }
 
-    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
 
     }

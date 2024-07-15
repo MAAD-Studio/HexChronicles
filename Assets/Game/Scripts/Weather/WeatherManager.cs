@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeatherManager : MonoBehaviour
+public class WeatherManager : Singleton<WeatherManager>
 {
     #region Variables
 
@@ -138,6 +138,11 @@ public class WeatherManager : MonoBehaviour
         {
             patch.TileReplaced(oldTile, newTile);
         }
+    }
+
+    public ElementType GetWeatherType()
+    {
+        return weather.weatherType;
     }
 
     #endregion

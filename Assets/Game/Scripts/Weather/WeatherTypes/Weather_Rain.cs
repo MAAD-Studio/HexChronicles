@@ -34,14 +34,13 @@ public class Weather_Rain : Weather_Base
                 character.currentHealth += healthBoost;
                 character.currentHealth = Mathf.Min(character.currentHealth, character.maxHealth);
                 character.UpdateHealthBar?.Invoke();
-                continue;
             }
             else if(character.elementType == ElementType.Fire)
             {
                 character.TakeDamage(healthDebuff, ElementType.Base);
             }
 
-            if (Status.GrabIfStatusActive(character, statusEffect) == null)
+            if (Status.GrabIfStatusActive(character, statusEffect) == null && character.elementType != ElementType.Water)
             {
                 Status newStatus = new Status();
                 newStatus.statusType = statusEffect;
@@ -54,14 +53,14 @@ public class Weather_Rain : Weather_Base
         }
     }
 
-    public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
-        /*Debug.Log("MAKING WATER TILES");
+        //Debug.Log("MAKING WATER TILES");
         foreach(Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
         {
-            Tile newTile = Instantiate(waterTilePrefab);
-            adjTile.ReplaceTileWithNew(newTile);
-        }*/
+            Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
+            patch.ReplaceTile(adjTile, newTile);
+        }
     }
 
     #endregion

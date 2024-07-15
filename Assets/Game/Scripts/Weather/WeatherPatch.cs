@@ -41,6 +41,28 @@ public class WeatherPatch
             //Checks every adjacent tile to the current tile we are investigating
             foreach (Tile adjacentTile in FindAdjacentTiles(currentTile, tileLayer))
             {
+                if (openTiles.Contains(adjacentTile) || tilesToIgnore.Contains(adjacentTile) || adjacentTile.underWeatherAffect)
+                {
+                    //Debug.Log("TILE REJECTED: " + adjacentTile.name);
+
+                    /*if(openTiles.Contains(adjacentTile))
+                    {
+                        Debug.Log("AAAA");
+                    }
+
+                    if(tilesToIgnore.Contains(adjacentTile))
+                    {
+                        Debug.Log("BBBB");
+                    }
+
+                    if(adjacentTile.underWeatherAffect)
+                    {
+                        Debug.Log("CCCC");
+                    }*/
+
+                    continue;
+                }
+
                 float newCost;
 
                 if (!entireMapEffected)
@@ -59,11 +81,6 @@ public class WeatherPatch
                     newCost = 0f;
                 }
 
-                if (openTiles.Contains(adjacentTile) || tilesToIgnore.Contains(adjacentTile))
-                {
-                    continue;
-                }
-
                 adjacentTile.weatherCost = newCost;
 
                 //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
@@ -72,6 +89,7 @@ public class WeatherPatch
                     adjacentTile.parentTile = currentTile;
                     openTiles.Enqueue(adjacentTile);
                     tilesUnderAffect.Add(adjacentTile);
+
                     if (adjacentTile.weatherCost <= movementPerTurn)
                     {
                         tilesMoveable.Add(adjacentTile);
@@ -89,6 +107,15 @@ public class WeatherPatch
         {
             tile.underWeatherAffect = true;
         }
+
+        /*Debug.Log("-----------------------------TILES UNDER AFFECT--------------------------");
+
+        foreach(Tile tile1 in tilesUnderAffect)
+        {
+            Debug.Log(tile1.name);
+        }
+
+        Debug.Log("&&&&&&&&&&&&&&&&&&&&&&&&&&&& END END END &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");*/
     }
 
     public List<Tile> FindAdjacentTiles(Tile origin, LayerMask tileLayer)
@@ -122,8 +149,13 @@ public class WeatherPatch
     {
         foreach (Tile tile in tilesUnderAffect)
         {
+            if(tile == null)
+            {
+                continue;
+            }
+
             tile.underWeatherAffect = false;
-            tile.ChangeTileWeather(TileEnums.TileWeather.disabled);
+            tile.ChangeTileWeather(TileEnums.TileWeather.disabled, weather.weatherMaterial);
         }
 
         tilesUnderAffect.Clear();
@@ -164,7 +196,7 @@ public class WeatherPatch
         if (potentialEffectTiles.Count > 0)
         {
             int tileChoice = Random.Range(0, potentialEffectTiles.Count);
-            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager);
+            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager, this);
         }
     }
 
@@ -181,7 +213,7 @@ public class WeatherPatch
     {
         foreach(Tile tile in tilesUnderAffect)
         {
-            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
+            tile.ChangeTileWeather(TileEnums.TileWeather.rain, weather.weatherMaterial);
         }
     }
 
@@ -195,6 +227,26 @@ public class WeatherPatch
 
         tilesToIgnore.Remove(oldTile);
         tilesToIgnore.Add(newTile);
+    }
+
+    public void ReplaceTile(Tile oldTile, Tile newTile)
+    {
+        if(tilesUnderAffect.Remove(oldTile))
+        {
+            tilesUnderAffect.Add(newTile);
+        }
+
+        if(tilesMoveable.Remove(oldTile))
+        {
+            tilesUnderAffect.Add(newTile);
+        }
+
+        if(tilesToIgnore.Remove(oldTile))
+        {
+            tilesUnderAffect.Add(newTile);
+        }
+
+        oldTile.ReplaceTileWithNew(newTile);
     }
 
     #endregion

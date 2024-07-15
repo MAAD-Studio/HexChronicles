@@ -213,17 +213,28 @@ public class Tile : MonoBehaviour
         ChangeTileEffect(activeTileEffects[0], true);
     }*/
 
-    public void ChangeTileWeather(TileEnums.TileWeather tileWeatherType)
+    public void ChangeTileWeather(TileEnums.TileWeather tileWeatherType, Material weatherMaterial)
     {
+        if(tileWeather == null)
+        {
+            tileWeather = transform.GetChild(3).gameObject;
+            weatherRenderer = tileWeather.GetComponent<Renderer>();
+        }
+
+        if(tileWeather == null)
+        {
+            Debug.Log("ATTEMPTED A GRAB. STILL FAILED");
+        }    
+
         switch(tileWeatherType)
         {
             case TileEnums.TileWeather.disabled:
                 tileWeather.SetActive(false);
                 break;
 
-            case TileEnums.TileWeather.rain:
+            default:
                 tileWeather.SetActive(true);
-                weatherRenderer.material = tileData.weatherMaterial;
+                weatherRenderer.material = weatherMaterial;
                 break;
         }
     }
@@ -244,7 +255,14 @@ public class Tile : MonoBehaviour
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        characterTimeOnTile += 1;
+        if(!underWeatherAffect && !(WeatherManager.Instance.GetWeatherType() == character.elementType))
+        {
+            characterTimeOnTile += 1;
+        }
+        else
+        {
+            characterTimeOnTile = 0;
+        }
     }
 
     //Called when a Character is leaving a tile

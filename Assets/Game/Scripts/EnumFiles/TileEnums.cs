@@ -22,7 +22,9 @@ public class TileEnums
     public enum TileWeather
     {
         disabled,
-        rain
+        rain,
+        heatWave,
+        SporeStorm
     }
 
     public enum TileType
