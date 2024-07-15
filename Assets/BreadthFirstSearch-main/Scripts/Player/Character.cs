@@ -381,6 +381,37 @@ public class Character : MonoBehaviour
         UpdateHealthBar?.Invoke();
     }
 
+    //Used to help preview the expected damage from an Attack
+    public int AddedOnDamagePreview(ElementType enemyType)
+    {
+        int potentialDamageAddOn = 0;
+
+        if (enemyType == ElementType.Base)
+        {
+            return 0;
+        }
+
+        foreach (Status status in statusList)
+        {
+            if (status.statusType == Status.StatusTypes.Wet)
+            {
+                if (enemyType == ElementType.Fire)
+                {
+                    potentialDamageAddOn++;
+                }
+            }
+            if (status.statusType == Status.StatusTypes.Bound)
+            {
+                if (enemyType == ElementType.Grass)
+                {
+                    potentialDamageAddOn += 3;
+                }
+            }
+        }
+
+        return potentialDamageAddOn;
+    }
+
     private int AttackStatusEffect(ElementType type)
     {
         int potentialDamageAddOn = 0;
@@ -396,17 +427,14 @@ public class Character : MonoBehaviour
             {
                 if(type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER BURNING DEALING FIRE DAMAGE");
                     status.damageAddOn += 1;
                 }
                 else if(type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER BURNING DEALING WATER DAMAGE");
                     statusToRemove.Add(status);
                 }
                 else
                 {
-                    Debug.Log("CHARACTER BURNING DEALING GRASS DAMAGE");
                     status.effectTurns++;
                 }
                 break;
@@ -415,19 +443,16 @@ public class Character : MonoBehaviour
             {
                 if (type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER WET DEALING FIRE DAMAGE");
                     TakeDamage(1, ElementType.Base);
                     statusToRemove.Add(status);
                 }
                 else if (type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER WET DEALING WATER DAMAGE");
                     MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
                     status.effectTurns++;
                 }
                 else
                 {
-                    Debug.Log("CHARACTER WET DEALING GRASS DAMAGE");
                     statusToRemove.Add(status);
                 }
                 break;
@@ -436,17 +461,14 @@ public class Character : MonoBehaviour
             {
                 if (type == ElementType.Fire)
                 {
-                    Debug.Log("CHARACTER BOUND DEALING FIRE DAMAGE");
                     statusToRemove.Add(status);
                 }
                 else if (type == ElementType.Water)
                 {
-                    Debug.Log("CHARACTER BOUND DEALING WATER DAMAGE");
                     status.effectTurns++;
                 }
                 else
                 {
-                    Debug.Log("CHARACTER BOUND DEALING GRASS DAMAGE");
                     potentialDamageAddOn += 3;
                 }
                 break;
