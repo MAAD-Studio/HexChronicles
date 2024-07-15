@@ -130,5 +130,40 @@ public class Enemy_SoloJelly : Enemy_Base
         DestroySelfEnemy(turnManager);
     }
 
+    public override Character LikelyTarget()
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        Enemy_Base closestEnemy = null;
+        float distance = 1000f;
+        bool foundMaster = false;
+        foreach (Enemy_Base enemy in turnManager.enemyList)
+        {
+            float newDistance;
+            bool examineEnemy = false;
+            if (enemy.GetComponent<Enemy_MasterJelly>() != null)
+            {
+                examineEnemy = true;
+                foundMaster = true;
+            }
+            else if (!foundMaster && enemy.GetComponent<Enemy_KingJelly>())
+            {
+                examineEnemy = true;
+            }
+
+            if (examineEnemy)
+            {
+                newDistance = Vector3.Distance(transform.position, enemy.transform.position);
+
+                if (newDistance < distance)
+                {
+                    distance = newDistance;
+                    closestEnemy = enemy;
+                }
+            }
+        }
+
+        return closestEnemy;
+    }
+
     #endregion
 }

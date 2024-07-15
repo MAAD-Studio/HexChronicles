@@ -76,5 +76,10 @@ public class Enemy_Drainer : Enemy_Base
         return baseTileObj;
     }
 
+    public override Character LikelyTarget()
+    {
+        return null;
+    }
+
     #endregion
 }
