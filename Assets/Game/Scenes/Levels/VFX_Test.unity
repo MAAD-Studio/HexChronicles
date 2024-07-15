@@ -3967,7 +3967,7 @@ Transform:
   m_GameObject: {fileID: 91998135}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3982,7 +3982,7 @@ VFXRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91998135}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -8107,6 +8107,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283555648}
     m_Modifications:
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveSpeed
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkill
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttack
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: newActiveTest
+      value: 
+      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: attackDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkillArea
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: tileLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_text
+      value: Water
+      objectReference: {fileID: 0}
     - target: {fileID: 771460957326937200, guid: 1d83e1d54197af6409160ca9d04620f0, type: 3}
       propertyPath: heroSO
       value: 
@@ -8286,46 +8326,6 @@ PrefabInstance:
     - target: {fileID: 9094975920977081227, guid: 1d83e1d54197af6409160ca9d04620f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveSpeed
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkill
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttack
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveDistance
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: newActiveTest
-      value: 
-      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: attackDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkillArea
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttackArea
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: tileLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: m_text
-      value: Water
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25453,6 +25453,9 @@ MonoBehaviour:
   weatherName: 
   statusEffect: 5
   effectTurns: 1
+  healthBoost: 1
+  healthDebuff: 1
+  waterTilePrefab: {fileID: 0}
 --- !u!114 &682367756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36564,14 +36567,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987431832}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 10.27, y: 0, z: 9.24}
+  m_LocalRotation: {x: -0, y: 0.999943, z: -0, w: -0.01067664}
+  m_LocalPosition: {x: 10.27943, y: 0, z: 9.213046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 91998136}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 181.223, z: 0}
 --- !u!1 &987563972
 GameObject:
   m_ObjectHideFlags: 0
@@ -38636,6 +38639,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283555648}
     m_Modifications:
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveSpeed
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkill
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttack
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: newActiveTest
+      value: 
+      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: attackDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkillArea
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: tileLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_text
+      value: Fire
+      objectReference: {fileID: 0}
     - target: {fileID: 39888016972579594, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: heroSO
       value: 
@@ -38807,46 +38850,6 @@ PrefabInstance:
     - target: {fileID: 9170870986879116875, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_Name
       value: Fire Hero Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveSpeed
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkill
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttack
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveDistance
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: newActiveTest
-      value: 
-      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: attackDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkillArea
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttackArea
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: tileLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: m_text
-      value: Fire
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
