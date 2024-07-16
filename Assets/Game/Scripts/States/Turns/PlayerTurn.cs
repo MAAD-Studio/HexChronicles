@@ -258,6 +258,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             SwitchToSpecialAttack();
         }
+
+        if(Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            GameManager.Instance.IncreaseGameSpeed();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            GameManager.Instance.DecreaseGameSpeed();
+        }
     }
 
     public void MoveBackAPhase()

@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     #region Variables
 
     [Header("Character Movement Info:")]
-    [SerializeField] private float moveSpeed = 0.4f;
+    [SerializeField] public float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
     [HideInInspector] public bool canMove = true;
@@ -577,7 +577,7 @@ public class Character : MonoBehaviour
                 Vector3 nextTilePosition = path[step].transform.position;
 
                 //Moves and roates towards the next point
-                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
+                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / (moveSpeed / GameManager.Instance.GameSpeed));
                 animationTime += Time.deltaTime;
 
                 //Checks if we are close enough to move onto the next point
