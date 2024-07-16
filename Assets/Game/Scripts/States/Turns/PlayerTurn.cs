@@ -305,6 +305,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 potentialMovementTile = null;
                 potentialPath = null;
                 phase = TurnEnums.PlayerPhase.Movement;
+                EventBus.Instance.Publish(new OnMovementPhase());
             }
         }
     }
@@ -492,6 +493,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     ResetBoard();
                     GrabCharacter();
                     phase = TurnEnums.PlayerPhase.Movement;
+                    EventBus.Instance.Publish(new OnMovementPhase());
                 }
             }
             else
@@ -542,6 +544,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
 
                 phase = TurnEnums.PlayerPhase.Attack;
+                EventBus.Instance.Publish(new OnAttackPhase());
                 SpawnAreaPrefab();
             }
         }
@@ -549,8 +552,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
-        EventBus.Instance.Publish(new OnAttackPhase());
-
         if (selectedEnemy != null)
         {
             selectedEnemy = null;

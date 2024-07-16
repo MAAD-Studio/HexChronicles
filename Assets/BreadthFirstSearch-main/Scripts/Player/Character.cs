@@ -56,6 +56,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
     [HideInInspector] public UnityEvent DamagePreview = new UnityEvent();
+    [HideInInspector] public UnityEvent DonePreview = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateHealthBar = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
@@ -239,10 +240,10 @@ public class Character : MonoBehaviour
 
     public void PreviewDamage(float damage)
     {
+        damage += AddedOnDamagePreview(elementType);
         healthBar.damagePreview = damage;
         DamagePreview?.Invoke();
     }
-
 
     public virtual void EnterNewTurn()
     {

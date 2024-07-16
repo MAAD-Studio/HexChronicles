@@ -70,12 +70,12 @@ public class AttackArea : MonoBehaviour
             // Reset preview on enemy healthbar
             if (tile.tileOccupied && tile.characterOnTile != null)
             {
-                tile.characterOnTile.PreviewDamage(0);
+                tile.characterOnTile.DonePreview?.Invoke();
             }
 
             if (tile.tileHasObject && tile.objectOnTile != null)
             {
-                tile.objectOnTile.PreviewDamage(0);
+                tile.objectOnTile.DonePreview?.Invoke();
             }
 
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
