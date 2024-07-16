@@ -405,7 +405,7 @@ public class HUDInfo : MonoBehaviour
 
     private void HeroSelected(Hero hero)
     {
-        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var newInfo))
         {
             newInfo.SetSelectedState();
         }
@@ -413,7 +413,7 @@ public class HUDInfo : MonoBehaviour
         // While changing hero in the list, set the previous selected hero to default state
         if (selectedHero != null && selectedHero != hero)
         {
-            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
+            if (characterInfoDict.TryGetValue(selectedHero.heroSO.name, out var info))
             {
                 info.SetDefaultState();
             }
@@ -429,7 +429,7 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = currentTile.characterOnTile as Hero;
 
-            if (characterInfoDict.TryGetValue(hero.name, out var info))
+            if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
             {
                 info.SetHoverState();
             }
