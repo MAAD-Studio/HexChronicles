@@ -213,7 +213,7 @@ public class Tile : MonoBehaviour
         ChangeTileEffect(activeTileEffects[0], true);
     }*/
 
-    public void ChangeTileWeather(TileEnums.TileWeather tileWeatherType, Material weatherMaterial)
+    public void ChangeTileWeather(bool enable, Material weatherMaterial)
     {
         if(tileWeather == null)
         {
@@ -221,21 +221,21 @@ public class Tile : MonoBehaviour
             weatherRenderer = tileWeather.GetComponent<Renderer>();
         }
 
-        if(tileWeather == null)
+        if(enable)
         {
-            Debug.Log("ATTEMPTED A GRAB. STILL FAILED");
-        }    
-
-        switch(tileWeatherType)
-        {
-            case TileEnums.TileWeather.disabled:
-                tileWeather.SetActive(false);
-                break;
-
-            default:
+            if(weatherMaterial != null)
+            {
                 tileWeather.SetActive(true);
                 weatherRenderer.material = weatherMaterial;
-                break;
+            }
+            else
+            {
+                Debug.LogError("ChangeTilWeather was provided a null material");
+            }
+        }
+        else
+        {
+            tileWeather.SetActive(false);
         }
     }
 
@@ -255,7 +255,7 @@ public class Tile : MonoBehaviour
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        if(!underWeatherAffect && !(WeatherManager.Instance.GetWeatherType() == character.elementType))
+        if(!underWeatherAffect && !(WeatherManager.Instance.GetWeatherElementType() == character.elementType))
         {
             characterTimeOnTile += 1;
         }
