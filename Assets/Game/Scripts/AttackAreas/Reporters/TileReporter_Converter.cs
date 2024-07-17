@@ -14,6 +14,11 @@ public class TileReporter_Converter : TileReporter
 
     public override void ExecuteAddOnEffect()
     {
+        if(currentTile == null)
+        {
+            return;
+        }
+
         Tile newTile = Instantiate(conversionTile, currentTile.transform.position, Quaternion.identity);
         UndoManager.Instance.StoreTile(newTile, currentTile.tileData.tileType);
         currentTile.ReplaceTileWithNew(newTile);
