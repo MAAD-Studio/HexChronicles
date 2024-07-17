@@ -12,6 +12,7 @@ public class PreGameScreen : Menu
 
     [SerializeField] private GameObject heroList;
     private List<HeroSkillInfo> heroSkillList;
+    [SerializeField] private LevelDetailUI levelDetail;
 
     protected override void Start()
     {
@@ -38,8 +39,8 @@ public class PreGameScreen : Menu
         // Invoke the first hero in the list as the default display
         heroSkillList[0].OnSelected();
 
-        // Show the level information here:
-
+        // Show the level information:
+        levelDetail.InitializeInfo(GameManager.Instance.levelDetails[levelIndex]);
     }
 
     private void StartLevel()

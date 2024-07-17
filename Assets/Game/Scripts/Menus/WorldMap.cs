@@ -11,9 +11,10 @@ public class WorldMap : Menu
     public MenuClassifier hudClassifier;
     public MenuClassifier preGameClassifier;
     [SerializeField] private GameObject characterCollection;
-    [SerializeField] public SceneReference[] levels;
-    [SerializeField] private Button[] levelButtons;
+    [SerializeField] private Button[] levelButtonsInOrder;
+    private SceneReference[] levels;
     private int levelIndex;
+    private int unlockedLevelIndex;
 
     protected override void Start()
     {
@@ -21,10 +22,26 @@ public class WorldMap : Menu
 
         CloseCharacterCollection();
 
-        for (int i = 0; i < levels.Length; i++)
+        // Get the levels and subscribe the buttons
+        int levelCount = GameManager.Instance.levelDetails.Length;
+        levels = new SceneReference[levelCount];
+        Debug.Assert(levelButtonsInOrder.Length == levelCount, "Level buttons count does not match the level count");
+
+        for (int i = 0; i < levelCount; i++)
         {
-            int index = i;
-            levelButtons[i].onClick.AddListener(() => ShowPreGame(index));
+            int index = i; // Prevent referencing the last value of i
+            levels[i] = GameManager.Instance.levelDetails[i].levelScene;
+            levelButtonsInOrder[i].onClick.AddListener(() => ShowPreGame(index));
+        }
+
+        // Disable all locked level buttons
+        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
+        for (int i = 0; i < levelCount; i++)
+        {
+            if (i > unlockedLevelIndex)
+            {
+                levelButtonsInOrder[i].interactable = false;
+            }
         }
     }
 
@@ -80,6 +97,14 @@ public class WorldMap : Menu
         SceneLoader.Instance.UnLoadAllLoadedScenes();
     }
 
+    public void UnlockAll()
+    {
+        for (int i = 0; i < levelButtonsInOrder.Length; i++)
+        {
+            levelButtonsInOrder[i].interactable = true;
+        }
+    }
+
     #region Load WorldMap Scene
     private void AllScenesUnloaded()
     {
@@ -93,6 +118,10 @@ public class WorldMap : Menu
         SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
 
         SceneLoader.Instance.LoadScene(worldMap);
+
+        // Enable the current level button
+        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
+        levelButtonsInOrder[unlockedLevelIndex].interactable = true;
     }
 
     private void OnMapLoaded(List<string> list)

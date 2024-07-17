@@ -6,21 +6,67 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    private List<SaveData> saveList = new List<SaveData>();
-    private SaveData saveData;
+    public LevelSO[] levelDetails;
+
     private SceneReference currentLevel;
     public SceneReference CurrentLevel
     {
         get => currentLevel;
         set => currentLevel = value;
     }
+    public int CurrentLevelIndex { get; set; }
 
+    private List<SaveData> saveList = new List<SaveData>();
+    private SaveData saveData;
+    public List<SaveData> SaveList
+    {
+        get => saveList;
+    }
     private string SaveFilePath => Path.Combine(Application.dataPath, "SavedData.json");
+
 
     #region Unity Methods
     private void Start()
     {
+        CurrentLevelIndex = 0;
+        LoadSavedData();
+    }
+    #endregion
 
+
+    #region Level Loading
+    public void LoadCurrentLevel()
+    {
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
+
+        SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
+        SceneLoader.Instance.UnLoadAllLoadedScenes();
+        CleanActiveScene();
+    }
+
+    private void AllScenesUnloaded()
+    {
+        SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
+        SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
+
+        SceneReference currentScene = levelDetails[CurrentLevelIndex].levelScene;
+        SceneLoader.Instance.LoadScene(currentScene);
+    }
+
+    private void OnSceneLoaded(List<string> list)
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
+
+        MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.HUDMenuClassifier);
+    }
+
+    public void CleanActiveScene()
+    {
+        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+        {
+            Destroy(go);
+        }
     }
     #endregion
 
@@ -30,7 +76,13 @@ public class GameManager : Singleton<GameManager>
     [Serializable]
     public struct SaveData
     {
-        [SerializeField] private string saveTime;
+        private int currentLevel;
+        private string saveTime;
+        public int CurrentLevel
+        {
+            get => currentLevel;
+            set => currentLevel = value;
+        }
         public DateTime SaveTime
         {
             get => DateTime.Parse(saveTime);
@@ -38,16 +90,23 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    [Serializable]
+    private struct SaveDataList
+    {
+        public List<SaveData> DataList;
+    }
+
     public void SaveGame()
     {
         saveData = new SaveData
         {
+            CurrentLevel = CurrentLevelIndex,
             SaveTime = DateTime.Now
         };
-
         saveList.Add(saveData);
 
-        string json = JsonUtility.ToJson(saveList);
+        var data = new SaveDataList { DataList = saveList };
+        string json = JsonUtility.ToJson(data);
         File.WriteAllText(SaveFilePath, json);
     }
 
@@ -56,7 +115,7 @@ public class GameManager : Singleton<GameManager>
         if (File.Exists(SaveFilePath))
         {
             string json = File.ReadAllText(SaveFilePath);
-            saveList = JsonUtility.FromJson<List<SaveData>>(json);
+            saveList = JsonUtility.FromJson<SaveDataList>(json).DataList;
         }
     }
     #endregion
