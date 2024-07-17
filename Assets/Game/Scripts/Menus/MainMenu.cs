@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using static GameManager;
 
 public class MainMenu : Menu
 {
@@ -9,6 +11,17 @@ public class MainMenu : Menu
     public SceneReference Map;
     public MenuClassifier tutorialHUDClassifier;
     public MenuClassifier mapClassifier;
+
+    [Header("UI")]
+    [SerializeField] private GameObject loadGamePanel;
+    [SerializeField] private GameObject savedDataPrefab;
+    [SerializeField] private Transform savedDataContainer;
+
+    protected override void Start()
+    {
+        base.Start();
+        loadGamePanel.SetActive(false);
+    }
 
     public void OnStartTutorial()
     {
@@ -51,6 +64,26 @@ public class MainMenu : Menu
 
         MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+    }
+
+    public void ShowSavedData()
+    {
+        loadGamePanel.SetActive(true);
+        foreach (var data in GameManager.Instance.SaveList)
+        {
+            AddSavedDataToUI(data);
+        }
+    }
+
+    private void AddSavedDataToUI(SaveData data)
+    {
+        var item = Instantiate(savedDataPrefab, savedDataContainer);
+        item.GetComponentInChildren<TextMeshProUGUI>().text = FormatSavedData(data);
+    }
+
+    private string FormatSavedData(SaveData data)
+    {
+        return $"Current Level: {data.CurrentLevel}\nSaved Time: {data.SaveTime}";
     }
 
     public void OnQuitGame()
