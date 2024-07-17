@@ -19,12 +19,6 @@ public class TileEnums
         attackable
     }
 
-    public enum TileWeather
-    {
-        disabled,
-        rain
-    }
-
     public enum TileType
     {
         neutral,

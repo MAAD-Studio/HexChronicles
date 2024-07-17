@@ -15,6 +15,8 @@ public class Status
         Hurt, // Take +1 damage
         CannotMove,
         CannotAttack,
+        MovementReduction,
+        AttackBoost,
         Wet,
         Haste,
         Shield,
@@ -51,6 +53,10 @@ public class Status
 
             case StatusTypes.CannotAttack:
                 character.canAttack = false;
+                break;
+
+            case StatusTypes.MovementReduction:
+                character.movementThisTurn += 1;
                 break;
 
             case StatusTypes.Wet:

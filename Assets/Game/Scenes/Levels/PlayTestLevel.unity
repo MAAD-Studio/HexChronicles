@@ -29802,6 +29802,8 @@ GameObject:
   - component: {fileID: 682367757}
   - component: {fileID: 682367756}
   - component: {fileID: 682367755}
+  - component: {fileID: 682367759}
+  - component: {fileID: 682367758}
   m_Layer: 0
   m_Name: WeatherManager
   m_TagString: Untagged
@@ -29822,10 +29824,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weatherName: 
-  statusEffect: 7
+  weatherType: 0
+  element: 0
+  weatherMaterial: {fileID: 2100000, guid: 3d31c4b7212877341a6305246dad5a9e, type: 2}
   effectTurns: 1
-  healthBoost: 1
-  healthDebuff: 1
+  primaryEffect: 0
+  secondaryEffect: 0
+  healAffect: 1
+  damageAffect: 1
   waterTilePrefab: {fileID: 5991639090759221842, guid: d051f38faa4ed534a8dcdc4b41b97aa8, type: 3}
 --- !u!114 &682367756
 MonoBehaviour:
@@ -29840,9 +29846,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridParent: {fileID: 1831120400}
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
   weatherChance: 100
   numberOfPatches: 3
   turnsToStay: 3
@@ -29865,6 +29868,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &682367758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682367754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ee5baffc8a20e49b7bbffc57a651e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weatherName: 
+  weatherType: 0
+  element: 0
+  weatherMaterial: {fileID: 2100000, guid: 85364eb603c35944fb2d30241409a406, type: 2}
+  effectTurns: 1
+  primaryEffect: 0
+  secondaryEffect: 8
+  healAffect: 1
+  damageAffect: 1
+  healthDebuff: 1
+--- !u!114 &682367759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682367754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d400bafbf4ac004482e512de0843931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weatherName: 
+  weatherType: 0
+  element: 0
+  weatherMaterial: {fileID: 2100000, guid: c889c552c3f989a49b51e91038bdcaa7, type: 2}
+  effectTurns: 1
+  primaryEffect: 0
+  secondaryEffect: 0
+  healAffect: 1
+  damageAffect: 1
+  healthDebuff: 1
 --- !u!1 &685779237
 GameObject:
   m_ObjectHideFlags: 0
@@ -42968,6 +43015,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283555648}
     m_Modifications:
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveSpeed
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkill
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttack
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: moveDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: newActiveTest
+      value: 
+      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: attackDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: activeSkillArea
+      value: 
+      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: basicAttackArea
+      value: 
+      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
+    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: tileLayer.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
+      propertyPath: m_text
+      value: Fire
+      objectReference: {fileID: 0}
     - target: {fileID: 39888016972579594, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: elementType
       value: 0
@@ -43131,46 +43218,6 @@ PrefabInstance:
     - target: {fileID: 9170870986879116875, guid: 2d534ec1d3eb8a44db3e9211a4a216d5, type: 3}
       propertyPath: m_Name
       value: Fire Hero Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveSpeed
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkill
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttack
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: moveDistance
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: newActiveTest
-      value: 
-      objectReference: {fileID: 3803740461056536921, guid: 773ac623154d3ba43bfc9bd317b14b1d, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: attackDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: activeSkillArea
-      value: 
-      objectReference: {fileID: 3827415136764973267, guid: 2cb7f8800b2f90a4cad8e798b35c9862, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: basicAttackArea
-      value: 
-      objectReference: {fileID: 739331740461700461, guid: 6adadf694300bf3479510ccab9f48407, type: 3}
-    - target: {fileID: 4074697103068773494, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: tileLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5315843546098170213, guid: fccbcc2b2b176e742a06bcd024d417d1, type: 3}
-      propertyPath: m_text
-      value: Fire
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -90793,7 +90840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4100675697078673505, guid: baa3325ea89d6684aba7886d60ef8d9e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.51
+      value: 16.41
       objectReference: {fileID: 0}
     - target: {fileID: 4100675697078673505, guid: baa3325ea89d6684aba7886d60ef8d9e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -90801,7 +90848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4100675697078673505, guid: baa3325ea89d6684aba7886d60ef8d9e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.47
+      value: 10.67
       objectReference: {fileID: 0}
     - target: {fileID: 4100675697078673505, guid: baa3325ea89d6684aba7886d60ef8d9e, type: 3}
       propertyPath: m_LocalRotation.w

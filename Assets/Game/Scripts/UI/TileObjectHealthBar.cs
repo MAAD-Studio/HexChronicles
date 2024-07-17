@@ -12,6 +12,7 @@ public class TileObjectHealthBar : EnemyHealthBar
         tileObject = GetComponentInParent<TileObject>();
         tileObject.healthBar = this;
         tileObject.DamagePreview.AddListener(UpdateHealthBarPreview);
+        tileObject.DonePreview.AddListener(DonePreview);
         tileObject.UpdateHealthBar.AddListener(UpdateHealthBar);
 
         characterName.text = tileObject.tileObjectData.objectName.ToString();
@@ -23,22 +24,24 @@ public class TileObjectHealthBar : EnemyHealthBar
         
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
+
+        prediction.gameObject.SetActive(false);
+    }
+
+    private void DonePreview()
+    {
+        previewHealth.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
+        hpText.text = tileObject.currentHealth + " HP";
+        prediction.gameObject.SetActive(false);
+        gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
     protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (tileObject.currentHealth - damagePreview) / tileObject.tileObjectData.health;
-
-        if (damagePreview != 0)
-        {
-            gameObject.transform.localScale = scaledUpValue;
-            //atkInfoPanel.SetActive(true);
-        }
-        else
-        {
-            gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            //atkInfoPanel.SetActive(false);
-        }
+        hpText.text = (tileObject.currentHealth - damagePreview) + " HP";
+        prediction.gameObject.SetActive(true);
+        gameObject.transform.localScale = scaledUpValue;
 
         if ((tileObject.currentHealth - damagePreview) <= 0)
         {

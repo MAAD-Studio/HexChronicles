@@ -7,43 +7,58 @@ public class WeatherPatch
 {
     #region Variables
 
-    public List<Tile> tilesUnderAffect = new List<Tile>();
-    public List<Tile> tilesToIgnore = new List<Tile>();
-    public List<Tile> tilesMoveable = new List<Tile>();
-    public List<Character> effectedCharacters = new List<Character>();
+    private List<Tile> effectedTiles = new List<Tile>();
+    private List<Character> effectedCharacters = new List<Character>();
 
-    public Tile origin;
+    private Tile origin;
+    private Weather_Base weather;
 
-    public bool spawned = false;
-
-    public Weather_Base weather;
+    private bool entireMapEffected = false;
+    private int maxSpread = 1;
+    private int movementPerTurn = 1;
 
     #endregion
 
     #region CustomMethods
 
-    public void DetermineAreaOfAffect(bool entireMapEffected, int maxSpread, int movementPerTurn, LayerMask tileLayer)
+    public void SetWeatherPatchInfo(Tile tile, bool effectEntireMap, int spread, int movement, Weather_Base weatherType)
+    {
+        origin = tile;
+
+        entireMapEffected = effectEntireMap;
+        maxSpread = spread;
+        movementPerTurn = movement;
+        weather = weatherType;
+
+        DetermineAreaOfAffect();
+        IllustrateAreaOfEffect();
+    }
+
+    //Determines the Tiles the Weather will effect
+    private void DetermineAreaOfAffect()
     {
         ResetWeatherTiles();
 
-        //Grabs and sets the origin tile
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(origin);
-        tilesUnderAffect.Add(origin);
+        effectedTiles.Add(origin);
 
         origin.weatherCost = 0f;
 
-        //While we have tiles to investigate
-        while (openTiles.Count > 0)
+        while(openTiles.Count > 0)
         {
             Tile currentTile = openTiles.Dequeue();
 
-            //Checks every adjacent tile to the current tile we are investigating
-            foreach (Tile adjacentTile in FindAdjacentTiles(currentTile, tileLayer))
+            foreach(Tile adjacentTile in Pathfinder.Instance.FindAdjacentTiles(currentTile, true))
             {
-                float newCost;
+                if(openTiles.Contains(adjacentTile) || effectedTiles.Contains(adjacentTile) || adjacentTile.underWeatherAffect)
+                {
+                    continue;
+                }
 
-                if (!entireMapEffected)
+                //Determines how much the tile should cost
+                float newCost = 0f;
+                if(!entireMapEffected)
                 {
                     if(maxSpread > 2)
                     {
@@ -54,147 +69,105 @@ public class WeatherPatch
                         newCost = currentTile.weatherCost + Random.Range(1, maxSpread);
                     }
                 }
-                else
-                {
-                    newCost = 0f;
-                }
-
-                if (openTiles.Contains(adjacentTile) || tilesToIgnore.Contains(adjacentTile))
-                {
-                    continue;
-                }
-
                 adjacentTile.weatherCost = newCost;
 
-                //Checks if the character can travel to the adjacent tile, if they can it adds its data into the list to investigate
-                if (adjacentTile.weatherCost < maxSpread)
+                if(adjacentTile.weatherCost < maxSpread)
                 {
-                    adjacentTile.parentTile = currentTile;
                     openTiles.Enqueue(adjacentTile);
-                    tilesUnderAffect.Add(adjacentTile);
-                    if (adjacentTile.weatherCost <= movementPerTurn)
-                    {
-                        tilesMoveable.Add(adjacentTile);
-                    }
-                    tilesToIgnore.Add(adjacentTile);
-                }
-                else
-                {
-                    tilesToIgnore.Add(adjacentTile);
+                    effectedTiles.Add(adjacentTile);
+                    adjacentTile.underWeatherAffect = true;
                 }
             }
         }
-
-        foreach(Tile tile in tilesUnderAffect)
-        {
-            tile.underWeatherAffect = true;
-        }
     }
 
-    public List<Tile> FindAdjacentTiles(Tile origin, LayerMask tileLayer)
+    //Moves the Weather patch to a new location
+    private void MoveOrigin()
     {
-        List<Tile> adjacentTiles = new List<Tile>();
-
-        Vector3 direction = Vector3.forward;
-        float rayLength = 50f;
-        float rayHeightOffset = 1f;
-
-        //Checks in all 6 direction for an adjacent tile
-        for (int i = 0; i < 6; i++)
+        List<Tile> moveableTiles = new List<Tile>();
+        foreach(Tile tile in effectedTiles)
         {
-            direction = Quaternion.Euler(0f, 60f, 0f) * direction;
-
-            Vector3 aboveTilePos = origin.transform.position + direction;
-            aboveTilePos.y += rayHeightOffset;
-
-            //If we hit a tile we add it to the list of adjacents
-            if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
+            if(tile.weatherCost < movementPerTurn)
             {
-                Tile hitTile = hit.transform.GetComponent<Tile>();
-                adjacentTiles.Add(hitTile);
+                moveableTiles.Add(tile);
             }
         }
 
-        return adjacentTiles;
+        if(moveableTiles.Count > 0)
+        {
+            int tileChoice = Random.Range(0, moveableTiles.Count);
+            origin = moveableTiles[tileChoice];
+        }
     }
 
-    public void ResetWeatherTiles()
+    private void IllustrateAreaOfEffect()
     {
-        foreach (Tile tile in tilesUnderAffect)
+        foreach (Tile tile in effectedTiles)
         {
-            tile.underWeatherAffect = false;
-            tile.ChangeTileWeather(TileEnums.TileWeather.disabled);
+            tile.ChangeTileWeather(true, weather.weatherMaterial);
         }
-
-        tilesUnderAffect.Clear();
-        tilesToIgnore.Clear();
-        tilesMoveable.Clear();
-
-        foreach(Character character in effectedCharacters)
-        {
-            character.effectedByWeather = false;
-        }
-        effectedCharacters.Clear();
     }
 
-    public void EffectCharacters()
+    public void UpdateAndEffect(TurnManager turnManager)
     {
-        foreach (Tile tile in tilesUnderAffect)
-        {
-            if (tile.tileOccupied && !tile.characterOnTile.effectedByWeather)
-            {
-                effectedCharacters.Add(tile.characterOnTile);
-            }
-        }
-
-        weather.ApplyEffect(effectedCharacters);
+        ApplyWeatherEffect(turnManager);
+        MoveOrigin();
+        DetermineAreaOfAffect();
+        IllustrateAreaOfEffect();
     }
 
-    public void EffectTiles(TurnManager turnManager)
+    private void ApplyWeatherEffect(TurnManager turnManager)
     {
         List<Tile> potentialEffectTiles = new List<Tile>();
-        foreach (Tile tile in tilesUnderAffect)
+        foreach(Tile tile in effectedTiles)
         {
-            if (tile.tileData.tileType != ElementType.Base)
+            //Grabs the characters in the area of effect for the Weather
+            if(tile.tileOccupied && !tile.characterOnTile.effectedByWeather)
+            {
+                effectedCharacters.Add(tile.characterOnTile);
+                tile.characterOnTile.effectedByWeather = true;
+            }
+
+            //Grabs the elemental tiles in the area of effect for the Weather
+            if(tile.tileData.tileType != ElementType.Base)
             {
                 potentialEffectTiles.Add(tile);
             }
         }
 
-        if (potentialEffectTiles.Count > 0)
+        weather.ApplyEffect(effectedCharacters);
+        //If any elemental tiles are in the area of effect it attempts to apply its effects a randomly selected one
+        if(potentialEffectTiles.Count > 0)
         {
             int tileChoice = Random.Range(0, potentialEffectTiles.Count);
             weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager);
         }
+
     }
 
-    public void MoveOrigin()
+    public void ResetWeatherTiles()
     {
-        if (tilesMoveable.Count > 0)
+        foreach (Tile tile in effectedTiles)
         {
-            int tileChoice = Random.Range(0, tilesMoveable.Count);
-            origin = tilesMoveable[tileChoice];
+            tile.underWeatherAffect = false;
+            tile.ChangeTileWeather(false, null);
         }
-    }
 
-    public void ColourArea()
-    {
-        foreach(Tile tile in tilesUnderAffect)
+        foreach (Character character in effectedCharacters)
         {
-            tile.ChangeTileWeather(TileEnums.TileWeather.rain);
+            character.effectedByWeather = false;
         }
+
+        effectedTiles.Clear();
+        effectedCharacters.Clear();
     }
 
     public void TileReplaced(Tile oldTile, Tile newTile)
     {
-        tilesUnderAffect.Remove(oldTile);
-        tilesUnderAffect.Add(newTile);
-
-        tilesMoveable.Remove(oldTile);
-        tilesMoveable.Add(newTile);
-
-        tilesToIgnore.Remove(oldTile);
-        tilesToIgnore.Add(newTile);
+        if(effectedTiles.Remove(oldTile))
+        {
+            effectedTiles.Add(newTile);
+        }
     }
 
     #endregion

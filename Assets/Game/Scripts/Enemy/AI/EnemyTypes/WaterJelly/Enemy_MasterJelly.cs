@@ -111,5 +111,27 @@ public class Enemy_MasterJelly : Enemy_Base
         TemporaryMarker.GenerateMarker(combineText, transform.localPosition, 4f, 1f);
     }
 
+    public override Character LikelyTarget()
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        Enemy_Base closestEnemy = null;
+        float distance = 1000f;
+        foreach (Enemy_Base enemy in turnManager.enemyList)
+        {
+            if(enemy.GetComponent<Enemy_SoloJelly>() == null)
+            {
+                continue;
+            }
+
+            float newDistance = Vector3.Distance(transform.position, enemy.transform.position);
+            if (newDistance < distance)
+            {
+                distance = newDistance;
+                closestEnemy = enemy;
+            }
+        }
+        return closestEnemy;
+    }
+
     #endregion
 }

@@ -97,5 +97,10 @@ public class Enemy_Maker : Enemy_Base
         return deathTile.GetComponent<DeathTile>();
     }
 
-    #endregion
-}
+    public override Character LikelyTarget()
+    {
+        return null;
+    }
+
+        #endregion
+  }

@@ -2,6 +2,7 @@ public struct PauseGame { }
 public struct OnTutorialStart { }
 public struct OnNewLevelStart { }
 public struct OnPlayerTurn { }
+public struct OnMovementPhase { }
 public struct OnAttackPhase { }
 public struct OnEnemyTurn { }
 public struct OnWeatherSpawn { }

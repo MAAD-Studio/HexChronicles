@@ -13,11 +13,14 @@ public class EnemyHealthBar : HealthBar
     [SerializeField] protected TextMeshProUGUI atkPercentage;
     [SerializeField] protected Vector3 scaledUpValue = new Vector3(1.3f, 1.3f, 1.3f);
 
+    [SerializeField] protected AttackPrediction prediction;
+
     protected override void Start()
     {
         enemy = GetComponentInParent<Enemy_Base>();
         enemy.healthBar = this;
         enemy.DamagePreview.AddListener(UpdateHealthBarPreview);
+        enemy.DonePreview.AddListener(DonePreview);
         enemy.UpdateHealthBar.AddListener(UpdateHealthBar);
         enemy.UpdateStatus.AddListener(UpdateStatus);
 
@@ -29,22 +32,24 @@ public class EnemyHealthBar : HealthBar
         bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
+
+        prediction.gameObject.SetActive(false);
+    }
+
+    private void DonePreview()
+    {
+        previewHealth.fillAmount = enemy.currentHealth / enemy.maxHealth;
+        hpText.text = enemy.currentHealth + " HP";
+        prediction.gameObject.SetActive(false);
+        gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
     protected override void UpdateHealthBarPreview()
     {
         previewHealth.fillAmount = (enemy.currentHealth - damagePreview) / enemy.maxHealth;
-
-        if (damagePreview != 0)
-        {
-            gameObject.transform.localScale = scaledUpValue;
-            //atkInfoPanel.SetActive(true);
-        }
-        else
-        {
-            gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-            //atkInfoPanel.SetActive(false);
-        }
+        hpText.text = (enemy.currentHealth - damagePreview) + " HP";
+        prediction.gameObject.SetActive(true);
+        gameObject.transform.localScale = scaledUpValue;
 
         if ((enemy.currentHealth - damagePreview) <= 0)
         {

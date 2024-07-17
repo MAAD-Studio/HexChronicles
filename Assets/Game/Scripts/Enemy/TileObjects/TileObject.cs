@@ -17,6 +17,7 @@ public class TileObject : MonoBehaviour
     [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
 
     [HideInInspector] public UnityEvent DamagePreview;
+    [HideInInspector] public UnityEvent DonePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
 
     public ObjectType objectType;

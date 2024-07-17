@@ -6,8 +6,6 @@ public class Weather_Rain : Weather_Base
 {
     #region Variables
 
-    [SerializeField] private int healthBoost = 1;
-    [SerializeField] private int healthDebuff = 1;
     [SerializeField] private Tile waterTilePrefab;
 
     #endregion
@@ -31,37 +29,27 @@ public class Weather_Rain : Weather_Base
         {
             if(character.elementType == ElementType.Water)
             {
-                character.currentHealth += healthBoost;
-                character.currentHealth = Mathf.Min(character.currentHealth, character.maxHealth);
-                character.UpdateHealthBar?.Invoke();
-                continue;
+                character.Heal(healAffect);
             }
             else if(character.elementType == ElementType.Fire)
             {
-                character.TakeDamage(healthDebuff, ElementType.Base);
+                character.TakeDamage(damageAffect, ElementType.Base);
             }
 
-            if (Status.GrabIfStatusActive(character, statusEffect) == null)
+            if (Status.GrabIfStatusActive(character, primaryEffect) == null && character.elementType != ElementType.Water)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = statusEffect;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
+                ApplyStatusToCharacter(character, primaryEffect);
             }
-
-            character.effectedByWeather = true;
         }
     }
 
     public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
     {
-        /*Debug.Log("MAKING WATER TILES");
+        //Debug.Log("MAKING WATER TILES");
         foreach(Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
         {
-            Tile newTile = Instantiate(waterTilePrefab);
-            adjTile.ReplaceTileWithNew(newTile);
-        }*/
+            Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
+        }
     }
 
     #endregion

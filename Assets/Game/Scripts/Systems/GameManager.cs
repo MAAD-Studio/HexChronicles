@@ -9,6 +9,14 @@ public class GameManager : Singleton<GameManager>
     private List<SaveData> saveList = new List<SaveData>();
     private SaveData saveData;
     private SceneReference currentLevel;
+
+    [HideInInspector] private float gameSpeed = 1f;
+
+    public float GameSpeed
+    {
+        get { return gameSpeed; }
+    }
+
     public SceneReference CurrentLevel
     {
         get => currentLevel;
@@ -22,6 +30,20 @@ public class GameManager : Singleton<GameManager>
     {
 
     }
+    #endregion
+
+    #region CustomMethods
+
+    public void IncreaseGameSpeed()
+    {
+        gameSpeed = 2f;
+    }
+
+    public void DecreaseGameSpeed()
+    {
+        gameSpeed = 1f;
+    }
+
     #endregion
 
 
