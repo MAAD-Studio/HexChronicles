@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class HeroHealthBar : HealthBar
 {
@@ -18,10 +19,10 @@ public class HeroHealthBar : HealthBar
         hero.UpdateStatus.AddListener(UpdateStatus);
 
         characterName.text = hero.heroSO.attributes.name.ToString();
-        hpText.text = hero.heroSO.attributes.health + " HP";
+        hpText.text = hero.heroSO.attributes.health.ToString();
 
         float width = hero.heroSO.attributes.health * 10f;
-        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+        healthBar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
 
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
@@ -29,16 +30,15 @@ public class HeroHealthBar : HealthBar
 
     protected override void UpdateHealthBarPreview()
     {
-        previewHealth.fillAmount = (hero.currentHealth - damagePreview) / hero.maxHealth;
+        float newHealth = hero.currentHealth - damagePreview;
+        hpText.text = newHealth.ToString();
+        previewHealth.fillAmount = newHealth / hero.maxHealth;
     }
 
     protected override void UpdateHealthBar()
     {
-        hpText.text = hero.currentHealth + " HP";
-        StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth));
-
-        damagePreview = 0;
-        UpdateHealthBarPreview();
+        hpText.text = hero.currentHealth.ToString();
+        StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth, false));
     }
 
     protected override void UpdateStatus()

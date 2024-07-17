@@ -17,10 +17,10 @@ public class TileObjectHealthBar : EnemyHealthBar
 
         characterName.text = tileObject.tileObjectData.objectName.ToString();
         atkPercentage.text = (100 - tileObject.tileObjectData.defense).ToString() + "%";
-        hpText.text = tileObject.tileObjectData.health + " HP";
+        hpText.text = tileObject.tileObjectData.health.ToString();
 
         float width = tileObject.tileObjectData.health * 10f;
-        bar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
+        healthBar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
         
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
@@ -30,41 +30,49 @@ public class TileObjectHealthBar : EnemyHealthBar
 
     private void DonePreview()
     {
+        hpText.text = tileObject.currentHealth.ToString();
         previewHealth.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
-        hpText.text = tileObject.currentHealth + " HP";
+        health.fillAmount = previewHealth.fillAmount;
+
         prediction.gameObject.SetActive(false);
-        gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
+        killIcon.gameObject.SetActive(false);
+        parentBar.localScale = new Vector3(1f, 1f, 1f);
     }
 
     protected override void UpdateHealthBarPreview()
     {
-        previewHealth.fillAmount = (tileObject.currentHealth - damagePreview) / tileObject.tileObjectData.health;
-        hpText.text = (tileObject.currentHealth - damagePreview) + " HP";
-        prediction.gameObject.SetActive(true);
-        gameObject.transform.localScale = scaledUpValue;
+        float newHealth = tileObject.currentHealth - damagePreview;
 
-        if ((tileObject.currentHealth - damagePreview) <= 0)
+        if (newHealth < 0)
         {
             killIcon.gameObject.SetActive(true);
+            newHealth = 0;
         }
         else
         {
             killIcon.gameObject.SetActive(false);
         }
+
+        hpText.text = newHealth.ToString();
+        previewHealth.fillAmount = newHealth / tileObject.tileObjectData.health;
+        //StartCoroutine(AnimateHealthBar(newHealth / enemy.maxHealth, true));
+        
+        prediction.gameObject.SetActive(true);
+        killIcon.gameObject.SetActive(false);
+        parentBar.localScale = scaledUpValue;
     }
 
     protected override void UpdateHealthBar()
     {
-        hpText.text = tileObject.currentHealth + " HP";
-        StartCoroutine(AnimateHealthBar(tileObject.currentHealth / tileObject.tileObjectData.health));
-
-        damagePreview = 0;
-        UpdateHealthBarPreview();
+        hpText.text = tileObject.currentHealth.ToString();
+        previewHealth.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
+        StartCoroutine(AnimateHealthBar(tileObject.currentHealth / tileObject.tileObjectData.health, false));
     }
 
     protected override void OnDestroy()
     {
         tileObject.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        tileObject.DonePreview.RemoveListener(DonePreview);
         tileObject.UpdateHealthBar.RemoveListener(UpdateHealthBar);
     }
 }

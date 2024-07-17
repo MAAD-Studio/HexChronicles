@@ -104,7 +104,6 @@ public class Hero : Character
             }
 
             target.TakeDamage(actualDamage, elementType);
-            target.DonePreview?.Invoke();
         }
 
         base.PerformBasicAttack(targets);

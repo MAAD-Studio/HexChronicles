@@ -116,6 +116,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy TileObject HealthBar
       objectReference: {fileID: 0}
+    - target: {fileID: 797958109625576824, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 797958109625576824, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 797958109625576824, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 797958109625576824, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1024515739919370670, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -336,6 +352,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4025375183301411161, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4548108092094434362, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -449,6 +489,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6752210697911463673, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696464966503086230, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696464966503086230, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696464966503086230, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696464966503086230, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -595,6 +651,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &2895361663199340543 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 797958109625576824, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+  m_PrefabInstance: {fileID: 2539061227541760647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3945819121780030004 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1584936314463875251, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
@@ -659,7 +720,8 @@ MonoBehaviour:
   hpText: {fileID: 6503787344667293713}
   health: {fileID: 3993066026502154191}
   previewHealth: {fileID: 5278444948037799706}
-  bar: {fileID: 3945819121780030004}
+  healthBar: {fileID: 3945819121780030004}
+  parentBar: {fileID: 2895361663199340543}
   damagePreview: 0
   statusField: {fileID: 0}
   statusPrefab: {fileID: 0}
