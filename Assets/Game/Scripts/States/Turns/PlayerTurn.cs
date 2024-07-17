@@ -300,6 +300,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             else if (phase == TurnEnums.PlayerPhase.Attack)
             {
                 Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+                pathFinder.CreateIllustration();
 
                 areaPrefab.DestroySelf();
                 potentialMovementTile = null;
@@ -521,7 +522,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
         }
-        
+
+        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType)
+        {
+            Tile.HighlightTilesOfType(selectedCharacter.elementType);
+        }
+        else
+        {
+            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+        }
+
         if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
             Tile[] path = new Tile[0];
@@ -546,6 +556,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 phase = TurnEnums.PlayerPhase.Attack;
                 EventBus.Instance.Publish(new OnAttackPhase());
                 SpawnAreaPrefab();
+
+                pathFinder.ClearIllustration();
             }
         }
     }
@@ -577,13 +589,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             areaPrefab.transform.position = currentTile.transform.position;
         }
+        areaPrefab.DetectArea(true, true);
 
-        if(phantom != null)
+        if (phantom != null)
         {
             phantom.transform.LookAt(areaPrefab.transform.position);
         }
-
-        areaPrefab.DetectArea(true, true);
 
         // Preview Damage on enemy healthbar
         foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
@@ -670,11 +681,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
             if (attackType == TurnEnums.PlayerAction.BasicAttack)
             {
-                areaPrefab = Instantiate(selectedCharacter.basicAttackArea);
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea, selectedCharacter.transform.position);
             }
             else
             {
-                areaPrefab = Instantiate(selectedCharacter.activeSkillArea);
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea, selectedCharacter.transform.position);
             }
         }
     }

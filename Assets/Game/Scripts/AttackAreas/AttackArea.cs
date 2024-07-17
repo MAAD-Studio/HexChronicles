@@ -235,9 +235,9 @@ public class AttackArea : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public static AttackArea SpawnAttackArea(AttackArea attackArea)
+    public static AttackArea SpawnAttackArea(AttackArea attackArea, Vector3 position)
     {
-        return Instantiate(attackArea);
+        return Instantiate(attackArea, position, Quaternion.identity);
     }
 
     #endregion

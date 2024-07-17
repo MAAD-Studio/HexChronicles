@@ -45,10 +45,29 @@ public class Weather_Rain : Weather_Base
 
     public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
     {
-        //Debug.Log("MAKING WATER TILES");
-        foreach(Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
+        ElementType type = tile.tileData.tileType;
+
+        if(type == ElementType.Water)
         {
-            Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
+            foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
+            {
+                Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
+                adjTile.ReplaceTileWithNew(newTile);
+            }
+        }
+        else if(type == ElementType.Fire)
+        {
+            
+        }
+        else if(type == ElementType.Grass)
+        {
+            foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
+            {
+                if (adjTile.characterOnTile != null)
+                {
+                    ApplyStatusToCharacter(adjTile.characterOnTile, Status.StatusTypes.Bound);
+                }
+            }
         }
     }
 

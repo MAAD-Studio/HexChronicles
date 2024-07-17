@@ -45,6 +45,7 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        EventBus.Instance.Publish(new OnDialogueEnded());
         Destroy(dialogueWindow.gameObject);
         Debug.Log("End of Story");
     }

@@ -64,6 +64,8 @@ public class TurnManager : MonoBehaviour
     [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
     [HideInInspector] public static UnityEvent<Character> OnCharacterDied = new UnityEvent<Character>();
 
+    public bool pauseTurns = false;
+
     #endregion
 
     #region UnityMethods
@@ -117,6 +119,11 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
+        if(pauseTurns == true)
+        {
+            return;
+        }
+
         currentTurn.UpdateState();
     }
 
