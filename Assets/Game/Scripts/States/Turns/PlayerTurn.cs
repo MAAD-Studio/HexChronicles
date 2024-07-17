@@ -555,8 +555,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void AttackPhase()
     {
-
-
         if (selectedEnemy != null)
         {
             selectedEnemy = null;
@@ -582,13 +580,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             areaPrefab.transform.position = currentTile.transform.position;
         }
+        areaPrefab.DetectArea(true, true);
 
-        if(phantom != null)
+        if (phantom != null)
         {
             phantom.transform.LookAt(areaPrefab.transform.position);
         }
-
-        areaPrefab.DetectArea(true, true);
 
         // Preview Damage on enemy healthbar
         foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
@@ -675,11 +672,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
             if (attackType == TurnEnums.PlayerAction.BasicAttack)
             {
-                areaPrefab = Instantiate(selectedCharacter.basicAttackArea);
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea, selectedCharacter.transform.position);
             }
             else
             {
-                areaPrefab = Instantiate(selectedCharacter.activeSkillArea);
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea, selectedCharacter.transform.position);
             }
         }
     }

@@ -70,7 +70,7 @@ public class EnemyBrain : MonoBehaviour
 
             enemy_base.PreCalculations(turnManager);
 
-            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
+            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea, enemy_base.transform.position);
 
             turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
 
