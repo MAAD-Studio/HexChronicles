@@ -239,6 +239,24 @@ public class Pathfinder : Singleton<Pathfinder>
         frontier.Clear();
     }
 
+    public void ClearIllustration()
+    {
+        illustrator.ClearIllustrations();
+
+        foreach(Tile tile in frontier)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, false);
+        }
+    }
+
+    public void CreateIllustration()
+    {
+        foreach (Tile tile in frontier)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, true);
+        }
+    }
+
     // Used for pushing characters
     public Tile GetTileInDirection(Tile origin, Vector3 direction)
     {

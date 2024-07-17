@@ -300,6 +300,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             else if (phase == TurnEnums.PlayerPhase.Attack)
             {
                 Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+                pathFinder.CreateIllustration();
 
                 areaPrefab.DestroySelf();
                 potentialMovementTile = null;
@@ -546,12 +547,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 phase = TurnEnums.PlayerPhase.Attack;
                 EventBus.Instance.Publish(new OnAttackPhase());
                 SpawnAreaPrefab();
+
+                pathFinder.ClearIllustration();
             }
         }
     }
 
     private void AttackPhase()
     {
+
+
         if (selectedEnemy != null)
         {
             selectedEnemy = null;
