@@ -522,7 +522,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
         }
-        
+
+        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType)
+        {
+            Tile.HighlightTilesOfType(selectedCharacter.elementType);
+        }
+        else
+        {
+            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+        }
+
         if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
             Tile[] path = new Tile[0];
