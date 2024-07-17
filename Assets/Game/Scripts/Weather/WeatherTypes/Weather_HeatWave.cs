@@ -27,37 +27,22 @@ public class Weather_HeatWave : Weather_Base
         {
             if (character.elementType == ElementType.Fire)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = Status.StatusTypes.AttackBoost;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
+                ApplyStatusToCharacter(character, secondaryEffect);
             }
             else if (character.elementType == ElementType.Grass)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = Status.StatusTypes.MovementReduction;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
-
+                ApplyStatusToCharacter(character, Status.StatusTypes.MovementReduction);
                 character.TakeDamage(healthDebuff, ElementType.Base);
             }
 
-            if (Status.GrabIfStatusActive(character, statusEffect) == null && character.elementType != ElementType.Fire)
+            if (Status.GrabIfStatusActive(character, primaryEffect) == null && character.elementType != ElementType.Fire)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = statusEffect;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
+                ApplyStatusToCharacter(character, primaryEffect);
             }
-
-            character.effectedByWeather = true;
         }
     }
 
-    public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
+    public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
     {
         
     }

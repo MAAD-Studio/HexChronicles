@@ -27,12 +27,7 @@ public class Weather_SporeStorm : Weather_Base
         {
             if (character.elementType == ElementType.Water)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = Status.StatusTypes.MovementReduction;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
-
+                ApplyStatusToCharacter(character, Status.StatusTypes.MovementReduction);
                 character.TakeDamage(healthDebuff, ElementType.Base);
             }
             else if (character.elementType == ElementType.Grass)
@@ -40,20 +35,14 @@ public class Weather_SporeStorm : Weather_Base
                
             }
 
-            if (Status.GrabIfStatusActive(character, statusEffect) == null && character.elementType != ElementType.Grass)
+            if (Status.GrabIfStatusActive(character, primaryEffect) == null && character.elementType != ElementType.Grass)
             {
-                Status newStatus = new Status();
-                newStatus.statusType = statusEffect;
-                newStatus.effectTurns = effectTurns;
-
-                character.AddStatus(newStatus);
+                ApplyStatusToCharacter(character, primaryEffect);
             }
-
-            character.effectedByWeather = true;
         }
     }
 
-    public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
+    public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
     {
        
     }

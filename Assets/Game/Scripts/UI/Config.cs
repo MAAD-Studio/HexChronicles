@@ -6,6 +6,23 @@ public class Config : Singleton<Config>
 {
     public CharacterUIConfig characterUIConfig;
 
+    public Sprite GetStatSprite(string statType)
+    {
+        if (statType == "health")
+        {
+            return characterUIConfig.health;
+        }
+        else if (statType == "attack")
+        {
+            return characterUIConfig.attack;
+        }
+        else if (statType == "movement")
+        {
+            return characterUIConfig.movement;
+        }
+        return null;
+    }
+
     public Sprite GetElementSprite(ElementType element)
     {
         if (element == ElementType.Fire)

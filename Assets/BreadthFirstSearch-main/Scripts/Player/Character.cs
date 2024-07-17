@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     #region Variables
 
     [Header("Character Movement Info:")]
-    [SerializeField] private float moveSpeed = 0.4f;
+    [SerializeField] public float moveSpeed = 0.4f;
     [SerializeField] public int moveDistance = 2;
     [HideInInspector] public int movementThisTurn = 0;
     [HideInInspector] public bool canMove = true;
@@ -56,6 +56,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
     [HideInInspector] public UnityEvent DamagePreview = new UnityEvent();
+    [HideInInspector] public UnityEvent DonePreview = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateHealthBar = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
@@ -239,10 +240,10 @@ public class Character : MonoBehaviour
 
     public void PreviewDamage(float damage)
     {
+        damage += AddedOnDamagePreview(elementType);
         healthBar.damagePreview = damage;
         DamagePreview?.Invoke();
     }
-
 
     public virtual void EnterNewTurn()
     {
@@ -577,7 +578,7 @@ public class Character : MonoBehaviour
                 Vector3 nextTilePosition = path[step].transform.position;
 
                 //Moves and roates towards the next point
-                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / moveSpeed);
+                MoveAndRotate(currentTile.transform.position, nextTilePosition, animationTime / (moveSpeed / GameManager.Instance.GameSpeed));
                 animationTime += Time.deltaTime;
 
                 //Checks if we are close enough to move onto the next point

@@ -96,6 +96,7 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Subscribe<OnMovementPhase>(RestoreShowingInfos);
             EventBus.Instance.Subscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
@@ -116,6 +117,7 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Unsubscribe<OnMovementPhase>(RestoreShowingInfos);
             EventBus.Instance.Unsubscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
@@ -216,7 +218,7 @@ public class HUDInfo : MonoBehaviour
         enemyHoverUI.Hide();
     }
 
-    private void RestoreShowingInfos(Character arg0)
+    private void RestoreShowingInfos(object obj)
     {
         showInfos = true;
     }
@@ -403,7 +405,7 @@ public class HUDInfo : MonoBehaviour
 
     private void HeroSelected(Hero hero)
     {
-        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var newInfo))
         {
             newInfo.SetSelectedState();
         }
@@ -411,7 +413,7 @@ public class HUDInfo : MonoBehaviour
         // While changing hero in the list, set the previous selected hero to default state
         if (selectedHero != null && selectedHero != hero)
         {
-            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
+            if (characterInfoDict.TryGetValue(selectedHero.heroSO.name, out var info))
             {
                 info.SetDefaultState();
             }
@@ -427,7 +429,7 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = currentTile.characterOnTile as Hero;
 
-            if (characterInfoDict.TryGetValue(hero.name, out var info))
+            if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
             {
                 info.SetHoverState();
             }
@@ -456,7 +458,7 @@ public class HUDInfo : MonoBehaviour
         }
 
         // Enemy Info:
-        if (currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
+        if (showInfos && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
         {
             Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
             enemyHoverUI.SetEnemyStats(enemy);
@@ -468,7 +470,7 @@ public class HUDInfo : MonoBehaviour
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
             // Clicked show status panel
-            if (showInfos && Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 enemyStatus.SetEnemyStats(enemy);
                 objectStatus.Hide();

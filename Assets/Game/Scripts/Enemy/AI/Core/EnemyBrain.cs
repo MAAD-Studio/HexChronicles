@@ -49,7 +49,7 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f / GameManager.Instance.GameSpeed);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
         foreach (Enemy_Base enemy_base in enemies)
         {
@@ -242,14 +242,14 @@ public class EnemyBrain : MonoBehaviour
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
                 enemyAttackArea.DestroySelf();
                 while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
             }
             else
             {

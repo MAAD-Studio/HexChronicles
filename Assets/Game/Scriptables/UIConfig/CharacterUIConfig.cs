@@ -5,6 +5,11 @@ using UnityEngine;
 //[CreateAssetMenu(fileName = "CharacterUIConfig", menuName = "ScriptableObjects/CharacterUIConfig")]
 public class CharacterUIConfig : ScriptableObject
 {
+    [Header("Stats Sprites")]
+    public Sprite health;
+    public Sprite attack;
+    public Sprite movement;
+
     [Header("Element Sprites")]
     public Sprite fire;
     public Sprite water;
