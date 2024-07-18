@@ -37,6 +37,11 @@ public class TurnManager : MonoBehaviour
     [HideInInspector] public List<TileObject> temporaryTileObjects = new List<TileObject>();
 
     private PlayerTurn playerTurn;
+    public PlayerTurn PlayerTurn
+    {
+        get { return playerTurn; }
+    }
+
     private EnemyTurn enemyTurn;
     private WeatherTurn weatherTurn;
     private TowersTurn towersTurn;
@@ -46,6 +51,11 @@ public class TurnManager : MonoBehaviour
 
     private int turnNumber;
     public int objectiveTurnNumber = 8;
+
+    //TUTORIAL USES
+    public bool disablePlayers = false;
+    public bool disableEnemies = false;
+    public bool disableObjects = false;
 
     public TurnEnums.TurnState TurnType
     {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -30,6 +31,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     }
 
     private Character selectedEnemy;
+    public Character SelectedEnemy
+    {
+        get { return selectedEnemy; }
+    }
+
     private TileObject selectedTileObject;
 
     private AttackArea areaPrefab;
@@ -365,7 +371,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             InspectCharacter();
         }
-        if(currentTile.tileHasObject)
+        if(currentTile.tileHasObject && !turnManager.disableObjects)
         {
             InspectTileObject();
         }
@@ -378,14 +384,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (characterType == TurnEnums.CharacterType.Player)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !turnManager.disablePlayers)
             {
                 SelectCharacter(inspectionCharacter);
             }
         }
         else
         {
-            if(Input.GetMouseButtonDown(0))
+            if(Input.GetMouseButtonDown(0) && !turnManager.disableEnemies)
             {
                 SelectEnemy(inspectionCharacter);
                 if (selectedTileObject != null)
