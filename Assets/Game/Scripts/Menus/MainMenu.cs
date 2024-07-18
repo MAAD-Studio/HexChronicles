@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static GameManager;
+using UnityEngine.UI;
 
 public class MainMenu : Menu
 {
@@ -20,7 +20,7 @@ public class MainMenu : Menu
     protected override void Start()
     {
         base.Start();
-        loadGamePanel.SetActive(false);
+        HideSavedData();
     }
 
     public void OnStartTutorial()
@@ -66,25 +66,49 @@ public class MainMenu : Menu
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
     }
 
+
+    #region Show Save and Load
     public void ShowSavedData()
     {
         loadGamePanel.SetActive(true);
-        foreach (var data in GameManager.Instance.SaveList)
+
+        if (GameManager.Instance.SaveLoadManager.SaveList.Count == 0)
         {
-            AddSavedDataToUI(data);
+            GameObject gameObject = new GameObject("NoSavedData");
+            gameObject.transform.SetParent(savedDataContainer);
+            TextMeshProUGUI text = gameObject.AddComponent<TextMeshProUGUI>();
+            text.text = "No saved data found!";
+            text.fontSize = 22;
+            return;
+        }
+
+        // Add each saved data to the UI panel
+        foreach (var data in GameManager.Instance.SaveLoadManager.SaveList)
+        {
+            GameObject item = Instantiate(savedDataPrefab, savedDataContainer);
+            item.GetComponentInChildren<TextMeshProUGUI>().text = 
+                $"<b>Current Level: {data.CurrentLevel + 1}\nHas Skills: {data.PlayerSkills.Count}</b>\nSaved Time: {data.SaveTime}";
+
+            Button button = item.GetComponent<Button>();
+            button.onClick.AddListener(() =>
+            {
+                GameManager.Instance.SaveLoadManager.ApplySavedData(data);
+                MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier).RefreshLevelButtons();
+                HideSavedData();
+                OnContinueGame();
+            });
         }
     }
 
-    private void AddSavedDataToUI(SaveData data)
+    public void HideSavedData()
     {
-        var item = Instantiate(savedDataPrefab, savedDataContainer);
-        item.GetComponentInChildren<TextMeshProUGUI>().text = FormatSavedData(data);
+        loadGamePanel.SetActive(false);
+        foreach (Transform child in savedDataContainer)
+        {
+            Destroy(child.gameObject);
+        }
     }
-
-    private string FormatSavedData(SaveData data)
-    {
-        return $"Current Level: {data.CurrentLevel}\nSaved Time: {data.SaveTime}";
-    }
+    #endregion
 
     public void OnQuitGame()
     {

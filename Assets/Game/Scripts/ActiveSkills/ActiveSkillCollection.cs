@@ -10,7 +10,7 @@ public class ActiveSkillCollection : Singleton<ActiveSkillCollection>
 
     [SerializeField] private List<ActiveSkillSO> playerFireSkills;
     [SerializeField] private List<ActiveSkillSO> playerGrassSkills;
-    [SerializeField] private List<ActiveSkillSO> PlayerWaterSkills;
+    [SerializeField] private List<ActiveSkillSO> playerWaterSkills;
 
     private List<ActiveSkillSO> remainFireSkills;
     private List<ActiveSkillSO> remainGrassSkills;
@@ -60,16 +60,25 @@ public class ActiveSkillCollection : Singleton<ActiveSkillCollection>
         switch (skill.elementType)
         {
             case ElementType.Fire:
-                playerFireSkills.Add(skill);
-                remainFireSkills.Remove(skill);
+                if (playerFireSkills.Contains(skill) == false)
+                {
+                    playerFireSkills.Add(skill);
+                    remainFireSkills.Remove(skill);
+                }
                 break;
             case ElementType.Grass:
-                playerGrassSkills.Add(skill);
-                remainGrassSkills.Remove(skill);
+                if (playerGrassSkills.Contains(skill) == false)
+                {
+                    playerGrassSkills.Add(skill);
+                    remainGrassSkills.Remove(skill);
+                }
                 break;
             case ElementType.Water:
-                PlayerWaterSkills.Add(skill);
-                remainWaterSkills.Remove(skill);
+                if (playerWaterSkills.Contains(skill) == false)
+                {
+                    playerWaterSkills.Add(skill);
+                    remainWaterSkills.Remove(skill);
+                }
                 break;
         }
     }
@@ -83,9 +92,25 @@ public class ActiveSkillCollection : Singleton<ActiveSkillCollection>
             case ElementType.Grass:
                 return playerGrassSkills;
             case ElementType.Water:
-                return PlayerWaterSkills;
+                return playerWaterSkills;
             default:
                 return null;
+        }
+    }
+
+    public List<ActiveSkillSO> PlayerSkills()
+    {
+        List<ActiveSkillSO> playerSkills = new List<ActiveSkillSO>(playerFireSkills);
+        playerSkills.AddRange(playerGrassSkills);
+        playerSkills.AddRange(playerWaterSkills);
+        return playerSkills;
+    }
+
+    public void LoadPlayerSkills(List<ActiveSkillSO> playerSkills)
+    {
+        foreach (ActiveSkillSO skill in playerSkills)
+        {
+            PlayerAddSkill(skill);
         }
     }
 }

@@ -25,7 +25,7 @@ public class VictoryScreen : Menu
     public void OnReturnToMap()
     {
         GameManager.Instance.CurrentLevelIndex++;
-        GameManager.Instance.SaveGame();
+        GameManager.Instance.SaveLoadManager.SaveGame();
 
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);

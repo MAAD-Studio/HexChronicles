@@ -57,7 +57,6 @@ public class PauseMenu : Menu
     private void EndBattle()
     {
         EndLevel.Invoke();
-        GameManager.Instance.SaveGame();
         GameManager.Instance.CleanActiveScene();
     }
 }

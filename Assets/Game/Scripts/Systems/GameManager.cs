@@ -6,17 +6,13 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    private SaveLoadManager saveLoadManager;
+    public SaveLoadManager SaveLoadManager => saveLoadManager;
+
+    [Header("Level Info")]
     public LevelSO[] levelDetails;
 
     private SceneReference currentLevel;
-
-    [HideInInspector] private float gameSpeed = 1f;
-
-    public float GameSpeed
-    {
-        get { return gameSpeed; }
-    }
-
     public SceneReference CurrentLevel
     {
         get => currentLevel;
@@ -24,20 +20,41 @@ public class GameManager : Singleton<GameManager>
     }
     public int CurrentLevelIndex { get; set; }
 
-    private List<SaveData> saveList = new List<SaveData>();
-    private SaveData saveData;
-    public List<SaveData> SaveList
+    [Header("Settings")]
+    [HideInInspector] private float gameSpeed = 1f;
+
+    public float GameSpeed
     {
-        get => saveList;
+        get { return gameSpeed; }
     }
-    private string SaveFilePath => Path.Combine(Application.dataPath, "SavedData.json");
 
 
     #region Unity Methods
     private void Start()
     {
         CurrentLevelIndex = 0;
-        LoadSavedData();
+        saveLoadManager = GetComponent<SaveLoadManager>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            saveLoadManager.SaveGame();
+        }
+    }
+    #endregion
+
+    #region CustomMethods
+
+    public void IncreaseGameSpeed()
+    {
+        gameSpeed = 2f;
+    }
+
+    public void DecreaseGameSpeed()
+    {
+        gameSpeed = 1f;
     }
     #endregion
 
@@ -74,70 +91,6 @@ public class GameManager : Singleton<GameManager>
         foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
         {
             Destroy(go);
-        }
-    }
-    #endregion
-
-    #region CustomMethods
-
-    public void IncreaseGameSpeed()
-    {
-        gameSpeed = 2f;
-    }
-
-    public void DecreaseGameSpeed()
-    {
-        gameSpeed = 1f;
-    }
-
-    #endregion
-
-
-    #region Game Save and Load
-
-    [Serializable]
-    public struct SaveData
-    {
-        private int currentLevel;
-        private string saveTime;
-        public int CurrentLevel
-        {
-            get => currentLevel;
-            set => currentLevel = value;
-        }
-        public DateTime SaveTime
-        {
-            get => DateTime.Parse(saveTime);
-            set => saveTime = value.ToString();
-        }
-    }
-
-    [Serializable]
-    private struct SaveDataList
-    {
-        public List<SaveData> DataList;
-    }
-
-    public void SaveGame()
-    {
-        saveData = new SaveData
-        {
-            CurrentLevel = CurrentLevelIndex,
-            SaveTime = DateTime.Now
-        };
-        saveList.Add(saveData);
-
-        var data = new SaveDataList { DataList = saveList };
-        string json = JsonUtility.ToJson(data);
-        File.WriteAllText(SaveFilePath, json);
-    }
-
-    public void LoadSavedData()
-    {
-        if (File.Exists(SaveFilePath))
-        {
-            string json = File.ReadAllText(SaveFilePath);
-            saveList = JsonUtility.FromJson<SaveDataList>(json).DataList;
         }
     }
     #endregion

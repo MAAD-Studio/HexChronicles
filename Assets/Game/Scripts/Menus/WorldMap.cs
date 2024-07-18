@@ -34,15 +34,7 @@ public class WorldMap : Menu
             levelButtonsInOrder[i].onClick.AddListener(() => ShowPreGame(index));
         }
 
-        // Disable all locked level buttons
-        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
-        for (int i = 0; i < levelCount; i++)
-        {
-            if (i > unlockedLevelIndex)
-            {
-                levelButtonsInOrder[i].interactable = false;
-            }
-        }
+        RefreshLevelButtons();
     }
 
     private void Update()
@@ -95,6 +87,22 @@ public class WorldMap : Menu
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
         SceneLoader.Instance.UnLoadAllLoadedScenes();
+    }
+
+    public void RefreshLevelButtons()
+    {
+        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
+        for (int i = 0; i < levelButtonsInOrder.Length; i++)
+        {
+            if (i > unlockedLevelIndex)
+            {
+                levelButtonsInOrder[i].interactable = false;
+            }
+            else
+            {
+                levelButtonsInOrder[i].interactable = true;
+            }
+        }
     }
 
     public void UnlockAll()
