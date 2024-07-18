@@ -15,7 +15,14 @@ public class StatusEffect : MonoBehaviour
         transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
 
         icon.sprite = Config.Instance.GetStatusSprite(status);
-        effectTurns.text = status.effectTurns.ToString();
+        if (status.effectTurns > 0)
+        {
+            effectTurns.text = status.effectTurns.ToString();
+        }
+        else
+        {
+            effectTurns.text = "";
+        }
         effectDetail.text = Config.Instance.GetStatusExplain(status);
     }
 }
