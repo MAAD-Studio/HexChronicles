@@ -25,7 +25,7 @@ public class CharacterUIConfig : ScriptableObject
 
     [Header("Status VFX")]
     public GameObject burningVFX;
-    //public GameObject wetVFX;
+    public GameObject wetVFX;
     //public GameObject hasteVFX;
     public GameObject boundVFX;
     //public GameObject shieldVFX;

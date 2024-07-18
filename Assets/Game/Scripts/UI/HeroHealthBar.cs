@@ -30,14 +30,15 @@ public class HeroHealthBar : HealthBar
 
     protected override void UpdateHealthBarPreview()
     {
-        float newHealth = hero.currentHealth - damagePreview;
+        /*float newHealth = hero.currentHealth - damagePreview;
         hpText.text = newHealth.ToString();
-        previewHealth.fillAmount = newHealth / hero.maxHealth;
+        previewHealth.fillAmount = newHealth / hero.maxHealth;*/
     }
 
     protected override void UpdateHealthBar()
     {
         hpText.text = hero.currentHealth.ToString();
+        previewHealth.fillAmount = hero.currentHealth / hero.maxHealth;
         StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth, false));
     }
 

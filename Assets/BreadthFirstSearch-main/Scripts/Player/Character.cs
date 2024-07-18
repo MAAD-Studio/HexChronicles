@@ -289,9 +289,6 @@ public class Character : MonoBehaviour
             case Status.StatusTypes.Blessing:
                 break;
 
-            case Status.StatusTypes.Hurt:
-                break;
-
             case Status.StatusTypes.CannotMove:
                 break;
 
@@ -299,6 +296,7 @@ public class Character : MonoBehaviour
                 break;
 
             case Status.StatusTypes.Wet:
+                vfx = Instantiate(Config.Instance.characterUIConfig.wetVFX, transform.position, Quaternion.identity);
                 break;
 
             case Status.StatusTypes.Haste:
