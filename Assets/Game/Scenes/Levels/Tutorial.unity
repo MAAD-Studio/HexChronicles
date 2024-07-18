@@ -4837,6 +4837,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedCharMarker: {fileID: 8500630307418780312, guid: 535e69fe6483f0a4b95f4ea0f4b237a2, type: 3}
+  desiredTile: {fileID: 0}
+  desiredEnemy: {fileID: 0}
+  preventPhaseBackUp: 0
 --- !u!4 &328114904
 Transform:
   m_ObjectHideFlags: 0
@@ -24860,6 +24863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8e690f01eb35bb43ba7e34357965644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightEffect: {fileID: 2553311171911899929, guid: 5c076b58548588149860e5b856ebec5b, type: 3}
+  tilesParentObject: {fileID: 0}
 --- !u!114 &1930254590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24872,24 +24877,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 698271ca221be0347aa5b331f42e281d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightEffect: {fileID: 2553311171911899929, guid: 5c076b58548588149860e5b856ebec5b, type: 3}
+  tilesParentObject: {fileID: 1831120400}
   fireHero: {fileID: 1981355576}
   enemyOne: {fileID: 317436283}
+  lastTileOfFirstMove: {fileID: 1713584788}
   turnOneDialogue:
   - speakerID: 0
-    sentence: Hey, you. Your finally awake. Welcome to battle general. Let me give
-      you some guidance on how to lead your troops.
+    sentence: Hey, you! You're finally awake! Welcome to the battle General. Let
+      me teach you to lead your troops.
   - speakerID: 0
-    sentence: 'This is me your fire hero. You can see information about me on the
-      top left of your screen. '
+    sentence: This is me your Fire Hero. You can see information about me on the
+      top left of your screen.
   - speakerID: 0
-    sentence: The sword represents how much damage my basic attack deals and the
-      boot represents how many tiles I can move in a turn. Beneath those is my health.
+    sentence: The Sword represents my basic attack damage and the Boot represents
+      how many tiles I can move. Beneath those is my health.
   - speakerID: 0
-    sentence: This unsightly fellow over here is a Gangsta. They like to group up
-      to deal bonus attacks. Left-Click on him to pull up some intel we have gatherd
-      about them.
+    sentence: This unsightly fellow is a Gangsta. They like to group up to perform
+      combo attacks. Left-Click on him to pull up some intel we have gathered about
+      him.
   - speakerID: 0
-    sentence: Here you can see the enemies stats
+    sentence: Just like me the Sword represents damage and the Boot represents movement.
+      Enemies additionally come with the Target which represents range.
+  - speakerID: 0
+    sentence: The area highlighted on the map illustrates where the enemy can move
+      and attack during its turn. Yellow tiles are where it can move and red is the
+      farthest its attacks can reach.
+  - speakerID: 0
+    sentence: Finally Gangstas are of the Fire Element like me which means they can
+      make use of Fire Tiles.
+  - speakerID: 0
+    sentence: 'Now lets issue me a command. First Left-Click on me to select me.
+      You can also click on my portrait in the top left where you looked at my stats
+      to select me as well. '
+  - speakerID: 0
+    sentence: The yellow on the map represents where I can move. I can only move
+      once per turn even if I don't move my max distance. Lets move me to the tile
+      with the glowing white aura
+  - speakerID: 0
+    sentence: Now that we have decided what Tile I will move towards lets select
+      where I will attack. My attack will rotate to face wherever you have positioned
+      your mouse although I can't attack across gaps. Rotate my attack to face the
+      enemy with the glowing white aura and Left-Click to confirm the attack.
+  - speakerID: 0
+    sentence: Good work. My turn is done so hit end turn to pass it over to the Gangstas.
 --- !u!1 &1941217933
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,10 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Tutorial_Base : MonoBehaviour
 {
     #region Variables
+
+    [SerializeField] protected GameObject highlightEffect;
+    protected GameObject spawnedHighlight;
+
+    [SerializeField] protected GameObject tilesParentObject;
+    protected List<Tile> mapTiles = new List<Tile>();
 
     protected TurnManager turnManager;
     protected TutorialManager tutorialManager;
@@ -34,6 +41,8 @@ public class Tutorial_Base : MonoBehaviour
 
         cameraController = FindObjectOfType<CameraController>();
         Debug.Assert(cameraController != null, "Tutorial failed to locate a CameraController");
+
+        mapTiles = tilesParentObject.GetComponentsInChildren<Tile>().ToList();
     }
 
     #endregion

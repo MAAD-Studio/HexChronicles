@@ -49,10 +49,19 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private Tile[] potentialPath;
 
     private TurnEnums.PlayerPhase phase = TurnEnums.PlayerPhase.Movement;
+    public TurnEnums.PlayerPhase Phase
+    {
+        get { return phase; }
+    }
 
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
 
     bool allowSelection = true;
+
+    //TUTORIAL
+    public Tile desiredTile = null;
+    public Character desiredEnemy = null;
+    public bool preventPhaseBackUp = false;
 
     #endregion
 
@@ -278,6 +287,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void MoveBackAPhase()
     {
+        if(preventPhaseBackUp == true)
+        {
+            return;
+        }
+
         if (selectedTileObject != null)
         {
             if(selectedTileObject.objectType == ObjectType.Tower)
@@ -418,6 +432,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void SelectEnemy(Character character)
     {
+        if(character != null && character != desiredEnemy)
+        {
+            return;
+        }
+
         if(currentTile == null)
         {
             currentTile = character.characterTile;
@@ -554,6 +573,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
             if (Input.GetMouseButtonDown(0))
             {
+                if(desiredTile == null || desiredTile != currentTile)
+                {
+                    return;
+                }
+
                 potentialPath = path;
                 potentialMovementTile = currentTile;
 
@@ -615,6 +639,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (desiredEnemy != null && !areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy).Contains(desiredEnemy))
+            {
+                return;
+            }
+
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {
                 if (!areaPrefab.freeRange || areaPrefab.onlySingleTileType && currentTile.tileData.tileType == areaPrefab.effectedTileType)
