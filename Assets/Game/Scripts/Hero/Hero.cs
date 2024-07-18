@@ -93,8 +93,6 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
-        base.PerformBasicAttack(targets);
-
         foreach (var target in targets)
         {
             SpawnAttackVFX(target);
@@ -107,6 +105,8 @@ public class Hero : Character
 
             target.TakeDamage(actualDamage, elementType);
         }
+
+        base.PerformBasicAttack(targets);
     }
 
     private void SpawnAttackVFX(Character target)

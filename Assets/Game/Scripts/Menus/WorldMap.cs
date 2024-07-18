@@ -59,8 +59,9 @@ public class WorldMap : Menu
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
+        // Set the current level index to the loading level
+        GameManager.Instance.CurrentLevelIndex = levelIndex;
         MenuManager.Instance.HideMenu(menuClassifier);
-        //MenuManager.Instance.ShowMenu(hudClassifier);
 
         SceneLoader.Instance.LoadScene(levels[levelIndex]);
         SceneLoader.Instance.UnloadScene(worldMap);

@@ -177,6 +177,8 @@ public class HUDInfo : MonoBehaviour
         {
             button.interactable = false;
         }
+        enemyHoverUI.Hide();
+        objectHoverUI.Hide();
     }
 
     private void OnPlayerTurn(object obj)

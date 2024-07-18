@@ -221,7 +221,7 @@ public class Character : MonoBehaviour
         if (oldStatus != null)
         {
             oldStatus.effectTurns += 1;
-            UpdateStatus.Invoke();
+            UpdateStatus?.Invoke();
             return;
         }
 
@@ -251,6 +251,7 @@ public class Character : MonoBehaviour
         {
             ApplyStatus();
         }
+        UpdateAttributes?.Invoke();
     }
 
     public virtual void EndTurn()
@@ -270,7 +271,7 @@ public class Character : MonoBehaviour
         ShowEffect(status);
         statusList.Add(status);
 
-        UpdateStatus.Invoke();
+        UpdateStatus?.Invoke();
     }
 
     public void ShowEffect(Status status)
@@ -321,7 +322,7 @@ public class Character : MonoBehaviour
     {
         statusList.Remove(status);
 
-        UpdateStatus.Invoke();
+        UpdateStatus?.Invoke();
 
         if (status.statusType == Status.StatusTypes.Hurt)
         {
@@ -341,7 +342,6 @@ public class Character : MonoBehaviour
             }
         }
         UpdateStatus?.Invoke();
-        UpdateAttributes?.Invoke();
     }
 
     public virtual void TakeDamage(float damage, ElementType type)

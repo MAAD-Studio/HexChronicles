@@ -74,6 +74,7 @@ public class GameManager : Singleton<GameManager>
         SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
+        // Load CurrentLevel
         SceneReference currentScene = levelDetails[CurrentLevelIndex].levelScene;
         SceneLoader.Instance.LoadScene(currentScene);
     }
