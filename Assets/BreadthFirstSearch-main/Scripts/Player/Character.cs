@@ -84,6 +84,7 @@ public class Character : MonoBehaviour
 
     #endregion
 
+
     #region AttackMethods
 
     public virtual void PerformBasicAttack(List<Character> targets)
@@ -98,6 +99,58 @@ public class Character : MonoBehaviour
         }
     }
 
+    public virtual void ReleaseActiveSkill(List<Character> targets)
+    {
+        animator.SetTrigger("skill");
+    }
+
+    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
+
+    #endregion 
+
+
+    #region Turn Methods
+
+    public virtual void EnterNewTurn()
+    {
+        if (statusList.Count > 0)
+        {
+            ApplyStatus();
+        }
+        UpdateAttributes?.Invoke();
+    }
+
+    public void ApplyStatus()
+    {
+        foreach (Status status in statusList)
+        {
+            status.Apply(this);
+
+            if (status.effectTurns == 0)
+            {
+                statusToRemove.Add(status);
+            }
+        }
+        UpdateStatus?.Invoke();
+    }
+
+    public virtual void EndTurn()
+    {
+        foreach (Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
+        movementThisTurn = 0;
+        canMove = true;
+    }
+    #endregion
+
+
+    #region Elemental Effects
+
+    // Elemental Tile Buffs
     public void ApplyBuffCharacter(TurnManager turnManager)
     {
         Hero thisHero = null;
@@ -166,6 +219,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    // AttemptApply Status to targets within attack area
     public void ApplyStatusAttackArea(List<Character> targets)
     {
         foreach (Character target in targets)
@@ -185,6 +239,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    // AttemptApply Status to everyone on the same ElementType tiles
     public void ApplyStatusElementalTile(TurnManager turnManager)
     {
         Status.StatusTypes chosenType;
@@ -215,6 +270,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    // Check if the status is already applied
     public void AttemptStatusApply(Character target, Status.StatusTypes statusType, int effectTurns)
     {
         Status oldStatus = Status.GrabIfStatusActive(target, statusType);
@@ -231,40 +287,127 @@ public class Character : MonoBehaviour
         target.AddStatus(newStatus);
     }
 
-    public virtual void ReleaseActiveSkill(List<Character> targets)
+    // Check additional effects if having a Status and being attacked  
+    private int AttackStatusEffect(ElementType type)
     {
-        animator.SetTrigger("skill");
-    }
+        int potentialDamageAddOn = 0;
 
-    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
-
-    public void PreviewDamage(float damage)
-    {
-        damage += AddedOnDamagePreview(elementType);
-        healthBar.damagePreview = damage;
-        DamagePreview?.Invoke();
-    }
-
-    public virtual void EnterNewTurn()
-    {
-        if (statusList.Count > 0)
+        if (type == ElementType.Base)
         {
-            ApplyStatus();
+            return 0;
         }
-        UpdateAttributes?.Invoke();
-    }
 
-    public virtual void EndTurn()
-    {
+        foreach (Status status in statusList)
+        {
+            if (status.statusType == Status.StatusTypes.Burning)
+            {
+                if (type == ElementType.Fire)
+                {
+                    status.damageAddOn += 1;
+                }
+                else if (type == ElementType.Water)
+                {
+                    statusToRemove.Add(status);
+                }
+                else
+                {
+                    status.effectTurns++;
+                }
+                break;
+            }
+            else if (status.statusType == Status.StatusTypes.Wet)
+            {
+                if (type == ElementType.Fire)
+                {
+                    TakeDamage(1, ElementType.Base);
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
+                    status.effectTurns++;
+                }
+                else
+                {
+                    statusToRemove.Add(status);
+                }
+                break;
+            }
+            else if (status.statusType == Status.StatusTypes.Bound)
+            {
+                if (type == ElementType.Fire)
+                {
+                    statusToRemove.Add(status);
+                }
+                else if (type == ElementType.Water)
+                {
+                    status.effectTurns++;
+                }
+                else
+                {
+                    potentialDamageAddOn += 3;
+                }
+                break;
+            }
+        }
+
         foreach (Status status in statusToRemove)
         {
             RemoveStatus(status);
         }
         statusToRemove.Clear();
 
-        movementThisTurn = 0;
-        canMove = true;
+        return potentialDamageAddOn;
     }
+    #endregion
+
+
+    #region Attack Prediction
+
+    public void PreviewDamage(float damage)
+    {
+        damage += AddedOnDamagePreview(elementType);
+        
+        healthBar.damagePreview = damage;
+        DamagePreview?.Invoke();
+    }
+    
+    // Returns the additional damage taken from Status Effects
+    private int AddedOnDamagePreview(ElementType enemyType)
+    {
+        int potentialDamageAddOn = 0;
+
+        if (enemyType == ElementType.Base)
+        {
+            return 0;
+        }
+
+        foreach (Status status in statusList)
+        {
+            if (status.statusType == Status.StatusTypes.Wet)
+            {
+                if (enemyType == ElementType.Fire)
+                {
+                    potentialDamageAddOn++;
+                }
+            }
+            if (status.statusType == Status.StatusTypes.Bound)
+            {
+                if (enemyType == ElementType.Grass)
+                {
+                    potentialDamageAddOn += 3;
+                }
+            }
+        }
+
+        return potentialDamageAddOn;
+    }
+
+    
+    #endregion
+
+
+    #region Actual Status add and remove
 
     public void AddStatus(Status status) // Consider make this private method
     {
@@ -329,20 +472,10 @@ public class Character : MonoBehaviour
             isHurt = false;
         }
     }
+    #endregion
 
-    public void ApplyStatus()
-    {
-        foreach (Status status in statusList)
-        {
-            status.Apply(this);
 
-            if (status.effectTurns == 0)
-            {
-                statusToRemove.Add(status);
-            }
-        }
-        UpdateStatus?.Invoke();
-    }
+    #region TakeDamage and Heal and Die
 
     public virtual void TakeDamage(float damage, ElementType type)
     {
@@ -380,109 +513,6 @@ public class Character : MonoBehaviour
         UpdateHealthBar?.Invoke();
     }
 
-    //Used to help preview the expected damage from an Attack
-    public int AddedOnDamagePreview(ElementType enemyType)
-    {
-        int potentialDamageAddOn = 0;
-
-        if (enemyType == ElementType.Base)
-        {
-            return 0;
-        }
-
-        foreach (Status status in statusList)
-        {
-            if (status.statusType == Status.StatusTypes.Wet)
-            {
-                if (enemyType == ElementType.Fire)
-                {
-                    potentialDamageAddOn++;
-                }
-            }
-            if (status.statusType == Status.StatusTypes.Bound)
-            {
-                if (enemyType == ElementType.Grass)
-                {
-                    potentialDamageAddOn += 3;
-                }
-            }
-        }
-
-        return potentialDamageAddOn;
-    }
-
-    private int AttackStatusEffect(ElementType type)
-    {
-        int potentialDamageAddOn = 0;
-
-        if(type == ElementType.Base)
-        {
-            return 0;
-        }
-
-        foreach(Status status in statusList)
-        {
-            if(status.statusType == Status.StatusTypes.Burning)
-            {
-                if(type == ElementType.Fire)
-                {
-                    status.damageAddOn += 1;
-                }
-                else if(type == ElementType.Water)
-                {
-                    statusToRemove.Add(status);
-                }
-                else
-                {
-                    status.effectTurns++;
-                }
-                break;
-            }
-            else if(status.statusType == Status.StatusTypes.Wet)
-            {
-                if (type == ElementType.Fire)
-                {
-                    TakeDamage(1, ElementType.Base);
-                    statusToRemove.Add(status);
-                }
-                else if (type == ElementType.Water)
-                {
-                    MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
-                    status.effectTurns++;
-                }
-                else
-                {
-                    statusToRemove.Add(status);
-                }
-                break;
-            }
-            else if(status.statusType == Status.StatusTypes.Bound)
-            {
-                if (type == ElementType.Fire)
-                {
-                    statusToRemove.Add(status);
-                }
-                else if (type == ElementType.Water)
-                {
-                    status.effectTurns++;
-                }
-                else
-                {
-                    potentialDamageAddOn += 3;
-                }
-                break;
-            }
-        }
-
-        foreach(Status status in statusToRemove)
-        {
-            RemoveStatus(status);
-        }
-        statusToRemove.Clear();
-
-        return potentialDamageAddOn;
-    }
-
     public virtual void Heal(float heal)
     {
         currentHealth += heal;
@@ -509,8 +539,8 @@ public class Character : MonoBehaviour
         TurnManager tm = FindObjectOfType<TurnManager>();
         tm.DestroyACharacter(this);
     }
-
     #endregion
+
 
     #region BreadthFirstMethods
 
