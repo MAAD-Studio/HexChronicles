@@ -53,6 +53,7 @@ public class TurnManager : MonoBehaviour
     public int objectiveTurnNumber = 8;
 
     //TUTORIAL USES
+    public bool isTutorial = false;
     public bool disablePlayers = false;
     public bool disableEnemies = false;
     public bool disableObjects = false;
