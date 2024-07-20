@@ -30,6 +30,12 @@ public class CharacterUIConfig : ScriptableObject
     public GameObject boundVFX;
     //public GameObject shieldVFX;
 
+    [Header("Tile Effect VFX")]
+    public GameObject fireBuffVFX;
+    public GameObject grassBuffVFX;
+    public GameObject waterBuffVFX;
+    public GameObject debuffVFX;
+
     [Header("Status Description")]
     [TextArea(3, 10)] public string burningDetail;
     [TextArea(3, 10)] public string wetDetail;

@@ -16,6 +16,10 @@ public class HUDInfo : MonoBehaviour
     private Coroutine hideStatusInfoCoroutine;
     private bool showInfos = true;
 
+    [Header("Tutorial")]
+    [SerializeField] private TabGroup tutorialSummary;
+    [SerializeField] private Button question;
+
     [Header("Turn Info")]
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private GameObject playerTurnMessage;
@@ -55,6 +59,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
     [SerializeField] private Button undo;
+    [SerializeField] private Button fast;
 
     #region Unity Methods
 
@@ -364,10 +369,28 @@ public class HUDInfo : MonoBehaviour
         
         endTurn.onClick.AddListener(() =>
         {
+            if (selectedCharacter != null && selectedCharacter.moving)
+            {
+                return;
+            }
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         });
         undo.onClick.AddListener(() => playerTurn.UndoAction());
+        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
+        fast.onClick.AddListener(() => 
+        {
+            if (GameManager.Instance.IsFast)
+            {
+                GameManager.Instance.DecreaseGameSpeed();
+                fast.GetComponentInChildren<TextMeshProUGUI>().text = "1x";
+            }
+            else
+            {
+                GameManager.Instance.IncreaseGameSpeed();
+                fast.GetComponentInChildren<TextMeshProUGUI>().text = ">>2x";
+            }
+        });
     }
 
     private void ResetHUD()

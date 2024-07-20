@@ -21,8 +21,12 @@ public class GameManager : Singleton<GameManager>
     public int CurrentLevelIndex { get; set; }
 
     [Header("Settings")]
-    [HideInInspector] private float gameSpeed = 1f;
-
+    private bool isFast = false;
+    public bool IsFast
+    {
+        get { return isFast; }
+    }
+    private float gameSpeed = 1f;
     public float GameSpeed
     {
         get { return gameSpeed; }
@@ -50,11 +54,13 @@ public class GameManager : Singleton<GameManager>
     public void IncreaseGameSpeed()
     {
         gameSpeed = 2f;
+        isFast = true;
     }
 
     public void DecreaseGameSpeed()
     {
         gameSpeed = 1f;
+        isFast = false;
     }
     #endregion
 
