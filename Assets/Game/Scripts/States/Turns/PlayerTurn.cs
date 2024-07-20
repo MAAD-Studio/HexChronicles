@@ -312,11 +312,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             if (phase == TurnEnums.PlayerPhase.Movement)
             {
                 cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
+                Tile.DestroyTileVFX(selectedCharacter.elementType);
+                if (selectedCharacter.characterTile.tileData.tileType == ElementType.Base)
+                {
+                    selectedCharacter.DestroyTileVFX();
+                }
                 FullReset();
             }
             else if (phase == TurnEnums.PlayerPhase.Attack)
             {
                 Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+                if (selectedCharacter.characterTile.tileData.tileType == ElementType.Base)
+                {
+                    selectedCharacter.DestroyTileVFX();
+                }
                 pathFinder.CreateIllustration();
 
                 areaPrefab.DestroySelf();
@@ -545,6 +554,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             DestroyPhantom();
         }
 
+        Tile.SpawnTileVFX(selectedCharacter.elementType);
+
         if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType)
         {
             Tile.HighlightTilesOfType(selectedCharacter.elementType);
@@ -574,6 +585,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 {
                     return;
                 }
+
+                Tile.DestroyTileVFX(selectedCharacter.elementType);
 
                 potentialPath = path;
                 potentialMovementTile = currentTile;
@@ -605,7 +618,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (potentialMovementTile.tileData.tileType == selectedCharacter.elementType)
         {
-            Tile.HighlightTilesOfType(selectedCharacter.elementType);
+            selectedCharacter.SpawnTileVFX(potentialMovementTile.transform.position, true);
+            
+            if (selectedCharacter.elementType == ElementType.Fire)
+            {
+                Tile.HighlightTilesOfType(selectedCharacter.elementType);
+            }
+        }
+        else if (potentialMovementTile.tileData.tileType != ElementType.Base)
+        {
+            selectedCharacter.SpawnTileVFX(potentialMovementTile.transform.position, false);
         }
 
         if (!areaPrefab.freeRange)

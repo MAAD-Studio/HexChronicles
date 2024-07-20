@@ -93,6 +93,15 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
+        if (characterTile.tileData.tileType == elementType)
+        {
+            SpawnTileVFX(transform.position, true);
+        }
+        else if (characterTile.tileData.tileType != ElementType.Base)
+        {
+            SpawnTileVFX(transform.position, false);
+        }
+
         foreach (var target in targets)
         {
             SpawnAttackVFX(target);

@@ -195,6 +195,10 @@ public class UndoManager : Singleton<UndoManager>
             if (turnManager.characterList.Contains(data.heroInvolved))
             {
                 currentHero = data.heroInvolved;
+                if (currentHero.characterTile.tileData.tileType != ElementType.Base)
+                {
+                    currentHero.DestroyTileVFX();
+                }
                 currentHero.characterTile.characterOnTile = null;
                 currentHero.characterTile.tileOccupied = false;
                 currentHero.characterTile = null;
@@ -257,6 +261,18 @@ public class UndoManager : Singleton<UndoManager>
         character.transform.rotation = data.rotation;
 
         character.FindTile();
+
+        if (character is Hero)
+        {
+            if (character.elementType == character.characterTile.tileData.tileType)
+            {
+                character.SpawnTileVFX(character.transform.position, true);
+            }
+            else if (character.characterTile.tileData.tileType != ElementType.Base)
+            {
+                character.SpawnTileVFX(character.transform.position, false);
+            }
+        }
     }
 
     private void RestoreTileObjectData(TurnManager turnManager)

@@ -6,6 +6,28 @@ public class Config : Singleton<Config>
 {
     public CharacterUIConfig characterUIConfig;
 
+    public GameObject GetBuffVFX(ElementType elementType)
+    {
+        if (elementType == ElementType.Fire)
+        {
+            return characterUIConfig.fireBuffVFX;
+        }
+        else if (elementType == ElementType.Water)
+        {
+            return characterUIConfig.waterBuffVFX;
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            return characterUIConfig.grassBuffVFX;
+        }
+        return null;
+    }
+
+    public GameObject GetDebuffVFX()
+    {
+        return characterUIConfig.debuffVFX;
+    }
+
     public Sprite GetStatSprite(string statType)
     {
         if (statType == "health")

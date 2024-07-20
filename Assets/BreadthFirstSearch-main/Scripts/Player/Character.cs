@@ -62,6 +62,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     private GameObject buffPreview;
+    private GameObject tileVFX;
 
     #endregion
 
@@ -530,7 +531,7 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("died");
         }
-  
+        DestroyTileVFX();
         Invoke("Destroy", 0.6f);
     }
 
@@ -568,6 +569,7 @@ public class Character : MonoBehaviour
             moving = true;
             animator.SetBool("walking", true);
             turnManager.mainCameraController.controlEnabled = false;
+            DestroyTileVFX();
         }
 
         StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse, tilePos));
@@ -914,6 +916,30 @@ public class Character : MonoBehaviour
         if(buffPreview != null)
         {
             Destroy(buffPreview);
+        }
+    }
+
+    public void SpawnTileVFX(Vector3 position, bool isBuff)
+    {
+        if (tileVFX == null)
+        {
+            if (isBuff)
+            {
+                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType), position, Quaternion.identity);
+
+            }
+            else
+            {
+                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(), position, Quaternion.identity);
+            }
+        }
+    }
+
+    public void DestroyTileVFX()
+    {
+        if (tileVFX != null)
+        {
+            Destroy(tileVFX);
         }
     }
 
