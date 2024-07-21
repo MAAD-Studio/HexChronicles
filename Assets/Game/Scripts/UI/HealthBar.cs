@@ -13,14 +13,12 @@ public abstract class HealthBar : MonoBehaviour
     [SerializeField] protected Image previewHealth;
     [SerializeField] protected RectTransform healthBar;
     [SerializeField] protected RectTransform parentBar;
-    [SerializeField] public float damagePreview;
 
     [SerializeField] protected GameObject statusField;
     [SerializeField] protected GameObject statusPrefab;
 
     protected abstract void Start();
     protected abstract void OnDestroy();
-    protected abstract void UpdateHealthBarPreview();
     protected abstract void UpdateHealthBar();
     protected abstract void UpdateStatus();
 

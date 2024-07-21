@@ -20,6 +20,9 @@ public class EnemyHealthBar : HealthBar
         enemy = GetComponentInParent<Enemy_Base>();
         enemy.healthBar = this;
         enemy.DamagePreview.AddListener(UpdateHealthBarPreview);
+        enemy.AddStatusPreview.AddListener(AddStatusPreview);
+        enemy.ChangeStatusPreview.AddListener(ChangeStatusPreview);
+        enemy.RemoveStatusPreview.AddListener(RemoveStatusPreview);
         enemy.DonePreview.AddListener(DonePreview);
         enemy.UpdateHealthBar.AddListener(UpdateHealthBar);
         enemy.UpdateStatus.AddListener(UpdateStatus);
@@ -33,7 +36,22 @@ public class EnemyHealthBar : HealthBar
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
 
-        prediction.gameObject.SetActive(false);
+        prediction.Hide();
+    }
+
+    private void RemoveStatusPreview(Status arg0)
+    {
+        prediction.RemoveStatus(arg0);
+    }
+
+    private void ChangeStatusPreview(Status arg0, int newTurns)
+    {
+        prediction.ChangeStatus(arg0, newTurns);
+    }
+
+    private void AddStatusPreview(Status arg0)
+    {
+        prediction.AddStatus(arg0);
     }
 
     private void DonePreview()
@@ -43,16 +61,16 @@ public class EnemyHealthBar : HealthBar
         previewHealth.fillAmount = enemy.currentHealth / enemy.maxHealth;
         health.fillAmount = previewHealth.fillAmount;
 
-        prediction.gameObject.SetActive(false);
+        prediction.Hide();
         killIcon.gameObject.SetActive(false);
         parentBar.localScale = new Vector3(1f, 1f, 1f);
     }
 
-    protected override void UpdateHealthBarPreview()
+    protected virtual void UpdateHealthBarPreview(int arg0)
     {
-        float newHealth = enemy.currentHealth - damagePreview;
+        float newHealth = enemy.currentHealth - arg0;
 
-        if (newHealth < 0)
+        if (newHealth <= 0)
         {
             killIcon.gameObject.SetActive(true);
             newHealth = 0;
@@ -67,6 +85,7 @@ public class EnemyHealthBar : HealthBar
         //StartCoroutine(AnimateHealthBar(newHealth / enemy.maxHealth, true));
 
         prediction.gameObject.SetActive(true);
+        prediction.ShowHealth(enemy.currentHealth, newHealth);
         parentBar.localScale = scaledUpValue;
     }
 
@@ -100,6 +119,9 @@ public class EnemyHealthBar : HealthBar
     protected override void OnDestroy()
     {
         enemy.DamagePreview.RemoveListener(UpdateHealthBarPreview);
+        enemy.AddStatusPreview.RemoveListener(AddStatusPreview);
+        enemy.ChangeStatusPreview.RemoveListener(ChangeStatusPreview);
+        enemy.RemoveStatusPreview.RemoveListener(RemoveStatusPreview);
         enemy.DonePreview.RemoveListener(DonePreview);
         enemy.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         enemy.UpdateStatus.RemoveListener(UpdateStatus);

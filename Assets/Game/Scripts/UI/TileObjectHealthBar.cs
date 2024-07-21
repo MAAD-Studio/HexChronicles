@@ -25,7 +25,7 @@ public class TileObjectHealthBar : EnemyHealthBar
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
 
-        prediction.gameObject.SetActive(false);
+        prediction.Hide();
     }
 
     private void DonePreview()
@@ -34,16 +34,16 @@ public class TileObjectHealthBar : EnemyHealthBar
         previewHealth.fillAmount = tileObject.currentHealth / tileObject.tileObjectData.health;
         health.fillAmount = previewHealth.fillAmount;
 
-        prediction.gameObject.SetActive(false);
+        prediction.Hide();
         killIcon.gameObject.SetActive(false);
         parentBar.localScale = new Vector3(1f, 1f, 1f);
     }
 
-    protected override void UpdateHealthBarPreview()
+    protected override void UpdateHealthBarPreview(int arg0)
     {
-        float newHealth = tileObject.currentHealth - damagePreview;
+        float newHealth = tileObject.currentHealth - arg0;
 
-        if (newHealth < 0)
+        if (newHealth <= 0)
         {
             killIcon.gameObject.SetActive(true);
             newHealth = 0;
@@ -58,6 +58,7 @@ public class TileObjectHealthBar : EnemyHealthBar
         //StartCoroutine(AnimateHealthBar(newHealth / enemy.maxHealth, true));
         
         prediction.gameObject.SetActive(true);
+        prediction.ShowHealth(tileObject.currentHealth, newHealth);
         killIcon.gameObject.SetActive(false);
         parentBar.localScale = scaledUpValue;
     }

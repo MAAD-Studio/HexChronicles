@@ -645,16 +645,20 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             phantom.transform.LookAt(areaPrefab.transform.position);
         }
 
-        // Preview Damage on enemy healthbar
+        // Preview Damage and Status
         foreach (Character character in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
         {
-            character.PreviewDamage(selectedCharacter.attackDamage);
+            character.PreviewDamage(selectedCharacter);
         }
-
         foreach (TileObject tileObject in areaPrefab.ObjectsHit())
         {
             tileObject.PreviewDamage(selectedCharacter.attackDamage);
         }
+        if(selectedCharacter.elementType == potentialMovementTile.tileData.tileType)
+        {
+            selectedCharacter.PredictTargetsStatus(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+        }
+
 
         if (Input.GetMouseButtonDown(0))
         {

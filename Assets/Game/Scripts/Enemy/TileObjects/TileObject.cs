@@ -16,7 +16,7 @@ public class TileObject : MonoBehaviour
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
     [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
 
-    [HideInInspector] public UnityEvent DamagePreview;
+    [HideInInspector] public UnityEvent<int> DamagePreview;
     [HideInInspector] public UnityEvent DonePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
 
@@ -84,8 +84,7 @@ public class TileObject : MonoBehaviour
             return;
         }
 
-        healthBar.damagePreview = damage;
-        DamagePreview?.Invoke();
+        DamagePreview?.Invoke((int)damage);
     }
 
     public virtual void Undo(UndoData_TileObjCustomInfo data)

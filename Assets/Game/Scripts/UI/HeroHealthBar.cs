@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class HeroHealthBar : HealthBar
 {
@@ -14,7 +13,6 @@ public class HeroHealthBar : HealthBar
     {
         hero = GetComponentInParent<Hero>();
         hero.healthBar = this;
-        hero.DamagePreview.AddListener(UpdateHealthBarPreview);
         hero.UpdateHealthBar.AddListener(UpdateHealthBar);
         hero.UpdateStatus.AddListener(UpdateStatus);
 
@@ -26,13 +24,6 @@ public class HeroHealthBar : HealthBar
 
         previewHealth.fillAmount = 1;
         health.fillAmount = 1;
-    }
-
-    protected override void UpdateHealthBarPreview()
-    {
-        /*float newHealth = hero.currentHealth - damagePreview;
-        hpText.text = newHealth.ToString();
-        previewHealth.fillAmount = newHealth / hero.maxHealth;*/
     }
 
     protected override void UpdateHealthBar()
@@ -64,7 +55,6 @@ public class HeroHealthBar : HealthBar
 
     protected override void OnDestroy()
     {
-        hero.DamagePreview.RemoveListener(UpdateHealthBarPreview);
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         hero.UpdateStatus.RemoveListener(UpdateStatus);
     }
