@@ -72,7 +72,7 @@ public class Hero : Character
             RemoveStatus(shield);
         }
 
-        if (elementWeakAgainst == type && hitResult <= defensePercentage)
+        if (elementWeakAgainst == type)// && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);
         }

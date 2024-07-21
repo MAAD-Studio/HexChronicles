@@ -322,8 +322,23 @@ public class HUDInfo : MonoBehaviour
             characterInfoDict.Add(hero.heroSO.name, info);
 
             info.InitializeInfo(hero);
-            info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
-            info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
+            Outline attackOutline = info.attackBtn.GetComponent<Outline>();
+            Outline skillOutline = info.skillBtn.GetComponent<Outline>();
+            attackOutline.enabled = false;
+            skillOutline.enabled = false;
+
+            info.attackBtn.onClick.AddListener(() => 
+            {
+                attackOutline.enabled = true;
+                skillOutline.enabled = false;
+                playerTurn.SwitchToBasicAttack();
+            });
+            info.skillBtn.onClick.AddListener(() => 
+            {
+                skillOutline.enabled = true;
+                attackOutline.enabled = false;
+                playerTurn.SwitchToSpecialAttack();
+            });
         }
 
         // Create enemyInfoPrefab:

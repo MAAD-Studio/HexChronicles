@@ -121,7 +121,7 @@ public class Enemy_Base : Character, EnemyInterface
     {
         int hitResult = Random.Range(0, 101);
 
-        if(elementWeakAgainst == type && hitResult <= defensePercentage)
+        if(elementWeakAgainst == type)// && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);
         }

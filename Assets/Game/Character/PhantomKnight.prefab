@@ -518,6 +518,44 @@ Transform:
   - {fileID: 5925693156772994249}
   m_Father: {fileID: 3387532382905857653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2707781060917901311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6344670176712987448}
+  m_Layer: 0
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6344670176712987448
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707781060917901311}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5721025023883121527}
+  - {fileID: 7981547596201583508}
+  - {fileID: 7804426771619660730}
+  - {fileID: 6108560411125375352}
+  - {fileID: 4321046141420635884}
+  - {fileID: 362010863106471313}
+  - {fileID: 7919322458071984145}
+  m_Father: {fileID: 3794454989783031586}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2870688114783760395
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,7 +954,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3306356560502524811}
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4929802328111364106
 GameObject:
@@ -1063,7 +1101,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &7800217117620137346
 SkinnedMeshRenderer:
@@ -1225,7 +1263,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &7953568813469761957
 SkinnedMeshRenderer:
@@ -1351,7 +1389,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5809332712233634707
 SkinnedMeshRenderer:
@@ -1627,7 +1665,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1849447292567439878
 SkinnedMeshRenderer:
@@ -1882,13 +1920,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5721025023883121527}
-  - {fileID: 7981547596201583508}
-  - {fileID: 7804426771619660730}
-  - {fileID: 6108560411125375352}
-  - {fileID: 4321046141420635884}
-  - {fileID: 362010863106471313}
-  - {fileID: 7919322458071984145}
+  - {fileID: 6344670176712987448}
   - {fileID: 7290260137269602245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1973,7 +2005,7 @@ MonoBehaviour:
       bold: 0
       italic: 0
   fireTileBuff:
-    description: AOE applies burn to nearby enemies for 2 turns
+    description: 'AOE applies burn status to enemies within 2 tiles for 2 turns '
     keywords:
     - keyword: AOE
       color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
@@ -2020,7 +2052,7 @@ MonoBehaviour:
       bold: 0
       italic: 0
   grassTileBuff:
-    description: Increase movement by +2
+    description: Got a Haste status, increase movement by +2 next turn
     keywords:
     - keyword: Increase
       color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
@@ -2369,7 +2401,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &3303247960572756943
 SkinnedMeshRenderer:
@@ -2495,7 +2527,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3794454989783031586}
+  m_Father: {fileID: 6344670176712987448}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &7025391173492746208
 SkinnedMeshRenderer:
