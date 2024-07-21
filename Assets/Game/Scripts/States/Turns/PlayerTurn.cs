@@ -226,6 +226,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
             Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+            Tile.DestroyTileVFX(selectedCharacter.elementType);
         }
 
         if (areaPrefab != null)
@@ -556,7 +557,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         Tile.SpawnTileVFX(selectedCharacter.elementType);
 
-        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType)
+        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
+            && selectedCharacter.elementType == ElementType.Fire)
         {
             Tile.HighlightTilesOfType(selectedCharacter.elementType);
         }
