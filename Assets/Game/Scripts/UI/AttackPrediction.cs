@@ -41,7 +41,23 @@ public class AttackPrediction : MonoBehaviour
     {
         healthItem.SetActive(true);
         this.currentHealth.text = currentHealth.ToString();
+        if (currentHealth >= 10)
+        {
+            this.currentHealth.fontSize = 10;
+        }
+        else
+        {
+            this.currentHealth.fontSize = 14;
+        }
         this.newHealth.text = newHealth.ToString();
+        if (newHealth >= 10)
+        {
+            this.newHealth.fontSize = 10;
+        }
+        else
+        {
+            this.newHealth.fontSize = 14;
+        }
     }
 
     public void RemoveStatus(Status status)
