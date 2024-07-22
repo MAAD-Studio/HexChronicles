@@ -545,7 +545,7 @@ public class HUDInfo : MonoBehaviour
         }
 
         // Object Info:
-        if (currentTile.tileHasObject)
+        if (showInfos && currentTile.tileHasObject)
         {
             TileObject tileObject = currentTile.objectOnTile;
             objectHoverUI.SetObjectStats(tileObject);
@@ -557,7 +557,7 @@ public class HUDInfo : MonoBehaviour
             objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
             
             // Click to show status panel
-            if (showInfos && Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 if (selectedObject != tileObject)
                 {
