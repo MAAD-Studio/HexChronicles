@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.Universal;
 
 public class Tile : MonoBehaviour
 {
@@ -248,10 +247,7 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public virtual void OnTileEnter(Character character)
     {
-        if(character.elementType == tileData.tileType)
-        {
-            character.transform.localScale = character.defaultScale + new Vector3(0.25f, 0.25f, 0.25f);
-        }
+        
     }
 
     //Called when a Character stays on a tile
@@ -270,11 +266,6 @@ public class Tile : MonoBehaviour
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
-        if (character.elementType == tileData.tileType)
-        {
-            character.transform.localScale = character.defaultScale;
-        }
-
         characterTimeOnTile = 0;
     }
 
