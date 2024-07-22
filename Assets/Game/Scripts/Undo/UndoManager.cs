@@ -136,7 +136,7 @@ public class UndoManager : Singleton<UndoManager>
 
         UndoData_TileObject tileObjData = new UndoData_TileObject();
         
-        tileObjData.destroy = true;
+        tileObjData.destroy = destroy;
       
         tileObjData.involvedObject = tileObj;
 
@@ -282,9 +282,18 @@ public class UndoManager : Singleton<UndoManager>
             TileObject currentObject;
             if(data.involvedObject != null)
             {
+                if(data.type == ObjectType.Tower)
+                {
+                    Debug.Log("TOWER WAS FOUND");
+                }
+
                 currentObject = data.involvedObject;
                 if(data.destroy)
                 {
+                    if (data.type == ObjectType.Tower)
+                    {
+                        Debug.Log("TOWERTO BE DESTROYED");
+                    }
                     turnManager.temporaryTileObjects.Remove(currentObject);
                     currentObject.AttachedTile.tileHasObject = false;
                     currentObject.AttachedTile.objectOnTile = null;
@@ -294,6 +303,7 @@ public class UndoManager : Singleton<UndoManager>
             }
             else
             {
+                Debug.Log("NONE FOUND. MAKING ONE.");
                 currentObject = GenerateTileObject(data.type);
             }
 

@@ -130,7 +130,7 @@ public class TowersTurn : WorldTurnBase
 
     private void TowerCreated(TileObject tileObj)
     {
-        if(tileObj.objectType == ObjectType.Tower)
+        if(tileObj.objectType == ObjectType.Tower && !towers.Contains((Tower)tileObj))
         {
             towers.Add((Tower)tileObj);
         }
