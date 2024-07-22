@@ -343,7 +343,7 @@ public class Tile : MonoBehaviour
 
     public static void SpawnTileVFX(ElementType elementType)
     {
-        foreach (Tile tile in GetBuffTiles(elementType))
+        foreach (Tile tile in GetBuffTilesWithinRange(elementType))
         {
             if (tile.vfxObject == null)
             {
@@ -351,11 +351,88 @@ public class Tile : MonoBehaviour
             }
         }
 
-        foreach (Tile tile in GetDebuffTiles(elementType))
+        foreach (Tile tile in GetDebuffTilesWithinRange(elementType))
         {
             if (tile.vfxObject == null)
             {
                 tile.vfxObject = Instantiate(Config.Instance.GetDebuffVFX(), tile.transform.position, Quaternion.identity);
+            }
+        }
+    }
+
+    private static List<Tile> GetBuffTilesWithinRange(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+        List<Tile> selectedList = new List<Tile>();
+
+        foreach (Tile tile in tiles)
+        {
+            if (elementType == ElementType.Fire && tile.tileData.tileType == ElementType.Fire)
+            {
+                selectedList.Add(tile);
+            }
+            else if (elementType == ElementType.Water && tile.tileData.tileType == ElementType.Water)
+            {
+                selectedList.Add(tile);
+            }
+            else if (elementType == ElementType.Grass && tile.tileData.tileType == ElementType.Grass)
+            {
+                selectedList.Add(tile);
+            }
+        }
+        return selectedList;
+    }
+
+    private static List<Tile> GetDebuffTilesWithinRange(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+        List<Tile> debuffList = new List<Tile>();
+
+        foreach (Tile tile in tiles)
+        {
+            if (elementType == ElementType.Fire)
+            {
+                if (tile.tileData.tileType == ElementType.Water || tile.tileData.tileType == ElementType.Grass)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+            else if (elementType == ElementType.Water)
+            {
+                if (tile.tileData.tileType == ElementType.Fire || tile.tileData.tileType == ElementType.Grass)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+            else if (elementType == ElementType.Grass)
+            {
+                if (tile.tileData.tileType == ElementType.Water || tile.tileData.tileType == ElementType.Fire)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+        }
+
+        return debuffList;
+    }
+
+    public static void DestroyTileVFX(ElementType elementType)
+    {
+        foreach (Tile tile in GetBuffTiles(elementType))
+        {
+            if (tile.vfxObject != null)
+            {
+                Destroy(tile.vfxObject);
+            }
+        }
+
+        foreach (Tile tile in GetDebuffTiles(elementType))
+        {
+            if (tile.vfxObject != null)
+            {
+                Destroy(tile.vfxObject);
             }
         }
     }
@@ -380,25 +457,6 @@ public class Tile : MonoBehaviour
             debuffList.AddRange(turnManager.waterTiles.Cast<Tile>().ToList());
         }
         return debuffList;
-    }
-
-    public static void DestroyTileVFX(ElementType elementType)
-    {
-        foreach (Tile tile in GetBuffTiles(elementType))
-        {
-            if (tile.vfxObject != null)
-            {
-                Destroy(tile.vfxObject);
-            }
-        }
-
-        foreach (Tile tile in GetDebuffTiles(elementType))
-        {
-            if (tile.vfxObject != null)
-            {
-                Destroy(tile.vfxObject);
-            }
-        }
     }
     #endregion
 }
