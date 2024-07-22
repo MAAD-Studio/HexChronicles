@@ -49,13 +49,8 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        yield return new WaitForSeconds(1f / GameManager.Instance.GameSpeed);
+        yield return new WaitForSeconds(1f);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
-
-       /* foreach (Enemy_Base enemy_base in enemies)
-        {
-
-        }*/
 
         foreach (Enemy_Base enemy_base in enemies)
         {
