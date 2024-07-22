@@ -51,9 +51,16 @@ public class EnemyBrain : MonoBehaviour
     {
         yield return new WaitForSeconds(1f / GameManager.Instance.GameSpeed);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
+
+       /* foreach (Enemy_Base enemy_base in enemies)
+        {
+
+        }*/
+
         foreach (Enemy_Base enemy_base in enemies)
         {
-            if(enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
+            yield return null;
+            if (enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
             {
                 continue;
             }
