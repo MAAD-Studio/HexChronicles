@@ -19,6 +19,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Button question;
 
     [Header("Turn Info")]
+    [SerializeField] private TextMeshProUGUI primaryObjective;
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private GameObject playerTurnMessage;
     [SerializeField] private GameObject enemyTurnMessage;
@@ -155,7 +156,8 @@ public class HUDInfo : MonoBehaviour
         playerTurn = turnManager.GetComponent<PlayerTurn>();
         Debug.Assert(playerTurn != null, "HUDInfo couldn't find PlayerTurn");
 
-        turnIndicator.Initialize(turnManager.objectiveTurnNumber);
+        primaryObjective.text = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].primaryObjective;
+        turnIndicator.Initialize();
         weatherWindow.Start();
 
         SubscribeEvents();

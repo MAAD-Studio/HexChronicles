@@ -50,7 +50,7 @@ public class TurnManager : MonoBehaviour
     private TurnEnums.TurnState turnType;
 
     private int turnNumber;
-    public int objectiveTurnNumber = 8;
+    private int objectiveTurnNumber = 8;
 
     //TUTORIAL USES
     public bool isTutorial = false;
@@ -118,6 +118,7 @@ public class TurnManager : MonoBehaviour
             enemyList.Add(enemy);
         }
 
+        objectiveTurnNumber = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].limitTurns;
         turnNumber = 1;
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
