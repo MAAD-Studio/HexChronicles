@@ -10,7 +10,7 @@ public class UndoData_Character
     public bool isHurt;
     public bool effectedByWeather;
     public int movementThisTurn;
-    public List<Status> statusList;
+    public List<Status> statusList = new List<Status>();
     public Vector3 position;
     public Quaternion rotation;
 
