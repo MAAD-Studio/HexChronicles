@@ -277,6 +277,15 @@ public class Character : MonoBehaviour
     // Check if the status is already applied
     public void AttemptStatusApply(Character target, Status.StatusTypes statusType, int effectTurns)
     {
+        if(target.characterType == TurnEnums.CharacterType.Player)
+        {
+            UndoManager.Instance.StoreHero((Hero)target);
+        }
+        else
+        {
+            UndoManager.Instance.StoreEnemy((Enemy_Base)target);
+        }
+
         Status oldStatus = Status.GrabIfStatusActive(target, statusType);
         if (oldStatus != null)
         {

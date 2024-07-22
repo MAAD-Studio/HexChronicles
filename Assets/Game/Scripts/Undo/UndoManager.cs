@@ -105,6 +105,8 @@ public class UndoManager : Singleton<UndoManager>
             return;
         }
 
+        Debug.Log("STORING ENEMY " + enemy.name);
+
         DataStored = true;
 
         UndoData_Enemies enemyData = new UndoData_Enemies();
@@ -224,6 +226,8 @@ public class UndoManager : Singleton<UndoManager>
     {
         foreach(UndoData_Enemies data in enemyList)
         {
+            Debug.Log("RE-STORING ENEMY " + data.enemyInvolved.name);
+
             Enemy_Base currentEnemy;
             if(turnManager.enemyList.Contains(data.enemyInvolved))
             {
