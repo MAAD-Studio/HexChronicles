@@ -105,8 +105,6 @@ public class UndoManager : Singleton<UndoManager>
             return;
         }
 
-        Debug.Log("STORING ENEMY " + enemy.name);
-
         DataStored = true;
 
         UndoData_Enemies enemyData = new UndoData_Enemies();
@@ -125,7 +123,13 @@ public class UndoManager : Singleton<UndoManager>
         data.currentHealth = character.currentHealth;
         data.effectedByWeather = character.effectedByWeather;
 
-        data.statusList = new List<Status>(character.statusList);
+        foreach(Status status in character.statusList)
+        {
+            Status statusToStore = new Status();
+            statusToStore.effectTurns = status.effectTurns;
+            statusToStore.statusType = status.statusType;
+            data.statusList.Add(statusToStore);
+        }
 
         data.position = character.transform.position;
         data.position.y += 1f;
@@ -226,8 +230,6 @@ public class UndoManager : Singleton<UndoManager>
     {
         foreach(UndoData_Enemies data in enemyList)
         {
-            Debug.Log("RE-STORING ENEMY " + data.enemyInvolved.name);
-
             Enemy_Base currentEnemy;
             if(turnManager.enemyList.Contains(data.enemyInvolved))
             {
@@ -286,18 +288,9 @@ public class UndoManager : Singleton<UndoManager>
             TileObject currentObject;
             if(data.involvedObject != null)
             {
-                if(data.type == ObjectType.Tower)
-                {
-                    Debug.Log("TOWER WAS FOUND");
-                }
-
                 currentObject = data.involvedObject;
                 if(data.destroy)
                 {
-                    if (data.type == ObjectType.Tower)
-                    {
-                        Debug.Log("TOWERTO BE DESTROYED");
-                    }
                     turnManager.temporaryTileObjects.Remove(currentObject);
                     currentObject.AttachedTile.tileHasObject = false;
                     currentObject.AttachedTile.objectOnTile = null;
@@ -307,7 +300,6 @@ public class UndoManager : Singleton<UndoManager>
             }
             else
             {
-                Debug.Log("NONE FOUND. MAKING ONE.");
                 currentObject = GenerateTileObject(data.type);
             }
 
