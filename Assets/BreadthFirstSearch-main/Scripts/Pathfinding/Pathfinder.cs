@@ -56,6 +56,11 @@ public class Pathfinder : Singleton<Pathfinder>
         return PathFind(character.characterTile, character.movementThisTurn, character.moveDistance, false, false, true);
     }
 
+    public List<Tile> ReturnRange(Tile origin)
+    {
+        return PathFind(origin, 0, 2, true, false, true);
+    }
+
     private List<Tile> PathFind(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate, bool ignoreFrontier)
     {
         List<Tile> movementTiles = new List<Tile>();

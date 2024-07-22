@@ -505,7 +505,7 @@ public class Character : MonoBehaviour
     }
 
     // Used on attacker to predict the status on the targets
-    public void PredictTargetsStatus(List<Character> targets)
+    public void PredictTargetsStatus(List<Character> targets, Tile origin)
     {
         Status.StatusTypes chosenType = Status.StatusTypes.None;
 
@@ -518,10 +518,7 @@ public class Character : MonoBehaviour
         {
             chosenType = Status.StatusTypes.Burning;
 
-            /*turnManager.pathfinder.PathTilesInRange(characterTile, 0, 2, true, false);
-            List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
-            
-            // TODO: Fix Pathfinder
+            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin);
 
             List<Character> charactersToHit = new List<Character>();
 
@@ -541,7 +538,7 @@ public class Character : MonoBehaviour
                 {
                     targetsToCheck.Add(character);
                 }
-            }*/
+            }
         }
         else if (elementType == ElementType.Water)
         {

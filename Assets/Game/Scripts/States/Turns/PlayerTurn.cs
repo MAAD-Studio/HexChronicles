@@ -656,9 +656,10 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             tileObject.PreviewDamage(selectedCharacter.attackDamage);
         }
+
         if(selectedCharacter.elementType == potentialMovementTile.tileData.tileType)
         {
-            selectedCharacter.PredictTargetsStatus(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy));
+            selectedCharacter.PredictTargetsStatus(areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy), potentialMovementTile);
         }
 
 
