@@ -12,8 +12,6 @@ public class HUDInfo : MonoBehaviour
     private Character selectedCharacter;
     private Tile currentTile;
     private Tile selectedTile;
-    private Coroutine hideTileInfoCoroutine;
-    private Coroutine hideStatusInfoCoroutine;
     private bool showInfos = true;
 
     [Header("Tutorial")]
@@ -41,6 +39,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject enemyDetailPrefab;
     [SerializeField] private GameObject enemyHoverPanel;
     [SerializeField] private GameObject enemyHoverPrefab;
+    private Enemy_Base selectedEnemy;
     private EnemyStatsUI enemyStatus;
     private EnemyHoverUI enemyHoverUI;
 
@@ -48,6 +47,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject objectInfoPanel;
     [SerializeField] private GameObject objectStatusPrefab;
     [SerializeField] private GameObject objectHoverPrefab;
+    private TileObject selectedObject;
     private EnemyStatsUI objectStatus;
     private EnemyHoverUI objectHoverUI;
 
@@ -89,6 +89,17 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = selectedCharacter as Hero;
             HeroSelected(hero);
+        }
+
+        // Right Click to hide everything
+        if (Input.GetMouseButtonDown(1))
+        {
+            tileInfo.Hide();
+            enemyStatus.Hide();
+            objectStatus.Hide();
+            selectedTile = null;
+            selectedEnemy = null;
+            selectedObject = null;
         }
     }
 
@@ -218,8 +229,6 @@ public class HUDInfo : MonoBehaviour
     {
         // Disable some UI elements
         showInfos = false;
-        StopAllCoroutines();
-        //tileInfo.Hide();
         enemyStatus.Hide();
         objectStatus.Hide();
         enemyHoverUI.Hide();
@@ -294,6 +303,7 @@ public class HUDInfo : MonoBehaviour
     {
         playerTurnMessage.gameObject.SetActive(false);
         enemyTurnMessage.gameObject.SetActive(false);
+        tutorialSummary.gameObject.SetActive(false);
 
         // Create Characters Info:
         foreach (Character character in turnManager.characterList)
@@ -484,18 +494,20 @@ public class HUDInfo : MonoBehaviour
 
         // Clicked on tile: 
         if (Input.GetMouseButtonDown(0))
-        { 
-            tileInfo.SetTileInfo(currentTile);
-
-            selectedTile = currentTile;
-
-            if (hideTileInfoCoroutine != null)
+        {
+            if (selectedTile != currentTile)
             {
-                StopCoroutine(hideTileInfoCoroutine);
+                tileInfo.SetTileInfo(currentTile);
+                selectedTile = currentTile;
             }
-
-            hideTileInfoCoroutine = StartCoroutine(HideTileInfo());
+            else
+            {
+                tileInfo.Hide();
+                selectedTile = null;
+            }
         }
+
+        
 
         // Enemy Info:
         if (showInfos && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
@@ -509,18 +521,20 @@ public class HUDInfo : MonoBehaviour
             float scale = distance * 0.02f;
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
-            // Clicked show status panel
+            // Click to show status panel
             if (Input.GetMouseButtonDown(0))
             {
-                enemyStatus.SetEnemyStats(enemy);
-                objectStatus.Hide();
-
-                if (hideStatusInfoCoroutine != null)
+                if (selectedEnemy != enemy)
                 {
-                    StopCoroutine(hideStatusInfoCoroutine);
+                    enemyStatus.SetEnemyStats(enemy);
+                    objectStatus.Hide();
+                    selectedEnemy = enemy;
                 }
-
-                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());
+                else
+                {
+                    enemyStatus.Hide();
+                    selectedEnemy = null;
+                }
             }
         }
         else
@@ -540,54 +554,25 @@ public class HUDInfo : MonoBehaviour
             float scale = distance * 0.02f;
             objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
             
-            // Clicked show status panel
+            // Click to show status panel
             if (showInfos && Input.GetMouseButtonDown(0))
             {
-                objectStatus.SetObjectStats(tileObject);
-                enemyStatus.Hide();
-
-                if (hideStatusInfoCoroutine != null)
+                if (selectedObject != tileObject)
                 {
-                    StopCoroutine(hideStatusInfoCoroutine);
+                    objectStatus.SetObjectStats(tileObject);
+                    enemyStatus.Hide();
+                    selectedObject = tileObject;
                 }
-
-                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());
+                else
+                {
+                    objectStatus.Hide();
+                    selectedObject = null;
+                }
             }
         }
         else
         {
             objectHoverUI.Hide();
-        }
-    }
-
-    IEnumerator HideTileInfo()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1f);
-
-            if (selectedTile != currentTile)
-            {
-                tileInfo.Hide();
-                hideTileInfoCoroutine = null;
-                yield break;
-            }
-        }
-    }
-
-    IEnumerator HideStatusInfo()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1f);
-
-            if (selectedTile != currentTile)
-            {
-                enemyStatus.Hide();
-                objectStatus.Hide();
-                hideStatusInfoCoroutine = null;
-                yield break;
-            }
         }
     }
 
