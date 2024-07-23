@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.Timeline;
 
 public class EnemyBrain : MonoBehaviour
@@ -47,16 +49,30 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
+
         foreach (Enemy_Base enemy_base in enemies)
         {
-            if(enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
+            yield return null;
+            if (enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
             {
                 continue;
             }
 
-            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
+            Debug.Log(enemy_base.name + " is thinking...");
+
+            turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
+
+            if(Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.Bound) != null)
+            {
+                yield return new WaitForSeconds(0.5f);
+                continue;
+            }
+
+            enemy_base.PreCalculations(turnManager);
+
+            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea, enemy_base.transform.position);
 
             turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
 
@@ -64,33 +80,56 @@ public class EnemyBrain : MonoBehaviour
             turnManager.pathfinder.ResetPathFinder();
             turnManager.pathfinder.FindMovementPathsCharacter(enemy_base, false);
 
-            List<Tile> usableTiles = new List<Tile>();
-            usableTiles = turnManager.pathfinder.frontier;
-            usableTiles.Add(enemy_base.characterTile);
-            foreach (Tile tile in usableTiles)
+            List<Tile> usableTiles = new List<Tile>(turnManager.pathfinder.frontier)
             {
-                bool checkAttacks = false;
-                Character currentClosest = null;
-                float charDistance = 1000f;
-                foreach (Character character in turnManager.characterList)
+                enemy_base.characterTile,
+            };
+
+            bool mindControl = (Status.GrabIfStatusActive(enemy_base, Status.StatusTypes.MindControl) != null);
+
+            Character currentClosest = null;
+            float charDistance = 1000f;
+
+            List<Character> charactersToCheck;
+            if(!mindControl)
+            {
+                charactersToCheck = turnManager.characterList;
+            }
+            else
+            {
+                charactersToCheck = turnManager.enemyList.ToList<Character>();
+            }
+
+            foreach (Character character in charactersToCheck)
+            {
+                if (character == enemy_base)
                 {
-                    float newDistance = Vector3.Distance(character.transform.position, tile.transform.position);
-
-                    //Checks if we should analyzing potential attack options
-                    if (newDistance <= enemyAttackArea.maxHittableRange)
-                    {
-                        checkAttacks = true;
-                    }
-
-                    //Grabs the closest character
-                    if(newDistance < charDistance)
-                    {
-                        charDistance = newDistance;
-                        currentClosest = character;
-                    }
+                    continue;
                 }
 
+                float newDistance = Vector3.Distance(character.transform.position, enemy_base.transform.position);
+
+                //Grabs the closest character
+                if (newDistance < charDistance)
+                {
+                    charDistance = newDistance;
+                    currentClosest = character;
+                }
+            }
+
+            foreach (Tile tile in usableTiles)
+            {
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
+
+                bool checkAttacks = false;
+                float newDistance = Vector3.Distance(currentClosest.transform.position, tile.transform.position);
+
+                //Checks if we should analyzing potential attack options
+                if (newDistance <= enemyAttackArea.maxHittableRange)
+                {
+                    checkAttacks = true;
+                }
+
                 if (checkAttacks == true)
                 {
                     //Runs through all the Tiles adjacent to the current Movement tile
@@ -108,7 +147,11 @@ public class EnemyBrain : MonoBehaviour
                         valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
 
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
-                        if (enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
+                        {
+                            rotation = nullVector;
+                        }
+                        else if(mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Enemy).Count == 0)
                         {
                             rotation = nullVector;
                         }
@@ -153,12 +196,21 @@ public class EnemyBrain : MonoBehaviour
             }
 
             int combinationChoice = 0;
+            int comboValue = 0;
             if(id != -1)
             {
-                combinationChoice = id;
+                foreach(KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
+                {
+                    if(comboValues.Value.value > comboValue)
+                    {
+                        combinationChoice = comboValues.Key;
+                        comboValue = comboValues.Value.value;
+                    }
+                }
             }
             else
             {
+ 
                 combinationChoice = PickCombination();
             }
 
@@ -166,7 +218,7 @@ public class EnemyBrain : MonoBehaviour
             if (combinations.TryGetValue(combinationChoice, out MoveAttackCombo finalCombo))
             {
                 Tile[] path = turnManager.pathfinder.PathBetween(finalCombo.movementTile, enemy_base.characterTile);
-                enemy_base.MoveAndAttack(path, null, turnManager, false);
+                enemy_base.MoveAndAttack(path, null, turnManager, false, Vector3.zero);
 
                 //Waits for the enemy to finish its movement
                 while (enemy_base.moving)
@@ -192,14 +244,14 @@ public class EnemyBrain : MonoBehaviour
                     enemy_base.ExecuteAttack(enemyAttackArea, turnManager);
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
                 enemyAttackArea.DestroySelf();
                 while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
             }
             else
             {
@@ -209,6 +261,8 @@ public class EnemyBrain : MonoBehaviour
             //Resets Variables
             combinations.Clear();
             lowestValue = 100;
+
+            enemy_base.ActionCleanup();
         }
 
         turnManager.pathfinder.ResetPathFinder();

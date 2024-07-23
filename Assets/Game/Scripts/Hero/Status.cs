@@ -15,12 +15,16 @@ public class Status
         Hurt, // Take +1 damage
         CannotMove,
         CannotAttack,
+        MovementReduction,
+        AttackBoost,
         Wet,
-        Haste
+        Haste,
+        Shield,
+        MindControl
     }
     public StatusTypes statusType;
     public int effectTurns;
-    public int damageAddOn = 0;
+    [HideInInspector] public int damageAddOn = 0;
 
     public void Apply(Character character)
     {
@@ -49,6 +53,10 @@ public class Status
 
             case StatusTypes.CannotAttack:
                 character.canAttack = false;
+                break;
+
+            case StatusTypes.MovementReduction:
+                character.movementThisTurn += 1;
                 break;
 
             case StatusTypes.Wet:

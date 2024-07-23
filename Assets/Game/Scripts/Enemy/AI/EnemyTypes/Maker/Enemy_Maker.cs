@@ -67,7 +67,7 @@ public class Enemy_Maker : Enemy_Base
 
         foreach (Tile tile in potentialTiles)
         {
-            ConvertToDeathTile(tile);
+            ConvertToDeathTile(tile, true);
         }
 
         base.Died();
@@ -75,10 +75,10 @@ public class Enemy_Maker : Enemy_Base
 
     protected override Tile WalkOntoTileEffect(Tile tile)
     {
-        return ConvertToDeathTile(tile);
+        return ConvertToDeathTile(tile, false);
     }
 
-    private Tile ConvertToDeathTile(Tile tile)
+    private Tile ConvertToDeathTile(Tile tile, bool death)
     {
         if(tile.tileData.tileType == ElementType.death)
         {
@@ -87,10 +87,20 @@ public class Enemy_Maker : Enemy_Base
         GameObject deathTile = Instantiate(deathTilePrefab, tile.transform.position, Quaternion.identity);
         DeathTile deathTileObj = deathTile.GetComponent<DeathTile>();
 
+        if(death)
+        {
+            UndoManager.Instance.StoreTile(deathTileObj, tile.tileData.tileType);
+        }
+
         tile.ReplaceTileWithNew(deathTileObj);
 
         return deathTile.GetComponent<DeathTile>();
     }
 
-    #endregion
-}
+    public override Character LikelyTarget()
+    {
+        return null;
+    }
+
+        #endregion
+  }

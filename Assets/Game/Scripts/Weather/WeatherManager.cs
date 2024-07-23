@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeatherManager : MonoBehaviour
+public class WeatherManager : Singleton<WeatherManager>
 {
     #region Variables
 
     [Header("Setup Info:")]
     [SerializeField] private GameObject gridParent;
+
     private List<Tile> tilesOnMap = new List<Tile>();
-
-    [SerializeField] private LayerMask tileLayer;
-
     private List<WeatherPatch> weatherPatches = new List<WeatherPatch>();
 
     private bool weatherActive = false;
@@ -21,21 +19,25 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] private int weatherChance = 25;
     [SerializeField] private int numberOfPatches = 3;
     [SerializeField] private int turnsToStay = 3;
-    private int turnsActive = 0;
     public int TurnsToStay
     {
         get { return turnsToStay; }
     }
+    private int turnsActive = 0;
 
     [Header("Weather Generation Controls: ")]
     [SerializeField] private bool effectEntireMap = false;
     [SerializeField] private int maxSpread = 4;
     [SerializeField] private int movementPerTurn = 2;
+
+    [Header("Weather to Create: ")]
     [SerializeField] private Weather_Base weather;
     public string WeatherName
     {
         get { return weather.weatherName; }
     }
+
+    private TurnManager turnManager;
 
     #endregion
 
@@ -43,6 +45,7 @@ public class WeatherManager : MonoBehaviour
 
     void Start()
     {
+        //Creates a list of all the tiles on the map for future reference
         foreach (Tile tile in gridParent.GetComponentsInChildren<Tile>())
         {
             tilesOnMap.Add(tile);
@@ -51,13 +54,13 @@ public class WeatherManager : MonoBehaviour
         for(int i = 0; i < numberOfPatches; i++)
         {
             WeatherPatch newPatch = new WeatherPatch();
-            newPatch.weather = weather;
             weatherPatches.Add(newPatch);
-            
         }
 
         Debug.Assert(weather != null, "WeatherManager doesn't have a weather affect to use");
         Tile.tileReplaced.AddListener(TileReplaced);
+
+        turnManager = FindObjectOfType<TurnManager>();
     } 
 
     #endregion
@@ -74,9 +77,7 @@ public class WeatherManager : MonoBehaviour
             foreach(WeatherPatch patch in weatherPatches)
             {
                 int tileChoice = Random.Range(0, tilesOnMap.Count);
-                patch.origin = tilesOnMap[tileChoice];
-                patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
-                patch.ColourArea();
+                patch.SetWeatherPatchInfo(tilesOnMap[tileChoice], effectEntireMap, maxSpread, movementPerTurn, weather);
             }
 
             EventBus.Instance.Publish(new OnWeatherSpawn());
@@ -97,10 +98,7 @@ public class WeatherManager : MonoBehaviour
         {
             foreach(WeatherPatch patch in weatherPatches)
             {
-                patch.EffectCharacters();
-                patch.MoveOrigin();
-                patch.DetermineAreaOfAffect(effectEntireMap, maxSpread, movementPerTurn, tileLayer);
-                patch.ColourArea();
+                patch.UpdateAndEffect(turnManager);
             }
             turnsActive++;
         }
@@ -129,10 +127,18 @@ public class WeatherManager : MonoBehaviour
 
     private void TileReplaced(Tile oldTile, Tile newTile)
     {
+        tilesOnMap.Remove(oldTile);
+        tilesOnMap.Add(newTile);
+
         foreach(WeatherPatch patch in weatherPatches)
         {
             patch.TileReplaced(oldTile, newTile);
         }
+    }
+
+    public ElementType GetWeatherElementType()
+    {
+        return weather.Element;
     }
 
     #endregion

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.InputSystem;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -13,10 +12,14 @@ public class HUDInfo : MonoBehaviour
     private Character selectedCharacter;
     private Tile currentTile;
     private Tile selectedTile;
-    private Coroutine hideTileInfoCoroutine;
-    private Coroutine hideStatusInfoCoroutine;
-    
+    private bool showInfos = true;
+
+    [Header("Tutorial")]
+    [SerializeField] private TabGroup tutorialSummary;
+    [SerializeField] private Button question;
+
     [Header("Turn Info")]
+    [SerializeField] private TextMeshProUGUI primaryObjective;
     [SerializeField] private TextMeshProUGUI currentTurn;
     [SerializeField] private GameObject playerTurnMessage;
     [SerializeField] private GameObject enemyTurnMessage;
@@ -37,6 +40,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject enemyDetailPrefab;
     [SerializeField] private GameObject enemyHoverPanel;
     [SerializeField] private GameObject enemyHoverPrefab;
+    private Enemy_Base selectedEnemy;
     private EnemyStatsUI enemyStatus;
     private EnemyHoverUI enemyHoverUI;
 
@@ -44,6 +48,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private GameObject objectInfoPanel;
     [SerializeField] private GameObject objectStatusPrefab;
     [SerializeField] private GameObject objectHoverPrefab;
+    private TileObject selectedObject;
     private EnemyStatsUI objectStatus;
     private EnemyHoverUI objectHoverUI;
 
@@ -55,6 +60,7 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
     [SerializeField] private Button undo;
+    [SerializeField] private Button fast;
 
     #region Unity Methods
 
@@ -85,39 +91,19 @@ public class HUDInfo : MonoBehaviour
             Hero hero = selectedCharacter as Hero;
             HeroSelected(hero);
         }
-    }
 
-    IEnumerator  HideTileInfo()
-    {
-        while (true)
+        // Right Click to hide everything
+        if (Input.GetMouseButtonDown(1))
         {
-            //Debug.Log("Tile Waiting");
-            yield return new WaitForSeconds(1f);
-            if (selectedTile != currentTile)
-            {
-                tileInfo.Hide();
-                hideTileInfoCoroutine = null;
-                //Debug.Log("Tile Hided");
-
-                yield break;
-            }
-        }
-    }
-
-    IEnumerator HideStatusInfo()
-    {
-        //Debug.Log("Status Waiting");
-        yield return new WaitForSeconds(1f);
-        if (selectedTile != currentTile)
-        {
+            tileInfo.Hide();
             enemyStatus.Hide();
             objectStatus.Hide();
-            hideStatusInfoCoroutine = null;
-            //Debug.Log("Status Hided");
-
-            yield break;
+            selectedTile = null;
+            selectedEnemy = null;
+            selectedObject = null;
         }
     }
+
     #endregion
 
     #region Events
@@ -127,15 +113,19 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Subscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Subscribe<OnMovementPhase>(RestoreShowingInfos);
+            EventBus.Instance.Subscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Subscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Subscribe<OnWeatherSpawn>(SetWeather);
-            EventBus.Instance.Subscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+            EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Subscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         WorldTurnBase.Victory.AddListener(OnLevelEnded);
         TurnManager.LevelVictory.AddListener(OnLevelEnded);
         TurnManager.LevelDefeat.AddListener(OnLevelEnded);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
+        Character.movementComplete.AddListener(RestoreShowingInfos);
     }
 
     private void UnsubscribeEvents()
@@ -144,15 +134,19 @@ public class HUDInfo : MonoBehaviour
         {
             //EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
             EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
+            EventBus.Instance.Unsubscribe<OnMovementPhase>(RestoreShowingInfos);
+            EventBus.Instance.Unsubscribe<OnAttackPhase>(OnAttackPhase);
             EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
             EventBus.Instance.Unsubscribe<OnWeatherSpawn>(SetWeather);
-            EventBus.Instance.Unsubscribe<CharacterHasMadeDecision>(OnCharacterMadeDecision);
+            EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+            EventBus.Instance.Unsubscribe<OnRestoreHeroData>(RestoreHeroData);
         }
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         WorldTurnBase.Victory.RemoveListener(OnLevelEnded);
         TurnManager.LevelVictory.RemoveListener(OnLevelEnded);
         TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
+        Character.movementComplete.RemoveListener(RestoreShowingInfos);
     }
 
     private void OnNewLevelStart(object obj)
@@ -162,7 +156,8 @@ public class HUDInfo : MonoBehaviour
         playerTurn = turnManager.GetComponent<PlayerTurn>();
         Debug.Assert(playerTurn != null, "HUDInfo couldn't find PlayerTurn");
 
-        turnIndicator.Initialize(turnManager.objectiveTurnNumber);
+        primaryObjective.text = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].primaryObjective;
+        turnIndicator.Initialize();
         weatherWindow.Start();
 
         SubscribeEvents();
@@ -200,6 +195,8 @@ public class HUDInfo : MonoBehaviour
         {
             button.interactable = false;
         }
+        enemyHoverUI.Hide();
+        objectHoverUI.Hide();
     }
 
     private void OnPlayerTurn(object obj)
@@ -230,10 +227,26 @@ public class HUDInfo : MonoBehaviour
         turnMessage.gameObject.SetActive(false);
     }
 
-    private void OnCharacterMadeDecision(object obj)
+    private void OnAttackPhase(object obj)
     {
-        CharacterHasMadeDecision decisionData = (CharacterHasMadeDecision)obj;
-        if (characterInfoDict.TryGetValue(decisionData.character.name, out var info))
+        // Disable some UI elements
+        showInfos = false;
+        enemyStatus.Hide();
+        objectStatus.Hide();
+        enemyHoverUI.Hide();
+    }
+
+    private void RestoreShowingInfos(object obj)
+    {
+        showInfos = true;
+    }
+
+    // Used for update info after character has made decision
+    private void OnUpdateCharacterDecision(object obj)
+    {
+        UpdateCharacterDecision data = (UpdateCharacterDecision)obj;
+        Hero hero = (Hero)data.character;
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
             info.SetNoActionState();
         }
@@ -245,19 +258,46 @@ public class HUDInfo : MonoBehaviour
         }
     }
 
-    private void CharacterDied(string arg0)
+    // Used for update info while restoring hero data
+    // If the hero is already dead and respawned, the characterinfo should be updated
+    private void RestoreHeroData(object obj) 
     {
-        if (characterInfoDict.TryGetValue(arg0, out var info))
+        OnRestoreHeroData data = (OnRestoreHeroData)obj;
+        Hero hero = data.hero;
+
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
+        {
+            info.SetRestoreState(hero);
+            if (hero.hasMadeDecision == false)
+            {
+                activeHeroes++;
+            }
+        }
+
+        if (activeHeroes == 0)
+        {
+            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+        }
+        else
+        {
+            endTurn.GetComponent<Image>().color = Color.white;
+        }
+    }
+
+    private void CharacterDied(Character arg0)
+    {
+        Hero hero = (Hero)arg0;
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
         {
             info.SetDeadState();
         }
 
-        heroButtons.Remove(heroButtons.Find(x => x.name == arg0));
+        heroButtons.Remove(heroButtons.Find(x => x.name == hero.heroSO.name));
 
         availableHeroes--;
     }
-
     #endregion
+
 
     #region Initialization and Reset
 
@@ -265,6 +305,7 @@ public class HUDInfo : MonoBehaviour
     {
         playerTurnMessage.gameObject.SetActive(false);
         enemyTurnMessage.gameObject.SetActive(false);
+        tutorialSummary.gameObject.SetActive(false);
 
         // Create Characters Info:
         foreach (Character character in turnManager.characterList)
@@ -290,11 +331,26 @@ public class HUDInfo : MonoBehaviour
 
             // Add Hero Info:
             CharacterInfo info = gameObject.GetComponent<CharacterInfo>();
-            characterInfoDict.Add(gameObject.name, info);
+            characterInfoDict.Add(hero.heroSO.name, info);
 
             info.InitializeInfo(hero);
-            info.attackBtn.onClick.AddListener(() => playerTurn.SwitchToBasicAttack());
-            info.skillBtn.onClick.AddListener(() => playerTurn.SwitchToSpecialAttack());
+            Outline attackOutline = info.attackBtn.GetComponent<Outline>();
+            Outline skillOutline = info.skillBtn.GetComponent<Outline>();
+            attackOutline.enabled = false;
+            skillOutline.enabled = false;
+
+            info.attackBtn.onClick.AddListener(() => 
+            {
+                attackOutline.enabled = true;
+                skillOutline.enabled = false;
+                playerTurn.SwitchToBasicAttack();
+            });
+            info.skillBtn.onClick.AddListener(() => 
+            {
+                skillOutline.enabled = true;
+                attackOutline.enabled = false;
+                playerTurn.SwitchToSpecialAttack();
+            });
         }
 
         // Create enemyInfoPrefab:
@@ -340,11 +396,28 @@ public class HUDInfo : MonoBehaviour
         
         endTurn.onClick.AddListener(() =>
         {
+            if (selectedCharacter != null && selectedCharacter.moving)
+            {
+                return;
+            }
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         });
-        //undo.onClick.AddListener(() => playerTurn.UndoLastAction());
-        undo.interactable = false;
+        undo.onClick.AddListener(() => playerTurn.UndoAction());
+        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
+        fast.onClick.AddListener(() => 
+        {
+            if (GameManager.Instance.IsFast)
+            {
+                GameManager.Instance.DecreaseGameSpeed();
+                fast.GetComponentInChildren<TextMeshProUGUI>().text = "1x";
+            }
+            else
+            {
+                GameManager.Instance.IncreaseGameSpeed();
+                fast.GetComponentInChildren<TextMeshProUGUI>().text = ">>2x";
+            }
+        });
     }
 
     private void ResetHUD()
@@ -384,7 +457,7 @@ public class HUDInfo : MonoBehaviour
 
     private void HeroSelected(Hero hero)
     {
-        if (characterInfoDict.TryGetValue(hero.name, out var newInfo))
+        if (characterInfoDict.TryGetValue(hero.heroSO.name, out var newInfo))
         {
             newInfo.SetSelectedState();
         }
@@ -392,7 +465,7 @@ public class HUDInfo : MonoBehaviour
         // While changing hero in the list, set the previous selected hero to default state
         if (selectedHero != null && selectedHero != hero)
         {
-            if (characterInfoDict.TryGetValue(selectedHero.name, out var info))
+            if (characterInfoDict.TryGetValue(selectedHero.heroSO.name, out var info))
             {
                 info.SetDefaultState();
             }
@@ -408,7 +481,7 @@ public class HUDInfo : MonoBehaviour
         {
             Hero hero = currentTile.characterOnTile as Hero;
 
-            if (characterInfoDict.TryGetValue(hero.name, out var info))
+            if (characterInfoDict.TryGetValue(hero.heroSO.name, out var info))
             {
                 info.SetHoverState();
             }
@@ -421,26 +494,25 @@ public class HUDInfo : MonoBehaviour
             }
         }
 
-        //wip
         // Clicked on tile: 
         if (Input.GetMouseButtonDown(0))
-        { 
-            tileInfo.SetTileInfo(currentTile);
-
-            //Debug.Log("Tile Clicked");
-
-            selectedTile = currentTile;
-
-            if (hideTileInfoCoroutine != null)
+        {
+            if (selectedTile != currentTile)
             {
-                StopCoroutine(hideTileInfoCoroutine);
+                tileInfo.SetTileInfo(currentTile);
+                selectedTile = currentTile;
             }
-
-            hideTileInfoCoroutine = StartCoroutine(HideTileInfo());
+            else
+            {
+                tileInfo.Hide();
+                selectedTile = null;
+            }
         }
 
+        
+
         // Enemy Info:
-        if (currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
+        if (showInfos && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
         {
             Enemy_Base enemy = currentTile.characterOnTile as Enemy_Base;
             enemyHoverUI.SetEnemyStats(enemy);
@@ -451,19 +523,20 @@ public class HUDInfo : MonoBehaviour
             float scale = distance * 0.02f;
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
-            // Clicked show status panel
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            // Click to show status panel
+            if (Input.GetMouseButtonDown(0))
             {
-                //Debug.Log("Enemy Clicked");
-                enemyStatus.SetEnemyStats(enemy);
-                objectStatus.Hide();
-
-                if (hideStatusInfoCoroutine != null)
+                if (selectedEnemy != enemy)
                 {
-                    StopCoroutine(hideStatusInfoCoroutine);
+                    enemyStatus.SetEnemyStats(enemy);
+                    objectStatus.Hide();
+                    selectedEnemy = enemy;
                 }
-
-                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());
+                else
+                {
+                    enemyStatus.Hide();
+                    selectedEnemy = null;
+                }
             }
         }
         else
@@ -472,7 +545,7 @@ public class HUDInfo : MonoBehaviour
         }
 
         // Object Info:
-        if (currentTile.tileHasObject)
+        if (showInfos && currentTile.tileHasObject)
         {
             TileObject tileObject = currentTile.objectOnTile;
             objectHoverUI.SetObjectStats(tileObject);
@@ -483,19 +556,20 @@ public class HUDInfo : MonoBehaviour
             float scale = distance * 0.02f;
             objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
             
-            // Clicked show status panel
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            // Click to show status panel
+            if (Input.GetMouseButtonDown(0))
             {
-                //Debug.Log("Object Clicked");
-                objectStatus.SetObjectStats(tileObject);
-                enemyStatus.Hide();
-
-                if (hideStatusInfoCoroutine != null)
+                if (selectedObject != tileObject)
                 {
-                    StopCoroutine(hideStatusInfoCoroutine);
+                    objectStatus.SetObjectStats(tileObject);
+                    enemyStatus.Hide();
+                    selectedObject = tileObject;
                 }
-
-                hideStatusInfoCoroutine = StartCoroutine(HideStatusInfo());
+                else
+                {
+                    objectStatus.Hide();
+                    selectedObject = null;
+                }
             }
         }
         else

@@ -13,6 +13,7 @@ public class MenuManager : Singleton<MenuManager>
     public MenuClassifier PreGameScreenClassifier;
     public MenuClassifier VictoryScreenClassifier;
     public MenuClassifier DefeatedScreenClassifier;
+    public MenuClassifier TutorialHUDClassifier;
 
     private Dictionary<Guid, Menu> menuList = new Dictionary<Guid, Menu>();
 

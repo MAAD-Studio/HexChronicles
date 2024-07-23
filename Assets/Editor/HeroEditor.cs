@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using static ActiveSkill;
-using static Status;
 
 public class HeroEditor : EditorWindow
 {
@@ -89,70 +87,70 @@ public class HeroEditor : EditorWindow
             GUILayout.Space(10);
             GUILayout.Box("", GUILayout.Height(5), GUILayout.ExpandWidth(true));
             GUILayout.Label("Active Skill:", EditorStyles.boldLabel);
-            foreach (var field in heroSOs[i].activeSkill.GetType().GetFields())
+            foreach (var field in heroSOs[i].activeSkillSO.GetType().GetFields())
             {
                 if (field.FieldType == typeof(string))
                 {
                     if (field.Name == "description")
                     {
-                        string currentText = (string)field.GetValue(heroSOs[i].activeSkill);
-                        field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.TextField
-                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkill), GUILayout.Height(60)));
+                        string currentText = (string)field.GetValue(heroSOs[i].activeSkillSO);
+                        field.SetValue(heroSOs[i].activeSkillSO, EditorGUILayout.TextField
+                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkillSO), GUILayout.Height(60)));
                     }
                     else
                     {
-                        field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.TextField
-                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkill)));
+                        field.SetValue(heroSOs[i].activeSkillSO, EditorGUILayout.TextField
+                            (field.Name, (string)field.GetValue(heroSOs[i].activeSkillSO)));
                     }
                 }
                 else if (field.FieldType == typeof(float))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.FloatField
-                        (field.Name, (float)field.GetValue(heroSOs[i].activeSkill)));
+                    field.SetValue(heroSOs[i].activeSkillSO, EditorGUILayout.FloatField
+                        (field.Name, (float)field.GetValue(heroSOs[i].activeSkillSO)));
                 }
                 else if (field.FieldType == typeof(int))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.IntField
-                        (field.Name, (int)field.GetValue(heroSOs[i].activeSkill)));
+                    field.SetValue(heroSOs[i].activeSkillSO, EditorGUILayout.IntField
+                        (field.Name, (int)field.GetValue(heroSOs[i].activeSkillSO)));
                 }
                 else if (field.FieldType == typeof(bool))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, EditorGUILayout.Toggle
-                        (field.Name, (bool)field.GetValue(heroSOs[i].activeSkill)));
+                    field.SetValue(heroSOs[i].activeSkillSO, EditorGUILayout.Toggle
+                        (field.Name, (bool)field.GetValue(heroSOs[i].activeSkillSO)));
                 }
                 else if (field.FieldType == typeof(Sprite))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, (Sprite)EditorGUILayout.ObjectField
-                        (field.Name, (Sprite)field.GetValue(heroSOs[i].activeSkill), typeof(Sprite), false));
+                    field.SetValue(heroSOs[i].activeSkillSO, (Sprite)EditorGUILayout.ObjectField
+                        (field.Name, (Sprite)field.GetValue(heroSOs[i].activeSkillSO), typeof(Sprite), false));
                 }
                 else if (field.FieldType == typeof(AttackArea))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, (AttackArea)EditorGUILayout.ObjectField
-                        (field.Name, (AttackArea)field.GetValue(heroSOs[i].activeSkill), typeof(AttackArea), false));
+                    field.SetValue(heroSOs[i].activeSkillSO, (AttackArea)EditorGUILayout.ObjectField
+                        (field.Name, (AttackArea)field.GetValue(heroSOs[i].activeSkillSO), typeof(AttackArea), false));
                 }
                 else if (field.FieldType == typeof(GameObject))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, (GameObject)EditorGUILayout.ObjectField
-                        (field.Name, (GameObject)field.GetValue(heroSOs[i].activeSkill), typeof(GameObject), false));
+                    field.SetValue(heroSOs[i].activeSkillSO, (GameObject)EditorGUILayout.ObjectField
+                        (field.Name, (GameObject)field.GetValue(heroSOs[i].activeSkillSO), typeof(GameObject), false));
                 }
-                else if (field.FieldType == typeof(SkillEffect))
+                else if (field.FieldType == typeof(ActiveSkill.SkillEffect))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, (SkillEffect)EditorGUILayout.EnumFlagsField
-                        (field.Name, (SkillEffect)field.GetValue(heroSOs[i].activeSkill)));
+                    field.SetValue(heroSOs[i].activeSkillSO, (ActiveSkill.SkillEffect)EditorGUILayout.EnumFlagsField
+                        (field.Name, (ActiveSkill.SkillEffect)field.GetValue(heroSOs[i].activeSkillSO)));
                 }
                 else if (field.FieldType == typeof(Status))
                 {
-                    foreach (var statusField in field.GetValue(heroSOs[i].activeSkill).GetType().GetFields())
+                    foreach (var statusField in field.GetValue(heroSOs[i].activeSkillSO).GetType().GetFields())
                     {
                         if (statusField.FieldType == typeof(Status.StatusTypes))
                         {
-                            statusField.SetValue(heroSOs[i].activeSkill.status, (StatusTypes)EditorGUILayout.EnumPopup
-                                (statusField.Name, (StatusTypes)statusField.GetValue(heroSOs[i].activeSkill.status)));
+                            statusField.SetValue(heroSOs[i].activeSkillSO.status, (Status.StatusTypes)EditorGUILayout.EnumPopup
+                                (statusField.Name, (Status.StatusTypes)statusField.GetValue(heroSOs[i].activeSkillSO.status)));
                         }
                         else if (statusField.FieldType == typeof(int))
                         {
-                            statusField.SetValue(heroSOs[i].activeSkill.status, EditorGUILayout.IntField
-                                (statusField.Name, (int)statusField.GetValue(heroSOs[i].activeSkill.status)));
+                            statusField.SetValue(heroSOs[i].activeSkillSO.status, EditorGUILayout.IntField
+                                (statusField.Name, (int)statusField.GetValue(heroSOs[i].activeSkillSO.status)));
                         }
                     }
                 }
@@ -160,7 +158,7 @@ public class HeroEditor : EditorWindow
                 {
                     GUILayout.Box("", GUILayout.Height(3), GUILayout.ExpandWidth(true));
                     EditorGUILayout.LabelField("Keywords:", EditorStyles.boldLabel);
-                    foreach (var keyword in (Keyword[])field.GetValue(heroSOs[i].activeSkill))
+                    foreach (var keyword in (Keyword[])field.GetValue(heroSOs[i].activeSkillSO))
                     {
                         EditorGUILayout.LabelField("Keyword:");
                         EditorGUILayout.BeginHorizontal();
@@ -174,8 +172,8 @@ public class HeroEditor : EditorWindow
                 }
                 /*else if (field.FieldType == typeof(ReleaseTypes))
                 {
-                    field.SetValue(heroSOs[i].activeSkill, (ReleaseTypes)EditorGUILayout.EnumPopup
-                                               (field.Name, (ReleaseTypes)field.GetValue(heroSOs[i].activeSkill)));
+                    field.SetValue(heroSOs[i].activeSkillSO, (ReleaseTypes)EditorGUILayout.EnumPopup
+                                               (field.Name, (ReleaseTypes)field.GetValue(heroSOs[i].activeSkillSO)));
                 }*/
                 GUILayout.Space(5);
             }

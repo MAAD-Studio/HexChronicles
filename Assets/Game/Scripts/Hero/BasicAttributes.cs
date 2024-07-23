@@ -16,6 +16,7 @@ public class BasicAttributes
     public int attackRange = 0;
     public float defensePercentage = 0;
     [SerializeField] public TurnEnums.CharacterType characterType;
+    public Vector3 defaultScale = Vector3.one;
 
     [Header("Elements:")]
     public ElementType elementType;
@@ -23,6 +24,7 @@ public class BasicAttributes
     public ElementType elementStrongAgainst;
 
     [Header("Area Prefabs:")]
+    public PreviewOrigin attackAreaPreview;
     [HideInInspector] public AttackArea basicAttackArea;
     [HideInInspector] public AttackArea activeSkillArea;
 
@@ -30,7 +32,7 @@ public class BasicAttributes
     public GameObject hitMarker;
     public GameObject buffPrefab;
 
-    [Header("ALPHA TEMPORARY MARKER")]
+    [Header("Temporary Markers")]
     public GameObject fireMarker;
     public GameObject healText;
 

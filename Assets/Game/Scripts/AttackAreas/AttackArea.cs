@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.ScrollRect;
 
 public class AttackArea : MonoBehaviour
 {
@@ -10,9 +9,21 @@ public class AttackArea : MonoBehaviour
     private List<TileReporter> tileReporters = new List<TileReporter>();
     private List<Tile> reporterTiles = new List<Tile>();
 
+    public List<TileReporter> originReporters = new List<TileReporter>();
+
+    [Header("Movement: ")]
     [SerializeField] public bool freeRange = false;
+
+    [Header("Tile Targeting: ")]
+    [SerializeField] public bool onlySingleTileType = false;
     [SerializeField] public ElementType effectedTileType;
 
+    [Header("Effect Targeting: ")]
+    [SerializeField] public bool hitsEnemies = true;
+    [SerializeField] public bool hitsHeroes = true;
+    [SerializeField] public bool hitsTileObjects = true;
+
+    [Header("Range: ")]
     [SerializeField] public float maxHittableRange = 1f;
 
     #endregion
@@ -25,6 +36,22 @@ public class AttackArea : MonoBehaviour
         {
             tileReporters.Add(reporter);
         }
+
+        List<TileReporter> reportersToRemove = new List<TileReporter>();
+        foreach(TileReporter reporter in originReporters)
+        {
+            if (reporter == null)
+            {
+                reportersToRemove.Add(reporter);
+                Debug.LogWarning("(" + transform.parent.name + ") had a null origin reporter.");
+            }
+        }
+
+        foreach (TileReporter reporter in reportersToRemove)
+        {
+            originReporters.Remove(reporter);
+        }
+        reportersToRemove.Clear();
     }
 
     #endregion
@@ -35,19 +62,23 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
+            if(tile == null)
+            {
+                continue;
+            }
+
             // Reset preview on enemy healthbar
             if (tile.tileOccupied && tile.characterOnTile != null)
             {
-                tile.characterOnTile.PreviewDamage(0);
+                tile.characterOnTile.DonePreview?.Invoke();
             }
 
             if (tile.tileHasObject && tile.objectOnTile != null)
             {
-                tile.objectOnTile.PreviewDamage(0);
+                tile.objectOnTile.DonePreview?.Invoke();
             }
 
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, false);
-            //tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
         }
     }
 
@@ -56,10 +87,6 @@ public class AttackArea : MonoBehaviour
     {
         foreach (Tile tile in reporterTiles)
         {
-            /*if(tile.tileOccupied && highlightOccupied || tile.tileData.tileType == effectedTileType && freeRange || tile.tileHasObject && highlightOccupied)
-            {
-                tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
-            }*/
             tile.ChangeTileEffect(TileEnums.TileEffects.attackable, true);
         }
     }
@@ -68,8 +95,20 @@ public class AttackArea : MonoBehaviour
     public void DetectArea(bool illustrate, bool highlightOccupied)
     {
         ResetArea();
-
         reporterTiles.Clear();
+
+        if (originReporters != null)
+        {
+            foreach(TileReporter tileReporter in originReporters)
+            {
+                if (tileReporter == null)
+                {
+                    continue;
+                }
+                tileReporter.CheckBlockages(false);
+            }
+        }
+
         foreach (TileReporter reporter in tileReporters)
         {
             if(reporter.currentTile != null)
@@ -78,9 +117,18 @@ public class AttackArea : MonoBehaviour
             }
         }
 
-        if(illustrate)
+        if (illustrate)
         {
             ColourArea(highlightOccupied);
+        }
+    }
+
+    //Triggers any additonal effects for the attack shape
+    public void ExecuteAddOnEffects()
+    {
+        foreach(TileReporter reporter in tileReporters)
+        {
+            reporter.ExecuteAddOnEffect();
         }
     }
 
@@ -187,9 +235,9 @@ public class AttackArea : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public static AttackArea SpawnAttackArea(AttackArea attackArea)
+    public static AttackArea SpawnAttackArea(AttackArea attackArea, Vector3 position)
     {
-        return Instantiate(attackArea);
+        return Instantiate(attackArea, position, Quaternion.identity);
     }
 
     #endregion

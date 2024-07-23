@@ -30,20 +30,38 @@ public class TurnManager : MonoBehaviour
 
     [Header("Tiles:")]
     [SerializeField] private GameObject gridParent;
-    public List<LavaTile> lavaTiles = new List<LavaTile>();
-    public  List<GrassTile> grassTiles = new List<GrassTile>();
-    public List<WaterTile> waterTiles = new List<WaterTile>();
+    [HideInInspector] public List<LavaTile> lavaTiles = new List<LavaTile>();
+    [HideInInspector] public  List<GrassTile> grassTiles = new List<GrassTile>();
+    [HideInInspector] public List<WaterTile> waterTiles = new List<WaterTile>();
+
+    [HideInInspector] public List<TileObject> temporaryTileObjects = new List<TileObject>();
 
     private PlayerTurn playerTurn;
+    public PlayerTurn PlayerTurn
+    {
+        get { return playerTurn; }
+    }
+
     private EnemyTurn enemyTurn;
     private WeatherTurn weatherTurn;
     private TowersTurn towersTurn;
 
     private StateInterface currentTurn;
+    private TurnEnums.TurnState turnType;
 
     private int turnNumber;
-    public int objectiveTurnNumber = 8;
+    private int objectiveTurnNumber = 8;
 
+    //TUTORIAL USES
+    public bool isTutorial = false;
+    public bool disablePlayers = false;
+    public bool disableEnemies = false;
+    public bool disableObjects = false;
+
+    public TurnEnums.TurnState TurnType
+    {
+        get { return turnType; }
+    }
     public StateInterface CurrentTurn
     {
         get { return currentTurn; }
@@ -55,7 +73,9 @@ public class TurnManager : MonoBehaviour
 
     [HideInInspector] public static UnityEvent LevelVictory = new UnityEvent();
     [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
-    [HideInInspector] public static UnityEvent<string> OnCharacterDied = new UnityEvent<string>();
+    [HideInInspector] public static UnityEvent<Character> OnCharacterDied = new UnityEvent<Character>();
+
+    public bool pauseTurns = false;
 
     #endregion
 
@@ -98,8 +118,10 @@ public class TurnManager : MonoBehaviour
             enemyList.Add(enemy);
         }
 
+        objectiveTurnNumber = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].limitTurns;
         turnNumber = 1;
         currentTurn = playerTurn;
+        turnType = TurnEnums.TurnState.PlayerTurn;
 
         EventBus.Instance.Publish(new OnNewLevelStart());
 
@@ -109,6 +131,11 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
+        if(pauseTurns == true)
+        {
+            return;
+        }
+
         currentTurn.UpdateState();
     }
 
@@ -125,29 +152,35 @@ public class TurnManager : MonoBehaviour
         {
             case TurnEnums.TurnState.PlayerTurn:
                 turnNumber++;
-                mainCameraController.controlEnabled = true;
                 currentTurn = playerTurn;
-                EventBus.Instance.Publish(new OnPlayerTurn());
+                turnType = TurnEnums.TurnState.PlayerTurn;
+
+                CheckTemporaryObjects();
+                mainCameraController.controlEnabled = true;
 
                 if (turnNumber == objectiveTurnNumber + 1)
                 {
                     LevelDefeat?.Invoke();
                 }
+                EventBus.Instance.Publish(new OnPlayerTurn());
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
-                EventBus.Instance.Publish(new OnEnemyTurn());
+                turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
+                EventBus.Instance.Publish(new OnEnemyTurn());
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
                 currentTurn = worldTurn;
+                turnType = TurnEnums.TurnState.WorldTurn;
                 mainCameraController.controlEnabled = false;
                 break;
 
             case TurnEnums.TurnState.WeatherTurn:
                 currentTurn = weatherTurn;
+                turnType = TurnEnums.TurnState.WeatherTurn;
                 mainCameraController.controlEnabled = false;
                 break;
         }
@@ -169,7 +202,7 @@ public class TurnManager : MonoBehaviour
 
             characterList.Remove(character);
 
-            OnCharacterDied?.Invoke(character.name);
+            OnCharacterDied?.Invoke(character);
 
             if (characterList.Count == 0)
             {
@@ -220,6 +253,25 @@ public class TurnManager : MonoBehaviour
         {
             grassTiles.Remove((GrassTile)oldTile);
         }
+    }
+
+    private void CheckTemporaryObjects()
+    {
+        List<TileObject> tileObjectsToDestroy = new List<TileObject>();
+        foreach (TileObject tileObj in temporaryTileObjects)
+        {
+            if (tileObj.CheckDestruction())
+            {
+                tileObjectsToDestroy.Add(tileObj);
+            }
+        }
+
+        foreach (TileObject tileObj in tileObjectsToDestroy)
+        {
+            temporaryTileObjects.Remove(tileObj);
+            Destroy(tileObj.gameObject);
+        }
+        tileObjectsToDestroy.Clear();
     }
 
     #endregion

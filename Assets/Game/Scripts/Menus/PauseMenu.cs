@@ -25,14 +25,24 @@ public class PauseMenu : Menu
         MenuManager.Instance.HideMenu(menuClassifier);
     }
 
+    public void OnRestartLevel()
+    {
+        Time.timeScale = 1.0f;
+
+        MenuManager.Instance.HideMenu(menuClassifier);
+        MenuManager.Instance.HideMenu(hudMenuClassifier);
+
+        EndBattle();
+        GameManager.Instance.LoadCurrentLevel();
+    }
+
     public void OnReturnToMainMenu()
     {
         Time.timeScale = 1.0f;
         MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        EndLevel.Invoke();
-        CleanActiveScene();
+        EndBattle();
     }
 
     public void OnReturnToMap()
@@ -41,15 +51,12 @@ public class PauseMenu : Menu
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
-        EndLevel.Invoke();
-        CleanActiveScene();
+        EndBattle();
     }
 
-    private void CleanActiveScene()
+    private void EndBattle()
     {
-        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
-        {
-            Destroy(go);
-        }
+        EndLevel.Invoke();
+        GameManager.Instance.CleanActiveScene();
     }
 }

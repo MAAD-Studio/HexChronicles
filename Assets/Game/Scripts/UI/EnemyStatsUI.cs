@@ -13,7 +13,7 @@ public class EnemyStatsUI : StatsUI
     public void SetEnemyStats(Enemy_Base enemy)
     {
         avatar.sprite = enemy.enemySO.attributes.avatar;
-        element.sprite = characterUIConfig.GetElementSprite(enemy.elementType);
+        element.sprite = Config.Instance.GetElementSprite(enemy.elementType);
         textName.text = enemy.enemySO.attributes.name;
         enemyInfo.text = enemy.enemySO.attributes.description.DisplayKeywordDescription();
         enemyInfo.ForceMeshUpdate();
@@ -22,7 +22,7 @@ public class EnemyStatsUI : StatsUI
         textAttack.text = $"{enemy.attackDamage}";
         textRange.text = $"{enemy.attackDistance}";
         textDef.text = $"{enemy.defensePercentage}%";
-        textStatus.text = characterUIConfig.GetStatusTypes(enemy).ToString();
+        textStatus.text = Config.Instance.GetStatusTypes(enemy).ToString();
 
         gameObject.SetActive(true);
     }

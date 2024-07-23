@@ -8,11 +8,14 @@ using UnityEngine.UI;
 
 public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [Header("States")]
     [SerializeField] private GameObject defaultState;
     [SerializeField] private GameObject selectedState;
     [SerializeField] private GameObject noActionState;
     [SerializeField] private GameObject deadState;
-    [SerializeField] private CharacterUIConfig characterUIConfig;
+
+    [SerializeField] private Color buffColor = new Color(0f, 0.8f, 0f);
+    [SerializeField] private Color debuffColor = Color.red;
 
     [Header("Hero Info")]
     [SerializeField] private List<TextMeshProUGUI> names;
@@ -23,7 +26,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private List<TextMeshProUGUI> textDef;
     [SerializeField] private GameObject statusField;
     [SerializeField] private GameObject statusPrefab;
-    private List<Status> status;
     private Hero hero;
 
     [Header("HealthBar")]
@@ -45,6 +47,11 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private bool interactable = true;
     private bool heroDead = false;
 
+    [Header("StartValue")]
+    private float startAttack;
+    private int startMovement;
+
+
     private void Start()
     {
         SetDefaultState();
@@ -52,8 +59,10 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void InitializeInfo(Hero hero)
     {
-        this.hero = hero;
-        SubscribeEvents();
+        AssignHero(hero);
+
+        startAttack = hero.heroSO.attributes.attackDamage;
+        startMovement = hero.heroSO.attributes.movementRange;
 
         foreach (TextMeshProUGUI name in names)
         {
@@ -65,16 +74,22 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         foreach (Image element in elements)
         {
-            element.sprite = characterUIConfig.GetElementSprite(hero.heroSO.attributes.elementType);
+            element.sprite = Config.Instance.GetElementSprite(hero.heroSO.attributes.elementType);
         }
 
         attackShape.sprite = hero.heroSO.attackShape;
         attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();
         attackInfo.ForceMeshUpdate();
 
-        skillShape.sprite = hero.heroSO.activeSkill.skillshape;
-        skillInfo.text = hero.heroSO.activeSkill.description.DisplayKeywordDescription();
+        skillShape.sprite = hero.heroSO.activeSkillSO.skillshape;
+        skillInfo.text = hero.heroSO.activeSkillSO.description.DisplayKeywordDescription();
         skillInfo.ForceMeshUpdate();
+    }
+
+    public void AssignHero(Hero hero)
+    {
+        this.hero = hero;
+        SubscribeEvents();
     }
 
     #region Update Info
@@ -82,11 +97,40 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         foreach (TextMeshProUGUI movement in textMovement)
         {
-            movement.text = hero.moveDistance.ToString();
+            int newMove = hero.moveDistance - hero.movementThisTurn;
+            if (newMove > startMovement) // Show buff text in green
+            {
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(buffColor)}> + {newMove - startMovement}</color>";
+                movement.text = $"{startMovement}{buffValue}";
+            }
+            else if (newMove < startMovement) // Show debuff text in red
+            {
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(debuffColor)}> - {startMovement - newMove}</color>";
+                movement.text = $"{startMovement}{deBuffValue}";
+            }
+            else
+            {
+                movement.text = newMove.ToString();
+            }
         }
+
         foreach (TextMeshProUGUI attack in textAttack)
         {
-            attack.text = hero.attackDamage.ToString();
+            float newAttack = hero.attackDamage;
+            if (newAttack > startAttack)
+            {
+                string buffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(buffColor)}> + {newAttack - startAttack}</color>";
+                attack.text = $"{startAttack}{buffValue}";
+            }
+            else if (newAttack < startAttack)
+            {
+                string deBuffValue = $"<color=#{ColorUtility.ToHtmlStringRGBA(debuffColor)}> - {startAttack - newAttack}</color>";
+                attack.text = $"{startAttack}{deBuffValue}";
+            }
+            else
+            {
+                attack.text = newAttack.ToString();
+            }
         }
         foreach (TextMeshProUGUI def in textDef)
         {
@@ -98,25 +142,21 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         List<Status> newStatus = hero.statusList;
 
-        if (status != newStatus)
+        foreach (Transform child in statusField.transform)
         {
-            foreach (Transform child in statusField.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(child.gameObject);
+        }
 
-            if (newStatus != null)
+        if (newStatus != null)
+        {
+            foreach (var status in newStatus)
             {
-                foreach (var status in newStatus)
-                {
-                    GameObject statusObject = Instantiate(statusPrefab);
-                    statusObject.transform.SetParent(statusField.transform);
+                GameObject statusObject = Instantiate(statusPrefab);
+                statusObject.transform.SetParent(statusField.transform);
 
-                    StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
-                    statusEffect.Initialize(status);
-                }
+                StatusEffect statusEffect = statusObject.GetComponent<StatusEffect>();
+                statusEffect.Initialize(status);
             }
-            status = newStatus;
         }
     }
 
@@ -143,13 +183,18 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         hero.UpdateStatus.AddListener(UpdateStatus);
     }
 
-    private void OnDestroy()
+    private void UnsubscribeEvents()
     {
         EventBus.Instance.Unsubscribe<OnPlayerTurn>(OnPlayerTurn);
         EventBus.Instance.Unsubscribe<OnEnemyTurn>(OnEnemyTurn);
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         hero.UpdateAttributes.RemoveListener(UpdateAttributes);
         hero.UpdateStatus.RemoveListener(UpdateStatus);
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeEvents();
     }
 
     private void OnPlayerTurn(object obj)
@@ -167,10 +212,10 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void UpdateButton()
     {
-        if (hero.currentSkillCD > 0)
+        if (hero.CurrentSkillCD > 0)
         {
             skillBtn.interactable = false;
-            skillCD.text = $"(On Cooldown - {hero.currentSkillCD} turns)";
+            skillCD.text = $"(On Cooldown - {hero.CurrentSkillCD} turns)";
             attackBtn.interactable = false;
         }
         else
@@ -193,6 +238,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         SetDefaultState();
     }
     #endregion
+
 
     #region States
     public void SetDefaultState()
@@ -234,6 +280,26 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         selectedState.SetActive(false);
         noActionState.SetActive(true);
         deadState.SetActive(false);
+    }
+
+    public void SetRestoreState(Hero hero)
+    {
+        if (heroDead) // Assign dead first to prevent the return
+        {
+            heroDead = false;
+            UnsubscribeEvents();
+            AssignHero(hero);
+        }
+
+        interactable = !hero.hasMadeDecision;
+        if (interactable)
+        {
+            SetDefaultState();
+        }
+        else
+        {
+            SetNoActionState();
+        }
     }
 
     public void SetSelectedState()

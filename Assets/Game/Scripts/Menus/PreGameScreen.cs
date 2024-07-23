@@ -10,10 +10,20 @@ public class PreGameScreen : Menu
     [SerializeField] private Button startButton;
     public GameObject worldMap;
 
+    [SerializeField] private GameObject heroList;
+    private List<HeroSkillInfo> heroSkillList;
+    [SerializeField] private LevelDetailUI levelDetail;
+
     protected override void Start()
     {
         base.Start();
         startButton.onClick.AddListener(StartLevel);
+
+        // Get every HeroSkillInfo from heroList:
+        heroSkillList = new List<HeroSkillInfo>(heroList.GetComponentsInChildren<HeroSkillInfo>());
+        
+        SkillSelectionUI skillSelectionUI = GetComponent<SkillSelectionUI>();
+        skillSelectionUI.Initialize(heroSkillList);
     }
 
     private void Update()
@@ -22,6 +32,15 @@ public class PreGameScreen : Menu
         {
             ClosePreGame();
         }
+    }
+
+    public void UpdatePreGameScreen(int levelIndex)
+    {
+        // Invoke the first hero in the list as the default display
+        heroSkillList[0].OnSelected();
+
+        // Show the level information:
+        levelDetail.InitializeInfo(GameManager.Instance.levelDetails[levelIndex]);
     }
 
     private void StartLevel()

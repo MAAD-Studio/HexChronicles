@@ -46,15 +46,25 @@ public class Enemy_TNT : Enemy_Base
 
         foreach (Tile tile in potentialTiles)
         {
-            if (tile.tileOccupied && tile.characterOnTile != this)
+            if (tile.tileOccupied && tile.characterOnTile != this && tile.characterOnTile.currentHealth > 0)
             {
-                if (tile.cost == 1)
+                Character characterOnTile = tile.characterOnTile;
+                if(characterOnTile.characterType == TurnEnums.CharacterType.Player)
                 {
-                    tile.characterOnTile.TakeDamage(closeRangeDMG, elementType);
+                    UndoManager.Instance.StoreHero((Hero)characterOnTile);
                 }
                 else
                 {
-                    tile.characterOnTile.TakeDamage(farRangeDMG, elementType);
+                    UndoManager.Instance.StoreEnemy((Enemy_Base)characterOnTile);
+                }
+
+                if (tile.cost == 1)
+                {
+                    characterOnTile.TakeDamage(closeRangeDMG, elementType);
+                }
+                else
+                {
+                    characterOnTile.TakeDamage(farRangeDMG, elementType);
                 }
             }
 

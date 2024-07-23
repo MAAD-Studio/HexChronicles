@@ -14,6 +14,4 @@ public class StatsUI : MonoBehaviour
     public TextMeshProUGUI textAttack;
     public TextMeshProUGUI textDef;
     public TextMeshProUGUI textStatus;
-
-    public CharacterUIConfig characterUIConfig;
 }

@@ -8,19 +8,10 @@ public class ActiveSkill
 {
     #region Variables
 
-    public Sprite icon;
-    public string skillName;
-    public KeywordDescription description;
-    public Sprite skillshape;
-    public AttackArea shapeArea;
-    public GameObject particleEffect;
-    public GameObject soundEffect;
+    private SkillEffect skillEffect;
+    private int skillEffectValue;
 
-    public SkillEffect skillEffect;
-    public int skillEffectValue;
-
-    public Status status = new Status();
-
+    private Status status = new Status();
     //public ReleaseTypes releaseTypes; // Not used yet
 
     private List<Character> targets;
@@ -29,6 +20,13 @@ public class ActiveSkill
     [HideInInspector] public List<Tile> affectedTiles = new List<Tile>();
 
     #endregion
+
+    public void Initialize(ActiveSkillSO newSkill)
+    {
+        skillEffect = newSkill.skillEffect;
+        skillEffectValue = newSkill.skillEffectValue;
+        status = newSkill.status;
+    }
 
     #region Enum
 
@@ -40,7 +38,8 @@ public class ActiveSkill
         AddStatus = 1 << 2, 
         ReduceCD = 1 << 3,
         Push = 1 << 4,
-        ChangeTileType = 1 << 5 
+        ChangeTileType = 1 << 5,
+        Shield = 1 <<6,
     }
 
     public enum ReleaseTypes
@@ -69,6 +68,7 @@ public class ActiveSkill
         {
             foreach (var target in targets)
             {
+                Debug.Log("Target Healed: " + target.name);
                 target.Heal(skillEffectValue);
             }
         }
@@ -86,7 +86,7 @@ public class ActiveSkill
             foreach (var target in targets)
             {
                 Hero heroTarget = (Hero)target;
-                heroTarget.currentSkillCD -= skillEffectValue;
+                heroTarget.CurrentSkillCD -= skillEffectValue;
             }
         }
 
@@ -100,16 +100,21 @@ public class ActiveSkill
             }
         }
 
+        if ((skillEffect & SkillEffect.Shield) != 0)
+        {
+            if(Status.GrabIfStatusActive(thisCharacter, Status.StatusTypes.Shield) == null)
+            {
+                Status shieldStatus = new Status();
+                shieldStatus.effectTurns = skillEffectValue;
+                shieldStatus.statusType = Status.StatusTypes.Shield;
+                thisCharacter.AddStatus(shieldStatus);
+            }
+        }
+
         if ((skillEffect & SkillEffect.ChangeTileType) != 0)
         {
             // TODO
         }
-    }
-
-    // Method to clone the ActiveSkill
-    public ActiveSkill Clone()
-    {
-        return (ActiveSkill)this.MemberwiseClone();
     }
 
     public void GetTargets()

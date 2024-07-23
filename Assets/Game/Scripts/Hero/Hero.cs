@@ -7,11 +7,17 @@ public class Hero : Character
     [Header("Hero Specific:")]
     public HeroAttributesSO heroSO;
 
-    // Active skill
-    [HideInInspector] public ActiveSkill activeSkill;
+    [Header("Active skill:")]
+    [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
     public int skillCD = 3;
-    public int currentSkillCD;
+    private int currentSkillCD = 3;
+    public int CurrentSkillCD
+    {
+        get { return currentSkillCD; }
+        set { currentSkillCD = value; }
+    }
 
+    [Header("Upgrades:")]
     public List<BasicUpgrade> upgradeList; 
 
     protected override void Start()
@@ -28,10 +34,11 @@ public class Hero : Character
         currentHealth = maxHealth;
 
         basicAttackArea = heroSO.attackArea;
+        defaultScale = heroSO.attributes.defaultScale;
 
-        activeSkill = heroSO.activeSkill.Clone();
         activeSkill.thisCharacter = this;
-        activeSkillArea = activeSkill.shapeArea;
+        activeSkill.Initialize(heroSO.activeSkillSO);
+        activeSkillArea = heroSO.activeSkillSO.shapeArea;
         currentSkillCD = (skillCD - 1);
 
         upgradeList = new List<BasicUpgrade>();
@@ -56,7 +63,16 @@ public class Hero : Character
     {
         int hitResult = UnityEngine.Random.Range(0, 101);
 
-        if (elementWeakAgainst == type && hitResult <= defensePercentage)
+        Status shield = Status.GrabIfStatusActive(this, Status.StatusTypes.Shield);
+        if (shield != null)
+        {
+            Debug.Log("SHIELDED FROM 5 DAMAGE");
+            damage -= 5;
+            MathF.Max(0, damage);
+            RemoveStatus(shield);
+        }
+
+        if (elementWeakAgainst == type)// && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);
         }
@@ -77,13 +93,50 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
+        if (characterTile.tileData.tileType == elementType)
+        {
+            SpawnTileVFX(transform.position, true);
+        }
+        else if (characterTile.tileData.tileType != ElementType.Base)
+        {
+            SpawnTileVFX(transform.position, false);
+        }
+
         foreach (var target in targets)
         {
-            target.TakeDamage(attackDamage, elementType);
-            target.PreviewDamage(0);
+            SpawnAttackVFX(target);
+
+            int actualDamage = (int)attackDamage;
+            if(Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
+            {
+                attackDamage += 1;
+            }
+
+            target.TakeDamage(actualDamage, elementType);
         }
 
         base.PerformBasicAttack(targets);
+    }
+
+    private void SpawnAttackVFX(Character target)
+    {
+        if (elementType == ElementType.Fire)
+        {
+            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.rotation = Quaternion.LookRotation(transform.forward);
+            Destroy(vfx, 3f);
+        }
+        else if (elementType == ElementType.Water)
+        {
+            GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
+            Destroy(vfx, 3f);
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.LookAt(target.transform.position);
+            //Destroy(vfx, 3f);
+        }
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)

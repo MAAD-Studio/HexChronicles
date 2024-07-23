@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55930587f00bce84c9e54da35735816a, type: 3}
+  m_Name: GrassSkill_MindControl
+  m_EditorClassIdentifier: 
+  elementType: 2
+  icon: {fileID: 21300000, guid: 41d33c175aee740449ed283feb2f53d7, type: 3}
+  skillName: Mind Control
+  description:
+    description: Make enemies in the attack area attack other enemies for 2 turns.
+    keywords:
+    - keyword: attack other enemies
+      color: {r: 0.6784314, g: 0.019607844, b: 0.8784314, a: 1}
+      bold: 1
+      italic: 0
+    - keyword: 2 turns
+      color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+      bold: 1
+      italic: 0
+  skillshape: {fileID: 21300000, guid: f122d3885cf97df4fa1a98ce0e58b80b, type: 3}
+  shapeArea: {fileID: 3827415136764973267, guid: 9ebad85d5cdc61146ae6958dc52f700d, type: 3}
+  particleEffect: {fileID: 0}
+  soundEffect: {fileID: 0}
+  skillEffect: 4
+  skillEffectValue: 2
+  status:
+    statusType: 12
+    effectTurns: 2
+    damageAddOn: 0

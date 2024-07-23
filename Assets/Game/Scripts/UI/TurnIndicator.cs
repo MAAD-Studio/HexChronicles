@@ -9,13 +9,14 @@ public class TurnIndicator : MonoBehaviour
     private List<TurnInfo> turnInfos = new List<TurnInfo>();
     private int currentTurn = 1;
 
-    public void Initialize(int totalTurns)
+    public void Initialize()
     {
-        for (int i = 1; i <= totalTurns; i++)
+        int limitTurns = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].limitTurns;
+        for (int i = 1; i <= limitTurns; i++)
         {
             GameObject gameObject = Instantiate(turnInfoPrefab, transform);
             TurnInfo turnInfo = gameObject.GetComponent<TurnInfo>();
-            turnInfo.Initialize(i, totalTurns);
+            turnInfo.Initialize(i, limitTurns);
             turnInfos.Add(turnInfo);
         }
     }

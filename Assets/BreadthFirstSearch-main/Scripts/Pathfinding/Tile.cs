@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.Universal;
 
 public class Tile : MonoBehaviour
 {
@@ -47,6 +46,8 @@ public class Tile : MonoBehaviour
 
     private GameObject tileWeather;
     private Renderer weatherRenderer;
+    private GameObject vfxObject;
+
 
     public static UnityEvent<Tile, Tile> tileReplaced = new UnityEvent<Tile, Tile>();
 
@@ -213,18 +214,29 @@ public class Tile : MonoBehaviour
         ChangeTileEffect(activeTileEffects[0], true);
     }*/
 
-    public void ChangeTileWeather(TileEnums.TileWeather tileWeatherType)
+    public void ChangeTileWeather(bool enable, Material weatherMaterial)
     {
-        switch(tileWeatherType)
+        if(tileWeather == null)
         {
-            case TileEnums.TileWeather.disabled:
-                tileWeather.SetActive(false);
-                break;
+            tileWeather = transform.GetChild(3).gameObject;
+            weatherRenderer = tileWeather.GetComponent<Renderer>();
+        }
 
-            case TileEnums.TileWeather.rain:
+        if(enable)
+        {
+            if(weatherMaterial != null)
+            {
                 tileWeather.SetActive(true);
-                weatherRenderer.material = tileData.weatherMaterial;
-                break;
+                weatherRenderer.material = weatherMaterial;
+            }
+            else
+            {
+                Debug.LogError("ChangeTilWeather was provided a null material");
+            }
+        }
+        else
+        {
+            tileWeather.SetActive(false);
         }
     }
 
@@ -235,26 +247,25 @@ public class Tile : MonoBehaviour
     //Called when a Character enters a tile
     public virtual void OnTileEnter(Character character)
     {
-        if(character.elementType == tileData.tileType)
-        {
-            character.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-        }
+        
     }
 
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        characterTimeOnTile += 1;
+        if(!underWeatherAffect && !(WeatherManager.Instance.GetWeatherElementType() == character.elementType))
+        {
+            characterTimeOnTile += 1;
+        }
+        else
+        {
+            characterTimeOnTile = 0;
+        }
     }
 
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
-        if (character.elementType == tileData.tileType)
-        {
-            character.transform.localScale = new Vector3(1f, 1f, 1f);
-        }
-
         characterTimeOnTile = 0;
     }
 
@@ -280,6 +291,11 @@ public class Tile : MonoBehaviour
         {
             //tile.ChangeTileWeather(TileEnums.TileWeather.rain);
         }
+
+        if(characterOnTile != null)
+        {
+            characterOnTile.characterTile = tile;
+        }
     }
 
     public void ReplaceTileWithNew(Tile newTile)
@@ -292,28 +308,21 @@ public class Tile : MonoBehaviour
 
     public static void HighlightTilesOfType(ElementType elementType)
     {
-        TurnManager turnManager = FindObjectOfType<TurnManager>();
-        List<Tile> selectedList = new List<Tile>();
-        if(elementType == ElementType.Fire)
-        {
-            selectedList = turnManager.lavaTiles.Cast<Tile>().ToList();
-        }
-        else if(elementType == ElementType.Water)
-        {
-            selectedList = turnManager.waterTiles.Cast<Tile>().ToList();
-        }
-        else if(elementType == ElementType.Grass)
-        {
-            selectedList = turnManager.grassTiles.Cast<Tile>().ToList();
-        }
-
-        foreach(Tile tile in selectedList)
+        foreach(Tile tile in GetBuffTiles(elementType))
         {
             tile.ChangeTileTop(TileEnums.TileTops.highlight, true);
         }
     }
 
     public static void UnHighlightTilesOfType(ElementType elementType)
+    {
+        foreach (Tile tile in GetBuffTiles(elementType))
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+        }
+    }
+
+    private static List<Tile> GetBuffTiles(ElementType elementType)
     {
         TurnManager turnManager = FindObjectOfType<TurnManager>();
         List<Tile> selectedList = new List<Tile>();
@@ -329,12 +338,125 @@ public class Tile : MonoBehaviour
         {
             selectedList = turnManager.grassTiles.Cast<Tile>().ToList();
         }
+        return selectedList;
+    }
 
-        foreach (Tile tile in selectedList)
+    public static void SpawnTileVFX(ElementType elementType)
+    {
+        foreach (Tile tile in GetBuffTilesWithinRange(elementType))
         {
-            tile.ChangeTileTop(TileEnums.TileTops.highlight, false);
+            if (tile.vfxObject == null)
+            {
+                tile.vfxObject = Instantiate(Config.Instance.GetBuffVFX(elementType), tile.transform.position, Quaternion.identity);
+            }
+        }
+
+        foreach (Tile tile in GetDebuffTilesWithinRange(elementType))
+        {
+            if (tile.vfxObject == null)
+            {
+                tile.vfxObject = Instantiate(Config.Instance.GetDebuffVFX(), tile.transform.position, Quaternion.identity);
+            }
         }
     }
 
+    private static List<Tile> GetBuffTilesWithinRange(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+        List<Tile> selectedList = new List<Tile>();
+
+        foreach (Tile tile in tiles)
+        {
+            if (elementType == ElementType.Fire && tile.tileData.tileType == ElementType.Fire)
+            {
+                selectedList.Add(tile);
+            }
+            else if (elementType == ElementType.Water && tile.tileData.tileType == ElementType.Water)
+            {
+                selectedList.Add(tile);
+            }
+            else if (elementType == ElementType.Grass && tile.tileData.tileType == ElementType.Grass)
+            {
+                selectedList.Add(tile);
+            }
+        }
+        return selectedList;
+    }
+
+    private static List<Tile> GetDebuffTilesWithinRange(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> tiles = new List<Tile>(turnManager.pathfinder.frontier);
+        List<Tile> debuffList = new List<Tile>();
+
+        foreach (Tile tile in tiles)
+        {
+            if (elementType == ElementType.Fire)
+            {
+                if (tile.tileData.tileType == ElementType.Water || tile.tileData.tileType == ElementType.Grass)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+            else if (elementType == ElementType.Water)
+            {
+                if (tile.tileData.tileType == ElementType.Fire || tile.tileData.tileType == ElementType.Grass)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+            else if (elementType == ElementType.Grass)
+            {
+                if (tile.tileData.tileType == ElementType.Water || tile.tileData.tileType == ElementType.Fire)
+                {
+                    debuffList.Add(tile);
+                }
+            }
+        }
+
+        return debuffList;
+    }
+
+    public static void DestroyTileVFX(ElementType elementType)
+    {
+        foreach (Tile tile in GetBuffTiles(elementType))
+        {
+            if (tile.vfxObject != null)
+            {
+                Destroy(tile.vfxObject);
+            }
+        }
+
+        foreach (Tile tile in GetDebuffTiles(elementType))
+        {
+            if (tile.vfxObject != null)
+            {
+                Destroy(tile.vfxObject);
+            }
+        }
+    }
+
+    private static List<Tile> GetDebuffTiles(ElementType elementType)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> debuffList = new List<Tile>();
+        if (elementType == ElementType.Fire)
+        {
+            debuffList = turnManager.waterTiles.Cast<Tile>().ToList();
+            debuffList.AddRange(turnManager.grassTiles.Cast<Tile>().ToList());
+        }
+        else if (elementType == ElementType.Water)
+        {
+            debuffList = turnManager.lavaTiles.Cast<Tile>().ToList();
+            debuffList.AddRange(turnManager.grassTiles.Cast<Tile>().ToList());
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            debuffList = turnManager.lavaTiles.Cast<Tile>().ToList();
+            debuffList.AddRange(turnManager.waterTiles.Cast<Tile>().ToList());
+        }
+        return debuffList;
+    }
     #endregion
 }

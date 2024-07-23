@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359fb6b30e863e441a8cced983660d07, type: 3}
   m_Name: CharacterUIConfig
   m_EditorClassIdentifier: 
+  health: {fileID: 21300000, guid: 3c42cbca5d455454c91609254bf5e977, type: 3}
+  attack: {fileID: 21300000, guid: c1c69825280cd3f4fb7e9640ed84d9e4, type: 3}
+  movement: {fileID: 21300000, guid: e8718dc7aecd5784fa60321f5625407b, type: 3}
   fire: {fileID: 21300000, guid: 4298e1f2d51919f44864667477986423, type: 3}
   water: {fileID: 21300000, guid: 04dbd8afd526e544ab97705e667592b2, type: 3}
   grass: {fileID: 21300000, guid: 0a14b48ccb9c91245a1185123cf4bb23, type: 3}
@@ -20,7 +23,20 @@ MonoBehaviour:
   wet: {fileID: 21300000, guid: 961986c1ec78d484aa0057d76f2333b1, type: 3}
   haste: {fileID: 21300000, guid: 13b2dfe206fa1b042916c4df85a531a5, type: 3}
   bound: {fileID: 21300000, guid: 4a7a49ef25b257940a2090d2250272b3, type: 3}
+  shield: {fileID: 21300000, guid: 876f98f08a3c40f46829261e499967c2, type: 3}
+  burningVFX: {fileID: 1189578794588731365, guid: 399c7966c819a9d44b7bb8b78a838bb3, type: 3}
+  wetVFX: {fileID: 383013177816539373, guid: 181496632c197a340b959bc845d3a957, type: 3}
+  boundVFX: {fileID: 7603337766330913482, guid: 88b29cb8066e4644aaa2e74d7440b807, type: 3}
+  fireBuffVFX: {fileID: 6118641310466080470, guid: fa814c3700166bd4191e8634ca528c21, type: 3}
+  grassBuffVFX: {fileID: 1919907844964716916, guid: 176b8e1b0db367d488f915ace30ae58c, type: 3}
+  waterBuffVFX: {fileID: 6481163840113184060, guid: 5d6110996d029ef4f9dbc70b29f875a8, type: 3}
+  debuffVFX: {fileID: 8828436616129786434, guid: 15f30e9cb4b1099448c6bca58d4083f9, type: 3}
+  shortFireBuffVFX: {fileID: 1420379453168875999, guid: 95c7fce76081afe479f247e61d9f5761, type: 3}
+  shortGrassBuffVFX: {fileID: 2363373673609122019, guid: 15c46c8cc4d79b24abe89daff133c9b3, type: 3}
+  shortWaterBuffVFX: {fileID: 4976641656096943433, guid: 110dee3a4c0e1014c87ae814cb84b1e1, type: 3}
+  shortDebuffVFX: {fileID: 9092346908489638647, guid: 2b19a88f1ae63f24e95b994bb80f2fc9, type: 3}
   burningDetail: Burning effect, can reduce health
   wetDetail: Wet effect, can reduce movement
   hasteDetail: Haste effect, can increase movement
   boundDetail: Bound effect, can't do anything
+  shieldDetail: Shield effect, provides damage resistance
