@@ -15,6 +15,11 @@ public class TileReporter_Dragger : TileReporter
 
     public override void ExecuteAddOnEffect()
     {
+        if(currentTile == null)
+        {
+            return;
+        }
+
         Pathfinder pathFinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
         pathFinder.PathTilesInRange(currentTile, 0, dragRange, true, false);
         List<Tile> dragTile = new List<Tile>(pathFinder.frontier);
