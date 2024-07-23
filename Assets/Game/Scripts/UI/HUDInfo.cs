@@ -393,6 +393,8 @@ public class HUDInfo : MonoBehaviour
     private void ButtonsAddListener()
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
+        undo.onClick.AddListener(() => playerTurn.UndoAction());
+        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
         
         endTurn.onClick.AddListener(() =>
         {
@@ -403,8 +405,7 @@ public class HUDInfo : MonoBehaviour
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         });
-        undo.onClick.AddListener(() => playerTurn.UndoAction());
-        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
+
         fast.onClick.AddListener(() => 
         {
             if (GameManager.Instance.IsFast)
@@ -443,13 +444,23 @@ public class HUDInfo : MonoBehaviour
         heroButtons.Clear();
         characterInfoDict.Clear();
 
+        pause.onClick.RemoveAllListeners();
+        undo.onClick.RemoveAllListeners();
+        question.onClick.RemoveAllListeners();
         endTurn.onClick.RemoveAllListeners();
         endTurn.GetComponent<Image>().color = Color.white;
+        fast.onClick.RemoveAllListeners();
+
         turnIndicator.ResetTurn();
 
         availableHeroes = 0;
         activeHeroes = 0;
+
         selectedHero = null;
+        selectedEnemy = null;
+        selectedObject = null;
+        selectedTile = null;
+        showInfos = true;
     }
     #endregion
 

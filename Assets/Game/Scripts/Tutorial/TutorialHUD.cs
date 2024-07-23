@@ -368,12 +368,17 @@ public class TutorialHUD : MonoBehaviour
         heroButtons.Clear();
         characterInfoDict.Clear();
 
+        pause.onClick.RemoveAllListeners();
         endTurn.onClick.RemoveAllListeners();
         endTurn.GetComponent<Image>().color = Color.white;
+        question.onClick.RemoveAllListeners();
 
         availableHeroes = 0;
         activeHeroes = 0;
         selectedHero = null;
+        selectedEnemy = null;
+        selectedTile = null;
+        showInfos = true;
     }
     #endregion
 

@@ -12,6 +12,7 @@ public class TileObject : MonoBehaviour
     [SerializeField] public TileObjectSO tileObjectData;
     [HideInInspector] public float currentHealth = 0f;
     [SerializeField] public TileObjectHealthBar healthBar;
+    [SerializeField] protected GameObject damagePrefab;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
     [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
@@ -65,6 +66,10 @@ public class TileObject : MonoBehaviour
         currentHealth -= attackDamage;
 
         UpdateHealthBar?.Invoke();
+
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(attackDamage);
 
         if (currentHealth <= 0)
         {
