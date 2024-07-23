@@ -36,6 +36,12 @@ public class CharacterUIConfig : ScriptableObject
     public GameObject waterBuffVFX;
     public GameObject debuffVFX;
 
+    [Header("Tile Effect VFX")]
+    public GameObject shortFireBuffVFX;
+    public GameObject shortGrassBuffVFX;
+    public GameObject shortWaterBuffVFX;
+    public GameObject shortDebuffVFX;
+
     [Header("Status Description")]
     [TextArea(3, 10)] public string burningDetail;
     [TextArea(3, 10)] public string wetDetail;

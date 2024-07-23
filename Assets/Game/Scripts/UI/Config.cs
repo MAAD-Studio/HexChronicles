@@ -28,6 +28,28 @@ public class Config : Singleton<Config>
         return characterUIConfig.debuffVFX;
     }
 
+    public GameObject GetShortBuffVFX(ElementType elementType)
+    {
+        if (elementType == ElementType.Fire)
+        {
+            return characterUIConfig.fireBuffVFX;
+        }
+        else if (elementType == ElementType.Water)
+        {
+            return characterUIConfig.waterBuffVFX;
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            return characterUIConfig.grassBuffVFX;
+        }
+        return null;
+    }
+
+    public GameObject GetShortBuffVFX()
+    {
+        return characterUIConfig.debuffVFX;
+    }
+
     public Sprite GetStatSprite(string statType)
     {
         if (statType == "health")

@@ -56,7 +56,7 @@ public class LevelDetailUI : MonoBehaviour
             Image enemyImage = new GameObject("Enemy" + i).AddComponent<Image>();
             enemyImage.transform.SetParent(enemiesPanel.transform);
             enemyImage.rectTransform.localScale = Vector3.one;
-            enemyImage.rectTransform.sizeDelta = new Vector2(60, 60);
+            enemyImage.rectTransform.sizeDelta = new Vector2(80, 80);
             enemies.Add(enemyImage);
             enemies[i].sprite = level.enemies[i].attributes.avatar;
         }
