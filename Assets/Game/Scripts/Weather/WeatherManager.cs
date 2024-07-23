@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeatherManager : Singleton<WeatherManager>
+public class WeatherManager : MonoBehaviour
 {
     #region Variables
 

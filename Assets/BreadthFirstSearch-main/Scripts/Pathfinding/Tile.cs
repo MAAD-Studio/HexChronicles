@@ -253,7 +253,8 @@ public class Tile : MonoBehaviour
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        if(!underWeatherAffect && !(WeatherManager.Instance.GetWeatherElementType() == character.elementType))
+        WeatherManager weatherManager = FindObjectOfType<WeatherManager>();
+        if(!underWeatherAffect && !(weatherManager.GetWeatherElementType() == character.elementType))
         {
             characterTimeOnTile += 1;
         }
