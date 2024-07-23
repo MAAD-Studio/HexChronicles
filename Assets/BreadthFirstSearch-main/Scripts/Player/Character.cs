@@ -200,7 +200,11 @@ public class Character : MonoBehaviour
         }
         else if (elementType == ElementType.Water)
         {
-            currentHealth = maxHealth;
+            currentHealth += 4;
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
             UpdateHealthBar?.Invoke();
             MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
 
