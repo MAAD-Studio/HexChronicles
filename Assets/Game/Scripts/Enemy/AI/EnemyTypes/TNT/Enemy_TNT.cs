@@ -55,7 +55,7 @@ public class Enemy_TNT : Enemy_Base
                 }
                 else
                 {
-                    UndoManager.Instance.StoreEnemy((Enemy_Base)characterOnTile);
+                    UndoManager.Instance.StoreEnemy((Enemy_Base)characterOnTile, false);
                 }
 
                 if (tile.cost == 1)

@@ -722,7 +722,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         foreach (Enemy_Base enemy in areaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy))
         {
-            UndoManager.Instance.StoreEnemy(enemy);
+            UndoManager.Instance.StoreEnemy(enemy, false);
         }
 
         foreach(TileObject tileObj in areaPrefab.ObjectsHit())

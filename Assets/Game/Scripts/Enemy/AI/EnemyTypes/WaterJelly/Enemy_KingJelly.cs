@@ -67,6 +67,7 @@ public class Enemy_KingJelly : Enemy_Base
                 Enemy_SoloJelly newSoloJelly = newObject.GetComponent<Enemy_SoloJelly>();
                 newSoloJelly.FindTile();
                 turnManager.enemyList.Add(newSoloJelly);
+                UndoManager.Instance.StoreEnemy(newSoloJelly, true);
             }
             else
             {
@@ -75,6 +76,7 @@ public class Enemy_KingJelly : Enemy_Base
                 newMasterJelly.FindTile();
                 masterJellySpawned = true;
                 turnManager.enemyList.Add(newMasterJelly);
+                UndoManager.Instance.StoreEnemy(newMasterJelly, true);
             }
 
             slimesSpawned++;

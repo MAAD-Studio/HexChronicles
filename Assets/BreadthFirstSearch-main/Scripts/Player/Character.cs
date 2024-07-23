@@ -287,7 +287,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            UndoManager.Instance.StoreEnemy((Enemy_Base)target);
+            UndoManager.Instance.StoreEnemy((Enemy_Base)target, false);
         }
 
         Status oldStatus = Status.GrabIfStatusActive(target, statusType);
