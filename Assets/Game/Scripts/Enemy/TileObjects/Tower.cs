@@ -119,6 +119,10 @@ public class Tower : Spawner
 
         UpdateHealthBar?.Invoke();
 
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(attackDamage);
+
         if (currentHealth <= 0)
         {
             if(spawnedAttackArea != null)
