@@ -76,7 +76,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
         if(closestCharacter != null)
         {
-            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position + new Vector3(0, 5f, 0), Quaternion.identity);
+            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position, Quaternion.identity);
         }
     }
 
