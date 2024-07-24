@@ -398,7 +398,7 @@ public class HUDInfo : MonoBehaviour
         
         endTurn.onClick.AddListener(() =>
         {
-            if (selectedCharacter != null && selectedCharacter.moving)
+            if (selectedCharacter != null && !playerTurn.AllowSelection)
             {
                 return;
             }

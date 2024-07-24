@@ -9,11 +9,12 @@ public abstract class HealthBar : MonoBehaviour
 {
     [SerializeField] protected TextMeshProUGUI characterName;
     [SerializeField] protected TextMeshProUGUI hpText;
-    [SerializeField] protected Image health;
-    [SerializeField] protected Image previewHealth;
-    [SerializeField] protected RectTransform healthBar;
     [SerializeField] protected RectTransform parentBar;
-
+    [SerializeField] protected RectTransform healthRect;
+    [SerializeField] protected Slider healthBar;
+    [SerializeField] protected RectTransform previewRect;
+    [SerializeField] protected Slider previewBar;
+    
     [SerializeField] protected GameObject statusField;
     [SerializeField] protected GameObject statusPrefab;
 
@@ -22,7 +23,7 @@ public abstract class HealthBar : MonoBehaviour
     protected abstract void UpdateHealthBar();
     protected abstract void UpdateStatus();
 
-    protected IEnumerator AnimateHealthBar(float targetFillAmount, bool isPreview)
+    protected IEnumerator AnimateHealthBar(float targetValue, bool isPreview)
     {
         float elapsedTime = 0f;
         float animationDuration = 1.5f;
@@ -30,11 +31,11 @@ public abstract class HealthBar : MonoBehaviour
         {
             if (isPreview)
             {
-                previewHealth.fillAmount = Mathf.Lerp(previewHealth.fillAmount, targetFillAmount, elapsedTime / animationDuration);
+                previewBar.value = Mathf.Lerp(previewBar.value, targetValue, elapsedTime / animationDuration);
             }
             else
             {
-                health.fillAmount = Mathf.Lerp(health.fillAmount, targetFillAmount, elapsedTime / animationDuration);
+                healthBar.value = Mathf.Lerp(healthBar.value, targetValue, elapsedTime / animationDuration);
             }
 
             elapsedTime += Time.deltaTime;
