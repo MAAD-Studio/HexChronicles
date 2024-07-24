@@ -35,7 +35,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public Vector3 defaultScale;
 
     [Header("Tile LayerMask:")]
-    [SerializeField] private LayerMask tileLayer;
+    [SerializeField] protected LayerMask tileLayer;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;

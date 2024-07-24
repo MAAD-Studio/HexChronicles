@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_SoloJelly : Enemy_Base
+public class Enemy_SoloJelly : Jelly_Base
 {
     #region Variables
 
