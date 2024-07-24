@@ -21,7 +21,12 @@ public class SettingsManager : Singleton<SettingsManager>
     public override void Awake()
     {
         base.Awake();
-        Debug.Assert(audioMixer != null, "AudioMixer is not assigned in SettingsManager");
+
+        if (audioMixer == null)
+        {
+            audioMixer = Resources.Load<AudioMixer>("Audio/AudioMixer");
+        }
+        Debug.Assert(audioMixer != null, "SettingsManager can't find AudioMixer");
 
         LoadAllSettings();
     }

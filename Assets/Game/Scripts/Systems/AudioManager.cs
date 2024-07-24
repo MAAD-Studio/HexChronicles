@@ -1,23 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Audio;
-using System;
 
 /// <summary>
 /// Manages all audio playback for the game, including sound effects and music.
 /// </summary>
 public class AudioManager : Singleton<AudioManager>
 {
-    [SerializeField]
-    private AudioMixer audioMixer; // Reference to the game's main AudioMixer
+    [SerializeField] private AudioMixer audioMixer; // Reference to the game's main AudioMixer
 
     private AudioSource musicSource; // Dedicated AudioSource for music playback
     private AudioSource sfxSource; // Dedicated AudioSource for sound effects
 
-    [SerializeField]
-    private List<AudioSO> audios = new List<AudioSO>(); // List of Sound Effect Audio ScriptableObjects
-    [SerializeField]
-    private List<AudioSO> musics = new List<AudioSO>(); // List of Music Audio ScriptableObjects
+    [SerializeField] private List<AudioSO> audios = new List<AudioSO>(); // List of Sound Effect Audio ScriptableObjects
+    [SerializeField] private List<AudioSO> musics = new List<AudioSO>(); // List of Music Audio ScriptableObjects
 
     private Dictionary<string, AudioSO> audioDictionary = new(); // Maps audio names to their AudioSO
 
@@ -47,7 +43,11 @@ public class AudioManager : Singleton<AudioManager>
         musicSource = gameObject.AddComponent<AudioSource>();
         sfxSource = gameObject.AddComponent<AudioSource>();
 
-        Debug.Assert(audioMixer != null, "AudioMixer is not assigned in AudioManager");
+        if (audioMixer == null)
+        {
+            audioMixer = Resources.Load<AudioMixer>("Audio/AudioMixer");
+        }
+        Debug.Assert(audioMixer != null, "AudioManager can't find AudioMixer");
 
         musicSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Music")[0];
         sfxSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
