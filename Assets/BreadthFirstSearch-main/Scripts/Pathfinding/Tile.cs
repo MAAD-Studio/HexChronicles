@@ -290,7 +290,7 @@ public class Tile : MonoBehaviour
 
         if(tile.underWeatherAffect)
         {
-            //tile.ChangeTileWeather(TileEnums.TileWeather.rain);
+            tile.ChangeTileWeather(true, weatherRenderer.material);
         }
 
         if(characterOnTile != null)
@@ -304,6 +304,7 @@ public class Tile : MonoBehaviour
         TransferTileData(newTile);
         tileReplaced.Invoke(this, newTile);
 
+        transform.position += new Vector3(0, 10, 0);
         Destroy(gameObject);
     }
 

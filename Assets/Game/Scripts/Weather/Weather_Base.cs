@@ -42,7 +42,7 @@ public class Weather_Base : MonoBehaviour
     {
     }
 
-    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
     }
 
