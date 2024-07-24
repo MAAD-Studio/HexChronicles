@@ -29,12 +29,18 @@ public class EnemyHealthBar : HealthBar
 
         characterName.text = enemy.enemySO.name.ToString();
         atkPercentage.text = (100 - enemy.enemySO.attributes.defensePercentage).ToString() + "%";
-        hpText.text = enemy.enemySO.attributes.health.ToString();
 
-        float width = enemy.enemySO.attributes.health * 10f;
-        healthBar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
-        previewHealth.fillAmount = 1;
-        health.fillAmount = 1;
+        float maxHealth = enemy.enemySO.attributes.health;
+        hpText.text = maxHealth.ToString();
+
+        float width = maxHealth * 10f;
+        healthRect.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), healthRect.sizeDelta.y);
+        previewRect.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), previewRect.sizeDelta.y);
+
+        healthBar.maxValue = maxHealth;
+        healthBar.value = maxHealth;
+        previewBar.maxValue = maxHealth;
+        previewBar.value = maxHealth;
 
         prediction.Hide();
     }
@@ -58,8 +64,8 @@ public class EnemyHealthBar : HealthBar
     {
         //TODO: Done Preview is now happening every time right after Preview
         hpText.text = enemy.currentHealth.ToString();
-        previewHealth.fillAmount = enemy.currentHealth / enemy.maxHealth;
-        health.fillAmount = previewHealth.fillAmount;
+        previewBar.value = enemy.currentHealth;
+        healthBar.value = previewBar.value;
 
         prediction.Hide();
         killIcon.gameObject.SetActive(false);
@@ -74,15 +80,15 @@ public class EnemyHealthBar : HealthBar
         {
             killIcon.gameObject.SetActive(true);
             newHealth = 0;
+            previewBar.value = previewBar.minValue;
         }
         else
         {
             killIcon.gameObject.SetActive(false);
+            previewBar.value = newHealth;
         }
 
         hpText.text = newHealth.ToString();
-        previewHealth.fillAmount = newHealth / enemy.maxHealth;
-        //StartCoroutine(AnimateHealthBar(newHealth / enemy.maxHealth, true));
 
         prediction.gameObject.SetActive(true);
         prediction.ShowHealth(enemy.currentHealth, newHealth);
@@ -91,9 +97,18 @@ public class EnemyHealthBar : HealthBar
 
     protected override void UpdateHealthBar()
     {
-        hpText.text = enemy.currentHealth.ToString();
-        previewHealth.fillAmount = enemy.currentHealth / enemy.maxHealth;
-        StartCoroutine(AnimateHealthBar(enemy.currentHealth / enemy.maxHealth, false));
+        float currentHealth = enemy.currentHealth;
+        hpText.text = currentHealth.ToString();
+        if (currentHealth <= 0)
+        {
+            previewBar.value = previewBar.minValue;
+            StartCoroutine(AnimateHealthBar(healthBar.minValue, false));
+        }
+        else
+        {
+            previewBar.value = currentHealth;
+            StartCoroutine(AnimateHealthBar(currentHealth, false));
+        }
     }
 
     protected override void UpdateStatus()

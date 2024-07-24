@@ -17,20 +17,34 @@ public class HeroHealthBar : HealthBar
         hero.UpdateStatus.AddListener(UpdateStatus);
 
         characterName.text = hero.heroSO.attributes.name.ToString();
-        hpText.text = hero.heroSO.attributes.health.ToString();
+
+        float maxHealth = hero.heroSO.attributes.health;
+        hpText.text = maxHealth.ToString();
 
         float width = hero.heroSO.attributes.health * 10f;
-        healthBar.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), health.rectTransform.sizeDelta.y);
-
-        previewHealth.fillAmount = 1;
-        health.fillAmount = 1;
+        healthRect.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), healthRect.sizeDelta.y);
+        previewRect.sizeDelta = new Vector2(Mathf.Clamp(width, 60, 100), previewRect.sizeDelta.y);
+        
+        healthBar.maxValue = maxHealth;
+        healthBar.value = maxHealth;
+        previewBar.maxValue = maxHealth;
+        previewBar.value = maxHealth;
     }
 
     protected override void UpdateHealthBar()
     {
-        hpText.text = hero.currentHealth.ToString();
-        previewHealth.fillAmount = hero.currentHealth / hero.maxHealth;
-        StartCoroutine(AnimateHealthBar(hero.currentHealth / hero.maxHealth, false));
+        float currentHealth = hero.currentHealth;
+        hpText.text = currentHealth.ToString();
+        if (currentHealth <= 0)
+        {
+            previewBar.value = previewBar.minValue;
+            StartCoroutine(AnimateHealthBar(healthBar.minValue, false));
+        }
+        else
+        {
+            previewBar.value = currentHealth;
+            StartCoroutine(AnimateHealthBar(currentHealth, false));
+        }
     }
 
     protected override void UpdateStatus()
