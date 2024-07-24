@@ -83,16 +83,6 @@ public class WeatherPatch
                 }
             }
         }
-
-        /*Debug.Log("------------------------------");
-        foreach(Tile tile in effectedTiles)
-        {
-            if(tile.tileData.tileType == ElementType.Water)
-            {
-                Debug.Log("Tile Name: " + tile.name);
-            }
-        }
-        Debug.Log("------------------------------");*/
     }
 
     //Moves the Weather patch to a new location

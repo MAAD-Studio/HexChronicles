@@ -45,20 +45,14 @@ public class Weather_Rain : Weather_Base
 
     public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
-        foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
-        {
-            Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
-            patch.TileReplaced(adjTile, newTile);
-            adjTile.ReplaceTileWithNew(newTile);
-        }
-
-        /*ElementType type = tile.tileData.tileType;
+        ElementType type = tile.tileData.tileType;
 
         if(type == ElementType.Water)
         {
             foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
             {
                 Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
+                patch.TileReplaced(adjTile, newTile);
                 adjTile.ReplaceTileWithNew(newTile);
             }
         }
@@ -75,7 +69,7 @@ public class Weather_Rain : Weather_Base
                     ApplyStatusToCharacter(adjTile.characterOnTile, Status.StatusTypes.Bound);
                 }
             }
-        }*/
+        }
     }
 
     #endregion

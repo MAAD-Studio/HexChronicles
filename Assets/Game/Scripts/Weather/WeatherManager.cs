@@ -133,11 +133,6 @@ public class WeatherManager : MonoBehaviour
     {
         tilesOnMap.Remove(oldTile);
         tilesOnMap.Add(newTile);
-
-        /*foreach(WeatherPatch patch in weatherPatches)
-        {
-            patch.TileReplaced(oldTile, newTile);
-        }*/
     }
 
     public ElementType GetWeatherElementType()

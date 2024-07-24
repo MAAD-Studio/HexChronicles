@@ -36,7 +36,7 @@ public class Enemy_Gangsta : Enemy_Base
         int valueOfAttack = 0;
         foreach (Character character in charactersToCheck)
         {
-            valueOfAttack += 5;
+            valueOfAttack += 25;
 
             //Bias towards remaining on current tile
             if (currentTile == characterTile)

@@ -210,7 +210,6 @@ public class EnemyBrain : MonoBehaviour
             }
             else
             {
- 
                 combinationChoice = PickCombination();
             }
 
@@ -431,6 +430,7 @@ public class EnemyBrain : MonoBehaviour
 
         if (attackingComboFound)
         {
+            Debug.Log("ATTACKING COMBO FOUND");
             foreach (int key in keysToRemove)
             {
                 RemoveCombination(key);
@@ -439,6 +439,7 @@ public class EnemyBrain : MonoBehaviour
         }
         else
         {
+            Debug.Log("NO ATTACKING COMBO FOUND");
             return false;
         }
     }

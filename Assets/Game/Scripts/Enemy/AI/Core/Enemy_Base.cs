@@ -69,7 +69,7 @@ public class Enemy_Base : Character, EnemyInterface
         int valueOfAttack = 0;
         foreach (Character character in charactersToCheck)
         {
-            valueOfAttack += 5;
+            valueOfAttack += 25;
 
             //Bias towards remaining on current tile
             if (currentTile == characterTile)
