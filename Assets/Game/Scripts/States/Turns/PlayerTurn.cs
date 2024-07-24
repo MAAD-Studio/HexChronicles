@@ -54,6 +54,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
 
     bool allowSelection = true;
+    public bool AllowSelection { get { return allowSelection; } }
 
     //TUTORIAL
     public Tile desiredTile = null;
@@ -798,7 +799,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if(selectedCharacter.elementType == currentTile.tileData.tileType)
                 {
-                    selectedCharacter.SpawnBuffPreview(phantom.transform.position, 1f);
+                    selectedCharacter.SpawnBuffPreview(phantom.transform.position, 0.5f);
                 }
                 else
                 {
