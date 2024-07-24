@@ -43,7 +43,7 @@ public class Weather_SporeStorm : Weather_Base
         }
     }
 
-    public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
         ElementType type = tile.tileData.tileType;
 

@@ -8,6 +8,11 @@ public class WeatherPatch
     #region Variables
 
     private List<Tile> effectedTiles = new List<Tile>();
+    public List<Tile> EffectedTiles
+    { 
+        get { return effectedTiles; } 
+    }
+
     private List<Character> effectedCharacters = new List<Character>();
 
     private Tile origin;
@@ -30,6 +35,7 @@ public class WeatherPatch
         movementPerTurn = movement;
         weather = weatherType;
 
+        ResetWeatherTiles();
         DetermineAreaOfAffect();
         IllustrateAreaOfEffect();
     }
@@ -37,8 +43,6 @@ public class WeatherPatch
     //Determines the Tiles the Weather will effect
     private void DetermineAreaOfAffect()
     {
-        ResetWeatherTiles();
-
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(origin);
         effectedTiles.Add(origin);
@@ -62,11 +66,11 @@ public class WeatherPatch
                 {
                     if(maxSpread > 2)
                     {
-                        newCost = currentTile.weatherCost + Random.Range(1, maxSpread - 1);
+                        newCost = currentTile.weatherCost + Random.Range(1, 3);
                     }
                     else
                     {
-                        newCost = currentTile.weatherCost + Random.Range(1, maxSpread);
+                        newCost = currentTile.weatherCost + Random.Range(1, 2);
                     }
                 }
                 adjacentTile.weatherCost = newCost;
@@ -79,6 +83,16 @@ public class WeatherPatch
                 }
             }
         }
+
+        /*Debug.Log("------------------------------");
+        foreach(Tile tile in effectedTiles)
+        {
+            if(tile.tileData.tileType == ElementType.Water)
+            {
+                Debug.Log("Tile Name: " + tile.name);
+            }
+        }
+        Debug.Log("------------------------------");*/
     }
 
     //Moves the Weather patch to a new location
@@ -108,10 +122,14 @@ public class WeatherPatch
         }
     }
 
-    public void UpdateAndEffect(TurnManager turnManager)
+    public IEnumerator UpdateAndEffect(TurnManager turnManager)
     {
         ApplyWeatherEffect(turnManager);
         MoveOrigin();
+        ResetWeatherTiles();
+
+        yield return null;
+
         DetermineAreaOfAffect();
         IllustrateAreaOfEffect();
     }
@@ -140,7 +158,7 @@ public class WeatherPatch
         if(potentialEffectTiles.Count > 0)
         {
             int tileChoice = Random.Range(0, potentialEffectTiles.Count);
-            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager);
+            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager, this);
         }
 
     }

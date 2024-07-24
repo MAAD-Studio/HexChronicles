@@ -11,6 +11,10 @@ public class WeatherManager : MonoBehaviour
 
     private List<Tile> tilesOnMap = new List<Tile>();
     private List<WeatherPatch> weatherPatches = new List<WeatherPatch>();
+    public List<WeatherPatch> WeatherPatches
+    {
+        get { return weatherPatches; }
+    }
 
     private bool weatherActive = false;
 
@@ -98,7 +102,7 @@ public class WeatherManager : MonoBehaviour
         {
             foreach(WeatherPatch patch in weatherPatches)
             {
-                patch.UpdateAndEffect(turnManager);
+                StartCoroutine(patch.UpdateAndEffect(turnManager));
             }
             turnsActive++;
         }
@@ -130,10 +134,10 @@ public class WeatherManager : MonoBehaviour
         tilesOnMap.Remove(oldTile);
         tilesOnMap.Add(newTile);
 
-        foreach(WeatherPatch patch in weatherPatches)
+        /*foreach(WeatherPatch patch in weatherPatches)
         {
             patch.TileReplaced(oldTile, newTile);
-        }
+        }*/
     }
 
     public ElementType GetWeatherElementType()

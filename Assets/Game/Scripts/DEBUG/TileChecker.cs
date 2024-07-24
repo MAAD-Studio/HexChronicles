@@ -8,6 +8,10 @@ public class TileChecker : MonoBehaviour
 
     [SerializeField] private LayerMask tileLayer;
 
+    [Header("Weather Checking: ")]
+    [SerializeField] private WeatherManager weatherManager;
+    [SerializeField] private Material weatherMaterial;
+
     #endregion
 
     #region UnityMethods
@@ -22,6 +26,14 @@ public class TileChecker : MonoBehaviour
         {
             CheckSpotAndAdjacent();
         }
+        else if(Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            ExamineWeather();
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            ChangeWeather();
+        }
     }
 
     #endregion
@@ -30,11 +42,11 @@ public class TileChecker : MonoBehaviour
 
     private Tile CheckSpot()
     {
+        Debug.Log("------------------");
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 10f, tileLayer))
         {
             Tile hitTile = hit.transform.GetComponent<Tile>();
             Debug.Log("Tile Name: " + hitTile.name);
-            Debug.Log("Weather Status: " + hitTile.underWeatherAffect);
             return hitTile;
         }
         else
@@ -51,6 +63,11 @@ public class TileChecker : MonoBehaviour
 
     private void CheckAdjacentTiles(Tile origin)
     {
+        if (origin == null)
+        {
+            return;
+        }
+
         Vector3 direction = Vector3.forward;
         float rayLength = 50f;
         float rayHeightOffset = 1f;
@@ -72,6 +89,47 @@ public class TileChecker : MonoBehaviour
                 Debug.Log(hitTile.name);
             }
         }
+    }
+
+    private void ExamineWeather()
+    {
+        if(weatherManager == null)
+        {
+            Debug.Log("NO WEATHER MANAGER SET");
+            return;
+        }
+
+        Tile tile = CheckSpot();
+        if (tile == null)
+        {
+            return;
+        }
+
+        Debug.Log("Weather Status: " + tile.underWeatherAffect);
+        foreach(WeatherPatch patch in weatherManager.WeatherPatches)
+        {
+            if(patch.EffectedTiles.Contains(tile))
+            {
+                Debug.Log("Weather is Effected?: true");
+            }
+        }
+    }
+
+    private void ChangeWeather()
+    {
+        if(weatherMaterial == null)
+        {
+            Debug.Log("NO WEATHER MATERIAL SET");
+            return;
+        }
+
+        Tile tile = CheckSpot();
+        if(tile == null)
+        {
+            return;
+        }
+
+        tile.ChangeTileWeather(true, weatherMaterial);
     }
 
     #endregion
