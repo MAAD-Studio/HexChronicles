@@ -37,6 +37,8 @@ public class Jelly_Base : Enemy_Base
                 {
                     FinalizeTileChoice(hit.transform.GetComponent<Tile>());
                 }
+
+                healthBar.gameObject.SetActive(true);
                 performLaunch = false;
 
                 return;
@@ -58,6 +60,8 @@ public class Jelly_Base : Enemy_Base
 
     public void InitiateArch(Vector3 endPos, float launchspeed, float launchHeight)
     {
+        healthBar.gameObject.SetActive(false);
+
         startPosition = transform.position;
         endPosition = endPos;
         archPeak = (endPosition - startPosition) + transform.position;

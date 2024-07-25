@@ -62,7 +62,7 @@ public class Enemy_KingJelly : Jelly_Base
         int slimesSpawned = 0;
         List<Tile> potentialTiles = new List<Tile>(turnManager.pathfinder.frontier);
 
-        while (slimesSpawned < slimeCount + 5 && potentialTiles.Count > 0)
+        while (slimesSpawned < slimeCount && potentialTiles.Count > 0)
         {
             int choice = UnityEngine.Random.Range(0, potentialTiles.Count);
             Vector3 spawnPoint = potentialTiles[choice].transform.position;
