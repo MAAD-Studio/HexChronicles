@@ -94,8 +94,7 @@ public class Character : MonoBehaviour
 
     public virtual void PerformBasicAttack(List<Character> targets)
     {
-        animator.SetTrigger("attack");
-
+        //animator.SetTrigger("attack");
         if (characterTile.tileData.tileType == elementType)
         {
             ApplyStatusAttackArea(targets);
@@ -911,23 +910,32 @@ public class Character : MonoBehaviour
             if(attackAreaPrefab.hitsEnemies)
             {
                 enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(enemiesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(enemiesHit);
+                }
             }
-            if(attackAreaPrefab.hitsHeroes)
+            if (attackAreaPrefab.hitsHeroes)
             {
                 heroesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Player);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(heroesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(heroesHit);
+                }
             }
 
-            if (activeSkillUse)
+            if (attackAreaPrefab.hitsTileObjects)
             {
-                ReleaseActiveSkill(enemiesHit);
-                ReleaseActiveSkill(heroesHit);
+                PerformBasicAttackObjects(objectsHit);
             }
-            else
-            {
-                PerformBasicAttack(enemiesHit);
-                PerformBasicAttack(heroesHit);
-            }
-            PerformBasicAttackObjects(objectsHit);
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
 

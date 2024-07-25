@@ -83,6 +83,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
+        animator.SetTrigger("attack");
         List<Character> charactersToCheck;
         if (!mindControl)
         {

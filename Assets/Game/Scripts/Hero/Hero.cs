@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,9 @@ public class Hero : Character
     }
 
     [Header("Upgrades:")]
-    public List<BasicUpgrade> upgradeList; 
+    public List<BasicUpgrade> upgradeList;
+
+    private List<Character> currentTargets;
 
     protected override void Start()
     {
@@ -102,41 +105,59 @@ public class Hero : Character
             SpawnTileVFX(transform.position, false);
         }
 
-        foreach (var target in targets)
+        if (targets.Count != 0)
+        {
+            currentTargets = targets;
+            animator.SetTrigger("attack");
+
+            StartCoroutine(SpawnVFXAndAttack());
+        }
+    }
+
+    private IEnumerator SpawnVFXAndAttack()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (var target in currentTargets)
         {
             SpawnAttackVFX(target);
-
-            int actualDamage = (int)attackDamage;
-            if(Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
-            {
-                attackDamage += 1;
-            }
-
-            target.TakeDamage(actualDamage, elementType);
         }
-
-        base.PerformBasicAttack(targets);
     }
 
     private void SpawnAttackVFX(Character target)
     {
+        GameObject vfx = null;
         if (elementType == ElementType.Fire)
         {
-            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
             vfx.transform.rotation = Quaternion.LookRotation(transform.forward);
-            Destroy(vfx, 3f);
         }
         else if (elementType == ElementType.Water)
         {
-            GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
-            Destroy(vfx, 3f);
+            vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
         }
         else if (elementType == ElementType.Grass)
         {
-            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
             vfx.transform.LookAt(target.transform.position);
-            //Destroy(vfx, 3f);
         }
+
+        AttackVFX attack = vfx.GetComponent<AttackVFX>();
+        attack.Initialize(target, ActualBasicAttack);
+    }
+
+    // Called by AttackVFX when the VFX hits the target
+    private void ActualBasicAttack(Character target)
+    {
+        int actualDamage = (int)attackDamage;
+        if (Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
+        {
+            attackDamage += 1;
+        }
+
+        target.TakeDamage(actualDamage, elementType);
+
+        base.PerformBasicAttack(currentTargets);
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)
