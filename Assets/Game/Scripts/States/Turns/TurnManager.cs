@@ -53,10 +53,12 @@ public class TurnManager : MonoBehaviour
     private int objectiveTurnNumber = 8;
 
     //TUTORIAL USES
+    [Header("Tutorial Controls: ")]
     public bool isTutorial = false;
-    public bool disablePlayers = false;
-    public bool disableEnemies = false;
-    public bool disableObjects = false;
+    [HideInInspector] public bool disablePlayers = false;
+    [HideInInspector] public bool disableEnemies = false;
+    [HideInInspector] public bool disableObjects = false;
+    [HideInInspector] public bool disableEnd = false;
 
     public TurnEnums.TurnState TurnType
     {

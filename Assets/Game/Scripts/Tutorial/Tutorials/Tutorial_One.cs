@@ -70,6 +70,7 @@ public class Tutorial_One : Tutorial_Base
                 turnManager.disablePlayers = true;
                 turnManager.disableObjects = true;
                 turnManager.disableEnemies = true;
+                turnManager.disableEnd = true;
 
                 internalTutorialStep++;
                 break;
@@ -81,6 +82,8 @@ public class Tutorial_One : Tutorial_Base
 
                     dialogueToDisplay.Add(turnOneDialogue[1]);
                     dialogueToDisplay.Add(turnOneDialogue[2]);
+                    dialogueToDisplay.Add(turnOneDialogue[3]);
+                    dialogueToDisplay.Add(turnOneDialogue[4]);
                     EnterDialogue(dialogueToDisplay.ToArray());
 
                     internalTutorialStep++;
@@ -92,10 +95,9 @@ public class Tutorial_One : Tutorial_Base
                 {
                     cameraController.MoveToTargetPosition(enemyOne.transform.position, true);
 
-                    dialogueToDisplay.Add(turnOneDialogue[3]);
+                    dialogueToDisplay.Add(turnOneDialogue[5]);
                     EnterDialogue(dialogueToDisplay.ToArray());
 
-                    turnManager.disableEnemies = false;
                     turnManager.PlayerTurn.desiredEnemy = enemyOne;
 
                     internalTutorialStep++;
@@ -103,6 +105,11 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 3:
+                if(dialogueJustEnded)
+                {
+                    turnManager.disableEnemies = false;
+                }
+
                 if(spawnedHighlight == null)
                 {
                     spawnedHighlight = TemporaryMarker.GenerateMarker(highlightEffect, enemyOne.transform.position, 0f);
@@ -120,9 +127,10 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 4:
-                dialogueToDisplay.Add(turnOneDialogue[4]);
-                dialogueToDisplay.Add(turnOneDialogue[5]);
                 dialogueToDisplay.Add(turnOneDialogue[6]);
+                dialogueToDisplay.Add(turnOneDialogue[7]);
+                dialogueToDisplay.Add(turnOneDialogue[8]);
+                dialogueToDisplay.Add(turnOneDialogue[9]);
                 EnterDialogue(dialogueToDisplay.ToArray());
 
                 internalTutorialStep++;
@@ -135,10 +143,9 @@ public class Tutorial_One : Tutorial_Base
 
                     AttackPreviewer.Instance.ClearAttackArea();
 
-                    dialogueToDisplay.Add(turnOneDialogue[7]);
+                    dialogueToDisplay.Add(turnOneDialogue[10]);
                     EnterDialogue(dialogueToDisplay.ToArray());
 
-                    turnManager.disablePlayers = false;
                     turnManager.PlayerTurn.preventPhaseBackUp = true;
 
                     internalTutorialStep++;
@@ -146,6 +153,11 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 6:
+                if(dialogueJustEnded)
+                {
+                    turnManager.disablePlayers = false;
+                }
+
                 if (spawnedHighlight == null)
                 {
                     spawnedHighlight = TemporaryMarker.GenerateMarker(highlightEffect, fireHero.transform.position, 0f);
@@ -160,15 +172,15 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 7:
-                dialogueToDisplay.Add(turnOneDialogue[8]);
+                dialogueToDisplay.Add(turnOneDialogue[11]);
                 EnterDialogue(dialogueToDisplay.ToArray());
 
                 turnManager.PlayerTurn.desiredTile = lastTileOfFirstMove;
-
                 internalTutorialStep++;
                 break;
 
             case 8:
+
                 if (spawnedHighlight == null)
                 {
                     spawnedHighlight = TemporaryMarker.GenerateMarker(highlightEffect, lastTileOfFirstMove.transform.position, 0.2f);
@@ -185,7 +197,7 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 9:
-                dialogueToDisplay.Add(turnOneDialogue[9]);
+                dialogueToDisplay.Add(turnOneDialogue[12]);
                 EnterDialogue(dialogueToDisplay.ToArray());
 
                 turnManager.PlayerTurn.desiredEnemy = enemyOne;
@@ -211,10 +223,18 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 11:
-                dialogueToDisplay.Add(turnOneDialogue[10]);
+                dialogueToDisplay.Add(turnOneDialogue[13]);
                 EnterDialogue(dialogueToDisplay.ToArray());
 
                 internalTutorialStep++;
+                break;
+
+            case 12:
+                if(dialogueJustEnded)
+                {
+                    turnManager.disableEnd = false;
+                }
+
                 break;
         }
     }

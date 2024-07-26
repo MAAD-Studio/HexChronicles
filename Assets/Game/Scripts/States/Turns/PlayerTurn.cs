@@ -112,7 +112,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public void OnSelectCharacter(object obj)
     {
         CharacterSelected characterSelected = (CharacterSelected)obj;
-        SelectCharacter(characterSelected.character);
+
+        if(turnManager.isTutorial && !turnManager.disablePlayers)
+        {
+            SelectCharacter(characterSelected.character);
+        }
     }
     #endregion
 
@@ -181,6 +185,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void EndTurn()
     {
+        if(turnManager.isTutorial && turnManager.disableEnd)
+        {
+            return;
+        }
+
         if(allowSelection)
         {
             FullReset();
@@ -393,8 +402,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             InspectCharacter();
         }
-        if(currentTile.tileHasObject && !turnManager.disableObjects)
+        if(currentTile.tileHasObject)
         {
+            if (turnManager.isTutorial && turnManager.disableObjects)
+            {
+                return;
+            }
+
             InspectTileObject();
         }
     }
@@ -406,14 +420,24 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (characterType == TurnEnums.CharacterType.Player)
         {
-            if (Input.GetMouseButtonDown(0) && !turnManager.disablePlayers)
+            if(turnManager.isTutorial && turnManager.disablePlayers)
+            {
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(0))
             {
                 SelectCharacter(inspectionCharacter);
             }
         }
         else
         {
-            if(Input.GetMouseButtonDown(0) && !turnManager.disableEnemies)
+            if (turnManager.isTutorial && turnManager.disableEnemies)
+            {
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(0))
             {
                 SelectEnemy(inspectionCharacter);
                 if (selectedTileObject != null)
@@ -539,6 +563,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void GrabCharacter()
     {
+        if(turnManager.isTutorial && turnManager.disablePlayers)
+        {
+            return;
+        }
+
         selectedCharacter = currentTile.characterOnTile;
         selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
         cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
