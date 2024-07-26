@@ -12,6 +12,8 @@ public class TileChecker : MonoBehaviour
     [SerializeField] private WeatherManager weatherManager;
     [SerializeField] private Material weatherMaterial;
 
+    private Tile heldTile = null;
+
     #endregion
 
     #region UnityMethods
@@ -33,6 +35,15 @@ public class TileChecker : MonoBehaviour
         else if(Input.GetKeyDown(KeyCode.Alpha8))
         {
             ChangeWeather();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            HoldTile();
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            CompareTile();
         }
     }
 
@@ -130,6 +141,23 @@ public class TileChecker : MonoBehaviour
         }
 
         tile.ChangeTileWeather(true, weatherMaterial);
+    }
+
+    private void HoldTile()
+    {
+        heldTile = CheckSpot();
+    }
+
+    private void CompareTile()
+    {
+        if(heldTile == null)
+        {
+            Debug.Log("No tile stored");
+            return;
+        }
+
+        Debug.Log("DISTANCE: " + Vector3.Distance(heldTile.transform.position, CheckSpot().transform.position));
+        heldTile = null;
     }
 
     #endregion

@@ -16,7 +16,22 @@ public class Enemy_TNT : Enemy_Base
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        return base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
+        int moveValue = base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
+
+        foreach(Character character in turnManager.characterList)
+        {
+            float distance = Vector3.Distance(tile.transform.position, character.transform.position);
+            if (distance < 2)
+            {
+                moveValue += 10;
+            }
+            else if(distance < 4)
+            {
+                moveValue += 5;
+            }
+        }
+
+        return moveValue;
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)

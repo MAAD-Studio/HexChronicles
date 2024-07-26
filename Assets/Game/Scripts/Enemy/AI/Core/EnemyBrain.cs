@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using UnityEngine.Timeline;
 
 public class EnemyBrain : MonoBehaviour
 {
@@ -22,6 +20,9 @@ public class EnemyBrain : MonoBehaviour
 
     public bool DecisionMakingFinished { get; private set; }
 
+    //DEBUG DEBUG DEBUG
+    public bool slowDown = false;
+
     #endregion
 
     #region UnityMethods
@@ -31,6 +32,15 @@ public class EnemyBrain : MonoBehaviour
         Debug.Assert(turnManager != null, "EnemyBrain doesn't have the TurnManager set");
         nullVector *= 20;
         DecisionMakingFinished = true;
+    }
+
+    //DEBUG DEBUG DEBUG DEBUG
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            slowDown = !slowDown;
+        }
     }
 
     #endregion
@@ -142,9 +152,12 @@ public class EnemyBrain : MonoBehaviour
 
                         //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
                         yield return new WaitForSeconds(0.02f);
-                        enemyAttackArea.DetectArea(false, false);
+                        enemyAttackArea.DetectArea(true, false);
 
-                        valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
+                        if (slowDown)
+                        {
+                            yield return new WaitForSeconds(2f);
+                        }
 
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
                         if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
@@ -154,6 +167,11 @@ public class EnemyBrain : MonoBehaviour
                         else if(mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Enemy).Count == 0)
                         {
                             rotation = nullVector;
+                        }
+
+                        if(rotation != nullVector)
+                        {
+                            valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
                         }
 
                         if (combinations.Count < 5)
@@ -265,6 +283,7 @@ public class EnemyBrain : MonoBehaviour
         }
 
         turnManager.pathfinder.ResetPathFinder();
+        uniqueIds = 0;
         DecisionMakingFinished = true;
     }
 
@@ -325,9 +344,19 @@ public class EnemyBrain : MonoBehaviour
         //Only attempts to replace another combination if one of the previous ones is worse or equal in value
         if (combinationValue >= lowestValue)
         {
+            /*if (attackRotation != nullVector)
+            {
+                Debug.Log("ATTACKER ARRIVED HERE");
+            }*/
+
             //Finds all the combinations of the lowest value
             foreach (KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
             {
+                if(attackRotation == nullVector && comboValues.Value.attackRotation != nullVector)
+                {
+                    continue;
+                }
+
                 if (comboValues.Value.value == lowestValue)
                 {
                     inThreatKeys.Add(comboValues.Key);
@@ -361,7 +390,7 @@ public class EnemyBrain : MonoBehaviour
     //Decides what combinations to keep when attempting to add a new one
     private void SettleValueConflict(Tile moveTile, Tile attackTile, Vector3 attackRotation, int combinationValue, bool newAtThreat)
     {
-        int choice = 0;
+        int choice;
         if (newAtThreat)
         {
             choice = Random.Range(0, 5);
