@@ -45,6 +45,11 @@ public class Tile : MonoBehaviour
     //public List<TileEnums.TileEffects> priorityLevelEffects = new List<TileEnums.TileEffects>();
 
     private GameObject tileWeather;
+    public GameObject TileWeather
+    {
+        get { return tileWeather; }
+    }
+
     private Renderer weatherRenderer;
     private GameObject vfxObject;
 
@@ -296,6 +301,11 @@ public class Tile : MonoBehaviour
         if(characterOnTile != null)
         {
             characterOnTile.characterTile = tile;
+        }
+
+        if(objectOnTile != null)
+        {
+            objectOnTile.attachedTile = tile;
         }
     }
 

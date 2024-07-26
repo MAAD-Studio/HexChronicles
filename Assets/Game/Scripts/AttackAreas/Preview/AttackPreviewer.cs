@@ -161,8 +161,8 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
         List<Tile> edgeTiles;
         List<Tile> nextSet = new List<Tile>();
 
-        tileObjCheckedTiles.Add(tileObj.AttachedTile);
-        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.AttachedTile, false);
+        tileObjCheckedTiles.Add(tileObj.attachedTile);
+        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.attachedTile, false);
 
         for(int i = 0; i < tileObj.TileRange; i++)
         {

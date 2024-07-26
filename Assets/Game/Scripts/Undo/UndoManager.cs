@@ -304,8 +304,8 @@ public class UndoManager : Singleton<UndoManager>
                 if(data.destroy)
                 {
                     turnManager.temporaryTileObjects.Remove(currentObject);
-                    currentObject.AttachedTile.tileHasObject = false;
-                    currentObject.AttachedTile.objectOnTile = null;
+                    currentObject.attachedTile.tileHasObject = false;
+                    currentObject.attachedTile.objectOnTile = null;
                     Destroy(currentObject.gameObject);
                     continue;
                 }

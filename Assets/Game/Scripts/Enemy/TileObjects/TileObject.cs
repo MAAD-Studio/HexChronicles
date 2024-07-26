@@ -23,11 +23,7 @@ public class TileObject : MonoBehaviour
 
     public ObjectType objectType;
 
-    protected Tile attachedTile;
-    public Tile AttachedTile
-    {
-        get { return attachedTile; }
-    }
+    public Tile attachedTile;
 
     public virtual void Start()
     {

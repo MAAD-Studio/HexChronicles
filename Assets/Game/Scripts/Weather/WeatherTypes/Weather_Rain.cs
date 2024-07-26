@@ -47,7 +47,7 @@ public class Weather_Rain : Weather_Base
     {
         ElementType type = tile.tileData.tileType;
 
-        if(type == ElementType.Water)
+        if (type == ElementType.Water)
         {
             foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
             {

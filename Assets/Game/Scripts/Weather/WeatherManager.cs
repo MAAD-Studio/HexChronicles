@@ -116,6 +116,14 @@ public class WeatherManager : MonoBehaviour
                 patch.ResetWeatherTiles();
             }
 
+            foreach(Tile tile in tilesOnMap)
+            {
+                if(tile.TileWeather.activeInHierarchy)
+                {
+                    tile.ChangeTileWeather(false, null);
+                }
+            }
+
             EventBus.Instance.Publish(new OnWeatherEnded());
         }
     }

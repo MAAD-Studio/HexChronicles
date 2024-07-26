@@ -344,11 +344,6 @@ public class EnemyBrain : MonoBehaviour
         //Only attempts to replace another combination if one of the previous ones is worse or equal in value
         if (combinationValue >= lowestValue)
         {
-            /*if (attackRotation != nullVector)
-            {
-                Debug.Log("ATTACKER ARRIVED HERE");
-            }*/
-
             //Finds all the combinations of the lowest value
             foreach (KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
             {
@@ -459,7 +454,6 @@ public class EnemyBrain : MonoBehaviour
 
         if (attackingComboFound)
         {
-            Debug.Log("ATTACKING COMBO FOUND");
             foreach (int key in keysToRemove)
             {
                 RemoveCombination(key);
@@ -468,7 +462,6 @@ public class EnemyBrain : MonoBehaviour
         }
         else
         {
-            Debug.Log("NO ATTACKING COMBO FOUND");
             return false;
         }
     }
