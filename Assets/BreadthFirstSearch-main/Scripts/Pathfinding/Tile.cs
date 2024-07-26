@@ -314,7 +314,7 @@ public class Tile : MonoBehaviour
         TransferTileData(newTile);
         tileReplaced.Invoke(this, newTile);
 
-        transform.position += new Vector3(0, 10, 0);
+        transform.position += new Vector3(0, -10, 0);
         Destroy(gameObject);
     }
 
