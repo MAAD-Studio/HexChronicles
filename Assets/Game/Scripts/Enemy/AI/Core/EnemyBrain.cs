@@ -20,9 +20,6 @@ public class EnemyBrain : MonoBehaviour
 
     public bool DecisionMakingFinished { get; private set; }
 
-    //DEBUG DEBUG DEBUG
-    public bool slowDown = false;
-
     #endregion
 
     #region UnityMethods
@@ -32,15 +29,6 @@ public class EnemyBrain : MonoBehaviour
         Debug.Assert(turnManager != null, "EnemyBrain doesn't have the TurnManager set");
         nullVector *= 20;
         DecisionMakingFinished = true;
-    }
-
-    //DEBUG DEBUG DEBUG DEBUG
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            slowDown = !slowDown;
-        }
     }
 
     #endregion
@@ -132,6 +120,12 @@ public class EnemyBrain : MonoBehaviour
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
 
                 bool checkAttacks = false;
+
+                if(currentClosest == null)
+                {
+                    continue;
+                }
+
                 float newDistance = Vector3.Distance(currentClosest.transform.position, tile.transform.position);
 
                 //Checks if we should analyzing potential attack options
@@ -152,12 +146,7 @@ public class EnemyBrain : MonoBehaviour
 
                         //Calculates the value of Attacking in that direction, IMPORTANT YIELD which lets the triggers update
                         yield return new WaitForSeconds(0.02f);
-                        enemyAttackArea.DetectArea(true, false);
-
-                        if (slowDown)
-                        {
-                            yield return new WaitForSeconds(2f);
-                        }
+                        enemyAttackArea.DetectArea(false, false);
 
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
                         if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)

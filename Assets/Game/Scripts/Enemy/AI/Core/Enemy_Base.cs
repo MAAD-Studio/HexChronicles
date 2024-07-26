@@ -47,6 +47,11 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
+        if (closestCharacter == null)
+        {
+            return 1;
+        }
+
         int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
         int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
         int tileValue = distanceEnemy - distanceTile;
