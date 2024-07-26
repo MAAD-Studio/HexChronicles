@@ -262,6 +262,17 @@ public class CameraController : MonoBehaviour
     }
 
     /*
+     * Moves in for a close up on character death
+     */
+    public void MoveToDeathPosition(Transform target, bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetPosition = target.position + new Vector3(0, 5, -2);
+        }
+    }
+
+    /*
      * Stops following any Transforms
      */
     public void StopFollowingTarget()

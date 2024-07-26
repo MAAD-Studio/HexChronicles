@@ -740,7 +740,9 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
-        if(animator != null)
+        FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
+        Time.timeScale = 0.5f;
+        if (animator != null)
         {
             animator.SetTrigger("died");
         }
@@ -750,6 +752,8 @@ public class Character : MonoBehaviour
 
     private void Destroy()
     {
+        FindObjectOfType<CameraController>().MoveToDefault(true);
+        Time.timeScale = 1f;
         turnManager.DestroyACharacter(this);
     }
     #endregion
