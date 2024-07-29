@@ -52,14 +52,21 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     }
 
     private TurnEnums.PlayerAction attackType = TurnEnums.PlayerAction.BasicAttack;
+    public TurnEnums.PlayerAction AttackType
+    {
+        get { return attackType;  }
+    }
 
     bool allowSelection = true;
     public bool AllowSelection { get { return allowSelection; } }
 
     //TUTORIAL
     public Tile desiredTile = null;
+    public Tile desiredAttackTile = null;
     public Character desiredEnemy = null;
+    public Character desiredCharacter = null;
     public bool preventPhaseBackUp = false;
+    public bool preventAttack = false;
 
     #endregion
 
@@ -181,6 +188,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 Debug.Log("No Data Stored In UndoManager");
             }
         }
+    }
+
+    public void ResetTutorialSelects()
+    {
+        desiredCharacter = null;
+        desiredEnemy = null;
+        desiredTile = null;
+        desiredAttackTile = null;
     }
 
     public void EndTurn()
@@ -532,6 +547,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void SelectCharacter(Character character)
     {
+        if (turnManager.isTutorial && character != null && character != desiredCharacter)
+        {
+            return;
+        }
+
         // Get the tile from the passed character
         if (currentTile == null)
         {
@@ -699,6 +719,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 return;
             }
+
+            if(turnManager.isTutorial && desiredAttackTile != null && !areaPrefab.TilesHit().Contains(desiredAttackTile))
+            {
+                return;
+            }
+
+            if(turnManager.isTutorial && preventAttack)
+            {
+                return;
+            }    
 
             if (!currentTile.tileOccupied || currentTile.characterOnTile.characterType != TurnEnums.CharacterType.Player)
             {

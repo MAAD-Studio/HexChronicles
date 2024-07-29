@@ -29,8 +29,9 @@ public class TutorialManager : Singleton<TutorialManager>
     [SerializeField] private Dialogue[] startDialogue;
 
     [Header("Tutorials")]
-    [SerializeField] private Tutorial_Base phaseOneTutorial;
-    [SerializeField] private Tutorial_Base phaseTwoTutorial;
+    [SerializeField] List<Tutorial_Base> tutorials;
+    Tutorial_Base selectedTutorial;
+    private int tutorialIndex = 0;
 
     #endregion
 
@@ -45,8 +46,10 @@ public class TutorialManager : Singleton<TutorialManager>
             turnManager = FindObjectOfType<TurnManager>();
         }
 
-        Debug.Assert(phaseOneTutorial != null, "TutorialManager has not been provided a Phase One Tutorial");
-        Debug.Assert(phaseTwoTutorial != null, "TutorialManager has not been provided a Phase Two Tutorial");
+        if(tutorials.Count > 0)
+        {
+            selectedTutorial = tutorials[0];
+        }
     }
 
     private void OnDestroy()
@@ -56,16 +59,10 @@ public class TutorialManager : Singleton<TutorialManager>
 
     private void Update()
     {
-       switch(currentPhase)
-       {
-            case TutorialPhase.PhaseOne:
-                phaseOneTutorial.ExecuteTutorial();
-                break;
-
-            case TutorialPhase.PhaseTwo:
-                phaseTwoTutorial.ExecuteTutorial();
-                break;
-       } 
+        if(tutorials.Count > 0)
+        {
+            selectedTutorial.ExecuteTutorial();
+        }
     }
 
     #endregion
@@ -74,13 +71,13 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void AdvancePhase()
     {
-        if(currentPhase == TutorialPhase.PhaseOne)
+        if(tutorialIndex == tutorials.Count - 1)
         {
-            currentPhase = TutorialPhase.PhaseTwo;
+            tutorialIndex = 0;
         }
-        else if(currentPhase == TutorialPhase.PhaseTwo)
+        else
         {
-            currentPhase = TutorialPhase.Completed;
+            tutorialIndex++;
         }
     }
 
