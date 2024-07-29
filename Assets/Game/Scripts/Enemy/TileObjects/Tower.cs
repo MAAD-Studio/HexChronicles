@@ -23,6 +23,10 @@ public class Tower : Spawner
     private List<Character> possibleCharacterChoices = new List<Character>();
     List<Tile> tilesToColor = new List<Tile>();
 
+    [SerializeField] private Projectile projectile;
+    [SerializeField] private float archHeight;
+    [SerializeField] private float projectileSpeed;
+
     #endregion
 
     #region UnityMethods
@@ -98,9 +102,17 @@ public class Tower : Spawner
             turnManager.mainCameraController.MoveToTargetPosition(spawnedAttackArea.transform.position, true);
 
             spawnedAttackArea.DetectArea(false, false);
-            foreach (Character character in spawnedAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
+            foreach(Tile tile in tilesToColor)
             {
-                character.TakeDamage(damage, ElementType.Base);
+                Projectile newProjectile = Instantiate(projectile, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+                if(tile.tileOccupied)
+                {
+                    newProjectile.Launch(tile.transform.position, archHeight, projectileSpeed, tile.characterOnTile, damage);
+                }
+                else
+                {
+                    newProjectile.Launch(tile.transform.position, archHeight, projectileSpeed);
+                }
             }
 
             foreach (Tile tile in tilesToColor)
