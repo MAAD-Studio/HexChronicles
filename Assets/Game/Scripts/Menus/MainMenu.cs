@@ -20,6 +20,7 @@ public class MainMenu : Menu
     protected override void Start()
     {
         base.Start();
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         HideSavedData();
     }
 

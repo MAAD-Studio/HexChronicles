@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Audio;
+using System.Collections;
 
 /// <summary>
 /// Manages all audio playback for the game, including sound effects and music.
@@ -28,7 +29,7 @@ public class AudioManager : Singleton<AudioManager>
 
     private void Start()
     {
-        PlayMusic("MainTheme");
+        //PlayMusic("MainTheme");
     }
 
     #endregion
@@ -158,6 +159,29 @@ public class AudioManager : Singleton<AudioManager>
         else
         {
             Debug.LogWarning($"Music {music.name} not found!");
+        }
+    }
+
+    /// <summary>
+    /// Fades in a music track identified by name.
+    /// </summary>
+    /// <param name="musicName">The name of the music track to play.</param>
+    public void PlayMusicFadeIn(string musicName, float time)
+    {
+        StartCoroutine(FadeInMusic(musicName, time));
+    }
+
+    IEnumerator FadeInMusic(string musicName, float time)
+    {
+        SetMusicVolume(0);
+        PlayMusic(musicName);
+
+        float currentTime = 0;
+        while (currentTime < time)
+        {
+            currentTime += Time.deltaTime;
+            SetMusicVolume(currentTime / time);
+            yield return null;
         }
     }
 
