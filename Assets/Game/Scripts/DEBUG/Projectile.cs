@@ -13,8 +13,10 @@ public class Projectile : MonoBehaviour
     protected float time = 0f;
     protected bool flight = false;
 
-    [SerializeField] float height = 10f;
-    [SerializeField] float moveSpeed = 1f;
+    protected Character character;
+    protected float damage = 0f;
+
+    [SerializeField] GameObject endEffect;
 
     #endregion
 
@@ -22,19 +24,22 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        if (flight == false)
-        {
-            transform.position = new Vector3(24, 2.5f, 29);
-            Launch(new Vector3(9, 0.65f, 29), height, moveSpeed);
-        }
-
         if(flight)
         {
             if(time >= 1f)
             {
                 time = 0f;
                 flight = false;
-                //Destroy(gameObject);
+                
+                GameObject deathEffect = Instantiate(endEffect, transform.position, Quaternion.identity);
+                Destroy(deathEffect, 0.5f);
+
+                if(character != null)
+                {
+                    character.TakeDamage(damage, ElementType.Base);
+                }
+
+                Destroy(gameObject);
                 return;
             }
 
@@ -62,6 +67,21 @@ public class Projectile : MonoBehaviour
         speed = moveSpeed;
 
         flight = true;
+    }
+
+    public void Launch(Vector3 endPos, float peakHeight, float moveSpeed, Character characterToEffect, float projectileDamage)
+    {
+        startPosition = transform.position;
+        endPosition = endPos;
+        archPeak = (endPos - startPosition) / 2 + transform.position;
+        archPeak.y += peakHeight;
+
+        speed = moveSpeed;
+
+        flight = true;
+
+        character = characterToEffect;
+        damage = projectileDamage;
     }
 
     #endregion
