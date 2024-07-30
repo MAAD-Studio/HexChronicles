@@ -246,14 +246,17 @@ public class TurnManager : MonoBehaviour
         if (oldTile.tileData.tileType == ElementType.Fire)
         {
             lavaTiles.Remove((LavaTile)oldTile);
+            lavaTiles.Add((LavaTile)newTile);
         }
         else if (oldTile.tileData.tileType == ElementType.Water)
         {
             waterTiles.Remove((WaterTile)oldTile);
+            waterTiles.Add((WaterTile)newTile);
         }
         else if (oldTile.tileData.tileType == ElementType.Grass)
         {
             grassTiles.Remove((GrassTile)oldTile);
+            grassTiles.Add((GrassTile)newTile);
         }
     }
 
