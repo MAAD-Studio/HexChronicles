@@ -47,6 +47,7 @@ public class TutorialHUD : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
+    [SerializeField] private GameObject endTurnVFX;
 
     #region Unity Methods
 
@@ -216,6 +217,7 @@ public class TutorialHUD : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
     }
 
@@ -238,10 +240,12 @@ public class TutorialHUD : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
         else
         {
             endTurn.GetComponent<Image>().color = Color.white;
+            endTurnVFX.SetActive(false);
         }
     }
 
@@ -347,6 +351,7 @@ public class TutorialHUD : MonoBehaviour
             }
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            endTurnVFX.SetActive(false);
         });
         question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
     }
@@ -373,6 +378,7 @@ public class TutorialHUD : MonoBehaviour
         pause.onClick.RemoveAllListeners();
         endTurn.onClick.RemoveAllListeners();
         endTurn.GetComponent<Image>().color = Color.white;
+        endTurnVFX.SetActive(false);
         question.onClick.RemoveAllListeners();
 
         availableHeroes = 0;

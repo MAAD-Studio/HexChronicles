@@ -59,6 +59,7 @@ public class HUDInfo : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
+    [SerializeField] private GameObject endTurnVFX;
     [SerializeField] private Button undo;
     [SerializeField] private Button fast;
 
@@ -257,6 +258,7 @@ public class HUDInfo : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
     }
 
@@ -279,10 +281,12 @@ public class HUDInfo : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
         else
         {
             endTurn.GetComponent<Image>().color = Color.white;
+            endTurnVFX.SetActive(false);
         }
     }
 
@@ -406,6 +410,7 @@ public class HUDInfo : MonoBehaviour
             }
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            endTurnVFX.SetActive(false);
         });
 
         fast.onClick.AddListener(() => 
@@ -451,6 +456,7 @@ public class HUDInfo : MonoBehaviour
         question.onClick.RemoveAllListeners();
         endTurn.onClick.RemoveAllListeners();
         endTurn.GetComponent<Image>().color = Color.white;
+        endTurnVFX.SetActive(false);
         fast.onClick.RemoveAllListeners();
 
         turnIndicator.ResetTurn();
