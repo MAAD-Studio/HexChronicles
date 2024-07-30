@@ -333,6 +333,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             else if (phase == TurnEnums.PlayerPhase.Attack)
             {
                 Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+                Tile.DestroyTileVFX(selectedCharacter.elementType);
                 if (selectedCharacter.characterTile.tileData.tileType == ElementType.Base)
                 {
                     selectedCharacter.DestroyTileVFX();
@@ -654,7 +655,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             
             if (selectedCharacter.elementType == ElementType.Fire)
             {
-                Tile.HighlightTilesOfType(selectedCharacter.elementType);
+                Tile.SpawnFireBurn(potentialMovementTile);
             }
         }
         else if (potentialMovementTile.tileData.tileType != ElementType.Base)

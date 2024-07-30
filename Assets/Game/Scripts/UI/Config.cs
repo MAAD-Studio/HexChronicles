@@ -6,48 +6,54 @@ public class Config : Singleton<Config>
 {
     public CharacterUIConfig characterUIConfig;
 
-    public GameObject GetBuffVFX(ElementType elementType)
+    public GameObject GetBuffVFX(ElementType elementType, bool isBig)
     {
         if (elementType == ElementType.Fire)
         {
-            return characterUIConfig.fireBuffVFX;
+            if (isBig)
+            { 
+                return characterUIConfig.fireBuffVFX;
+            }
+            else
+            {
+                return characterUIConfig.shortFireBuffVFX;
+            }
         }
         else if (elementType == ElementType.Water)
         {
-            return characterUIConfig.waterBuffVFX;
+            if (isBig)
+            {
+                return characterUIConfig.waterBuffVFX;
+            }
+            else
+            {
+                return characterUIConfig.shortWaterBuffVFX;
+            }
         }
         else if (elementType == ElementType.Grass)
         {
-            return characterUIConfig.grassBuffVFX;
+            if (isBig)
+            {
+                return characterUIConfig.grassBuffVFX;
+            }
+            else
+            {
+                return characterUIConfig.shortGrassBuffVFX;
+            }
         }
         return null;
     }
 
-    public GameObject GetDebuffVFX()
+    public GameObject GetDebuffVFX(bool isBig)
     {
-        return characterUIConfig.debuffVFX;
-    }
-
-    public GameObject GetShortBuffVFX(ElementType elementType)
-    {
-        if (elementType == ElementType.Fire)
+        if (isBig)
         {
-            return characterUIConfig.fireBuffVFX;
+            return characterUIConfig.debuffVFX;
         }
-        else if (elementType == ElementType.Water)
+        else
         {
-            return characterUIConfig.waterBuffVFX;
+            return characterUIConfig.shortDebuffVFX;
         }
-        else if (elementType == ElementType.Grass)
-        {
-            return characterUIConfig.grassBuffVFX;
-        }
-        return null;
-    }
-
-    public GameObject GetShortBuffVFX()
-    {
-        return characterUIConfig.debuffVFX;
     }
 
     public Sprite GetStatSprite(string statType)

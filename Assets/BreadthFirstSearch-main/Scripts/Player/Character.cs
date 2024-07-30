@@ -1150,12 +1150,11 @@ public class Character : MonoBehaviour
         {
             if (isBuff)
             {
-                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType), position, Quaternion.identity);
-
+                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType, true), position, Quaternion.identity);
             }
             else
             {
-                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(), position, Quaternion.identity);
+                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(true), position, Quaternion.identity);
             }
         }
     }

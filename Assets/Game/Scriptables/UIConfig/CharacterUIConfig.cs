@@ -36,7 +36,10 @@ public class CharacterUIConfig : ScriptableObject
     public GameObject waterBuffVFX;
     public GameObject debuffVFX;
 
-    [Header("Tile Effect VFX")]
+    [Header("Tile Effect Special")]
+    public GameObject fireBurnVFX;
+
+    [Header("Tile Effect Short")]
     public GameObject shortFireBuffVFX;
     public GameObject shortGrassBuffVFX;
     public GameObject shortWaterBuffVFX;
