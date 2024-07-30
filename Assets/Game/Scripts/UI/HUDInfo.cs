@@ -151,6 +151,8 @@ public class HUDInfo : MonoBehaviour
 
     private void OnNewLevelStart(object obj)
     {
+        OnLevelEnded();
+
         turnManager = FindObjectOfType<TurnManager>();
         Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
         playerTurn = turnManager.GetComponent<PlayerTurn>();
