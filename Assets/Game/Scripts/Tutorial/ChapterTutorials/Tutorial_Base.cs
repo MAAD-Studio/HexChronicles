@@ -144,5 +144,13 @@ public class Tutorial_Base : MonoBehaviour
         turnManager.disableEnemies = false;
     }
 
+    protected void ChangeActiveInteractability(Character character, bool enable)
+    {
+        ChangeActiveInteract activeData = new ChangeActiveInteract();
+        activeData.character = character;
+        activeData.enable =enable;
+        EventBus.Instance.Publish(activeData);
+    }
+
     #endregion
 }

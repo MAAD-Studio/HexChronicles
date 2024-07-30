@@ -138,8 +138,14 @@ public class Tutorial_Two : Tutorial_Base
 
             case 6:
 
+                if(dialogueJustEnded)
+                {
+                    ChangeActiveInteractability(waterHero, true);
+                }
+
                 if(turnManager.PlayerTurn.AttackType == TurnEnums.PlayerAction.ActiveSkill)
                 {
+                    ChangeActiveInteractability(waterHero, false);
                     internalTutorialStep++;
                 }
                 
@@ -172,6 +178,7 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 9:
+                cameraController.MoveToTargetPosition(fireHero.transform.position, true);
                 DisplayDialogue(turnOneDialogue, 5);
                 internalTutorialStep++;
                 break;
