@@ -15,6 +15,7 @@ public class Tile : MonoBehaviour
 
     [HideInInspector] public float weatherCost = 1f;
     [HideInInspector] public bool underWeatherAffect = false;
+    [HideInInspector] public WeatherType weatherOnTile = WeatherType.rain;
 
     [Header("Connected Tile (Can be NULL):")]
     public Tile connectedTile;
@@ -44,13 +45,15 @@ public class Tile : MonoBehaviour
     //[Header("Priority Level for Tile Effects:")]
     //public List<TileEnums.TileEffects> priorityLevelEffects = new List<TileEnums.TileEffects>();
 
-    private GameObject tileWeather;
-    public GameObject TileWeather
+    private GameObject rainEffect;
+    private GameObject sporeEffect;
+    private GameObject heatEffect;
+
+    public bool WeatherActive
     {
-        get { return tileWeather; }
+        get { return rainEffect.activeInHierarchy || sporeEffect.activeInHierarchy || heatEffect.activeInHierarchy; }
     }
 
-    private Renderer weatherRenderer;
     private GameObject vfxObject;
 
 
@@ -77,8 +80,9 @@ public class Tile : MonoBehaviour
         tileEffect = transform.GetChild(2).gameObject;
         effectRenderer = tileEffect.GetComponent<Renderer>();
 
-        tileWeather = transform.GetChild(3).gameObject;
-        weatherRenderer = tileWeather.GetComponent<Renderer>();
+        rainEffect = transform.GetChild(3).gameObject;
+        sporeEffect = transform.GetChild(4).gameObject;
+        heatEffect = transform.GetChild(5).gameObject;
 
         tileRenderer = transform.GetChild(0).GetComponent<Renderer>();
     }
@@ -219,29 +223,28 @@ public class Tile : MonoBehaviour
         ChangeTileEffect(activeTileEffects[0], true);
     }*/
 
-    public void ChangeTileWeather(bool enable, Material weatherMaterial)
+    public void ChangeTileWeather(bool enable, WeatherType type)
     {
-        if(tileWeather == null)
+        if(!enable)
         {
-            tileWeather = transform.GetChild(3).gameObject;
-            weatherRenderer = tileWeather.GetComponent<Renderer>();
+            rainEffect.SetActive(false);
+            sporeEffect.SetActive(false);
+            heatEffect.SetActive(false);
         }
 
-        if(enable)
+        switch (type)
         {
-            if(weatherMaterial != null)
-            {
-                tileWeather.SetActive(true);
-                weatherRenderer.material = weatherMaterial;
-            }
-            else
-            {
-                Debug.LogError("ChangeTilWeather was provided a null material");
-            }
-        }
-        else
-        {
-            tileWeather.SetActive(false);
+            case WeatherType.rain:
+                rainEffect.SetActive(true);
+                break;
+
+            case WeatherType.sporeStorm:
+                sporeEffect.SetActive(true);
+                break;
+
+            case WeatherType.heatWave:
+                heatEffect.SetActive(true);
+                break;
         }
     }
 
@@ -289,13 +292,14 @@ public class Tile : MonoBehaviour
         tile.tileHasObject = tileHasObject;
         tile.objectOnTile = objectOnTile;
         tile.underWeatherAffect = underWeatherAffect;
+        tile.weatherOnTile = weatherOnTile;
         tile.weatherCost = weatherCost;
         tile.inFrontier = inFrontier;
         tile.parentTile = parentTile;
 
         if(tile.underWeatherAffect)
         {
-            tile.ChangeTileWeather(true, weatherRenderer.material);
+            tile.ChangeTileWeather(true, weatherOnTile);
         }
 
         if(characterOnTile != null)

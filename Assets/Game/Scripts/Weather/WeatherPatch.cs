@@ -80,6 +80,7 @@ public class WeatherPatch
                     openTiles.Enqueue(adjacentTile);
                     effectedTiles.Add(adjacentTile);
                     adjacentTile.underWeatherAffect = true;
+                    adjacentTile.weatherOnTile = weather.WeatherType;
                 }
             }
         }
@@ -108,7 +109,7 @@ public class WeatherPatch
     {
         foreach (Tile tile in effectedTiles)
         {
-            tile.ChangeTileWeather(true, weather.weatherMaterial);
+            tile.ChangeTileWeather(true, weather.WeatherType);
         }
     }
 
@@ -158,7 +159,7 @@ public class WeatherPatch
         foreach (Tile tile in effectedTiles)
         {
             tile.underWeatherAffect = false;
-            tile.ChangeTileWeather(false, null);
+            tile.ChangeTileWeather(false, WeatherType.none);
         }
 
         foreach (Character character in effectedCharacters)

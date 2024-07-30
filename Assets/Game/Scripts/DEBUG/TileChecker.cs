@@ -32,10 +32,6 @@ public class TileChecker : MonoBehaviour
         {
             ExamineWeather();
         }
-        else if(Input.GetKeyDown(KeyCode.Alpha8))
-        {
-            ChangeWeather();
-        }
 
         if(Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -124,23 +120,6 @@ public class TileChecker : MonoBehaviour
                 Debug.Log("Weather is Effected?: true");
             }
         }
-    }
-
-    private void ChangeWeather()
-    {
-        if(weatherMaterial == null)
-        {
-            Debug.Log("NO WEATHER MATERIAL SET");
-            return;
-        }
-
-        Tile tile = CheckSpot();
-        if(tile == null)
-        {
-            return;
-        }
-
-        tile.ChangeTileWeather(true, weatherMaterial);
     }
 
     private void HoldTile()

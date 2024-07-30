@@ -118,9 +118,9 @@ public class WeatherManager : MonoBehaviour
 
             foreach(Tile tile in tilesOnMap)
             {
-                if(tile.TileWeather.activeInHierarchy)
+                if(tile.WeatherActive)
                 {
-                    tile.ChangeTileWeather(false, null);
+                    tile.ChangeTileWeather(false, WeatherType.none);
                 }
             }
 
