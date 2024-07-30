@@ -363,7 +363,7 @@ public class Tile : MonoBehaviour
         {
             if (tile.vfxObject == null)
             {
-                tile.vfxObject = Instantiate(Config.Instance.GetBuffVFX(elementType), tile.transform.position, Quaternion.identity);
+                tile.vfxObject = Instantiate(Config.Instance.GetBuffVFX(elementType, false), tile.transform.position, Quaternion.identity);
             }
         }
 
@@ -371,7 +371,22 @@ public class Tile : MonoBehaviour
         {
             if (tile.vfxObject == null)
             {
-                tile.vfxObject = Instantiate(Config.Instance.GetDebuffVFX(), tile.transform.position, Quaternion.identity);
+                tile.vfxObject = Instantiate(Config.Instance.GetDebuffVFX(false), tile.transform.position, Quaternion.identity);
+            }
+        }
+    }
+    
+    public static void SpawnFireBurn(Tile potentialMovementTile)
+    {
+        TurnManager turnManager = FindObjectOfType<TurnManager>();
+        List<Tile> selectedList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        selectedList.Remove(potentialMovementTile);
+
+        foreach (Tile tile in selectedList)
+        {
+            if (tile.vfxObject == null)
+            {
+                tile.vfxObject = Instantiate(Config.Instance.characterUIConfig.fireBurnVFX, tile.transform.position, Quaternion.identity);
             }
         }
     }
