@@ -113,7 +113,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     {
         CharacterSelected characterSelected = (CharacterSelected)obj;
 
-        if(turnManager.isTutorial && !turnManager.disablePlayers)
+        if(!turnManager.disablePlayers)
         {
             SelectCharacter(characterSelected.character);
         }
