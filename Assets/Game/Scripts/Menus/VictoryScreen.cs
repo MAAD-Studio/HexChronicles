@@ -14,6 +14,7 @@ public class VictoryScreen : Menu
         base.Start();
         continueButton.onClick.AddListener(OnReturnToMap);
         WorldTurnBase.Victory.AddListener(OnVictory);
+        TurnManager.LevelVictory.AddListener(OnVictory);
         reward = GetComponent<VictoryReward>();
     }
 
