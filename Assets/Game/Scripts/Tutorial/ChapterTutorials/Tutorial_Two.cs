@@ -65,6 +65,8 @@ public class Tutorial_Two : Tutorial_Base
         switch (internalTutorialStep)
         {
             case 0:
+                cameraController.MoveToTargetPosition(fireHero.transform.position, true);
+
                 DisplayDialogue(turnOneDialogue, 0);
                 RegainFullControl();
 
@@ -104,6 +106,7 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 3:
+                cameraController.MoveToTargetPosition(waterHero.transform.position, true);
                 DisplayDialogue(turnOneDialogue, 2);
 
                 internalTutorialStep++;
@@ -152,6 +155,7 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 7:
+                cameraController.MoveToTargetPosition(whirlpoolTile.transform.position, true);
                 DisplayDialogue(turnOneDialogue, 4);
                 internalTutorialStep++;
                 break;
@@ -178,15 +182,19 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 9:
-                cameraController.MoveToTargetPosition(fireHero.transform.position, true);
-                DisplayDialogue(turnOneDialogue, 5);
-                internalTutorialStep++;
+                if(turnManager.PlayerTurn.Phase != TurnEnums.PlayerPhase.Execution)
+                {
+                    cameraController.MoveToTargetPosition(fireHero.transform.position, true);
+                    DisplayDialogue(turnOneDialogue, 5);
+                    internalTutorialStep++;
+                }
                 break;
 
             case 10:
                 if (dialogueJustEnded)
                 {
                     AllowSpecificCharacterSelection(fireHero);
+                    ChangeActiveInteractability(fireHero, true);
                 }
 
                 if (spawnedHighlight == null)
@@ -215,6 +223,8 @@ public class Tutorial_Two : Tutorial_Base
 
                 if (turnManager.PlayerTurn.Phase == TurnEnums.PlayerPhase.Attack)
                 {
+                    cameraController.MoveToTargetPosition(meteorMovementTile.transform.position, true);
+
                     Destroy(spawnedHighlight);
 
                     RegainFullControl();
@@ -224,18 +234,21 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 12:
-
-                AllowSpecificEnemySelection(enemyToHit);
-                turnManager.PlayerTurn.preventAttack = false;
-
                 if (spawnedHighlight == null)
                 {
                     spawnedHighlight = TemporaryMarker.GenerateMarker(highlightEffect, enemyToHit.transform.position, 0f);
                 }
 
+                if(turnManager.PlayerTurn.AttackType == TurnEnums.PlayerAction.ActiveSkill)
+                {
+                    AllowSpecificEnemySelection(enemyToHit);
+                    turnManager.PlayerTurn.preventAttack = false;
+                }
+
                 if (turnManager.PlayerTurn.Phase == TurnEnums.PlayerPhase.Execution)
                 {
                     RegainFullControl();
+                    ChangeActiveInteractability(fireHero, false);
 
                     Destroy(spawnedHighlight);
 
@@ -244,7 +257,21 @@ public class Tutorial_Two : Tutorial_Base
                 break;
 
             case 13:
-                turnManager.disableEnd = false;
+
+                cameraController.FollowTarget(fireHero.transform, true);
+                if (turnManager.enemyList.Count <= 0)
+                {
+                    DisplayDialogue(turnOneDialogue, 6);
+                    internalTutorialStep++;
+                }
+                break;
+
+            case 14:
+                if(dialogueJustEnded)
+                {
+                    turnManager.EndLevel();
+                    internalTutorialStep++;
+                }
                 break;
         }
     }

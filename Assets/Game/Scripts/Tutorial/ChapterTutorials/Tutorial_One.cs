@@ -63,6 +63,8 @@ public class Tutorial_One : Tutorial_Base
         switch(internalTutorialStep)
         {
             case 0:
+                cameraController.MoveToTargetPosition(fireHero.transform.position, true);
+
                 DisplayDialogue(turnOneDialogue, 0);
 
                 RegainFullControl();
@@ -73,8 +75,6 @@ public class Tutorial_One : Tutorial_Base
             case 1:
                 if(dialogueJustEnded)
                 {
-                    cameraController.MoveToTargetPosition(fireHero.transform.position, true);
-
                     DisplayDialogue(turnOneDialogue, 1, 2, 3, 4);
 
                     internalTutorialStep++;
@@ -114,6 +114,7 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 4:
+                cameraController.MoveToTargetPosition(enemyOne.transform.position, true);
                 DisplayDialogue(turnOneDialogue, 6, 7, 8, 9);
 
                 internalTutorialStep++;
@@ -209,15 +210,20 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 11:
-                DisplayDialogue(turnOneDialogue, 13);
+                if(turnManager.PlayerTurn.Phase != TurnEnums.PlayerPhase.Execution)
+                {
+                    DisplayDialogue(turnOneDialogue, 13);
 
-                internalTutorialStep++;
+                    internalTutorialStep++;
+                }
                 break;
 
             case 12:
+
                 if(dialogueJustEnded)
                 {
-                    turnManager.disableEnd = false;
+                    turnManager.EndLevel();
+                    internalTutorialStep++;
                 }
 
                 break;

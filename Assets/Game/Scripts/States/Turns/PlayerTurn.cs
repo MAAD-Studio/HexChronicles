@@ -800,13 +800,23 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 areaPrefab.DestroySelf();
             }
 
-            if (attackType == TurnEnums.PlayerAction.BasicAttack)
+            Vector3 position;
+            if (phantom != null)
             {
-                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea, selectedCharacter.transform.position);
+                position = phantom.transform.position;
             }
             else
             {
-                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea, selectedCharacter.transform.position);
+                position = selectedCharacter.transform.position;
+            }
+
+            if (attackType == TurnEnums.PlayerAction.BasicAttack)
+            {
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.basicAttackArea, position);
+            }
+            else
+            {
+                areaPrefab = AttackArea.SpawnAttackArea(selectedCharacter.activeSkillArea, position);
             }
         }
     }

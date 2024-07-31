@@ -960,7 +960,7 @@ public class Character : MonoBehaviour
 
         if(characterType == TurnEnums.CharacterType.Player)
         {
-            turnManager.mainCameraController.MoveToDefault(true);
+            turnManager.mainCameraController.MoveToDefault(false);
         }
 
         movementComplete.Invoke(this);

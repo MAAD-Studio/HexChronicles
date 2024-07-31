@@ -233,7 +233,7 @@ public class CameraController : MonoBehaviour
      */
     public void MoveToTargetPosition(Vector3 newTargetPos, bool forceMovement)
     {
-        if(useAutoZoomCam || forceMovement)
+        if (useAutoZoomCam || forceMovement)
         {
             targetPosition = newTargetPos + onZoomAddOn;
         }
@@ -244,7 +244,7 @@ public class CameraController : MonoBehaviour
      */
     public void MoveToDefault(bool forceMovement)
     {
-        if(useAutoZoomCam || forceMovement)
+        if (useAutoZoomCam || forceMovement)
         {
             targetPosition = defaultPosition;
         }
@@ -266,7 +266,7 @@ public class CameraController : MonoBehaviour
      */
     public void MoveToDeathPosition(Transform target, bool forceMovement)
     {
-        if(useAutoZoomCam || forceMovement)
+        if (useAutoZoomCam || forceMovement)
         {
             targetPosition = target.position + new Vector3(0, 5, -2);
         }
