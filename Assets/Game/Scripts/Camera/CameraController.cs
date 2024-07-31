@@ -31,8 +31,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float panSpeed = 10f;
 
     [Header("Lerp: ")]
-    [Range(0.02f, 0.1f)]
-    [SerializeField] private float lerpLevel = 0.04f;
+    [Range(2f, 5f)]
+    [SerializeField] private float lerpLevel = 3f;
 
     [Range(0.02f, 0.1f)]
     [SerializeField] private float lerpDeadZone = 0.05f;
@@ -103,7 +103,7 @@ public class CameraController : MonoBehaviour
 
         if (Vector3.Distance(cameraTransform.position, targetPosition) > lerpDeadZone)
         {
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, lerpLevel);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, lerpLevel * Time.deltaTime);
         }
     }
 

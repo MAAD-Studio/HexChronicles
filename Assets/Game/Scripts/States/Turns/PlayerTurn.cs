@@ -15,6 +15,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     private Camera mainCam;
 
     private Tile currentTile;
+    private Tile previousTile;
 
     public Tile CurrentTile
     {
@@ -55,6 +56,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     bool allowSelection = true;
     public bool AllowSelection { get { return allowSelection; } }
+
+    //OPTIMIZATION BOOLS
+    private bool moveVFXSpawned = false;
 
     //TUTORIAL
     public Tile desiredTile = null;
@@ -216,6 +220,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             AttackPreviewer.Instance.ClearAttackAreaTower();
         }
 
+        moveVFXSpawned = false;
+
         ResetBoard();
         DestroyPhantom();
         phase = TurnEnums.PlayerPhase.Movement;
@@ -247,6 +253,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void ResetTile()
     {
+        previousTile = currentTile;
+
         if (currentTile == null)
         {
             return;
@@ -340,6 +348,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 }
                 pathFinder.CreateIllustration();
 
+                moveVFXSpawned = false;
+
                 areaPrefab.DestroySelf();
                 potentialMovementTile = null;
                 potentialPath = null;
@@ -367,6 +377,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 }
             }
         }
+
         if (Physics.Raycast(turnManager.mainCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, turnManager.tileLayer))
         {
             currentTile = hit.transform.GetComponent<Tile>();
@@ -403,7 +414,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             InspectCharacter();
         }
-        if(currentTile.tileHasObject)
+        else if(currentTile.tileHasObject)
         {
             if (turnManager.isTutorial && turnManager.disableObjects)
             {
@@ -580,59 +591,59 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void MovementPhase()
     {
+        //Spawns in Tile VFX
+        if (!moveVFXSpawned)
+        {
+            //Tile.SpawnTileVFX(selectedCharacter.elementType);
+
+            if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
+                && selectedCharacter.elementType == ElementType.Fire)
+            {
+                //Tile.HighlightTilesOfType(selectedCharacter.elementType);
+            }
+            else
+            {
+                //Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+            }
+
+            moveVFXSpawned = true;
+        }
+
+        //Clears illustrations if the player moves out of their movement range
         if (!currentTile.inFrontier || !currentTile.Reachable)
         {
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
+            return;
         }
 
-        Tile.SpawnTileVFX(selectedCharacter.elementType);
-
-        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
-            && selectedCharacter.elementType == ElementType.Fire)
+        //Spawns in the Phantom unless its on the same tile as the player character
+        if (currentTile.characterOnTile != selectedCharacter)
         {
-            Tile.HighlightTilesOfType(selectedCharacter.elementType);
-        }
-        else
-        {
-            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+            SpawnPhantom();
         }
 
-        if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
+        if (Input.GetMouseButtonDown(0))
         {
-            Tile[] path = new Tile[0];
-            if (currentTile.characterOnTile != selectedCharacter)
+            if (turnManager.isTutorial && (desiredTile == null || desiredTile != currentTile))
             {
-                SpawnPhantom();
-                path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
-            }
-            else
-            {
-                pathFinder.illustrator.ClearIllustrations();
-                DestroyPhantom();
+                return;
             }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                if(turnManager.isTutorial && (desiredTile == null || desiredTile != currentTile))
-                {
-                    return;
-                }
+            Tile.DestroyTileVFX(selectedCharacter.elementType);
 
-                Tile.DestroyTileVFX(selectedCharacter.elementType);
+            potentialPath = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
+            potentialMovementTile = currentTile;
 
-                potentialPath = path;
-                potentialMovementTile = currentTile;
+            cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
 
-                cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
+            phase = TurnEnums.PlayerPhase.Attack;
+            EventBus.Instance.Publish(new OnAttackPhase());
+            SpawnAreaPrefab();
 
-                phase = TurnEnums.PlayerPhase.Attack;
-                EventBus.Instance.Publish(new OnAttackPhase());
-                SpawnAreaPrefab();
-
-                pathFinder.ClearIllustration();
-            }
+            pathFinder.ClearIllustration();
         }
+        
     }
 
     private void AttackPhase()
@@ -672,6 +683,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             areaPrefab.transform.position = currentTile.transform.position;
         }
         areaPrefab.DetectArea(true, true);
+        
 
         if (phantom != null)
         {
@@ -818,12 +830,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 Hero selectedHero = (Hero)selectedCharacter;
                 phantom = Instantiate(selectedHero.heroSO.phantomModel, currentTile.transform.position, Quaternion.identity);
+
+                TileEffect tileEffect = phantom.GetComponent<TileEffect>();
+                tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
             }
 
             phantom.transform.position = currentTile.transform.position;
-            
-            TileEffect tileEffect = phantom.GetComponent<TileEffect>();
-            tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
 
             if(currentTile != null)
             {
