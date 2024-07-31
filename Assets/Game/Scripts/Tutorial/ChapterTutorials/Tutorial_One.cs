@@ -60,17 +60,14 @@ public class Tutorial_One : Tutorial_Base
 
     protected override void ExecuteTurnOne()
     {
-        List<Dialogue> dialogueToDisplay = new List<Dialogue>();
         switch(internalTutorialStep)
         {
             case 0:
-                dialogueToDisplay.Add(turnOneDialogue[0]);
-                EnterDialogue(dialogueToDisplay.ToArray());
+                cameraController.MoveToTargetPosition(fireHero.transform.position, true);
 
-                turnManager.disablePlayers = true;
-                turnManager.disableObjects = true;
-                turnManager.disableEnemies = true;
-                turnManager.disableEnd = true;
+                DisplayDialogue(turnOneDialogue, 0);
+
+                RegainFullControl();
 
                 internalTutorialStep++;
                 break;
@@ -78,13 +75,7 @@ public class Tutorial_One : Tutorial_Base
             case 1:
                 if(dialogueJustEnded)
                 {
-                    cameraController.MoveToTargetPosition(fireHero.transform.position, true);
-
-                    dialogueToDisplay.Add(turnOneDialogue[1]);
-                    dialogueToDisplay.Add(turnOneDialogue[2]);
-                    dialogueToDisplay.Add(turnOneDialogue[3]);
-                    dialogueToDisplay.Add(turnOneDialogue[4]);
-                    EnterDialogue(dialogueToDisplay.ToArray());
+                    DisplayDialogue(turnOneDialogue, 1, 2, 3, 4);
 
                     internalTutorialStep++;
                 }
@@ -95,10 +86,7 @@ public class Tutorial_One : Tutorial_Base
                 {
                     cameraController.MoveToTargetPosition(enemyOne.transform.position, true);
 
-                    dialogueToDisplay.Add(turnOneDialogue[5]);
-                    EnterDialogue(dialogueToDisplay.ToArray());
-
-                    turnManager.PlayerTurn.desiredEnemy = enemyOne;
+                    DisplayDialogue(turnOneDialogue, 5);
 
                     internalTutorialStep++;
                 }
@@ -107,7 +95,7 @@ public class Tutorial_One : Tutorial_Base
             case 3:
                 if(dialogueJustEnded)
                 {
-                    turnManager.disableEnemies = false;
+                    AllowSpecificEnemySelection(enemyOne);
                 }
 
                 if(spawnedHighlight == null)
@@ -117,8 +105,7 @@ public class Tutorial_One : Tutorial_Base
 
                 if(turnManager.PlayerTurn.SelectedEnemy == enemyOne)
                 {
-                    turnManager.disableEnemies = true;
-                    turnManager.PlayerTurn.desiredEnemy = null;
+                    RegainFullControl();
 
                     Destroy(spawnedHighlight);
 
@@ -127,11 +114,8 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 4:
-                dialogueToDisplay.Add(turnOneDialogue[6]);
-                dialogueToDisplay.Add(turnOneDialogue[7]);
-                dialogueToDisplay.Add(turnOneDialogue[8]);
-                dialogueToDisplay.Add(turnOneDialogue[9]);
-                EnterDialogue(dialogueToDisplay.ToArray());
+                cameraController.MoveToTargetPosition(enemyOne.transform.position, true);
+                DisplayDialogue(turnOneDialogue, 6, 7, 8, 9);
 
                 internalTutorialStep++;
                 break;
@@ -143,10 +127,7 @@ public class Tutorial_One : Tutorial_Base
 
                     AttackPreviewer.Instance.ClearAttackArea();
 
-                    dialogueToDisplay.Add(turnOneDialogue[10]);
-                    EnterDialogue(dialogueToDisplay.ToArray());
-
-                    turnManager.PlayerTurn.preventPhaseBackUp = true;
+                    DisplayDialogue(turnOneDialogue, 10);
 
                     internalTutorialStep++;
                 }
@@ -155,7 +136,7 @@ public class Tutorial_One : Tutorial_Base
             case 6:
                 if(dialogueJustEnded)
                 {
-                    turnManager.disablePlayers = false;
+                    AllowSpecificCharacterSelection(fireHero);
                 }
 
                 if (spawnedHighlight == null)
@@ -166,20 +147,23 @@ public class Tutorial_One : Tutorial_Base
                 if (turnManager.PlayerTurn.SelectedCharacter == fireHero)
                 {
                     Destroy(spawnedHighlight);
+                    RegainFullControl();
 
                     internalTutorialStep++;
                 }
                 break;
 
             case 7:
-                dialogueToDisplay.Add(turnOneDialogue[11]);
-                EnterDialogue(dialogueToDisplay.ToArray());
+                DisplayDialogue(turnOneDialogue, 11);
 
-                turnManager.PlayerTurn.desiredTile = lastTileOfFirstMove;
                 internalTutorialStep++;
                 break;
 
             case 8:
+                if(dialogueJustEnded)
+                {
+                    AllowSpecificTileSelection(lastTileOfFirstMove);
+                }
 
                 if (spawnedHighlight == null)
                 {
@@ -188,7 +172,7 @@ public class Tutorial_One : Tutorial_Base
 
                 if(turnManager.PlayerTurn.Phase == TurnEnums.PlayerPhase.Attack)
                 {
-                    turnManager.PlayerTurn.desiredTile = null;
+                    RegainFullControl();
 
                     Destroy(spawnedHighlight);
 
@@ -197,15 +181,19 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 9:
-                dialogueToDisplay.Add(turnOneDialogue[12]);
-                EnterDialogue(dialogueToDisplay.ToArray());
+                DisplayDialogue(turnOneDialogue, 12);
 
-                turnManager.PlayerTurn.desiredEnemy = enemyOne;
+                AllowSpecificEnemySelection(enemyOne);
 
                 internalTutorialStep++;
                 break;
 
             case 10:
+                if(dialogueJustEnded)
+                {
+                    turnManager.PlayerTurn.preventAttack = false;
+                }
+
                 if (spawnedHighlight == null)
                 {
                     spawnedHighlight = TemporaryMarker.GenerateMarker(highlightEffect, enemyOne.transform.position, 0f);
@@ -213,8 +201,7 @@ public class Tutorial_One : Tutorial_Base
 
                 if (turnManager.PlayerTurn.Phase == TurnEnums.PlayerPhase.Execution)
                 {
-                    turnManager.disablePlayers = true;
-                    turnManager.PlayerTurn.preventPhaseBackUp = false;
+                    RegainFullControl();
 
                     Destroy(spawnedHighlight);
 
@@ -223,16 +210,20 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 11:
-                dialogueToDisplay.Add(turnOneDialogue[13]);
-                EnterDialogue(dialogueToDisplay.ToArray());
+                if(turnManager.PlayerTurn.Phase != TurnEnums.PlayerPhase.Execution)
+                {
+                    DisplayDialogue(turnOneDialogue, 13);
 
-                internalTutorialStep++;
+                    internalTutorialStep++;
+                }
                 break;
 
             case 12:
+
                 if(dialogueJustEnded)
                 {
-                    turnManager.disableEnd = false;
+                    turnManager.EndLevel();
+                    internalTutorialStep++;
                 }
 
                 break;

@@ -220,7 +220,7 @@ public class TurnManager : MonoBehaviour
 
             enemyList.Remove((Enemy_Base)character);
 
-            if (enemyList.Count == 0 && towersTurn.HasTowers == false)
+            if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
                 LevelVictory?.Invoke();
             }
@@ -277,6 +277,11 @@ public class TurnManager : MonoBehaviour
             Destroy(tileObj.gameObject);
         }
         tileObjectsToDestroy.Clear();
+    }
+
+    public void EndLevel()
+    {
+        LevelVictory?.Invoke();
     }
 
     #endregion

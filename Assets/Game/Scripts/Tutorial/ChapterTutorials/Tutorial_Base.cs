@@ -99,5 +99,58 @@ public class Tutorial_Base : MonoBehaviour
         cameraController.controlEnabled = true;
     }
 
+    protected void RegainFullControl()
+    {
+        turnManager.PlayerTurn.preventPhaseBackUp = true;
+        turnManager.disablePlayers = true;
+        turnManager.disableObjects = true;
+        turnManager.disableEnemies = true;
+        turnManager.disableEnd = true;
+        turnManager.PlayerTurn.preventAttack = true;
+
+        turnManager.PlayerTurn.ResetTutorialSelects();
+    }
+
+    protected void DisplayDialogue(Dialogue[] dialogue, params int[] dialogueIndexes)
+    {
+        List<Dialogue> dialogueToDisplay = new List<Dialogue>();
+        foreach (int index in dialogueIndexes)
+        {
+            dialogueToDisplay.Add(dialogue[index]);
+        }
+        EnterDialogue(dialogueToDisplay.ToArray());
+    }
+
+    protected void AllowSpecificCharacterSelection(Character character)
+    {
+        turnManager.PlayerTurn.desiredCharacter = character;
+        turnManager.disablePlayers = false;
+    }
+
+    protected void AllowSpecificTileSelection(Tile tile)
+    {
+        turnManager.PlayerTurn.desiredTile = tile;
+    }
+
+    protected void AllowSpecificTileAttack(Tile tile)
+    {
+        turnManager.PlayerTurn.preventAttack = false;
+        turnManager.PlayerTurn.desiredAttackTile = tile;
+    }
+
+    protected void AllowSpecificEnemySelection(Character character)
+    {
+        turnManager.PlayerTurn.desiredEnemy = character;
+        turnManager.disableEnemies = false;
+    }
+
+    protected void ChangeActiveInteractability(Character character, bool enable)
+    {
+        ChangeActiveInteract activeData = new ChangeActiveInteract();
+        activeData.character = character;
+        activeData.enable =enable;
+        EventBus.Instance.Publish(activeData);
+    }
+
     #endregion
 }

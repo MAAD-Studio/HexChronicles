@@ -181,6 +181,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         hero.UpdateHealthBar.AddListener(UpdateHealthBar);
         hero.UpdateAttributes.AddListener(UpdateAttributes);
         hero.UpdateStatus.AddListener(UpdateStatus);
+        EventBus.Instance.Subscribe<ChangeActiveInteract>(ChangeActiveInteractability);
     }
 
     private void UnsubscribeEvents()
@@ -226,6 +227,15 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         //selectHeroStatus.attackBtn.interactable = hero.canAttack;
         //selectHeroStatus.moveBtn.interactable = hero.canMove;
+    }
+
+    public void ChangeActiveInteractability(object obj)
+    {
+        ChangeActiveInteract characterActiveData = (ChangeActiveInteract)obj;
+        if(hero == characterActiveData.character)
+        {
+            skillBtn.interactable = characterActiveData.enable;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
