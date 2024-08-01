@@ -21,6 +21,7 @@ public class Enemy_Base : Character, EnemyInterface
         base.Start();
 
         moveDistance = enemySO.attributes.movementRange;
+        attackDistance = enemySO.attributes.attackRange;
         attackDamage = enemySO.attributes.attackDamage;
         defensePercentage = enemySO.attributes.defensePercentage;
         elementType = enemySO.attributes.elementType;
