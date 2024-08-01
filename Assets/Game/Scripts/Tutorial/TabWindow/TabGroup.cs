@@ -6,20 +6,23 @@ using UnityEngine.UI;
 public class TabGroup : MonoBehaviour
 {
     [SerializeField] private Button closeBtn;
-    [SerializeField] private List<Tab> tabButtons;
-    [SerializeField] private List<GameObject> tabPages;
-    private Tab selectedTab;
-    private Tab defaultTab;
+    [SerializeField] private List<TabGroupButton> tabButtons;
+    [SerializeField] private List<TabPages> tabPages;
+    private TabGroupButton selectedTab;
+    private TabGroupButton defaultTab;
+
+    [SerializeField] private Button previousBtn;
+    [SerializeField] private Button nextBtn;
+    private TabPages currentPages;
 
     private void Start()
     {
         closeBtn.onClick.AddListener(() => gameObject.SetActive(false));
         defaultTab = tabButtons[0];
         OnTabSelected(defaultTab);
-        gameObject.SetActive(false);
     }
 
-    public void OnTabEnter(Tab tab)
+    public void OnTabEnter(TabGroupButton tab)
     {
         ResetTabs();
         if (selectedTab == null || tab != selectedTab) 
@@ -28,12 +31,12 @@ public class TabGroup : MonoBehaviour
         }
     }
 
-    public void OnTabExit(Tab tab)
+    public void OnTabExit(TabGroupButton tab)
     {
         ResetTabs();
     }
 
-    public void OnTabSelected(Tab tab)
+    public void OnTabSelected(TabGroupButton tab)
     {
         selectedTab = tab;
         ResetTabs();
@@ -44,18 +47,24 @@ public class TabGroup : MonoBehaviour
         {
             if (i == index)
             {
-                tabPages[i].SetActive(true);
+                tabPages[i].gameObject.SetActive(true);
             }
             else
             {
-                tabPages[i].SetActive(false);
+                tabPages[i].gameObject.SetActive(false);
             }
         }
+
+        currentPages = tabPages[index];
+        previousBtn.onClick.RemoveAllListeners();
+        nextBtn.onClick.RemoveAllListeners();
+        previousBtn.onClick.AddListener(() => currentPages.PreviousPage());
+        nextBtn.onClick.AddListener(() => currentPages.NextPage());
     }
 
     public void ResetTabs()
     {
-        foreach (Tab tab in tabButtons)
+        foreach (TabGroupButton tab in tabButtons)
         {
             if (selectedTab != null && tab == selectedTab) { continue; }
             tab.IdleState();
