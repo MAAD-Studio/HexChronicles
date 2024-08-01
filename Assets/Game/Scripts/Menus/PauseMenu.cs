@@ -9,7 +9,24 @@ using UnityEngine.TextCore.Text;
 public class PauseMenu : Menu
 {
     public MenuClassifier hudMenuClassifier;
+    [SerializeField] private GameObject normalPanel;
+    [SerializeField] private GameObject tutorialPanel;
+
     public static UnityEvent EndLevel = new UnityEvent();
+
+    private void OnEnable()
+    {
+        if (GameManager.Instance.IsTutorial)
+        {
+            tutorialPanel.SetActive(true);
+            normalPanel.SetActive(false);
+        }
+        else
+        {
+            tutorialPanel.SetActive(false);
+            normalPanel.SetActive(true);
+        }
+    }
 
     private void Update()
     {
