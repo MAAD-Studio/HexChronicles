@@ -43,6 +43,9 @@ public class WeatherManager : MonoBehaviour
 
     private TurnManager turnManager;
 
+    //Tutorial
+    public bool isTutorial = false;
+
     #endregion
 
     #region UnityMethods
@@ -81,7 +84,7 @@ public class WeatherManager : MonoBehaviour
             foreach(WeatherPatch patch in weatherPatches)
             {
                 int tileChoice = Random.Range(0, tilesOnMap.Count);
-                patch.SetWeatherPatchInfo(tilesOnMap[tileChoice], effectEntireMap, maxSpread, movementPerTurn, weather);
+                patch.SetWeatherPatchInfo(tilesOnMap[tileChoice], effectEntireMap, maxSpread, movementPerTurn, weather, isTutorial);
             }
 
             EventBus.Instance.Publish(new OnWeatherSpawn());

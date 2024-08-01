@@ -611,6 +611,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void MovementPhase()
     {
+        //Clears illustrations if the player moves out of their movement range
+        if (!currentTile.inFrontier || !currentTile.Reachable)
+        {
+            pathFinder.illustrator.ClearIllustrations();
+            DestroyPhantom();
+        }
+
         //Spawns in Tile VFX
         if (!moveVFXSpawned)
         {
@@ -629,40 +636,41 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             moveVFXSpawned = true;
         }
 
-        Tile[] path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
-
-        //Clears illustrations if the player moves out of their movement range
-        if (!currentTile.inFrontier || !currentTile.Reachable)
+        if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
         {
-            pathFinder.illustrator.ClearIllustrations();
-            DestroyPhantom();
-        }
-        else if(currentTile.characterOnTile != selectedCharacter)
-        {
-            SpawnPhantom();
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (turnManager.isTutorial && (desiredTile == null || desiredTile != currentTile))
+            Tile[] path = new Tile[0];
+            if (currentTile.characterOnTile != selectedCharacter)
             {
-                return;
+                SpawnPhantom();
+                path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
+            }
+            else
+            {
+                pathFinder.illustrator.ClearIllustrations();
+                DestroyPhantom();
             }
 
-            Tile.DestroyTileVFX(selectedCharacter.elementType);
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (turnManager.isTutorial && (desiredTile == null || desiredTile != currentTile))
+                {
+                    return;
+                }
 
-            potentialPath = path;
-            potentialMovementTile = currentTile;
+                Tile.DestroyTileVFX(selectedCharacter.elementType);
 
-            cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
+                potentialPath = path;
+                potentialMovementTile = currentTile;
 
-            phase = TurnEnums.PlayerPhase.Attack;
-            EventBus.Instance.Publish(new OnAttackPhase());
-            SpawnAreaPrefab();
+                cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
 
-            pathFinder.ClearIllustration();
+                phase = TurnEnums.PlayerPhase.Attack;
+                EventBus.Instance.Publish(new OnAttackPhase());
+                SpawnAreaPrefab();
+
+                pathFinder.ClearIllustration();
+            }
         }
-        
     }
 
     private void AttackPhase()

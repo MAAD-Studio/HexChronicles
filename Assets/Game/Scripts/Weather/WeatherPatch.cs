@@ -22,11 +22,13 @@ public class WeatherPatch
     private int maxSpread = 1;
     private int movementPerTurn = 1;
 
+    private bool isTutorial = false;
+
     #endregion
 
     #region CustomMethods
 
-    public void SetWeatherPatchInfo(Tile tile, bool effectEntireMap, int spread, int movement, Weather_Base weatherType)
+    public void SetWeatherPatchInfo(Tile tile, bool effectEntireMap, int spread, int movement, Weather_Base weatherType, bool tutorial)
     {
         origin = tile;
 
@@ -34,6 +36,8 @@ public class WeatherPatch
         maxSpread = spread;
         movementPerTurn = movement;
         weather = weatherType;
+
+        isTutorial = tutorial;
 
         ResetWeatherTiles();
         DetermineAreaOfAffect();
@@ -142,6 +146,15 @@ public class WeatherPatch
             {
                 potentialEffectTiles.Add(tile);
             }
+        }
+
+        if(isTutorial)
+        {
+            foreach(Tile tile in potentialEffectTiles)
+            {
+                weather.ApplyTileEffect(tile, turnManager, this);
+            }
+            return;
         }
 
         weather.ApplyEffect(effectedCharacters);
