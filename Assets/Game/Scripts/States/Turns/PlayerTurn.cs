@@ -629,18 +629,15 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             moveVFXSpawned = true;
         }
 
+        Tile[] path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
+
         //Clears illustrations if the player moves out of their movement range
         if (!currentTile.inFrontier || !currentTile.Reachable)
         {
             pathFinder.illustrator.ClearIllustrations();
             DestroyPhantom();
-            return;
         }
-
-        Tile[] path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
-
-        //Spawns in the Phantom unless its on the same tile as the player character
-        if (currentTile.characterOnTile != selectedCharacter)
+        else if(currentTile.characterOnTile != selectedCharacter)
         {
             SpawnPhantom();
         }
