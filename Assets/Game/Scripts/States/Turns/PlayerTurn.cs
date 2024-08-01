@@ -614,16 +614,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         //Spawns in Tile VFX
         if (!moveVFXSpawned)
         {
-            //Tile.SpawnTileVFX(selectedCharacter.elementType);
+            Tile.SpawnTileVFX(selectedCharacter.elementType);
 
             if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
                 && selectedCharacter.elementType == ElementType.Fire)
             {
-                //Tile.HighlightTilesOfType(selectedCharacter.elementType);
+                Tile.HighlightTilesOfType(selectedCharacter.elementType);
             }
             else
             {
-                //Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+                Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
             }
 
             moveVFXSpawned = true;
@@ -636,6 +636,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             DestroyPhantom();
             return;
         }
+
+        Tile[] path = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
 
         //Spawns in the Phantom unless its on the same tile as the player character
         if (currentTile.characterOnTile != selectedCharacter)
@@ -652,7 +654,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
             Tile.DestroyTileVFX(selectedCharacter.elementType);
 
-            potentialPath = pathFinder.PathBetween(currentTile, selectedCharacter.characterTile);
+            potentialPath = path;
             potentialMovementTile = currentTile;
 
             cameraController.MoveToTargetPosition(potentialMovementTile.transform.position, false);
