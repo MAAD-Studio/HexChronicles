@@ -53,6 +53,17 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     {
         ClearAttackArea();
 
+        if(Status.GrabIfStatusActive(enemy, Status.StatusTypes.Bound) != null)
+        {
+            List<Tile> originTile = new List<Tile>()
+            {
+                enemy.characterTile
+            };
+            ProduceEdges(enemy.characterTile, originTile, tileTops, moveEdge);
+
+            return;
+        }
+
         PreviewOrigin previewArea = null;
         List<TileReporter> pointsToCheck = null;
 
