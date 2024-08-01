@@ -84,7 +84,7 @@ public class WeatherManager : MonoBehaviour
             foreach(WeatherPatch patch in weatherPatches)
             {
                 int tileChoice = Random.Range(0, tilesOnMap.Count);
-                patch.SetWeatherPatchInfo(tilesOnMap[tileChoice], effectEntireMap, maxSpread, movementPerTurn, weather, isTutorial);
+                patch.SetWeatherPatchInfo(tilesOnMap[tileChoice], effectEntireMap, maxSpread, movementPerTurn, weather);
             }
 
             EventBus.Instance.Publish(new OnWeatherSpawn());
