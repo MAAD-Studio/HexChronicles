@@ -63,6 +63,7 @@ public class WorldMap : Menu
         GameManager.Instance.CurrentLevelIndex = levelIndex;
         MenuManager.Instance.HideMenu(menuClassifier);
 
+        GameManager.Instance.IsTutorial = false;
         SceneLoader.Instance.LoadScene(levels[levelIndex]);
         SceneLoader.Instance.UnloadScene(worldMap);
     }

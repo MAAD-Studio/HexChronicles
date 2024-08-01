@@ -32,6 +32,12 @@ public class GameManager : Singleton<GameManager>
         get { return gameSpeed; }
     }
 
+    private bool isTutorial = false;
+    public bool IsTutorial
+    {
+        get { return isTutorial; }
+        set { isTutorial = value; }
+    }
 
     #region Unity Methods
     private void Start()

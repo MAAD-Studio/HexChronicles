@@ -55,15 +55,11 @@ public class TutorialHUD : MonoBehaviour
     {
         EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
     }
-    private void Start()
-    {
-        EventBus.Instance.Publish(new OnTutorialStart());
-    }
 
     private void OnDestroy()
     {
         EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
-    }
+    }     
 
     private void Update()
     {

@@ -45,7 +45,9 @@ public class SelectTutorial : MonoBehaviour
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
+        GameManager.Instance.IsTutorial = true;
         SceneLoader.Instance.LoadScene(selectedTutorial);
+        MenuManager.Instance.HideMenu(MenuManager.Instance.MainMenuClassifier);
     }
 
     private void OnSceneLoaded(List<string> list)
@@ -53,8 +55,8 @@ public class SelectTutorial : MonoBehaviour
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
         selectPanel.SetActive(false);
-        MenuManager.Instance.HideMenu(MenuManager.Instance.MainMenuClassifier);
         MenuManager.Instance.ShowMenu(MenuManager.Instance.TutorialHUDClassifier);
+        EventBus.Instance.Publish(new OnTutorialStart());
     }
 
     public void ShowPanel()
