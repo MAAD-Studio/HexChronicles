@@ -186,6 +186,11 @@ public class WeatherPatch
 
     public void TileReplaced(Tile oldTile, Tile newTile)
     {
+        if(oldTile == null)
+        {
+            return;
+        }
+
         if(effectedTiles.Remove(oldTile))
         {
             effectedTiles.Add(newTile);

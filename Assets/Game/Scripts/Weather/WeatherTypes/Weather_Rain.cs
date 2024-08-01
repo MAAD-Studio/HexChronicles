@@ -49,12 +49,11 @@ public class Weather_Rain : Weather_Base
 
         if (type == ElementType.Water)
         {
-            foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
-            {
-                Tile newTile = Instantiate(waterTilePrefab, adjTile.transform.position, Quaternion.identity);
-                patch.TileReplaced(adjTile, newTile);
-                adjTile.ReplaceTileWithNew(newTile);
-            }
+            List<Tile> adjTiles = turnManager.pathfinder.FindAdjacentTiles(tile, true);
+            int choice = Random.Range(0, adjTiles.Count);
+            Tile newTile = Instantiate(waterTilePrefab, adjTiles[choice].transform.position, Quaternion.identity);
+            patch.TileReplaced(adjTiles[choice], newTile);
+            adjTiles[choice].ReplaceTileWithNew(newTile);
         }
         else if(type == ElementType.Fire)
         {

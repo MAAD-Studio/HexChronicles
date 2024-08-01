@@ -59,11 +59,11 @@ public class Weather_HeatWave : Weather_Base
         }
         else if (type == ElementType.Fire)
         {
-            foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
-            {
-                Tile newTile = Instantiate(fireTilePrefab, adjTile.transform.position, Quaternion.identity);
-                adjTile.ReplaceTileWithNew(newTile);
-            }
+            List<Tile> adjTiles = turnManager.pathfinder.FindAdjacentTiles(tile, true);
+            int choice = Random.Range(0, adjTiles.Count);
+            Tile newTile = Instantiate(fireTilePrefab, adjTiles[choice].transform.position, Quaternion.identity);
+            patch.TileReplaced(adjTiles[choice], newTile);
+            adjTiles[choice].ReplaceTileWithNew(newTile);
         }
         else if (type == ElementType.Grass)
         {

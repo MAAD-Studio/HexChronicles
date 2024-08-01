@@ -225,7 +225,20 @@ public class Tile : MonoBehaviour
 
     public void ChangeTileWeather(bool enable, WeatherType type)
     {
-        if(!enable)
+        if (rainEffect == null)
+        {
+            rainEffect = transform.GetChild(3).gameObject;
+        }
+        if (sporeEffect == null)
+        {
+            sporeEffect = transform.GetChild(4).gameObject;
+        }
+        if (heatEffect == null)
+        {
+            heatEffect = transform.GetChild(5).gameObject;
+        }
+
+        if (!enable)
         {
             rainEffect.SetActive(false);
             sporeEffect.SetActive(false);
@@ -235,26 +248,14 @@ public class Tile : MonoBehaviour
         switch (type)
         {
             case WeatherType.rain:
-                if(rainEffect == null)
-                {
-                    rainEffect = transform.GetChild(3).gameObject;
-                }
                 rainEffect.SetActive(true);
                 break;
 
             case WeatherType.sporeStorm:
-                if(sporeEffect == null)
-                {
-                    rainEffect = transform.GetChild(4).gameObject;
-                }
                 sporeEffect.SetActive(true);
                 break;
 
             case WeatherType.heatWave:
-                if(heatEffect == null)
-                {
-                    heatEffect = transform.GetChild(5).gameObject;
-                }
                 heatEffect.SetActive(true);
                 break;
         }
