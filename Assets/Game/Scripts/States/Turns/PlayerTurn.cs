@@ -146,6 +146,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
 
         cameraController.controlEnabled = true;
+        EventBus.Instance.Publish(new OnPlayerTurn());
     }
 
     public void UpdateState()

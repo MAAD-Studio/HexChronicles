@@ -164,14 +164,12 @@ public class TurnManager : MonoBehaviour
                 {
                     LevelDefeat?.Invoke();
                 }
-                EventBus.Instance.Publish(new OnPlayerTurn());
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
                 turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
-                EventBus.Instance.Publish(new OnEnemyTurn());
                 break;
 
             case TurnEnums.TurnState.WorldTurn:

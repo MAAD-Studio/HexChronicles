@@ -44,13 +44,15 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Button attackBtn;
     public Button skillBtn;
 
-    private bool interactable = true;
-    private bool heroDead = false;
+    private Outline attackOutline;
+    private Outline skillOutline;
 
     [Header("StartValue")]
     private float startAttack;
     private int startMovement;
 
+    private bool interactable = true;
+    private bool heroDead = false;
 
     private void Start()
     {
@@ -84,6 +86,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         skillShape.sprite = hero.heroSO.activeSkillSO.skillshape;
         skillInfo.text = hero.heroSO.activeSkillSO.description.DisplayKeywordDescription();
         skillInfo.ForceMeshUpdate();
+
+        attackOutline = attackBtn.GetComponent<Outline>();
+        skillOutline = skillBtn.GetComponent<Outline>();
     }
 
     public void AssignHero(Hero hero)
@@ -191,6 +196,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         hero.UpdateHealthBar.RemoveListener(UpdateHealthBar);
         hero.UpdateAttributes.RemoveListener(UpdateAttributes);
         hero.UpdateStatus.RemoveListener(UpdateStatus);
+        EventBus.Instance.Unsubscribe<ChangeActiveInteract>(ChangeActiveInteractability);
     }
 
     private void OnDestroy()
@@ -213,9 +219,12 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void UpdateButton()
     {
+        AttackMode(); // Default is attack mode
+
         if (hero.CurrentSkillCD > 0)
         {
             skillBtn.interactable = false;
+            skillCD.gameObject.SetActive(true);
             skillCD.text = $"(On Cooldown - {hero.CurrentSkillCD} turns)";
             attackBtn.interactable = false;
         }
@@ -251,6 +260,18 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
 
     #region States
+    public void AttackMode()
+    {
+        attackOutline.enabled = true;
+        skillOutline.enabled = false;
+    }
+
+    public void SkillMode()
+    {
+        skillOutline.enabled = true;
+        attackOutline.enabled = false;
+    }
+
     public void SetDefaultState()
     {
         if (!interactable || heroDead)
@@ -305,6 +326,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (interactable)
         {
             SetDefaultState();
+            AttackMode();
         }
         else
         {

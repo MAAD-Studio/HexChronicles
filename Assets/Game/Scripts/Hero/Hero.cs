@@ -10,8 +10,8 @@ public class Hero : Character
 
     [Header("Active skill:")]
     [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
-    public int skillCD = 3;
-    private int currentSkillCD = 3;
+    public int skillCD = 2;
+    private int currentSkillCD = 2;
     public int CurrentSkillCD
     {
         get { return currentSkillCD; }
