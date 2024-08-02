@@ -912,6 +912,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
     }
 
+    public void ForceSelection()
+    {
+        allowSelection = true;
+        FullReset();
+    }
+
     private void CharacterFinishedMoving(Character character)
     {
         if (character == selectedCharacter)
