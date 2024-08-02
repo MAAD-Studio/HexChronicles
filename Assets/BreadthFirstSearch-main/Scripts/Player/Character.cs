@@ -63,6 +63,8 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
+    private List<Tile> pathTiles = new List<Tile>();
+
     private GameObject buffPreview;
     private GameObject tileVFX;
     private TurnManager turnManager;
@@ -740,6 +742,19 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
+        foreach(Tile tile in pathTiles)
+        {
+            if(tile != null)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
+        }
+
+        if(moving)
+        {
+            movementComplete.Invoke(this);
+        }
+
         FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
         Time.timeScale = 0.5f;
         if (animator != null)
@@ -797,6 +812,8 @@ public class Character : MonoBehaviour
         //Moves the Character
         if(path.Length > 0)
         {
+            pathTiles = path.ToList();
+
             int step = 1;
             int pathLength = path.Length;
             List<Tile> tilesInPath = new List<Tile>(path);

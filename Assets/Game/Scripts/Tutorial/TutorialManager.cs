@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialManager : Singleton<TutorialManager>
+public class TutorialManager : MonoBehaviour
 {
     #region Variables
 

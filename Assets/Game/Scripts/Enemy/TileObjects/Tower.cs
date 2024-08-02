@@ -74,6 +74,20 @@ public class Tower : Spawner
 
     public void AttemptAttack()
     {
+        List<Character> charactersToRemove = new List<Character>();
+        foreach(Character character in possibleCharacterChoices)
+        {
+            if(character ==  null)
+            {
+                charactersToRemove.Add(character);
+            }
+        }
+
+        foreach(Character character in charactersToRemove)
+        {
+            possibleCharacterChoices.Remove(character);
+        }
+
         if(spawnedAttackArea == null)
         {
             if(possibleCharacterChoices.Count > 0)
