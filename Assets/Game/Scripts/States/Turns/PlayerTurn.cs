@@ -877,16 +877,16 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 Hero selectedHero = (Hero)selectedCharacter;
                 phantom = Instantiate(selectedHero.heroSO.phantomModel, currentTile.transform.position, Quaternion.identity);
-
-                TileEffect tileEffect = phantom.GetComponent<TileEffect>();
-                tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
             }
 
             phantom.transform.position = currentTile.transform.position;
 
             if(currentTile != null)
             {
-                if(selectedCharacter.elementType == currentTile.tileData.tileType)
+                TileEffect tileEffect = phantom.GetComponent<TileEffect>();
+                tileEffect.SetEffect(selectedCharacter.elementType, currentTile.tileData.tileType);
+
+                if (selectedCharacter.elementType == currentTile.tileData.tileType)
                 {
                     selectedCharacter.SpawnBuffPreview(phantom.transform.position, 0.5f);
                 }
