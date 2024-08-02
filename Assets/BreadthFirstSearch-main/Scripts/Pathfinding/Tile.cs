@@ -333,6 +333,10 @@ public class Tile : MonoBehaviour
 
         transform.position += new Vector3(0, -10, 0);
         Destroy(gameObject);
+        if (vfxObject != null)
+        {
+            Destroy(vfxObject);
+        }
     }
 
     public static void HighlightTilesOfType(ElementType elementType)

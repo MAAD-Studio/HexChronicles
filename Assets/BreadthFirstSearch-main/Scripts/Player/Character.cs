@@ -72,6 +72,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
     private List<Tile> pathTiles = new List<Tile>();
+    private bool hasDied = false;
 
     private GameObject buffPreview;
     private GameObject tileVFX;
@@ -761,10 +762,12 @@ public class Character : MonoBehaviour
             }
         }
 
-        if(moving)
+        if (characterType == TurnEnums.CharacterType.Player && turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
         {
-            movementComplete.Invoke(this);
+            turnManager.PlayerTurn.ForceSelection();
         }
+
+        hasDied = true;
 
         FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
         Time.timeScale = 0.5f;
@@ -866,9 +869,17 @@ public class Character : MonoBehaviour
             Tile currentTile = path[0];
             tilesInPath.Remove(currentTile);
 
+            moving = true;
+
             while(step < pathLength)
             {
                 yield return null;
+
+                if(hasDied)
+                {
+                    animator.SetBool("walking", false);
+                    yield break;
+                }
 
                 foreach (Tile tile in tilesInPath)
                 {
