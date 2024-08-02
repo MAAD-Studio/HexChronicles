@@ -234,8 +234,6 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             skillCD.gameObject.SetActive(false);
             attackBtn.interactable = true;
         }
-        //selectHeroStatus.attackBtn.interactable = hero.canAttack;
-        //selectHeroStatus.moveBtn.interactable = hero.canMove;
     }
 
     public void ChangeActiveInteractability(object obj)
@@ -244,6 +242,7 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if(hero == characterActiveData.character)
         {
             skillBtn.interactable = characterActiveData.enable;
+            skillCD.gameObject.SetActive(!characterActiveData.enable);
         }
     }
 

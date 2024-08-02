@@ -76,4 +76,14 @@ public class PauseMenu : Menu
         EndLevel.Invoke();
         GameManager.Instance.CleanActiveScene();
     }
+
+    public void OnEndTutorial()
+    {
+        MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
+        mainMenu.OnReturnToMainMenu();
+        MenuManager.Instance.HideMenu(menuClassifier);
+        GameManager.Instance.CleanActiveScene();
+
+        mainMenu.OnSelectTutorial();
+    }
 }
