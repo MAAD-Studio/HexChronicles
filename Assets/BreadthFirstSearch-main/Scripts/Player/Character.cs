@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.VFX;
 
 public class Character : MonoBehaviour
 {
@@ -44,6 +45,13 @@ public class Character : MonoBehaviour
     [SerializeField] protected GameObject attackVFX;
     [SerializeField] protected GameObject damagePrefab;
 
+    [Header("VFX:")]
+    [SerializeField] public VisualEffect VFXGraph;
+    [SerializeField] public SkinnedMeshRenderer skinnedMesh;
+    private Material[] skinnedMaterials;
+    public float dissolveRate = 0.0125f;
+    public float refreshRate = 0.025f;
+
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
     private List<Status> statusToRemove = new List<Status>();
@@ -82,6 +90,9 @@ public class Character : MonoBehaviour
         Debug.Assert(attackVFX != null, $"Can not find attackVFX on {name}");
 
         FindTile();
+
+        if (skinnedMesh != null)
+            skinnedMaterials = skinnedMesh.materials;
     }
 
     void Update()
@@ -761,9 +772,35 @@ public class Character : MonoBehaviour
         {
             animator.SetTrigger("died");
         }
+
+        //VFX and Shader
+        if (VFXGraph != null) 
+        {
+            VFXGraph.Play();
+        }
+        StartCoroutine(DissolveCo());
+
+
         DestroyTileVFX();
-        Invoke("Destroy", 0.6f);
+        Invoke("Destroy", 1f);
     }
+
+    #region Dissolve Material
+    IEnumerator DissolveCo () {
+        if(skinnedMaterials.Length > 0) {
+            float counter = 0;
+
+            while(skinnedMaterials[0].GetFloat("_Dissolve_Amount") < 1) {
+                counter += dissolveRate;
+                for(int i=0; i<skinnedMaterials.Length; i++) {
+                    skinnedMaterials[i].SetFloat("_Dissolve_Amount", counter);
+                }
+            yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        
+    }
+    #endregion
 
     private void Destroy()
     {
