@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4539741892501751287}
   - component: {fileID: 4388586799532407725}
   - component: {fileID: 3372158863106383920}
+  - component: {fileID: 8475346524272159236}
   m_Layer: 0
   m_Name: TNT
   m_TagString: Enemy
@@ -80,6 +81,18 @@ MonoBehaviour:
   DamagePreview:
     m_PersistentCalls:
       m_Calls: []
+  AddStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  ChangeStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  RemoveStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  DonePreview:
+    m_PersistentCalls:
+      m_Calls: []
   UpdateHealthBar:
     m_PersistentCalls:
       m_Calls: []
@@ -92,6 +105,7 @@ MonoBehaviour:
   enemySO: {fileID: 11400000, guid: 79714770ad9adec4d9e7f52613bff972, type: 2}
   enemyType: 1
   attackAreaPreview: {fileID: 0}
+  explodeVFX: {fileID: 6814011241287686624, guid: f8555c81a5253b7498f0da92b6f058c5, type: 3}
   closeRangeDMG: 10
   farRangeDMG: 5
 --- !u!95 &3372158863106383920
@@ -115,6 +129,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &8475346524272159236
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84694741672392655}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.1487372
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.6240488, z: 0}
 --- !u!1 &520715360586784833
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,7 +618,6 @@ GameObject:
   - component: {fileID: 1412965299168057401}
   - component: {fileID: 125693613010485391}
   - component: {fileID: 2248315218198511944}
-  - component: {fileID: 1654496115255483354}
   m_Layer: 0
   m_Name: Core
   m_TagString: Untagged
@@ -654,29 +690,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1654496115255483354
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8691170935771297394}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1001 &976047544404962125
 PrefabInstance:
   m_ObjectHideFlags: 0

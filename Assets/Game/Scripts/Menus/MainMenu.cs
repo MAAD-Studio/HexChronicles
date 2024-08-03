@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class MainMenu : Menu
 {
-    public SceneReference Tutorial;
     public SceneReference Map;
     public MenuClassifier tutorialHUDClassifier;
     public MenuClassifier mapClassifier;
@@ -17,25 +16,22 @@ public class MainMenu : Menu
     [SerializeField] private GameObject savedDataPrefab;
     [SerializeField] private Transform savedDataContainer;
 
+    private SelectTutorial selectTutorial;
+
     protected override void Start()
     {
         base.Start();
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
+
+        selectTutorial = GetComponent<SelectTutorial>();
+        selectTutorial.HidePanel();
+
         HideSavedData();
     }
 
-    public void OnStartTutorial()
+    public void OnSelectTutorial()
     {
-        SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
-
-        SceneLoader.Instance.LoadScene(Tutorial);
-    }
-
-    private void OnSceneLoaded(List<string> list)
-    {
-        SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
-
-        MenuManager.Instance.HideMenu(menuClassifier);
-        MenuManager.Instance.ShowMenu(tutorialHUDClassifier);
+        selectTutorial.ShowPanel();
     }
 
     public void OnContinueGame()

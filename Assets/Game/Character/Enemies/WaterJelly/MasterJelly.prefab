@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8361135099756756784}
   - component: {fileID: 4692658528331751092}
   - component: {fileID: 349600838865155844}
+  - component: {fileID: 9002246660160827795}
   m_Layer: 0
   m_Name: MasterJelly
   m_TagString: Enemy
@@ -60,7 +61,7 @@ MonoBehaviour:
   maxHealth: 0
   attackDamage: 0
   defensePercentage: 0
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 2125089916739663841}
   elementType: 0
   elementWeakAgainst: 0
   elementStrongAgainst: 0
@@ -77,6 +78,18 @@ MonoBehaviour:
   effectedByWeather: 0
   hasMadeDecision: 0
   DamagePreview:
+    m_PersistentCalls:
+      m_Calls: []
+  AddStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  ChangeStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  RemoveStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  DonePreview:
     m_PersistentCalls:
       m_Calls: []
   UpdateHealthBar:
@@ -114,6 +127,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &9002246660160827795
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2168538466815336162}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4857909, y: 0.51097226, z: 0.5025078}
+  m_Center: {x: 0, y: 0.3203975, z: 0}
 --- !u!1 &3124198812009534083
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +159,6 @@ GameObject:
   - component: {fileID: 9007053059986435865}
   - component: {fileID: 1238252600185627137}
   - component: {fileID: 8026728672475660065}
-  - component: {fileID: 6331100820620538615}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -198,27 +231,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6331100820620538615
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3124198812009534083}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8754241969118584059
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -445,3 +457,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8077522880456708523, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
   m_PrefabInstance: {fileID: 8754241969118584059}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2125089916739663841 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7205907517823068954, guid: d6ed7250b87ae3d45a3af19e60128007, type: 3}
+  m_PrefabInstance: {fileID: 8754241969118584059}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09659c5823dc0684ca8a590b04b322d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

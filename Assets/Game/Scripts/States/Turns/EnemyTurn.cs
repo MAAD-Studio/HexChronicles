@@ -34,6 +34,7 @@ public class EnemyTurn : MonoBehaviour, StateInterface
         {
             enemy.EnterNewTurn();
         }
+        EventBus.Instance.Publish(new OnEnemyTurn());
     }
 
     public void ExitState()

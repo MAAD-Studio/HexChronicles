@@ -322,8 +322,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f7db30084b861448ac1788c457cc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  needCollision: 1
   destroyAfterCollide: 0.4
+  callbackWaitTime: 0.2
+  speed: 10
   trail: {fileID: 7476433778770007826}
 --- !u!54 &6062229495840077098
 Rigidbody:
@@ -372,7 +374,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.1527485, y: 0.1391418, z: 0.9039922}
-  m_Center: {x: -0.008661509, y: 0.00868547, z: -0.45111936}
+  m_Center: {x: -0.008661509, y: 0.5, z: -0.45111936}
 --- !u!1 &1691400628413963402
 GameObject:
   m_ObjectHideFlags: 0

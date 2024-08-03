@@ -5,21 +5,32 @@ using UnityEngine.UI;
 
 public class VictoryScreen : Menu
 {
-    [SerializeField] private Button continueButton;
+    [SerializeField] private GameObject tutorialVictory;
+    [SerializeField] private GameObject normalVictory;
     
     private VictoryReward reward;
 
     protected override void Start()
     {
         base.Start();
-        continueButton.onClick.AddListener(OnReturnToMap);
         WorldTurnBase.Victory.AddListener(OnVictory);
+        TurnManager.LevelVictory.AddListener(OnVictory);
         reward = GetComponent<VictoryReward>();
     }
 
     private void OnVictory()
     {
-        reward.SpawnCards();
+        if (GameManager.Instance.IsTutorial)
+        {
+            tutorialVictory.SetActive(true);
+            normalVictory.SetActive(false);
+        }
+        else 
+        {
+            tutorialVictory.SetActive(false);
+            normalVictory.SetActive(true);
+            reward.SpawnCards();
+        }
     }
 
     public void OnReturnToMap()
@@ -31,5 +42,15 @@ public class VictoryScreen : Menu
         MenuManager.Instance.HideMenu(menuClassifier);
 
         GameManager.Instance.CleanActiveScene();
+    }
+
+    public void OnReturnToSelectTutorial()
+    {
+        MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
+        mainMenu.OnReturnToMainMenu();
+        MenuManager.Instance.HideMenu(menuClassifier);
+        GameManager.Instance.CleanActiveScene();
+
+        mainMenu.OnSelectTutorial();
     }
 }

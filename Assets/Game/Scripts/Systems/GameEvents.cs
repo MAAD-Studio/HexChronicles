@@ -9,6 +9,12 @@ public struct OnWeatherSpawn { }
 public struct OnWeatherEnded { }
 public struct OnDialogueEnded { }
 
+public struct ChangeActiveInteract
+{
+    public Character character;
+    public bool enable;
+}
+
 public struct CharacterSelected
 {
     public Character character;

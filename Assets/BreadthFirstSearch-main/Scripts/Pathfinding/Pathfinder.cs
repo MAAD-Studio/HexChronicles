@@ -142,6 +142,11 @@ public class Pathfinder : Singleton<Pathfinder>
     //Finds any tiles adjacent to the current tile
     public List<Tile> FindAdjacentTiles(Tile origin, bool includeOccupied)
     {
+        if(origin == null)
+        {
+            return new List<Tile>();
+        }
+
         List<Tile> adjacentTiles = new List<Tile>();
 
         Vector3 direction = Vector3.forward;

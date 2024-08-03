@@ -53,10 +53,12 @@ public class TurnManager : MonoBehaviour
     private int objectiveTurnNumber = 8;
 
     //TUTORIAL USES
+    [Header("Tutorial Controls: ")]
     public bool isTutorial = false;
-    public bool disablePlayers = false;
-    public bool disableEnemies = false;
-    public bool disableObjects = false;
+    [HideInInspector] public bool disablePlayers = false;
+    [HideInInspector] public bool disableEnemies = false;
+    [HideInInspector] public bool disableObjects = false;
+    [HideInInspector] public bool disableEnd = false;
 
     public TurnEnums.TurnState TurnType
     {
@@ -162,14 +164,12 @@ public class TurnManager : MonoBehaviour
                 {
                     LevelDefeat?.Invoke();
                 }
-                EventBus.Instance.Publish(new OnPlayerTurn());
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
                 turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
-                EventBus.Instance.Publish(new OnEnemyTurn());
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
@@ -218,7 +218,7 @@ public class TurnManager : MonoBehaviour
 
             enemyList.Remove((Enemy_Base)character);
 
-            if (enemyList.Count == 0 && towersTurn.HasTowers == false)
+            if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
                 LevelVictory?.Invoke();
             }
@@ -253,6 +253,19 @@ public class TurnManager : MonoBehaviour
         {
             grassTiles.Remove((GrassTile)oldTile);
         }
+
+        if (newTile.tileData.tileType == ElementType.Fire)
+        {
+            lavaTiles.Add((LavaTile)newTile);
+        }
+        else if (newTile.tileData.tileType == ElementType.Water)
+        {
+            waterTiles.Add((WaterTile)newTile);
+        }
+        else if (newTile.tileData.tileType == ElementType.Grass)
+        {
+            grassTiles.Add((GrassTile)newTile);
+        }
     }
 
     private void CheckTemporaryObjects()
@@ -272,6 +285,11 @@ public class TurnManager : MonoBehaviour
             Destroy(tileObj.gameObject);
         }
         tileObjectsToDestroy.Clear();
+    }
+
+    public void EndLevel()
+    {
+        LevelVictory?.Invoke();
     }
 
     #endregion

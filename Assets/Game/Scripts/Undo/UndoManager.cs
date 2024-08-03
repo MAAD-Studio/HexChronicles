@@ -98,7 +98,7 @@ public class UndoManager : Singleton<UndoManager>
         heroList.Add(heroData);
     }
 
-    public void StoreEnemy(Enemy_Base enemy)
+    public void StoreEnemy(Enemy_Base enemy, bool destroy)
     {
         if(enemyList.Find(x => x.enemyInvolved == enemy) != null)
         {
@@ -112,6 +112,7 @@ public class UndoManager : Singleton<UndoManager>
 
         enemyData.enemyInvolved = enemy;
         enemyData.enemyType = enemy.enemyType;
+        enemyData.destroy = destroy;
 
         enemyList.Add(enemyData);
     }
@@ -237,11 +238,22 @@ public class UndoManager : Singleton<UndoManager>
                 currentEnemy.characterTile.characterOnTile = null;
                 currentEnemy.characterTile.tileOccupied = false;
                 currentEnemy.characterTile = null;
+
+                if(data.destroy)
+                {
+                    turnManager.enemyList.Remove(currentEnemy);
+                    Destroy(currentEnemy.gameObject);
+                    continue;
+                }
             }
-            else
+            else if(!data.destroy)
             {
                 currentEnemy = GenerateEnemy(data.enemyType);
                 turnManager.enemyList.Add(currentEnemy);
+            }
+            else
+            {
+                continue;
             }
 
             StartCoroutine(RestoreCharacterData(data, currentEnemy));
@@ -292,8 +304,8 @@ public class UndoManager : Singleton<UndoManager>
                 if(data.destroy)
                 {
                     turnManager.temporaryTileObjects.Remove(currentObject);
-                    currentObject.AttachedTile.tileHasObject = false;
-                    currentObject.AttachedTile.objectOnTile = null;
+                    currentObject.attachedTile.tileHasObject = false;
+                    currentObject.attachedTile.objectOnTile = null;
                     Destroy(currentObject.gameObject);
                     continue;
                 }

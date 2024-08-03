@@ -8,6 +8,12 @@ public class TileChecker : MonoBehaviour
 
     [SerializeField] private LayerMask tileLayer;
 
+    [Header("Weather Checking: ")]
+    [SerializeField] private WeatherManager weatherManager;
+    [SerializeField] private Material weatherMaterial;
+
+    private Tile heldTile = null;
+
     #endregion
 
     #region UnityMethods
@@ -22,6 +28,19 @@ public class TileChecker : MonoBehaviour
         {
             CheckSpotAndAdjacent();
         }
+        else if(Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            ExamineWeather();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            HoldTile();
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            CompareTile();
+        }
     }
 
     #endregion
@@ -30,11 +49,11 @@ public class TileChecker : MonoBehaviour
 
     private Tile CheckSpot()
     {
+        Debug.Log("------------------");
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 10f, tileLayer))
         {
             Tile hitTile = hit.transform.GetComponent<Tile>();
             Debug.Log("Tile Name: " + hitTile.name);
-            Debug.Log("Weather Status: " + hitTile.underWeatherAffect);
             return hitTile;
         }
         else
@@ -51,6 +70,11 @@ public class TileChecker : MonoBehaviour
 
     private void CheckAdjacentTiles(Tile origin)
     {
+        if (origin == null)
+        {
+            return;
+        }
+
         Vector3 direction = Vector3.forward;
         float rayLength = 50f;
         float rayHeightOffset = 1f;
@@ -72,6 +96,47 @@ public class TileChecker : MonoBehaviour
                 Debug.Log(hitTile.name);
             }
         }
+    }
+
+    private void ExamineWeather()
+    {
+        if(weatherManager == null)
+        {
+            Debug.Log("NO WEATHER MANAGER SET");
+            return;
+        }
+
+        Tile tile = CheckSpot();
+        if (tile == null)
+        {
+            return;
+        }
+
+        Debug.Log("Weather Status: " + tile.underWeatherAffect);
+        foreach(WeatherPatch patch in weatherManager.WeatherPatches)
+        {
+            if(patch.EffectedTiles.Contains(tile))
+            {
+                Debug.Log("Weather is Effected?: true");
+            }
+        }
+    }
+
+    private void HoldTile()
+    {
+        heldTile = CheckSpot();
+    }
+
+    private void CompareTile()
+    {
+        if(heldTile == null)
+        {
+            Debug.Log("No tile stored");
+            return;
+        }
+
+        Debug.Log("DISTANCE: " + Vector3.Distance(heldTile.transform.position, CheckSpot().transform.position));
+        heldTile = null;
     }
 
     #endregion

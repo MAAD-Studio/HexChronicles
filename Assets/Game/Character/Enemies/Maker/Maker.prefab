@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 4100675697078673505}
   - component: {fileID: 8356650070078932005}
   - component: {fileID: 1275399015605480794}
+  - component: {fileID: 2104264593576339187}
   m_Layer: 0
   m_Name: Maker
   m_TagString: Enemy
@@ -220,6 +221,18 @@ MonoBehaviour:
   DamagePreview:
     m_PersistentCalls:
       m_Calls: []
+  AddStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  ChangeStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  RemoveStatusPreview:
+    m_PersistentCalls:
+      m_Calls: []
+  DonePreview:
+    m_PersistentCalls:
+      m_Calls: []
   UpdateHealthBar:
     m_PersistentCalls:
       m_Calls: []
@@ -254,6 +267,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &2104264593576339187
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4595774988114415218}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.8493478, z: 1}
+  m_Center: {x: 0, y: 1.0635637, z: 0}
 --- !u!1 &6323282506757101403
 GameObject:
   m_ObjectHideFlags: 0

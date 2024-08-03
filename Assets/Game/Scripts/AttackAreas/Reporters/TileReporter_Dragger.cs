@@ -15,6 +15,11 @@ public class TileReporter_Dragger : TileReporter
 
     public override void ExecuteAddOnEffect()
     {
+        if(currentTile == null)
+        {
+            return;
+        }
+
         Pathfinder pathFinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
         pathFinder.PathTilesInRange(currentTile, 0, dragRange, true, false);
         List<Tile> dragTile = new List<Tile>(pathFinder.frontier);
@@ -24,7 +29,7 @@ public class TileReporter_Dragger : TileReporter
             Character character = tile.characterOnTile;
             if(character != null && character.characterType == TurnEnums.CharacterType.Enemy)
             {
-                UndoManager.Instance.StoreEnemy((Enemy_Base)character);
+                UndoManager.Instance.StoreEnemy((Enemy_Base)character, false);
                 character.DragTowards(currentTile, damage);
             }
         }

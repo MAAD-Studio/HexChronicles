@@ -43,7 +43,7 @@ public class Weather_SporeStorm : Weather_Base
         }
     }
 
-    public override void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public override void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
         ElementType type = tile.tileData.tileType;
 
@@ -69,11 +69,11 @@ public class Weather_SporeStorm : Weather_Base
         }
         else if (type == ElementType.Grass)
         {
-            foreach (Tile adjTile in turnManager.pathfinder.FindAdjacentTiles(tile, true))
-            {
-                Tile newTile = Instantiate(grassTilePrefab, adjTile.transform.position, Quaternion.identity);
-                adjTile.ReplaceTileWithNew(newTile);
-            }
+            List<Tile> adjTiles = turnManager.pathfinder.FindAdjacentTiles(tile, true);
+            int choice = Random.Range(0, adjTiles.Count);
+            Tile newTile = Instantiate(grassTilePrefab, adjTiles[choice].transform.position, Quaternion.identity);
+            patch.TileReplaced(adjTiles[choice], newTile);
+            adjTiles[choice].ReplaceTileWithNew(newTile);
         }
     }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeatherManager : Singleton<WeatherManager>
+public class WeatherManager : MonoBehaviour
 {
     #region Variables
 
@@ -11,6 +11,10 @@ public class WeatherManager : Singleton<WeatherManager>
 
     private List<Tile> tilesOnMap = new List<Tile>();
     private List<WeatherPatch> weatherPatches = new List<WeatherPatch>();
+    public List<WeatherPatch> WeatherPatches
+    {
+        get { return weatherPatches; }
+    }
 
     private bool weatherActive = false;
 
@@ -38,6 +42,9 @@ public class WeatherManager : Singleton<WeatherManager>
     }
 
     private TurnManager turnManager;
+
+    //Tutorial
+    public bool isTutorial = false;
 
     #endregion
 
@@ -98,7 +105,7 @@ public class WeatherManager : Singleton<WeatherManager>
         {
             foreach(WeatherPatch patch in weatherPatches)
             {
-                patch.UpdateAndEffect(turnManager);
+                StartCoroutine(patch.UpdateAndEffect(turnManager));
             }
             turnsActive++;
         }
@@ -110,6 +117,14 @@ public class WeatherManager : Singleton<WeatherManager>
             foreach(WeatherPatch patch in weatherPatches)
             {
                 patch.ResetWeatherTiles();
+            }
+
+            foreach(Tile tile in tilesOnMap)
+            {
+                if(tile.WeatherActive)
+                {
+                    tile.ChangeTileWeather(false, WeatherType.none);
+                }
             }
 
             EventBus.Instance.Publish(new OnWeatherEnded());

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.VFX;
 
 public class Character : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public Vector3 defaultScale;
 
     [Header("Tile LayerMask:")]
-    [SerializeField] private LayerMask tileLayer;
+    [SerializeField] protected LayerMask tileLayer;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
@@ -43,6 +44,13 @@ public class Character : MonoBehaviour
     [Header("Prefabs:")]
     [SerializeField] protected GameObject attackVFX;
     [SerializeField] protected GameObject damagePrefab;
+
+    [Header("VFX:")]
+    [SerializeField] public VisualEffect VFXGraph;
+    [SerializeField] public SkinnedMeshRenderer skinnedMesh;
+    private Material[] skinnedMaterials;
+    public float dissolveRate = 0.0125f;
+    public float refreshRate = 0.025f;
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
@@ -63,6 +71,9 @@ public class Character : MonoBehaviour
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
+    private List<Tile> pathTiles = new List<Tile>();
+    private bool hasDied = false;
+
     private GameObject buffPreview;
     private GameObject tileVFX;
     private TurnManager turnManager;
@@ -80,6 +91,9 @@ public class Character : MonoBehaviour
         Debug.Assert(attackVFX != null, $"Can not find attackVFX on {name}");
 
         FindTile();
+
+        if (skinnedMesh != null)
+            skinnedMaterials = skinnedMesh.materials;
     }
 
     void Update()
@@ -94,8 +108,7 @@ public class Character : MonoBehaviour
 
     public virtual void PerformBasicAttack(List<Character> targets)
     {
-        animator.SetTrigger("attack");
-
+        //animator.SetTrigger("attack");
         if (characterTile.tileData.tileType == elementType)
         {
             ApplyStatusAttackArea(targets);
@@ -287,7 +300,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            UndoManager.Instance.StoreEnemy((Enemy_Base)target);
+            UndoManager.Instance.StoreEnemy((Enemy_Base)target, false);
         }
 
         Status oldStatus = Status.GrabIfStatusActive(target, statusType);
@@ -741,16 +754,61 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
-        if(animator != null)
+        foreach(Tile tile in pathTiles)
+        {
+            if(tile != null)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
+        }
+
+        if (characterType == TurnEnums.CharacterType.Player && turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
+        {
+            turnManager.PlayerTurn.ForceSelection();
+        }
+
+        hasDied = true;
+
+        FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
+        Time.timeScale = 0.5f;
+        if (animator != null)
         {
             animator.SetTrigger("died");
         }
+
+        //VFX and Shader
+        if (VFXGraph != null) 
+        {
+            VFXGraph.Play();
+        }
+        StartCoroutine(DissolveCo());
+
+
         DestroyTileVFX();
-        Invoke("Destroy", 0.6f);
+        Invoke("Destroy", 1f);
     }
+
+    #region Dissolve Material
+    IEnumerator DissolveCo () {
+        if(skinnedMaterials.Length > 0) {
+            float counter = 0;
+
+            while(skinnedMaterials[0].GetFloat("_Dissolve_Amount") < 1) {
+                counter += dissolveRate;
+                for(int i=0; i<skinnedMaterials.Length; i++) {
+                    skinnedMaterials[i].SetFloat("_Dissolve_Amount", counter);
+                }
+            yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        
+    }
+    #endregion
 
     private void Destroy()
     {
+        FindObjectOfType<CameraController>().MoveToDefault(true);
+        Time.timeScale = 1f;
         turnManager.DestroyACharacter(this);
     }
     #endregion
@@ -794,6 +852,8 @@ public class Character : MonoBehaviour
         //Moves the Character
         if(path.Length > 0)
         {
+            pathTiles = path.ToList();
+
             int step = 1;
             int pathLength = path.Length;
             List<Tile> tilesInPath = new List<Tile>(path);
@@ -809,9 +869,17 @@ public class Character : MonoBehaviour
             Tile currentTile = path[0];
             tilesInPath.Remove(currentTile);
 
+            moving = true;
+
             while(step < pathLength)
             {
                 yield return null;
+
+                if(hasDied)
+                {
+                    animator.SetBool("walking", false);
+                    yield break;
+                }
 
                 foreach (Tile tile in tilesInPath)
                 {
@@ -911,23 +979,32 @@ public class Character : MonoBehaviour
             if(attackAreaPrefab.hitsEnemies)
             {
                 enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(enemiesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(enemiesHit);
+                }
             }
-            if(attackAreaPrefab.hitsHeroes)
+            if (attackAreaPrefab.hitsHeroes)
             {
                 heroesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Player);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(heroesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(heroesHit);
+                }
             }
 
-            if (activeSkillUse)
+            if (attackAreaPrefab.hitsTileObjects)
             {
-                ReleaseActiveSkill(enemiesHit);
-                ReleaseActiveSkill(heroesHit);
+                PerformBasicAttackObjects(objectsHit);
             }
-            else
-            {
-                PerformBasicAttack(enemiesHit);
-                PerformBasicAttack(heroesHit);
-            }
-            PerformBasicAttackObjects(objectsHit);
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
 
@@ -948,7 +1025,7 @@ public class Character : MonoBehaviour
 
         if(characterType == TurnEnums.CharacterType.Player)
         {
-            turnManager.mainCameraController.MoveToDefault(true);
+            turnManager.mainCameraController.MoveToDefault(false);
         }
 
         movementComplete.Invoke(this);
@@ -1138,12 +1215,11 @@ public class Character : MonoBehaviour
         {
             if (isBuff)
             {
-                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType), position, Quaternion.identity);
-
+                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType, true), position, Quaternion.identity);
             }
             else
             {
-                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(), position, Quaternion.identity);
+                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(true), position, Quaternion.identity);
             }
         }
     }

@@ -47,6 +47,7 @@ public class TutorialHUD : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button pause;
     [SerializeField] private Button endTurn;
+    [SerializeField] private GameObject endTurnVFX;
 
     #region Unity Methods
 
@@ -54,15 +55,11 @@ public class TutorialHUD : MonoBehaviour
     {
         EventBus.Instance.Subscribe<OnNewLevelStart>(OnNewLevelStart);
     }
-    private void Start()
-    {
-        EventBus.Instance.Publish(new OnTutorialStart());
-    }
 
     private void OnDestroy()
     {
         EventBus.Instance.Unsubscribe<OnNewLevelStart>(OnNewLevelStart);
-    }
+    }     
 
     private void Update()
     {
@@ -110,6 +107,7 @@ public class TutorialHUD : MonoBehaviour
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
         Character.movementComplete.AddListener(RestoreShowingInfos);
+        Tutorial_Base.TutorialFullControl.AddListener(TutorialFullControl);
     }
 
     private void UnsubscribeEvents()
@@ -126,10 +124,13 @@ public class TutorialHUD : MonoBehaviour
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
         Character.movementComplete.RemoveListener(RestoreShowingInfos);
+        Tutorial_Base.TutorialFullControl.RemoveListener(TutorialFullControl);
     }
 
     private void OnNewLevelStart(object obj)
     {
+        OnLevelEnded();
+
         turnManager = FindObjectOfType<TurnManager>();
         Debug.Assert(turnManager != null, "HUDInfo couldn't find the TurnManager Component");
         playerTurn = turnManager.GetComponent<PlayerTurn>();
@@ -200,6 +201,13 @@ public class TutorialHUD : MonoBehaviour
         showInfos = true;
     }
 
+    private void TutorialFullControl()
+    {
+        /*showInfos = false;
+        selectedTile = null;
+        currentTile = null;*/
+    }
+
     // Used for update info after character has made decision
     private void OnUpdateCharacterDecision(object obj)
     {
@@ -214,6 +222,7 @@ public class TutorialHUD : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
     }
 
@@ -236,10 +245,12 @@ public class TutorialHUD : MonoBehaviour
         if (activeHeroes == 0)
         {
             endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
+            endTurnVFX.SetActive(true);
         }
         else
         {
             endTurn.GetComponent<Image>().color = Color.white;
+            endTurnVFX.SetActive(false);
         }
     }
 
@@ -345,6 +356,7 @@ public class TutorialHUD : MonoBehaviour
             }
             playerTurn.EndTurn();
             endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            endTurnVFX.SetActive(false);
         });
         question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
     }
@@ -368,12 +380,18 @@ public class TutorialHUD : MonoBehaviour
         heroButtons.Clear();
         characterInfoDict.Clear();
 
+        pause.onClick.RemoveAllListeners();
         endTurn.onClick.RemoveAllListeners();
         endTurn.GetComponent<Image>().color = Color.white;
+        endTurnVFX.SetActive(false);
+        question.onClick.RemoveAllListeners();
 
         availableHeroes = 0;
         activeHeroes = 0;
         selectedHero = null;
+        selectedEnemy = null;
+        selectedTile = null;
+        showInfos = true;
     }
     #endregion
 
