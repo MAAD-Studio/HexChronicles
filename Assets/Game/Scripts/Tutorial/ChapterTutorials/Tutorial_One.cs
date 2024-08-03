@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,12 @@ public class Tutorial_One : Tutorial_Base
 
     [Header("Dialogue: ")]
     [SerializeField] private Dialogue[] turnOneDialogue;
+
+    public event Action ShowClickArrow;
+    public event Action HideClickArrow;
+
+    public event Action IntroduceHeroInfo;
+    public event Action IntroduceEnemyInfo;
 
     #endregion
 
@@ -76,6 +83,7 @@ public class Tutorial_One : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     DisplayDialogue(turnOneDialogue, 1, 2, 3, 4);
+                    IntroduceHeroInfo?.Invoke();
 
                     internalTutorialStep++;
                 }
@@ -96,6 +104,7 @@ public class Tutorial_One : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     AllowSpecificEnemySelection(enemyOne);
+                    ShowClickArrow?.Invoke();
                 }
 
                 if(spawnedHighlight == null)
@@ -109,12 +118,14 @@ public class Tutorial_One : Tutorial_Base
 
                     Destroy(spawnedHighlight);
 
+                    HideClickArrow?.Invoke();
                     internalTutorialStep++;
                 }
                 break;
 
             case 4:
                 cameraController.MoveToTargetPosition(enemyOne.transform.position, true);
+                IntroduceEnemyInfo?.Invoke();
                 DisplayDialogue(turnOneDialogue, 6, 7, 8, 9);
 
                 internalTutorialStep++;
@@ -137,6 +148,7 @@ public class Tutorial_One : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     AllowSpecificCharacterSelection(fireHero);
+                    ShowClickArrow?.Invoke();
                 }
 
                 if (spawnedHighlight == null)
@@ -149,6 +161,7 @@ public class Tutorial_One : Tutorial_Base
                     Destroy(spawnedHighlight);
                     RegainFullControl();
 
+                    HideClickArrow?.Invoke();
                     internalTutorialStep++;
                 }
                 break;

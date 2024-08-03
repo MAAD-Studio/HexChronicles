@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Tutorial_Base : MonoBehaviour
 {
@@ -21,6 +23,8 @@ public class Tutorial_Base : MonoBehaviour
     protected TutorialTurn currentTurn = TutorialTurn.TurnOne;
     protected int internalTutorialStep = 0;
     protected bool dialogueJustEnded = false;
+
+    public static UnityEvent TutorialFullControl = new UnityEvent();
 
     #endregion
 
@@ -101,6 +105,7 @@ public class Tutorial_Base : MonoBehaviour
 
     protected void RegainFullControl()
     {
+        TutorialFullControl?.Invoke();
         turnManager.PlayerTurn.preventPhaseBackUp = true;
         turnManager.disablePlayers = true;
         turnManager.disableObjects = true;

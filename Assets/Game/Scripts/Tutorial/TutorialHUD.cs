@@ -107,6 +107,7 @@ public class TutorialHUD : MonoBehaviour
         TurnManager.OnCharacterDied.AddListener(CharacterDied);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
         Character.movementComplete.AddListener(RestoreShowingInfos);
+        Tutorial_Base.TutorialFullControl.AddListener(TutorialFullControl);
     }
 
     private void UnsubscribeEvents()
@@ -123,6 +124,7 @@ public class TutorialHUD : MonoBehaviour
         TurnManager.OnCharacterDied.RemoveListener(CharacterDied);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
         Character.movementComplete.RemoveListener(RestoreShowingInfos);
+        Tutorial_Base.TutorialFullControl.RemoveListener(TutorialFullControl);
     }
 
     private void OnNewLevelStart(object obj)
@@ -197,6 +199,13 @@ public class TutorialHUD : MonoBehaviour
     private void RestoreShowingInfos(object obj)
     {
         showInfos = true;
+    }
+
+    private void TutorialFullControl()
+    {
+        /*showInfos = false;
+        selectedTile = null;
+        currentTile = null;*/
     }
 
     // Used for update info after character has made decision
