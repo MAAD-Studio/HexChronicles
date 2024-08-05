@@ -12,21 +12,18 @@ public class TileObject : MonoBehaviour
     [SerializeField] public TileObjectSO tileObjectData;
     [HideInInspector] public float currentHealth = 0f;
     [SerializeField] public TileObjectHealthBar healthBar;
+    [SerializeField] protected GameObject damagePrefab;
 
     [HideInInspector] public static UnityEvent<TileObject> objectDestroyed = new UnityEvent<TileObject>();
     [HideInInspector] public static UnityEvent<TileObject> objectCreated = new UnityEvent<TileObject>();
 
-    [HideInInspector] public UnityEvent DamagePreview;
+    [HideInInspector] public UnityEvent<int> DamagePreview;
     [HideInInspector] public UnityEvent DonePreview;
     [HideInInspector] public UnityEvent UpdateHealthBar;
 
     public ObjectType objectType;
 
-    protected Tile attachedTile;
-    public Tile AttachedTile
-    {
-        get { return attachedTile; }
-    }
+    public Tile attachedTile;
 
     public virtual void Start()
     {
@@ -66,6 +63,10 @@ public class TileObject : MonoBehaviour
 
         UpdateHealthBar?.Invoke();
 
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(attackDamage);
+
         if (currentHealth <= 0)
         {
             objectDestroyed.Invoke(this);
@@ -84,8 +85,7 @@ public class TileObject : MonoBehaviour
             return;
         }
 
-        healthBar.damagePreview = damage;
-        DamagePreview?.Invoke();
+        DamagePreview?.Invoke((int)damage);
     }
 
     public virtual void Undo(UndoData_TileObjCustomInfo data)

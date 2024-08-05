@@ -21,9 +21,6 @@ public class Weather_Base : MonoBehaviour
         get { return element; }
     }
 
-    [Header("Materials: ")]
-    [SerializeField] public Material weatherMaterial;
-
     [Header("Effects Info: ")]
     [Range(0f, 10f)]
     [SerializeField] protected int effectTurns = 1;
@@ -42,7 +39,7 @@ public class Weather_Base : MonoBehaviour
     {
     }
 
-    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager)
+    public virtual void ApplyTileEffect(Tile tile, TurnManager turnManager, WeatherPatch patch)
     {
     }
 

@@ -16,12 +16,14 @@ public class TileReporter : MonoBehaviour
 
     public virtual void Start()
     {
+        //Removes any null children
         List<TileReporter> reportersToRemove = new List<TileReporter>();
+
         foreach(TileReporter reporter in children)
         {
             if(reporter == null)
             {
-                reportersToRemove.Add(reporter);
+                children.Remove(reporter);
                 Debug.LogWarning("(" + name + ") in (" + transform.parent.name + ") had a null child.");
             }
         }
@@ -30,26 +32,8 @@ public class TileReporter : MonoBehaviour
         {
             children.Remove(reporter);
         }
+
         reportersToRemove.Clear();
-    }
-
-    public void CheckBlockages(bool parentNull)
-    {
-        bool tileNull = false;
-        if(parentNull)
-        {
-            currentTile = null;
-            tileNull = true;
-        }
-        else if(currentTile == null)
-        {
-            tileNull = true;
-        }
-
-        foreach (TileReporter reporter in children)
-        {
-            reporter.CheckBlockages(tileNull);
-        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -68,9 +52,32 @@ public class TileReporter : MonoBehaviour
         currentTile = null;
     }
 
+    #endregion
+
+    #region CustoMethods
+
+    public void CheckBlockages(bool parentNull)
+    {
+        bool tileNull = false;
+        if (parentNull)
+        {
+            currentTile = null;
+            tileNull = true;
+        }
+        else if (currentTile == null)
+        {
+            tileNull = true;
+        }
+
+        foreach (TileReporter reporter in children)
+        {
+            reporter.CheckBlockages(tileNull);
+        }
+    }
+
     public virtual void ExecuteAddOnEffect()
     {
-        
+
     }
 
     #endregion

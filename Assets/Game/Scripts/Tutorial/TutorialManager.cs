@@ -3,18 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialManager : Singleton<TutorialManager>
+public class TutorialManager : MonoBehaviour
 {
+    #region Variables
+
     [SerializeField] private TurnManager turnManager;
 
     public enum TutorialPhase
     {
-        Phase1,
-        Phase2,
+        PhaseOne,
+        PhaseTwo,
         Completed
     }
+    private TutorialPhase currentPhase = TutorialPhase.PhaseOne;
 
-    [SerializeField] private TutorialPhase currentPhase;
     private int currentStep;
 
     [Header("Tutorial Tips")]
@@ -22,32 +24,73 @@ public class TutorialManager : Singleton<TutorialManager>
     private Queue<TutorialTip> tutorialTips;
 
     [Header("Dialogue")]
-    [SerializeField] private Dialogue[] startDialogue;
     private DialogueManager dialogueManager;
+    [SerializeField] private Dialogue[] turnOneDialogue;
+    [SerializeField] private Dialogue[] startDialogue;
+
+    [Header("Tutorials")]
+    [SerializeField] List<Tutorial_Base> tutorials;
+    Tutorial_Base selectedTutorial;
+    private int tutorialIndex = 0;
+
+    #endregion
+
+    #region UnityMethods
 
     private void Start()
     {
-        EventBus.Instance.Subscribe<OnTutorialStart>(OnTutorialStart);
-    }
-
-    private void OnDestroy()
-    {
-        EventBus.Instance.Unsubscribe<OnTutorialStart>(OnTutorialStart);
-    }
-
-    private void OnTutorialStart(object obj)
-    {
-        tutorialTips = new Queue<TutorialTip>();
-
-        /*tutorialCollection = GetComponentsInChildren<TutorialTip>();
-        foreach (TutorialTip tutorial in tutorialCollection)
-        {
-            tutorialTips.Enqueue(tutorial);
-        }*/
+        //EventBus.Instance.Subscribe<OnTutorialStart>(OnTutorialStart);
 
         if (turnManager == null)
         {
             turnManager = FindObjectOfType<TurnManager>();
+        }
+
+        if(tutorials.Count > 0)
+        {
+            selectedTutorial = tutorials[0];
+        }
+    }
+
+    private void OnDestroy()
+    {
+        //EventBus.Instance.Unsubscribe<OnTutorialStart>(OnTutorialStart);
+    }
+
+    private void Update()
+    {
+        if(tutorials.Count > 0)
+        {
+            selectedTutorial.ExecuteTutorial();
+        }
+    }
+
+    #endregion
+
+    #region CustomMethods
+
+    public void AdvancePhase()
+    {
+        if(tutorialIndex == tutorials.Count - 1)
+        {
+            tutorialIndex = 0;
+        }
+        else
+        {
+            tutorialIndex++;
+        }
+    }
+
+    #endregion
+
+   /* private void OnTutorialStart(object obj)
+    {
+        tutorialTips = new Queue<TutorialTip>();
+
+        tutorialCollection = GetComponentsInChildren<TutorialTip>();
+        foreach (TutorialTip tutorial in tutorialCollection)
+        {
+            tutorialTips.Enqueue(tutorial);
         }
 
         StartPhase1();
@@ -55,72 +98,13 @@ public class TutorialManager : Singleton<TutorialManager>
 
     private void StartPhase1()
     {
-        currentPhase = TutorialPhase.Phase1;
+        currentPhase = TutorialPhase.PhaseOne;
 
         // Start Dialogue
-        dialogueManager = FindObjectOfType<DialogueManager>();
-        dialogueManager.StartDialogue(startDialogue);
+        //dialogueManager = FindObjectOfType<DialogueManager>();
+        //dialogueManager.StartDialogue(startDialogue);
 
         currentStep = 0;
         StartStep();
-    }
-
-    private void StartStep()
-    {
-        switch (currentStep)
-        {
-            case 0:
-                ShowUIBasics();
-                break;
-            case 1:
-                TeachMovementAndAttack();
-                break;
-            case 2:
-                TeachTileBuffs();
-                break;
-            case 3:
-                TeachTileDebuffs();
-                break;
-            case 4:
-                ShowPostBattleUI();
-                break;
-        }
-    }
-
-    public void NextStep()
-    {
-        currentStep++;
-        StartStep();
-    }
-
-    private void ShowUIBasics()
-    {
-        Debug.Log("Show UI Basics");
-    }
-
-    private void TeachMovementAndAttack()
-    {
-        Debug.Log("Teach Movement and Attack");
-    }
-
-    private void TeachTileBuffs()
-    {
-        Debug.Log("Teach Tile Buffs");
-    }
-
-    private void TeachTileDebuffs()
-    {
-        Debug.Log("Teach Tile Debuffs");
-    }
-
-    private void ShowPostBattleUI()
-    {
-        Debug.Log("Show Post Battle UI");
-    }
-
-    public void CompleteTutorial()
-    {
-        currentPhase = TutorialPhase.Completed;
-        Debug.Log("Tutorial Completed");
-    }
+    }*/
 }

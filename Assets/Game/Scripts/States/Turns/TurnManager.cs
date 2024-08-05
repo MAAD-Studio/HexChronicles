@@ -37,6 +37,11 @@ public class TurnManager : MonoBehaviour
     [HideInInspector] public List<TileObject> temporaryTileObjects = new List<TileObject>();
 
     private PlayerTurn playerTurn;
+    public PlayerTurn PlayerTurn
+    {
+        get { return playerTurn; }
+    }
+
     private EnemyTurn enemyTurn;
     private WeatherTurn weatherTurn;
     private TowersTurn towersTurn;
@@ -45,7 +50,15 @@ public class TurnManager : MonoBehaviour
     private TurnEnums.TurnState turnType;
 
     private int turnNumber;
-    public int objectiveTurnNumber = 8;
+    private int objectiveTurnNumber = 8;
+
+    //TUTORIAL USES
+    [Header("Tutorial Controls: ")]
+    public bool isTutorial = false;
+    [HideInInspector] public bool disablePlayers = false;
+    [HideInInspector] public bool disableEnemies = false;
+    [HideInInspector] public bool disableObjects = false;
+    [HideInInspector] public bool disableEnd = false;
 
     public TurnEnums.TurnState TurnType
     {
@@ -63,6 +76,8 @@ public class TurnManager : MonoBehaviour
     [HideInInspector] public static UnityEvent LevelVictory = new UnityEvent();
     [HideInInspector] public static UnityEvent LevelDefeat = new UnityEvent();
     [HideInInspector] public static UnityEvent<Character> OnCharacterDied = new UnityEvent<Character>();
+
+    public bool pauseTurns = false;
 
     #endregion
 
@@ -105,6 +120,7 @@ public class TurnManager : MonoBehaviour
             enemyList.Add(enemy);
         }
 
+        objectiveTurnNumber = GameManager.Instance.levelDetails[GameManager.Instance.CurrentLevelIndex].limitTurns;
         turnNumber = 1;
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
@@ -117,6 +133,11 @@ public class TurnManager : MonoBehaviour
 
     void Update()
     {
+        if(pauseTurns == true)
+        {
+            return;
+        }
+
         currentTurn.UpdateState();
     }
 
@@ -143,14 +164,12 @@ public class TurnManager : MonoBehaviour
                 {
                     LevelDefeat?.Invoke();
                 }
-                EventBus.Instance.Publish(new OnPlayerTurn());
                 break;
 
             case TurnEnums.TurnState.EnemyTurn:
                 currentTurn = enemyTurn;
                 turnType = TurnEnums.TurnState.EnemyTurn;
                 mainCameraController.controlEnabled = false;
-                EventBus.Instance.Publish(new OnEnemyTurn());
                 break;
 
             case TurnEnums.TurnState.WorldTurn:
@@ -199,7 +218,7 @@ public class TurnManager : MonoBehaviour
 
             enemyList.Remove((Enemy_Base)character);
 
-            if (enemyList.Count == 0 && towersTurn.HasTowers == false)
+            if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
                 LevelVictory?.Invoke();
             }
@@ -234,6 +253,19 @@ public class TurnManager : MonoBehaviour
         {
             grassTiles.Remove((GrassTile)oldTile);
         }
+
+        if (newTile.tileData.tileType == ElementType.Fire)
+        {
+            lavaTiles.Add((LavaTile)newTile);
+        }
+        else if (newTile.tileData.tileType == ElementType.Water)
+        {
+            waterTiles.Add((WaterTile)newTile);
+        }
+        else if (newTile.tileData.tileType == ElementType.Grass)
+        {
+            grassTiles.Add((GrassTile)newTile);
+        }
     }
 
     private void CheckTemporaryObjects()
@@ -253,6 +285,11 @@ public class TurnManager : MonoBehaviour
             Destroy(tileObj.gameObject);
         }
         tileObjectsToDestroy.Clear();
+    }
+
+    public void EndLevel()
+    {
+        LevelVictory?.Invoke();
     }
 
     #endregion

@@ -56,6 +56,11 @@ public class Pathfinder : Singleton<Pathfinder>
         return PathFind(character.characterTile, character.movementThisTurn, character.moveDistance, false, false, true);
     }
 
+    public List<Tile> ReturnRange(Tile origin)
+    {
+        return PathFind(origin, 0, 2, true, false, true);
+    }
+
     private List<Tile> PathFind(Tile origin, int originCost, int maxRange, bool includeOccupied, bool illustrate, bool ignoreFrontier)
     {
         List<Tile> movementTiles = new List<Tile>();
@@ -137,6 +142,11 @@ public class Pathfinder : Singleton<Pathfinder>
     //Finds any tiles adjacent to the current tile
     public List<Tile> FindAdjacentTiles(Tile origin, bool includeOccupied)
     {
+        if(origin == null)
+        {
+            return new List<Tile>();
+        }
+
         List<Tile> adjacentTiles = new List<Tile>();
 
         Vector3 direction = Vector3.forward;
@@ -237,6 +247,24 @@ public class Pathfinder : Singleton<Pathfinder>
         }
 
         frontier.Clear();
+    }
+
+    public void ClearIllustration()
+    {
+        illustrator.ClearIllustrations();
+
+        foreach(Tile tile in frontier)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, false);
+        }
+    }
+
+    public void CreateIllustration()
+    {
+        foreach (Tile tile in frontier)
+        {
+            tile.ChangeTileTop(TileEnums.TileTops.frontier, true);
+        }
     }
 
     // Used for pushing characters

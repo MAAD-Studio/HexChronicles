@@ -15,6 +15,8 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     private List<Tile> tileObjCheckedTiles = new List<Tile>();
     private List<GameObject> tileObjTileTops = new List<GameObject>();
 
+    private List<Tile> attackTiles = new List<Tile>();
+
     [Header("Spawn Info: ")]
     [SerializeField] private LayerMask tileLayer;
     [Range(0.1f, 2f)]
@@ -23,6 +25,10 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     [Header("Top Prefabs: ")]
     [SerializeField] private GameObject movementTop;
     [SerializeField] private GameObject attackTop;
+
+    [Header("Edges: ")]
+    [SerializeField] private GameObject attackEdge;
+    [SerializeField] private GameObject moveEdge;
 
     [Header("Marker Prefabs: ")]
     [SerializeField] private GameObject targetMarker;
@@ -47,6 +53,17 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     {
         ClearAttackArea();
 
+        if(Status.GrabIfStatusActive(enemy, Status.StatusTypes.Bound) != null)
+        {
+            List<Tile> originTile = new List<Tile>()
+            {
+                enemy.characterTile
+            };
+            ProduceEdges(enemy.characterTile, originTile, tileTops, moveEdge);
+
+            return;
+        }
+
         PreviewOrigin previewArea = null;
         List<TileReporter> pointsToCheck = null;
 
@@ -62,7 +79,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
         foreach(Tile tile in tiles)
         {
-            tileTops.Add(Instantiate(movementTop, tile.transform.position + new Vector3(0, spawnHeight, 0), Quaternion.identity));
+            ProduceEdges(tile, tiles, tileTops, moveEdge);
 
             //If a movement tile is on the edge of the movement range it checks for attacking tops
             if(tile.cost >= enemy.moveDistance && previewArea != null)
@@ -71,12 +88,24 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
             }
         }
 
+        List<Tile> avoidTiles = new List<Tile>(tiles);
+        foreach(Tile tile in attackTiles)
+        {
+            avoidTiles.Add(tile);
+        }
+
+        foreach(Tile tile in attackTiles)
+        {
+            ProduceEdges(tile, avoidTiles, tileTops, attackEdge);
+        }
+        attackTiles.Clear();
+
         //Spawns an indicator over the cloest enemy to display who the enemy is likely to target
         Character closestCharacter = enemy.LikelyTarget();
 
         if(closestCharacter != null)
         {
-            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position + new Vector3(0, 5f, 0), Quaternion.identity);
+            spawnedMarker = Instantiate(targetMarker, closestCharacter.transform.position, Quaternion.identity);
         }
     }
 
@@ -97,7 +126,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
                 ConfirmAttackTopSpawn(point);
             }
             //Spawns in the attack tops
-            SpawnAttacks(previewArea, pointsToCheck);
+            StoreAttackTiles(previewArea, pointsToCheck);
 
             rotation += 60;
         }
@@ -118,7 +147,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
     }
 
     //Spawns in the attack tops and checks for any bloackages from tileObjects interupting the enemies attack
-    private void SpawnAttacks(PreviewOrigin previewArea, List<TileReporter> pointsToCheck)
+    private void StoreAttackTiles(PreviewOrigin previewArea, List<TileReporter> pointsToCheck)
     {
         //Checks for any blockages
         previewArea.originTile.CheckBlockages(false);
@@ -131,7 +160,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
                 Vector3 position = point.transform.position;
                 position.y = spawnHeight;
 
-                tileTops.Add(Instantiate(attackTop, position, Quaternion.identity));
+                attackTiles.Add(point.currentTile);
                 checkedTiles.Add(point.currentTile);
             }
         }
@@ -161,8 +190,8 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
         List<Tile> edgeTiles;
         List<Tile> nextSet = new List<Tile>();
 
-        tileObjCheckedTiles.Add(tileObj.AttachedTile);
-        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.AttachedTile, false);
+        tileObjCheckedTiles.Add(tileObj.attachedTile);
+        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.attachedTile, false);
 
         for(int i = 0; i < tileObj.TileRange; i++)
         {
@@ -198,6 +227,45 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
         tileObjCheckedTiles.Clear();
         tileObjTileTops.Clear();
+    }
+
+    public void ProduceEdges(Tile origin, List<Tile> tileList, List<GameObject> listToAddOnto, GameObject edgeObject)
+    {
+        if (origin == null)
+        {
+            return;
+        }
+
+        Vector3 direction = Vector3.forward;
+        float rayLength = 50f;
+        float rayHeightOffset = 1f;
+
+        //Checks in all 6 direction for an adjacent tile
+        for (int i = 0; i < 6; i++)
+        {
+            direction = Quaternion.Euler(0f, 60f, 0f) * direction;
+
+            Vector3 aboveTilePos = origin.transform.position + direction;
+            aboveTilePos.y += rayHeightOffset;
+
+            //If we hit a tile we add it to the list of adjacents
+            if (Physics.Raycast(aboveTilePos, Vector3.down, out RaycastHit hit, rayLength, tileLayer))
+            {
+                Tile hitTile = hit.transform.GetComponent<Tile>();
+                if (!tileList.Contains(hitTile))
+                {
+                    GameObject newEdge = Instantiate(edgeObject, origin.transform.position + new Vector3(0, spawnHeight, 0), Quaternion.identity);
+                    listToAddOnto.Add(newEdge);
+                    newEdge.transform.eulerAngles = new Vector3(0, 60f * (i + 1), 0);
+                }
+            }
+            else
+            {
+                GameObject newEdge = Instantiate(edgeObject, origin.transform.position + new Vector3(0, spawnHeight, 0), Quaternion.identity);
+                listToAddOnto.Add(newEdge);
+                newEdge.transform.eulerAngles = new Vector3(0, 60f * (i + 1), 0);
+            }
+        }
     }
 
     #endregion

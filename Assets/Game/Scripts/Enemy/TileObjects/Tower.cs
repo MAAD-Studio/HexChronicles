@@ -23,6 +23,10 @@ public class Tower : Spawner
     private List<Character> possibleCharacterChoices = new List<Character>();
     List<Tile> tilesToColor = new List<Tile>();
 
+    [SerializeField] private Projectile projectile;
+    [SerializeField] private float archHeight;
+    [SerializeField] private float projectileSpeed;
+
     #endregion
 
     #region UnityMethods
@@ -70,6 +74,20 @@ public class Tower : Spawner
 
     public void AttemptAttack()
     {
+        List<Character> charactersToRemove = new List<Character>();
+        foreach(Character character in possibleCharacterChoices)
+        {
+            if(character ==  null)
+            {
+                charactersToRemove.Add(character);
+            }
+        }
+
+        foreach(Character character in charactersToRemove)
+        {
+            possibleCharacterChoices.Remove(character);
+        }
+
         if(spawnedAttackArea == null)
         {
             if(possibleCharacterChoices.Count > 0)
@@ -98,9 +116,17 @@ public class Tower : Spawner
             turnManager.mainCameraController.MoveToTargetPosition(spawnedAttackArea.transform.position, true);
 
             spawnedAttackArea.DetectArea(false, false);
-            foreach (Character character in spawnedAttackArea.CharactersHit(TurnEnums.CharacterType.Player))
+            foreach(Tile tile in tilesToColor)
             {
-                character.TakeDamage(damage, ElementType.Base);
+                Projectile newProjectile = Instantiate(projectile, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+                if(tile.tileOccupied)
+                {
+                    newProjectile.Launch(tile.transform.position, archHeight, projectileSpeed, tile.characterOnTile, damage);
+                }
+                else
+                {
+                    newProjectile.Launch(tile.transform.position, archHeight, projectileSpeed);
+                }
             }
 
             foreach (Tile tile in tilesToColor)
@@ -118,6 +144,10 @@ public class Tower : Spawner
         currentHealth -= attackDamage;
 
         UpdateHealthBar?.Invoke();
+
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(attackDamage);
 
         if (currentHealth <= 0)
         {

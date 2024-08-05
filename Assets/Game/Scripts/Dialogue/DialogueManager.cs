@@ -12,6 +12,8 @@ public class DialogueManager : MonoBehaviour
 
     private Queue<Dialogue> dialogues;
 
+    public event Action NextDialogue;
+
     void Start()
     {
         dialogues = new Queue<Dialogue>();
@@ -32,6 +34,7 @@ public class DialogueManager : MonoBehaviour
 
     private void DisplayNextSentence()
     {
+        NextDialogue?.Invoke();
         if (dialogues.Count == 0)
         {
             EndDialogue();
@@ -45,6 +48,7 @@ public class DialogueManager : MonoBehaviour
 
     private void EndDialogue()
     {
+        EventBus.Instance.Publish(new OnDialogueEnded());
         Destroy(dialogueWindow.gameObject);
         Debug.Log("End of Story");
     }

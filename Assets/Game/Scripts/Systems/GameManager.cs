@@ -6,29 +6,52 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    private List<SaveData> saveList = new List<SaveData>();
-    private SaveData saveData;
+    private SaveLoadManager saveLoadManager;
+    public SaveLoadManager SaveLoadManager => saveLoadManager;
+
+    [Header("Level Info")]
+    public LevelSO[] levelDetails;
+
     private SceneReference currentLevel;
-
-    [HideInInspector] private float gameSpeed = 1f;
-
-    public float GameSpeed
-    {
-        get { return gameSpeed; }
-    }
-
     public SceneReference CurrentLevel
     {
         get => currentLevel;
         set => currentLevel = value;
     }
+    public int CurrentLevelIndex { get; set; }
 
-    private string SaveFilePath => Path.Combine(Application.dataPath, "SavedData.json");
+    [Header("Settings")]
+    private bool isFast = false;
+    public bool IsFast
+    {
+        get { return isFast; }
+    }
+    private float gameSpeed = 1f;
+    public float GameSpeed
+    {
+        get { return gameSpeed; }
+    }
+
+    private bool isTutorial = false;
+    public bool IsTutorial
+    {
+        get { return isTutorial; }
+        set { isTutorial = value; }
+    }
 
     #region Unity Methods
     private void Start()
     {
+        CurrentLevelIndex = 0;
+        saveLoadManager = GetComponent<SaveLoadManager>();
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            saveLoadManager.SaveGame();
+        }
     }
     #endregion
 
@@ -37,48 +60,50 @@ public class GameManager : Singleton<GameManager>
     public void IncreaseGameSpeed()
     {
         gameSpeed = 2f;
+        isFast = true;
     }
 
     public void DecreaseGameSpeed()
     {
         gameSpeed = 1f;
+        isFast = false;
     }
-
     #endregion
 
 
-    #region Game Save and Load
-
-    [Serializable]
-    public struct SaveData
+    #region Level Loading
+    public void LoadCurrentLevel()
     {
-        [SerializeField] private string saveTime;
-        public DateTime SaveTime
-        {
-            get => DateTime.Parse(saveTime);
-            set => saveTime = value.ToString();
-        }
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
+
+        SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
+        SceneLoader.Instance.UnLoadAllLoadedScenes();
+        CleanActiveScene();
     }
 
-    public void SaveGame()
+    private void AllScenesUnloaded()
     {
-        saveData = new SaveData
-        {
-            SaveTime = DateTime.Now
-        };
+        SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
+        SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
-        saveList.Add(saveData);
-
-        string json = JsonUtility.ToJson(saveList);
-        File.WriteAllText(SaveFilePath, json);
+        // Load CurrentLevel
+        SceneReference currentScene = levelDetails[CurrentLevelIndex].levelScene;
+        SceneLoader.Instance.LoadScene(currentScene);
     }
 
-    public void LoadSavedData()
+    private void OnSceneLoaded(List<string> list)
     {
-        if (File.Exists(SaveFilePath))
+        SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
+
+        MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+        MenuManager.Instance.ShowMenu(MenuManager.Instance.HUDMenuClassifier);
+    }
+
+    public void CleanActiveScene()
+    {
+        foreach (GameObject go in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
         {
-            string json = File.ReadAllText(SaveFilePath);
-            saveList = JsonUtility.FromJson<List<SaveData>>(json);
+            Destroy(go);
         }
     }
     #endregion

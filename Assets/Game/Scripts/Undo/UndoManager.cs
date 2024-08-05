@@ -98,7 +98,7 @@ public class UndoManager : Singleton<UndoManager>
         heroList.Add(heroData);
     }
 
-    public void StoreEnemy(Enemy_Base enemy)
+    public void StoreEnemy(Enemy_Base enemy, bool destroy)
     {
         if(enemyList.Find(x => x.enemyInvolved == enemy) != null)
         {
@@ -112,6 +112,7 @@ public class UndoManager : Singleton<UndoManager>
 
         enemyData.enemyInvolved = enemy;
         enemyData.enemyType = enemy.enemyType;
+        enemyData.destroy = destroy;
 
         enemyList.Add(enemyData);
     }
@@ -123,7 +124,13 @@ public class UndoManager : Singleton<UndoManager>
         data.currentHealth = character.currentHealth;
         data.effectedByWeather = character.effectedByWeather;
 
-        data.statusList = new List<Status>(character.statusList);
+        foreach(Status status in character.statusList)
+        {
+            Status statusToStore = new Status();
+            statusToStore.effectTurns = status.effectTurns;
+            statusToStore.statusType = status.statusType;
+            data.statusList.Add(statusToStore);
+        }
 
         data.position = character.transform.position;
         data.position.y += 1f;
@@ -136,7 +143,7 @@ public class UndoManager : Singleton<UndoManager>
 
         UndoData_TileObject tileObjData = new UndoData_TileObject();
         
-        tileObjData.destroy = true;
+        tileObjData.destroy = destroy;
       
         tileObjData.involvedObject = tileObj;
 
@@ -195,6 +202,10 @@ public class UndoManager : Singleton<UndoManager>
             if (turnManager.characterList.Contains(data.heroInvolved))
             {
                 currentHero = data.heroInvolved;
+                if (currentHero.characterTile.tileData.tileType != ElementType.Base)
+                {
+                    currentHero.DestroyTileVFX();
+                }
                 currentHero.characterTile.characterOnTile = null;
                 currentHero.characterTile.tileOccupied = false;
                 currentHero.characterTile = null;
@@ -227,11 +238,22 @@ public class UndoManager : Singleton<UndoManager>
                 currentEnemy.characterTile.characterOnTile = null;
                 currentEnemy.characterTile.tileOccupied = false;
                 currentEnemy.characterTile = null;
+
+                if(data.destroy)
+                {
+                    turnManager.enemyList.Remove(currentEnemy);
+                    Destroy(currentEnemy.gameObject);
+                    continue;
+                }
             }
-            else
+            else if(!data.destroy)
             {
                 currentEnemy = GenerateEnemy(data.enemyType);
                 turnManager.enemyList.Add(currentEnemy);
+            }
+            else
+            {
+                continue;
             }
 
             StartCoroutine(RestoreCharacterData(data, currentEnemy));
@@ -257,6 +279,18 @@ public class UndoManager : Singleton<UndoManager>
         character.transform.rotation = data.rotation;
 
         character.FindTile();
+
+        if (character is Hero)
+        {
+            if (character.elementType == character.characterTile.tileData.tileType)
+            {
+                character.SpawnTileVFX(character.transform.position, true);
+            }
+            else if (character.characterTile.tileData.tileType != ElementType.Base)
+            {
+                character.SpawnTileVFX(character.transform.position, false);
+            }
+        }
     }
 
     private void RestoreTileObjectData(TurnManager turnManager)
@@ -270,8 +304,8 @@ public class UndoManager : Singleton<UndoManager>
                 if(data.destroy)
                 {
                     turnManager.temporaryTileObjects.Remove(currentObject);
-                    currentObject.AttachedTile.tileHasObject = false;
-                    currentObject.AttachedTile.objectOnTile = null;
+                    currentObject.attachedTile.tileHasObject = false;
+                    currentObject.attachedTile.objectOnTile = null;
                     Destroy(currentObject.gameObject);
                     continue;
                 }

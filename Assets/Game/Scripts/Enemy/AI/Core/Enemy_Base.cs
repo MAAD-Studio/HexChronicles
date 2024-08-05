@@ -21,6 +21,7 @@ public class Enemy_Base : Character, EnemyInterface
         base.Start();
 
         moveDistance = enemySO.attributes.movementRange;
+        attackDistance = enemySO.attributes.attackRange;
         attackDamage = enemySO.attributes.attackDamage;
         defensePercentage = enemySO.attributes.defensePercentage;
         elementType = enemySO.attributes.elementType;
@@ -47,6 +48,11 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
+        if (closestCharacter == null)
+        {
+            return 1;
+        }
+
         int distanceTile = (int)Vector3.Distance(tile.transform.position, closestCharacter.transform.position);
         int distanceEnemy = (int)Vector3.Distance(enemy.transform.position, closestCharacter.transform.position);
         int tileValue = distanceEnemy - distanceTile;
@@ -69,7 +75,7 @@ public class Enemy_Base : Character, EnemyInterface
         int valueOfAttack = 0;
         foreach (Character character in charactersToCheck)
         {
-            valueOfAttack += 5;
+            valueOfAttack += 25;
 
             //Bias towards remaining on current tile
             if (currentTile == characterTile)
@@ -83,6 +89,7 @@ public class Enemy_Base : Character, EnemyInterface
 
     public virtual void ExecuteAttack(AttackArea attackArea, TurnManager turnManager)
     {
+        animator.SetTrigger("attack");
         List<Character> charactersToCheck;
         if (!mindControl)
         {
@@ -121,7 +128,7 @@ public class Enemy_Base : Character, EnemyInterface
     {
         int hitResult = Random.Range(0, 101);
 
-        if(elementWeakAgainst == type && hitResult <= defensePercentage)
+        if(elementWeakAgainst == type)// && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);
         }

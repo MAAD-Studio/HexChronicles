@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using UnityEngine.Timeline;
 
 public class EnemyBrain : MonoBehaviour
 {
@@ -49,11 +47,13 @@ public class EnemyBrain : MonoBehaviour
 
     private IEnumerator EnemiesUpdate()
     {
-        yield return new WaitForSeconds(1f / GameManager.Instance.GameSpeed);
+        yield return new WaitForSeconds(1f);
         Enemy_Base[] enemies = turnManager.enemyList.ToArray();
+
         foreach (Enemy_Base enemy_base in enemies)
         {
-            if(enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
+            yield return null;
+            if (enemy_base == null && !turnManager.enemyList.Contains(enemy_base))
             {
                 continue;
             }
@@ -70,7 +70,7 @@ public class EnemyBrain : MonoBehaviour
 
             enemy_base.PreCalculations(turnManager);
 
-            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea);
+            AttackArea enemyAttackArea = AttackArea.SpawnAttackArea(enemy_base.basicAttackArea, enemy_base.transform.position);
 
             turnManager.mainCameraController.FollowTarget(enemy_base.transform, true);
 
@@ -120,6 +120,12 @@ public class EnemyBrain : MonoBehaviour
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
 
                 bool checkAttacks = false;
+
+                if(currentClosest == null)
+                {
+                    continue;
+                }
+
                 float newDistance = Vector3.Distance(currentClosest.transform.position, tile.transform.position);
 
                 //Checks if we should analyzing potential attack options
@@ -142,8 +148,6 @@ public class EnemyBrain : MonoBehaviour
                         yield return new WaitForSeconds(0.02f);
                         enemyAttackArea.DetectArea(false, false);
 
-                        valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
-
                         //If the attack won't hit any players the rotation value is set to the nullvector to mark it as non attacking
                         if (!mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Player).Count == 0)
                         {
@@ -152,6 +156,11 @@ public class EnemyBrain : MonoBehaviour
                         else if(mindControl && enemyAttackArea.CharactersHit(TurnEnums.CharacterType.Enemy).Count == 0)
                         {
                             rotation = nullVector;
+                        }
+
+                        if(rotation != nullVector)
+                        {
+                            valueOfCombination += enemy_base.CalculteAttackValue(enemyAttackArea, turnManager, tile);
                         }
 
                         if (combinations.Count < 5)
@@ -208,7 +217,6 @@ public class EnemyBrain : MonoBehaviour
             }
             else
             {
- 
                 combinationChoice = PickCombination();
             }
 
@@ -264,6 +272,7 @@ public class EnemyBrain : MonoBehaviour
         }
 
         turnManager.pathfinder.ResetPathFinder();
+        uniqueIds = 0;
         DecisionMakingFinished = true;
     }
 
@@ -327,6 +336,11 @@ public class EnemyBrain : MonoBehaviour
             //Finds all the combinations of the lowest value
             foreach (KeyValuePair<int, MoveAttackCombo> comboValues in combinations)
             {
+                if(attackRotation == nullVector && comboValues.Value.attackRotation != nullVector)
+                {
+                    continue;
+                }
+
                 if (comboValues.Value.value == lowestValue)
                 {
                     inThreatKeys.Add(comboValues.Key);
@@ -360,7 +374,7 @@ public class EnemyBrain : MonoBehaviour
     //Decides what combinations to keep when attempting to add a new one
     private void SettleValueConflict(Tile moveTile, Tile attackTile, Vector3 attackRotation, int combinationValue, bool newAtThreat)
     {
-        int choice = 0;
+        int choice;
         if (newAtThreat)
         {
             choice = Random.Range(0, 5);

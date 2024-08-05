@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_KingJelly : Enemy_Base
+public class Enemy_KingJelly : Jelly_Base
 {
     #region Variables
 
@@ -11,6 +11,13 @@ public class Enemy_KingJelly : Enemy_Base
     [SerializeField] public GameObject masterJellyPrefab;
     [SerializeField] public GameObject soloJellyPrefab;
     [SerializeField] public GameObject combineText;
+
+    [Header("New Jelly Launch Controls")]
+    [Range(0.1f, 10f)]
+    [SerializeField] public float launchHeight = 5f;
+
+    [Range(0.05f, 2f)]
+    [SerializeField] public float launchSpeed = 0.5f;
 
     #endregion
 
@@ -59,22 +66,25 @@ public class Enemy_KingJelly : Enemy_Base
         {
             int choice = UnityEngine.Random.Range(0, potentialTiles.Count);
             Vector3 spawnPoint = potentialTiles[choice].transform.position;
-            spawnPoint.y += 1.1f;
 
             if (masterJellySpawned)
             {
-                GameObject newObject = Instantiate(soloJellyPrefab, spawnPoint, Quaternion.identity);
+                GameObject newObject = Instantiate(soloJellyPrefab, transform.position, Quaternion.identity);
                 Enemy_SoloJelly newSoloJelly = newObject.GetComponent<Enemy_SoloJelly>();
-                newSoloJelly.FindTile();
                 turnManager.enemyList.Add(newSoloJelly);
+                UndoManager.Instance.StoreEnemy(newSoloJelly, true);
+
+                newSoloJelly.InitiateArch(spawnPoint + new Vector3(0, 1, 0), launchSpeed, launchHeight);
             }
             else
             {
-                GameObject newObject = Instantiate(masterJellyPrefab, spawnPoint, Quaternion.identity);
+                GameObject newObject = Instantiate(masterJellyPrefab, transform.position, Quaternion.identity);
                 Enemy_MasterJelly newMasterJelly = newObject.GetComponent<Enemy_MasterJelly>();
-                newMasterJelly.FindTile();
                 masterJellySpawned = true;
                 turnManager.enemyList.Add(newMasterJelly);
+                UndoManager.Instance.StoreEnemy(newMasterJelly, true);
+
+                newMasterJelly.InitiateArch(spawnPoint, launchSpeed, launchHeight);
             }
 
             slimesSpawned++;

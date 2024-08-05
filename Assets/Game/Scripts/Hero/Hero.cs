@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,8 @@ public class Hero : Character
 
     [Header("Active skill:")]
     [HideInInspector] public ActiveSkill activeSkill = new ActiveSkill();
-    public int skillCD = 3;
-    private int currentSkillCD = 3;
+    public int skillCD = 2;
+    private int currentSkillCD = 2;
     public int CurrentSkillCD
     {
         get { return currentSkillCD; }
@@ -18,7 +19,9 @@ public class Hero : Character
     }
 
     [Header("Upgrades:")]
-    public List<BasicUpgrade> upgradeList; 
+    public List<BasicUpgrade> upgradeList;
+
+    private List<Character> currentTargets;
 
     protected override void Start()
     {
@@ -72,7 +75,7 @@ public class Hero : Character
             RemoveStatus(shield);
         }
 
-        if (elementWeakAgainst == type && hitResult <= defensePercentage)
+        if (elementWeakAgainst == type)// && hitResult <= defensePercentage)
         {
             base.TakeDamage(damage + 1, type);
         }
@@ -93,42 +96,68 @@ public class Hero : Character
 
     public override void PerformBasicAttack(List<Character> targets)
     {
-        foreach (var target in targets)
+        if (characterTile.tileData.tileType == elementType)
         {
-            SpawnAttackVFX(target);
-
-            int actualDamage = (int)attackDamage;
-            if(Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
-            {
-                attackDamage += 1;
-            }
-
-            target.TakeDamage(actualDamage, elementType);
-            target.DonePreview?.Invoke();
+            SpawnTileVFX(transform.position, true);
+        }
+        else if (characterTile.tileData.tileType != ElementType.Base)
+        {
+            SpawnTileVFX(transform.position, false);
         }
 
-        base.PerformBasicAttack(targets);
+        if (targets.Count != 0)
+        {
+            currentTargets = targets;
+            animator.SetTrigger("attack");
+
+            StartCoroutine(SpawnVFXAndAttack());
+        }
+    }
+
+    private IEnumerator SpawnVFXAndAttack()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (var target in currentTargets)
+        {
+            SpawnAttackVFX(target);
+        }
     }
 
     private void SpawnAttackVFX(Character target)
     {
+        GameObject vfx = null;
         if (elementType == ElementType.Fire)
         {
-            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
-            vfx.transform.LookAt(transform.forward);
-            Destroy(vfx, 3f);
+            vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx.transform.rotation = Quaternion.LookRotation(transform.forward);
         }
         else if (elementType == ElementType.Water)
         {
-            GameObject vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
-            Destroy(vfx, 3f);
+            vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
         }
         else if (elementType == ElementType.Grass)
         {
-            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+            vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
             vfx.transform.LookAt(target.transform.position);
-            //Destroy(vfx, 3f);
         }
+
+        AttackVFX attack = vfx.GetComponent<AttackVFX>();
+        attack.Initialize(target, ActualBasicAttack);
+    }
+
+    // Called by AttackVFX when the VFX hits the target
+    private void ActualBasicAttack(Character target)
+    {
+        int actualDamage = (int)attackDamage;
+        if (Status.GrabIfStatusActive(this, Status.StatusTypes.AttackBoost) != null)
+        {
+            attackDamage += 1;
+        }
+
+        target.TakeDamage(actualDamage, elementType);
+
+        base.PerformBasicAttack(currentTargets);
     }
 
     public override void ReleaseActiveSkill(List<Character> targets)

@@ -6,6 +6,7 @@ public class Enemy_TNT : Enemy_Base
 {
     #region Variables
 
+    [SerializeField] private GameObject explodeVFX;
     [SerializeField] private int closeRangeDMG = 10;
     [SerializeField] private int farRangeDMG = 5;
 
@@ -15,7 +16,22 @@ public class Enemy_TNT : Enemy_Base
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)
     {
-        return base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
+        int moveValue = base.CalculateMovementValue(tile, enemy, turnManager, closestCharacter);
+
+        foreach(Character character in turnManager.characterList)
+        {
+            float distance = Vector3.Distance(tile.transform.position, character.transform.position);
+            if (distance < 2)
+            {
+                moveValue += 10;
+            }
+            else if(distance < 4)
+            {
+                moveValue += 5;
+            }
+        }
+
+        return moveValue;
     }
 
     public override int CalculteAttackValue(AttackArea attackArea, TurnManager turnManager, Tile currentTile)
@@ -39,6 +55,16 @@ public class Enemy_TNT : Enemy_Base
 
     public override void Died()
     {
+        GameObject vfx = Instantiate(explodeVFX, transform.position, Quaternion.identity);
+        StartCoroutine(Explode(0.5f));
+
+        base.Died();
+    }
+
+    private IEnumerator Explode(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
         TurnManager turnManager = FindObjectOfType<TurnManager>();
         turnManager.pathfinder.PathTilesInRange(characterTile, 0, 2, true, false);
 
@@ -49,13 +75,13 @@ public class Enemy_TNT : Enemy_Base
             if (tile.tileOccupied && tile.characterOnTile != this && tile.characterOnTile.currentHealth > 0)
             {
                 Character characterOnTile = tile.characterOnTile;
-                if(characterOnTile.characterType == TurnEnums.CharacterType.Player)
+                if (characterOnTile.characterType == TurnEnums.CharacterType.Player)
                 {
                     UndoManager.Instance.StoreHero((Hero)characterOnTile);
                 }
                 else
                 {
-                    UndoManager.Instance.StoreEnemy((Enemy_Base)characterOnTile);
+                    UndoManager.Instance.StoreEnemy((Enemy_Base)characterOnTile, false);
                 }
 
                 if (tile.cost == 1)
@@ -68,10 +94,8 @@ public class Enemy_TNT : Enemy_Base
                 }
             }
 
-            TemporaryMarker.GenerateMarker(enemySO.attributes.hitMarker, tile.transform.position, 2f, 0.5f);
+            //TemporaryMarker.GenerateMarker(enemySO.attributes.hitMarker, tile.transform.position, 2f, 0.5f);
         }
-
-        base.Died();
     }
 
     #endregion

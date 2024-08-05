@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.VFX;
 
 public class Character : MonoBehaviour
 {
@@ -36,7 +36,7 @@ public class Character : MonoBehaviour
     [HideInInspector] public Vector3 defaultScale;
 
     [Header("Tile LayerMask:")]
-    [SerializeField] private LayerMask tileLayer;
+    [SerializeField] protected LayerMask tileLayer;
 
     [HideInInspector] public bool moving = false;
     [HideInInspector] public Tile characterTile;
@@ -44,6 +44,13 @@ public class Character : MonoBehaviour
     [Header("Prefabs:")]
     [SerializeField] protected GameObject attackVFX;
     [SerializeField] protected GameObject damagePrefab;
+
+    [Header("VFX:")]
+    [SerializeField] public VisualEffect VFXGraph;
+    [SerializeField] public SkinnedMeshRenderer skinnedMesh;
+    private Material[] skinnedMaterials;
+    public float dissolveRate = 0.0125f;
+    public float refreshRate = 0.025f;
 
     [Header("Character Status:")]
     public List<Status> statusList = new List<Status>();
@@ -55,26 +62,38 @@ public class Character : MonoBehaviour
 
     [HideInInspector] public static UnityEvent<Character> movementComplete = new UnityEvent<Character>();
 
-    [HideInInspector] public UnityEvent DamagePreview = new UnityEvent();
+    [HideInInspector] public UnityEvent<int> DamagePreview = new UnityEvent<int>();
+    [HideInInspector] public UnityEvent<Status> AddStatusPreview = new UnityEvent<Status>();
+    [HideInInspector] public UnityEvent<Status, int> ChangeStatusPreview = new UnityEvent<Status, int>();
+    [HideInInspector] public UnityEvent<Status> RemoveStatusPreview = new UnityEvent<Status>();
     [HideInInspector] public UnityEvent DonePreview = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateHealthBar = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateAttributes = new UnityEvent();
     [HideInInspector] public UnityEvent UpdateStatus = new UnityEvent();
 
-    private GameObject buffPreview;
+    private List<Tile> pathTiles = new List<Tile>();
+    private bool hasDied = false;
 
+    private GameObject buffPreview;
+    private GameObject tileVFX;
+    private TurnManager turnManager;
     #endregion
 
     #region UnityMethods
 
     protected virtual void Start()
     {
+        turnManager = FindObjectOfType<TurnManager>();
+
         animator = GetComponent<Animator>();
         Debug.Assert(animator != null, "Can not find Animatior Component on Character");
 
         Debug.Assert(attackVFX != null, $"Can not find attackVFX on {name}");
 
         FindTile();
+
+        if (skinnedMesh != null)
+            skinnedMaterials = skinnedMesh.materials;
     }
 
     void Update()
@@ -84,21 +103,72 @@ public class Character : MonoBehaviour
 
     #endregion
 
+
     #region AttackMethods
 
     public virtual void PerformBasicAttack(List<Character> targets)
     {
-        animator.SetTrigger("attack");
-
+        //animator.SetTrigger("attack");
         if (characterTile.tileData.tileType == elementType)
         {
-            TurnManager turnManager = FindObjectOfType<TurnManager>();
             ApplyStatusAttackArea(targets);
-            ApplyStatusElementalTile(turnManager);
+            ApplyStatusElementalTile();
         }
     }
 
-    public void ApplyBuffCharacter(TurnManager turnManager)
+    public virtual void ReleaseActiveSkill(List<Character> targets)
+    {
+        animator.SetTrigger("skill");
+    }
+
+    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
+
+    #endregion 
+
+
+    #region Turn Methods
+
+    public virtual void EnterNewTurn()
+    {
+        if (statusList.Count > 0)
+        {
+            ApplyStatus();
+        }
+        UpdateAttributes?.Invoke();
+    }
+
+    public void ApplyStatus()
+    {
+        foreach (Status status in statusList)
+        {
+            status.Apply(this);
+
+            if (status.effectTurns == 0)
+            {
+                statusToRemove.Add(status);
+            }
+        }
+        UpdateStatus?.Invoke();
+    }
+
+    public virtual void EndTurn()
+    {
+        foreach (Status status in statusToRemove)
+        {
+            RemoveStatus(status);
+        }
+        statusToRemove.Clear();
+
+        movementThisTurn = 0;
+        canMove = true;
+    }
+    #endregion
+
+
+    #region Elemental Effects
+
+    // Elemental Tile Buffs
+    public void ApplyBuffCharacter()
     {
         Hero thisHero = null;
         Enemy_Base thisEnemy = null;
@@ -143,7 +213,11 @@ public class Character : MonoBehaviour
         }
         else if (elementType == ElementType.Water)
         {
-            currentHealth = maxHealth;
+            currentHealth += 4;
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
             UpdateHealthBar?.Invoke();
             MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
 
@@ -166,6 +240,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    // AttemptApply Status to targets within attack area
     public void ApplyStatusAttackArea(List<Character> targets)
     {
         foreach (Character target in targets)
@@ -185,7 +260,8 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void ApplyStatusElementalTile(TurnManager turnManager)
+    // AttemptApply Status to everyone on the same ElementType tiles
+    public void ApplyStatusElementalTile()
     {
         Status.StatusTypes chosenType;
         List<Tile> chosenList;
@@ -215,13 +291,23 @@ public class Character : MonoBehaviour
         }
     }
 
+    // Check if the status is already applied
     public void AttemptStatusApply(Character target, Status.StatusTypes statusType, int effectTurns)
     {
+        if(target.characterType == TurnEnums.CharacterType.Player)
+        {
+            UndoManager.Instance.StoreHero((Hero)target);
+        }
+        else
+        {
+            UndoManager.Instance.StoreEnemy((Enemy_Base)target, false);
+        }
+
         Status oldStatus = Status.GrabIfStatusActive(target, statusType);
         if (oldStatus != null)
         {
             oldStatus.effectTurns += 1;
-            UpdateStatus.Invoke();
+            UpdateStatus?.Invoke();
             return;
         }
 
@@ -231,159 +317,115 @@ public class Character : MonoBehaviour
         target.AddStatus(newStatus);
     }
 
-    public virtual void ReleaseActiveSkill(List<Character> targets)
+    // Check additional effects if having a Status and being attacked  
+    private int AttackStatusEffect(ElementType type)
     {
-        animator.SetTrigger("skill");
-    }
+        int potentialDamageAddOn = 0;
 
-    public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
-
-    public void PreviewDamage(float damage)
-    {
-        damage += AddedOnDamagePreview(elementType);
-        healthBar.damagePreview = damage;
-        DamagePreview?.Invoke();
-    }
-
-    public virtual void EnterNewTurn()
-    {
-        if (statusList.Count > 0)
+        if (type == ElementType.Base)
         {
-            ApplyStatus();
+            return 0;
         }
-    }
 
-    public virtual void EndTurn()
-    {
+        foreach (Status status in statusList)
+        {
+            if (status.statusType == Status.StatusTypes.Burning)
+            {
+                if (type == ElementType.Fire)
+                {
+                    //status.damageAddOn += 1;
+                    TakeDamage(1, ElementType.Base);
+                }
+                else if (type == ElementType.Water)
+                {
+                    statusToRemove.Add(status);
+                    TakeDamage(2, ElementType.Base);
+                }
+                else
+                {
+                    status.effectTurns++;
+                }
+                break;
+            }
+            else if (status.statusType == Status.StatusTypes.Wet)
+            {
+                if (type == ElementType.Fire)
+                {
+                    //statusToRemove.Add(status);
+                    status.effectTurns++;
+                    TakeDamage(1, ElementType.Base);
+                }
+                else if (type == ElementType.Water)
+                {
+                    //status.effectTurns++;
+                    TakeDamage(1, ElementType.Base);
+                }
+                else
+                {
+                    statusToRemove.Add(status);
+                    TakeDamage(2, ElementType.Base);
+                }
+                break;
+            }
+            else if (status.statusType == Status.StatusTypes.Bound)
+            {
+                if (type == ElementType.Fire)
+                {
+                    statusToRemove.Add(status);
+                    TakeDamage(2, ElementType.Base);
+                }
+                else if (type == ElementType.Water)
+                {
+                    status.effectTurns++;
+                }
+                else
+                {
+                    //potentialDamageAddOn += 3;
+                    TakeDamage(1, ElementType.Base);
+                }
+                break;
+            }
+        }
+
         foreach (Status status in statusToRemove)
         {
             RemoveStatus(status);
         }
         statusToRemove.Clear();
 
-        movementThisTurn = 0;
-        canMove = true;
+        return potentialDamageAddOn;
     }
+    #endregion
 
-    public void AddStatus(Status status) // Consider make this private method
+
+    #region Attack Prediction
+
+    // Used on target to predict the damage taken
+    public void PreviewDamage(Character attacker)
     {
-        ShowEffect(status);
-        statusList.Add(status);
+        int damage = (int)attacker.attackDamage;
+        damage += AddedElementalDamagePreview(attacker.elementType);
+        damage += PredictElementalStatusDamage(attacker.elementType, damage);
 
-        UpdateStatus.Invoke();
+        DamagePreview?.Invoke(damage);
     }
 
-    public void ShowEffect(Status status)
+    // Returns the additional or reduced damage taken from Elemental Weakness and Strength
+    private int AddedElementalDamagePreview(ElementType attackerType)
     {
-        GameObject vfx = null;
-        switch (status.statusType)
+        if (elementWeakAgainst == attackerType)
         {
-            case Status.StatusTypes.Burning:
-                vfx = Instantiate(Config.Instance.characterUIConfig.burningVFX, transform.position, Quaternion.identity);
-                break;
-
-            case Status.StatusTypes.Bound:
-                vfx = Instantiate(Config.Instance.characterUIConfig.boundVFX, transform.position, Quaternion.identity);
-                break;
-
-            case Status.StatusTypes.Blessing:
-                break;
-
-            case Status.StatusTypes.Hurt:
-                break;
-
-            case Status.StatusTypes.CannotMove:
-                break;
-
-            case Status.StatusTypes.CannotAttack:
-                break;
-
-            case Status.StatusTypes.Wet:
-                break;
-
-            case Status.StatusTypes.Haste:
-                break;
-
-            case Status.StatusTypes.Shield:
-                break;
-
-            default:
-                break;
+            return +1;
         }
-
-        if (vfx != null)
+        else if (elementStrongAgainst == attackerType)
         {
-            vfx.transform.SetParent(transform);
-            StatusVFX statusVFX = vfx.GetComponent<StatusVFX>();
-            statusVFX.Initialize(this, status.effectTurns);
+            return -1;
         }
+        return 0;
     }
 
-    public void RemoveStatus(Status status)
-    {
-        statusList.Remove(status);
-
-        UpdateStatus.Invoke();
-
-        if (status.statusType == Status.StatusTypes.Hurt)
-        {
-            isHurt = false;
-        }
-    }
-
-    public void ApplyStatus()
-    {
-        foreach (Status status in statusList)
-        {
-            status.Apply(this);
-
-            if (status.effectTurns == 0)
-            {
-                statusToRemove.Add(status);
-            }
-        }
-        UpdateStatus?.Invoke();
-        UpdateAttributes?.Invoke();
-    }
-
-    public virtual void TakeDamage(float damage, ElementType type)
-    {
-        if(statusList.Count > 0)
-        {
-            damage += AttackStatusEffect(type);
-        }
-
-        foreach(Status status in statusList)
-        {
-            if(status.statusType == Status.StatusTypes.Bound)
-            {
-                damage += 2;
-            }
-        }
-
-        currentHealth -= damage;
-
-        if (isHurt) { currentHealth--; }
-
-        if (currentHealth <= 0)
-        {
-            currentHealth = 0;
-            Died();
-        }
-        else
-        {
-            animator.SetTrigger("hit");
-        }
-
-        // Show damage text
-        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
-        damageText.ShowDamage(damage);
-
-        UpdateHealthBar?.Invoke();
-    }
-
-    //Used to help preview the expected damage from an Attack
-    public int AddedOnDamagePreview(ElementType enemyType)
+    // Returns the additional damage taken from Status Effects
+    private int AddedOnDamagePreview(ElementType enemyType)
     {
         int potentialDamageAddOn = 0;
 
@@ -413,76 +455,290 @@ public class Character : MonoBehaviour
         return potentialDamageAddOn;
     }
 
-    private int AttackStatusEffect(ElementType type)
+    // Predict any additional modification dealt from Status Effects
+    // Also Invoke StatusPreview
+    private int PredictElementalStatusDamage(ElementType attackerType, int damage)
     {
-        int potentialDamageAddOn = 0;
-
-        if(type == ElementType.Base)
+        int addedDamage = 0;
+        if (statusList.Count > 0)
         {
-            return 0;
+            foreach (Status status in statusList)
+            {
+                if (status.statusType == Status.StatusTypes.Burning)
+                {
+                    if (attackerType == ElementType.Water)
+                    {
+                        addedDamage += 2;
+                        RemoveStatusPreview?.Invoke(status);
+                    }
+                    else if (attackerType == ElementType.Fire)
+                    {
+                        addedDamage += 1;
+                    }
+                    else if (attackerType == ElementType.Grass)
+                    {
+                        ChangeStatusPreview?.Invoke(status, (status.effectTurns + 1));
+                    }
+                    break;
+                }
+                else if (status.statusType == Status.StatusTypes.Wet)
+                {
+                    if (attackerType == ElementType.Grass)
+                    {
+                        addedDamage += 2;
+                        RemoveStatusPreview?.Invoke(status);
+                    }
+                    else if (attackerType == ElementType.Water)
+                    {
+                        addedDamage += 1;
+                    }
+                    else if (attackerType == ElementType.Fire)
+                    {
+                        addedDamage += 1;
+                        ChangeStatusPreview?.Invoke(status, (status.effectTurns + 1));
+                    }
+                    break;
+                }
+                else if (status.statusType == Status.StatusTypes.Bound)
+                {
+                    if (attackerType == ElementType.Fire)
+                    {
+                        addedDamage += 2;
+                        RemoveStatusPreview?.Invoke(status);
+                    }
+                    else if (attackerType == ElementType.Grass)
+                    {
+                        addedDamage += 1;
+                    }
+                    else if (attackerType == ElementType.Water)
+                    {
+                        ChangeStatusPreview?.Invoke(status, (status.effectTurns + 1));
+                    }
+                    break;
+                }
+            }
+        }
+        return addedDamage;
+    }
+
+    // Used on attacker to predict the status on the targets
+    public void PredictTargetsStatus(List<Character> targets, Tile origin)
+    {
+        Status.StatusTypes chosenType = Status.StatusTypes.None;
+
+        // ------ Start Getting Targets------
+        // Add targets in the attack area
+        List<Character> targetsToCheck = new List<Character>(targets);
+
+        // Fire guy can add status on Buff
+        if (elementType == ElementType.Fire)
+        {
+            chosenType = Status.StatusTypes.Burning;
+
+            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin);
+
+            List<Character> charactersToHit = new List<Character>();
+
+            foreach (Tile tile in tiles)
+            {
+                Character characterOnTile = tile.characterOnTile;
+                if (characterOnTile != null && characterOnTile.characterType != characterType)
+                {
+                    charactersToHit.Add(tile.characterOnTile);
+                }
+            }
+
+            // Add targets within range 2
+            foreach (Character character in charactersToHit)
+            {
+                if (!targetsToCheck.Contains(character))
+                {
+                    targetsToCheck.Add(character);
+                }
+            }
+        }
+        else if (elementType == ElementType.Water)
+        {
+            chosenType = Status.StatusTypes.Wet;
+        }
+        else if (elementType == ElementType.Grass)
+        {
+            chosenType = Status.StatusTypes.Bound;
         }
 
-        foreach(Status status in statusList)
+
+        // Add targets on the same elemental tile
+        foreach (Character character in GetTargetsOnElementalTile())
         {
-            if(status.statusType == Status.StatusTypes.Burning)
+            if (!targetsToCheck.Contains(character))
             {
-                if(type == ElementType.Fire)
-                {
-                    status.damageAddOn += 1;
-                }
-                else if(type == ElementType.Water)
-                {
-                    statusToRemove.Add(status);
-                }
-                else
-                {
-                    status.effectTurns++;
-                }
-                break;
-            }
-            else if(status.statusType == Status.StatusTypes.Wet)
-            {
-                if (type == ElementType.Fire)
-                {
-                    TakeDamage(1, ElementType.Base);
-                    statusToRemove.Add(status);
-                }
-                else if (type == ElementType.Water)
-                {
-                    MouseTip.Instance.ShowTip(transform.position, "CHARACTER WET DEALING WATER DAMAGE", false);
-                    status.effectTurns++;
-                }
-                else
-                {
-                    statusToRemove.Add(status);
-                }
-                break;
-            }
-            else if(status.statusType == Status.StatusTypes.Bound)
-            {
-                if (type == ElementType.Fire)
-                {
-                    statusToRemove.Add(status);
-                }
-                else if (type == ElementType.Water)
-                {
-                    status.effectTurns++;
-                }
-                else
-                {
-                    potentialDamageAddOn += 3;
-                }
-                break;
+                targetsToCheck.Add(character);
             }
         }
 
-        foreach(Status status in statusToRemove)
-        {
-            RemoveStatus(status);
-        }
-        statusToRemove.Clear();
+        // ------ Start Checking Status------
+        Status addStatus = new Status();
+        addStatus.statusType = chosenType;
+        addStatus.effectTurns = 2;
 
-        return potentialDamageAddOn;
+        foreach (Character character in targetsToCheck)
+        {
+            character.PredictAddStatus(addStatus);
+        }
+    }
+
+    // Returns a list of targets on the same Elemental Tile
+    private List<Character> GetTargetsOnElementalTile()
+    {
+        List<Character> targets = new List<Character>();
+        List<Tile> tileList;
+
+        if (elementType == ElementType.Fire)
+        {
+            tileList = turnManager.lavaTiles.Cast<Tile>().ToList();
+        }
+        else if (elementType == ElementType.Water)
+        {
+            tileList = turnManager.waterTiles.Cast<Tile>().ToList();
+        }
+        else
+        {
+            tileList = turnManager.grassTiles.Cast<Tile>().ToList();
+        }
+
+        foreach (Tile tile in tileList)
+        {
+            if (tile.characterOnTile != null && tile.characterOnTile != this && !turnManager.characterList.Contains(tile.characterOnTile))
+            {
+                targets.Add(tile.characterOnTile);
+            }
+        }
+        return targets;
+    }
+
+    // Check if the status is already existing
+    private void PredictAddStatus(Status status)
+    {
+        if (statusList.Count > 0)
+        {
+            foreach (Status oldStatus in statusList)
+            {
+                if (oldStatus.statusType == status.statusType)
+                {
+                    ChangeStatusPreview?.Invoke(oldStatus, (oldStatus.effectTurns + 1));
+                    return;
+                }
+            }
+        }
+        AddStatusPreview?.Invoke(status);
+    }
+    #endregion
+
+
+    #region Actual Status add and remove
+
+    public void AddStatus(Status status) // Consider make this private method
+    {
+        ShowEffect(status);
+        statusList.Add(status);
+
+        UpdateStatus?.Invoke();
+    }
+
+    public void ShowEffect(Status status)
+    {
+        GameObject vfx = null;
+        switch (status.statusType)
+        {
+            case Status.StatusTypes.Burning:
+                vfx = Instantiate(Config.Instance.characterUIConfig.burningVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.Bound:
+                vfx = Instantiate(Config.Instance.characterUIConfig.boundVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.Blessing:
+                break;
+
+            case Status.StatusTypes.CannotMove:
+                break;
+
+            case Status.StatusTypes.CannotAttack:
+                break;
+
+            case Status.StatusTypes.Wet:
+                vfx = Instantiate(Config.Instance.characterUIConfig.wetVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.Haste:
+                break;
+
+            case Status.StatusTypes.Shield:
+                break;
+
+            default:
+                break;
+        }
+
+        if (vfx != null)
+        {
+            vfx.transform.SetParent(transform);
+            StatusVFX statusVFX = vfx.GetComponent<StatusVFX>();
+            statusVFX.Initialize(this, status.effectTurns);
+        }
+    }
+
+    public void RemoveStatus(Status status)
+    {
+        statusList.Remove(status);
+
+        UpdateStatus?.Invoke();
+
+        if (status.statusType == Status.StatusTypes.Hurt)
+        {
+            isHurt = false;
+        }
+    }
+    #endregion
+
+
+    #region TakeDamage and Heal and Die
+
+    public virtual void TakeDamage(float damage, ElementType type)
+    {
+        if(statusList.Count > 0)
+        {
+            damage += AttackStatusEffect(type);
+        }
+
+        /*foreach(Status status in statusList)
+        {
+            if(status.statusType == Status.StatusTypes.Bound)
+            {
+                damage += 2;
+            }
+        }*/
+
+        currentHealth -= damage;
+
+        if (isHurt) { currentHealth--; }
+
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            Died();
+        }
+        else
+        {
+            animator.SetTrigger("hit");
+        }
+
+        // Show damage text
+        DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
+        damageText.ShowDamage(damage);
+
+        UpdateHealthBar?.Invoke();
     }
 
     public virtual void Heal(float heal)
@@ -498,21 +754,65 @@ public class Character : MonoBehaviour
 
     public virtual void Died()
     {
-        if(animator != null)
+        foreach(Tile tile in pathTiles)
+        {
+            if(tile != null)
+            {
+                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+            }
+        }
+
+        if (characterType == TurnEnums.CharacterType.Player && turnManager.TurnType == TurnEnums.TurnState.PlayerTurn)
+        {
+            turnManager.PlayerTurn.ForceSelection();
+        }
+
+        hasDied = true;
+
+        FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
+        Time.timeScale = 0.5f;
+        if (animator != null)
         {
             animator.SetTrigger("died");
         }
-  
-        Invoke("Destroy", 0.6f);
+
+        //VFX and Shader
+        if (VFXGraph != null) 
+        {
+            VFXGraph.Play();
+        }
+        StartCoroutine(DissolveCo());
+
+
+        DestroyTileVFX();
+        Invoke("Destroy", 1f);
     }
+
+    #region Dissolve Material
+    IEnumerator DissolveCo () {
+        if(skinnedMaterials.Length > 0) {
+            float counter = 0;
+
+            while(skinnedMaterials[0].GetFloat("_Dissolve_Amount") < 1) {
+                counter += dissolveRate;
+                for(int i=0; i<skinnedMaterials.Length; i++) {
+                    skinnedMaterials[i].SetFloat("_Dissolve_Amount", counter);
+                }
+            yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        
+    }
+    #endregion
 
     private void Destroy()
     {
-        TurnManager tm = FindObjectOfType<TurnManager>();
-        tm.DestroyACharacter(this);
+        FindObjectOfType<CameraController>().MoveToDefault(true);
+        Time.timeScale = 1f;
+        turnManager.DestroyACharacter(this);
     }
-
     #endregion
+
 
     #region BreadthFirstMethods
 
@@ -540,6 +840,7 @@ public class Character : MonoBehaviour
             moving = true;
             animator.SetBool("walking", true);
             turnManager.mainCameraController.controlEnabled = false;
+            DestroyTileVFX();
         }
 
         StartCoroutine(PerformMoveAndAttack(path, attackTargetTile, turnManager, activeSkillUse, tilePos));
@@ -551,6 +852,8 @@ public class Character : MonoBehaviour
         //Moves the Character
         if(path.Length > 0)
         {
+            pathTiles = path.ToList();
+
             int step = 1;
             int pathLength = path.Length;
             List<Tile> tilesInPath = new List<Tile>(path);
@@ -566,9 +869,17 @@ public class Character : MonoBehaviour
             Tile currentTile = path[0];
             tilesInPath.Remove(currentTile);
 
+            moving = true;
+
             while(step < pathLength)
             {
                 yield return null;
+
+                if(hasDied)
+                {
+                    animator.SetBool("walking", false);
+                    yield break;
+                }
 
                 foreach (Tile tile in tilesInPath)
                 {
@@ -628,11 +939,6 @@ public class Character : MonoBehaviour
             yield return null;
             FindTile();
 
-            if(characterTile.tileData.tileType == elementType)
-            {
-                ApplyBuffCharacter(turnManager);
-            }
-
             animator.SetBool("walking", false);
         }
 
@@ -673,25 +979,39 @@ public class Character : MonoBehaviour
             if(attackAreaPrefab.hitsEnemies)
             {
                 enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(enemiesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(enemiesHit);
+                }
             }
-            if(attackAreaPrefab.hitsHeroes)
+            if (attackAreaPrefab.hitsHeroes)
             {
                 heroesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Player);
+                if (activeSkillUse)
+                {
+                    ReleaseActiveSkill(heroesHit);
+                }
+                else
+                {
+                    PerformBasicAttack(heroesHit);
+                }
             }
 
-            if (activeSkillUse)
+            if (attackAreaPrefab.hitsTileObjects)
             {
-                ReleaseActiveSkill(enemiesHit);
-                ReleaseActiveSkill(heroesHit);
+                PerformBasicAttackObjects(objectsHit);
             }
-            else
-            {
-                PerformBasicAttack(enemiesHit);
-                PerformBasicAttack(heroesHit);
-            }
-            PerformBasicAttackObjects(objectsHit);
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
+
+            if (characterTile.tileData.tileType == elementType)
+            {
+                ApplyBuffCharacter();
+            }
 
             yield return new WaitForSeconds(0.5f);
             attackAreaPrefab.DestroySelf();
@@ -705,7 +1025,7 @@ public class Character : MonoBehaviour
 
         if(characterType == TurnEnums.CharacterType.Player)
         {
-            turnManager.mainCameraController.MoveToDefault(true);
+            turnManager.mainCameraController.MoveToDefault(false);
         }
 
         movementComplete.Invoke(this);
@@ -886,6 +1206,29 @@ public class Character : MonoBehaviour
         if(buffPreview != null)
         {
             Destroy(buffPreview);
+        }
+    }
+
+    public void SpawnTileVFX(Vector3 position, bool isBuff)
+    {
+        if (tileVFX == null)
+        {
+            if (isBuff)
+            {
+                tileVFX = Instantiate(Config.Instance.GetBuffVFX(elementType, true), position, Quaternion.identity);
+            }
+            else
+            {
+                tileVFX = Instantiate(Config.Instance.GetDebuffVFX(true), position, Quaternion.identity);
+            }
+        }
+    }
+
+    public void DestroyTileVFX()
+    {
+        if (tileVFX != null)
+        {
+            Destroy(tileVFX);
         }
     }
 

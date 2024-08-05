@@ -8,6 +8,11 @@ public class WeatherPatch
     #region Variables
 
     private List<Tile> effectedTiles = new List<Tile>();
+    public List<Tile> EffectedTiles
+    { 
+        get { return effectedTiles; } 
+    }
+
     private List<Character> effectedCharacters = new List<Character>();
 
     private Tile origin;
@@ -30,6 +35,7 @@ public class WeatherPatch
         movementPerTurn = movement;
         weather = weatherType;
 
+        ResetWeatherTiles();
         DetermineAreaOfAffect();
         IllustrateAreaOfEffect();
     }
@@ -37,8 +43,6 @@ public class WeatherPatch
     //Determines the Tiles the Weather will effect
     private void DetermineAreaOfAffect()
     {
-        ResetWeatherTiles();
-
         Queue<Tile> openTiles = new Queue<Tile>();
         openTiles.Enqueue(origin);
         effectedTiles.Add(origin);
@@ -62,11 +66,11 @@ public class WeatherPatch
                 {
                     if(maxSpread > 2)
                     {
-                        newCost = currentTile.weatherCost + Random.Range(1, maxSpread - 1);
+                        newCost = currentTile.weatherCost + Random.Range(1, 3);
                     }
                     else
                     {
-                        newCost = currentTile.weatherCost + Random.Range(1, maxSpread);
+                        newCost = currentTile.weatherCost + Random.Range(1, 2);
                     }
                 }
                 adjacentTile.weatherCost = newCost;
@@ -76,6 +80,7 @@ public class WeatherPatch
                     openTiles.Enqueue(adjacentTile);
                     effectedTiles.Add(adjacentTile);
                     adjacentTile.underWeatherAffect = true;
+                    adjacentTile.weatherOnTile = weather.WeatherType;
                 }
             }
         }
@@ -104,14 +109,18 @@ public class WeatherPatch
     {
         foreach (Tile tile in effectedTiles)
         {
-            tile.ChangeTileWeather(true, weather.weatherMaterial);
+            tile.ChangeTileWeather(true, weather.WeatherType);
         }
     }
 
-    public void UpdateAndEffect(TurnManager turnManager)
+    public IEnumerator UpdateAndEffect(TurnManager turnManager)
     {
         ApplyWeatherEffect(turnManager);
         MoveOrigin();
+        ResetWeatherTiles();
+
+        yield return null;
+
         DetermineAreaOfAffect();
         IllustrateAreaOfEffect();
     }
@@ -140,7 +149,7 @@ public class WeatherPatch
         if(potentialEffectTiles.Count > 0)
         {
             int tileChoice = Random.Range(0, potentialEffectTiles.Count);
-            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager);
+            weather.ApplyTileEffect(potentialEffectTiles[tileChoice], turnManager, this);
         }
 
     }
@@ -150,7 +159,7 @@ public class WeatherPatch
         foreach (Tile tile in effectedTiles)
         {
             tile.underWeatherAffect = false;
-            tile.ChangeTileWeather(false, null);
+            tile.ChangeTileWeather(false, WeatherType.none);
         }
 
         foreach (Character character in effectedCharacters)
@@ -164,6 +173,11 @@ public class WeatherPatch
 
     public void TileReplaced(Tile oldTile, Tile newTile)
     {
+        if(oldTile == null)
+        {
+            return;
+        }
+
         if(effectedTiles.Remove(oldTile))
         {
             effectedTiles.Add(newTile);
