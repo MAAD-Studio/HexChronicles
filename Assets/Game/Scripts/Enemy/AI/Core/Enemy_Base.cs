@@ -104,6 +104,11 @@ public class Enemy_Base : Character, EnemyInterface
 
         foreach (Character character in charactersToCheck)
         {
+            MakeEnemyFaceMe(character);
+        }
+
+        foreach (Character character in charactersToCheck)
+        {
             transform.LookAt(character.transform.position);
 
             // Spawn attack vfx

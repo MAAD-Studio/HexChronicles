@@ -77,6 +77,9 @@ public class Character : MonoBehaviour
     private GameObject buffPreview;
     private GameObject tileVFX;
     private TurnManager turnManager;
+
+    private bool rotating = false;
+
     #endregion
 
     #region UnityMethods
@@ -987,6 +990,11 @@ public class Character : MonoBehaviour
                 {
                     PerformBasicAttack(enemiesHit);
                 }
+
+                foreach(Character enemy in enemiesHit)
+                {
+                    MakeEnemyFaceMe(enemy);
+                }
             }
             if (attackAreaPrefab.hitsHeroes)
             {
@@ -998,6 +1006,11 @@ public class Character : MonoBehaviour
                 else
                 {
                     PerformBasicAttack(heroesHit);
+                }
+
+                foreach (Character hero in heroesHit)
+                {
+                    MakeEnemyFaceMe(hero);
                 }
             }
 
@@ -1229,6 +1242,48 @@ public class Character : MonoBehaviour
         if (tileVFX != null)
         {
             Destroy(tileVFX);
+        }
+    }
+
+    public void MakeEnemyFaceMe(Character character)
+    {
+        if(!rotating)
+        {
+            StartCoroutine(RotateToFace(character));
+        }
+    }
+
+    public IEnumerator RotateToFace(Character character)
+    {
+        if(character == null)
+        {
+            yield break;
+        }
+
+        rotating = true;
+        Vector3 targetPos = transform.position - character.transform.position;
+
+        while (true)
+        {
+            if (character == null)
+            {
+                rotating = false;
+                yield break;
+            }
+
+            float angle = Vector3.Angle(character.transform.forward, -transform.forward);
+            if (angle > 5)
+            {
+                float speed = (angle / 4) * (Time.deltaTime * GameManager.Instance.GameSpeed);
+                Vector3 direction = Vector3.RotateTowards(character.transform.forward, targetPos, speed, 0.0f);
+                character.transform.rotation = Quaternion.LookRotation(direction);
+                yield return null;
+            }
+            else
+            {
+                rotating = false;
+                yield break;
+            }
         }
     }
 
