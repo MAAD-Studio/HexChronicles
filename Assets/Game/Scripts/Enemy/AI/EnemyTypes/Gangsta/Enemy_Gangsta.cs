@@ -133,6 +133,7 @@ public class Enemy_Gangsta : Enemy_Base
         }
 
         transform.LookAt(character.transform.position);
+        MakeEnemyFaceMe(character);
 
         // Spawn attack vfx
         GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
