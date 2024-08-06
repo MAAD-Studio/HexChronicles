@@ -10,6 +10,10 @@ public class TowersTurn : WorldTurnBase
     [Header("Spawning Information: ")]
     [SerializeField] private int turnsTillSpawn = 2;
     [SerializeField] private List<Tower> towers = new List<Tower>();
+    public List<Tower> Towers
+    {
+        get { return towers; }
+    }
 
     [HideInInspector] public static UnityEvent<TileObject> StoreTileObject = new UnityEvent<TileObject>();
 

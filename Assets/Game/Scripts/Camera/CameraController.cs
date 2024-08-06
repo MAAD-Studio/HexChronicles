@@ -272,6 +272,14 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void MoveToFullCustom(Vector3 position, bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetPosition = position;
+        }
+    }
+
     /*
      * Stops following any Transforms
      */

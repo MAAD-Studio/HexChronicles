@@ -125,6 +125,9 @@ public class TurnManager : MonoBehaviour
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
 
+        pauseTurns = true;
+        StartCoroutine(ConductOpeningCamera());
+
         EventBus.Instance.Publish(new OnNewLevelStart());
 
         WorldTurnBase.Victory.AddListener(SceneReset);
@@ -290,6 +293,30 @@ public class TurnManager : MonoBehaviour
     public void EndLevel()
     {
         LevelVictory?.Invoke();
+    }
+
+    public IEnumerator ConductOpeningCamera()
+    {
+        yield return new WaitForSeconds(1f);
+
+        mainCameraController.controlEnabled = false;
+        TowersTurn towerTurn = GetComponent<TowersTurn>();
+
+        if(towerTurn != null && towerTurn.Towers.Count > 0)
+        {
+            mainCameraController.MoveToFullCustom(towerTurn.Towers[0].transform.position + new Vector3(0, 10, -6), true);
+            yield return new WaitForSeconds(2f);
+        }
+
+        if(characterList.Count > 0)
+        {
+            mainCameraController.MoveToFullCustom(characterList[0].transform.position + new Vector3(0, 10, -6), true);
+            yield return new WaitForSeconds(2f);
+        }
+
+        mainCameraController.controlEnabled = true;
+        pauseTurns = false;
+        mainCameraController.MoveToDefault(true);
     }
 
     #endregion
