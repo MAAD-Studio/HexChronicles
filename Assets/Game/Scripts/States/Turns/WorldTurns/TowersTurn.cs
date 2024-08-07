@@ -127,9 +127,14 @@ public class TowersTurn : WorldTurnBase
             {
                 TileObject.objectDestroyed.RemoveListener(TowerDestroyed);
                 TileObject.objectCreated.RemoveListener(TowerCreated);
-                Victory.Invoke();
+                Invoke("EndLevel", 1.5f);
             }
         }
+    }
+
+    private void EndLevel()
+    {
+        Victory.Invoke();
     }
 
     private void TowerCreated(TileObject tileObj)

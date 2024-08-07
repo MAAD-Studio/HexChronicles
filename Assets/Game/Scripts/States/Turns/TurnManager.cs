@@ -208,7 +208,7 @@ public class TurnManager : MonoBehaviour
 
             if (characterList.Count == 0)
             {
-                LevelDefeat?.Invoke();
+                Invoke("EndLevel", 1.5f);
             }
         }
         else
@@ -222,7 +222,7 @@ public class TurnManager : MonoBehaviour
 
             if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
-                LevelVictory?.Invoke();
+                Invoke("EndLevel", 1.5f);
             }
         }
 
