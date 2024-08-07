@@ -54,7 +54,7 @@ public class TurnInfo : MonoBehaviour
     {
         textIndicator.SetActive(false);
         bar.color = overColor;
-        tip.HideTooltip();
+        tip.rectTransform.gameObject.SetActive(false);
         tip.enabled = false;
 
         if (isWeather)

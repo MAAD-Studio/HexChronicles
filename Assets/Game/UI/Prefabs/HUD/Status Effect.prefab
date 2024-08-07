@@ -221,7 +221,6 @@ MonoBehaviour:
   icon: {fileID: 8662719879840045669}
   effectTurns: {fileID: 5916025911669074301}
   effectDetail: {fileID: 6660165775709459710}
-  characterUIConfig: {fileID: 11400000, guid: 2e21759f4f7ee614f95134b0edd79891, type: 2}
 --- !u!114 &5109581676568579480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +233,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8022eff44c9179149aaab0eab3aec138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipObject: {fileID: 7970916622295778991}
+  rectTransform: {fileID: 626105001548819265}
+  followMouse: 1
+  scaleUp: 1
 --- !u!1 &5690551080098423301
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 626105001548819265}
   - component: {fileID: 2051719591670978055}
+  - component: {fileID: 8132102346595353418}
   m_Layer: 5
   m_Name: Tip
   m_TagString: Untagged
@@ -501,6 +503,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!225 &8132102346595353418
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970916622295778991}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8583839425348520268
 GameObject:
   m_ObjectHideFlags: 0
