@@ -73,6 +73,7 @@ public class WorldMap : Menu
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
         MenuManager.Instance.ShowMenu(hudClassifier); // Show HUD after scene is loaded
+        AudioManager.Instance.PlayMusicFadeIn("BattleMusic", 2f);
     }
 
     public void OnReturnToMainMenu()

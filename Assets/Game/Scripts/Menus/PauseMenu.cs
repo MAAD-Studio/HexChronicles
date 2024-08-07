@@ -56,6 +56,7 @@ public class PauseMenu : Menu
     public void OnReturnToMainMenu()
     {
         Time.timeScale = 1.0f;
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -65,6 +66,7 @@ public class PauseMenu : Menu
     public void OnReturnToMap()
     {
         Time.timeScale = 1.0f;
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -79,6 +81,7 @@ public class PauseMenu : Menu
 
     public void OnEndTutorial()
     {
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
         mainMenu.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);

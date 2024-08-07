@@ -38,6 +38,7 @@ public class VictoryScreen : Menu
         GameManager.Instance.CurrentLevelIndex++;
         GameManager.Instance.SaveLoadManager.SaveGame();
 
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -46,6 +47,7 @@ public class VictoryScreen : Menu
 
     public void OnReturnToSelectTutorial()
     {
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
         mainMenu.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);

@@ -97,6 +97,7 @@ public class GameManager : Singleton<GameManager>
 
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.ShowMenu(MenuManager.Instance.HUDMenuClassifier);
+        AudioManager.Instance.PlayMusicFadeIn("BattleMusic", 2);
     }
 
     public void CleanActiveScene()
