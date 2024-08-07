@@ -41,7 +41,6 @@ public class Tutorial_Base : MonoBehaviour
         Debug.Assert(tutorialManager != null, "Tutorial failed to locate a TutorialManager");
         
         dialogueManager = FindObjectOfType<DialogueManager>();
-        Debug.Assert(dialogueManager != null, "Tutorial failed to locate a DialogueManager");
 
         cameraController = FindObjectOfType<CameraController>();
         Debug.Assert(cameraController != null, "Tutorial failed to locate a CameraController");

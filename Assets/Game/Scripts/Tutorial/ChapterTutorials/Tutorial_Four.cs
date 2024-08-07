@@ -25,8 +25,6 @@ public class Tutorial_Four : Tutorial_Base
             return;
         }
 
-        Debug.Log("HGEJ");
-
         switch (currentTurn)
         {
             case TutorialTurn.TurnOne:
@@ -136,7 +134,7 @@ public class Tutorial_Four : Tutorial_Base
                 if (dialogueJustEnded)
                 {
                     turnManager.EndLevel();
-                    internalTutorialStep = 0;
+                    internalTutorialStep++;
                 }
                 break;
         }
