@@ -177,7 +177,7 @@ public class HUDInfo : MonoBehaviour
     private void SetWeather(object obj)
     {
         WeatherManager weatherManager = FindObjectOfType<WeatherManager>();
-        weatherWindow.ShowWeather(weatherManager);
+        weatherWindow.ShowWeather(weatherManager.WeatherType);
         
         int turns = weatherManager.TurnsToStay;
         turnIndicator.SetWeatherTurn(turns);
