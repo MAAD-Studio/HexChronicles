@@ -11,15 +11,6 @@ public class Weather_HeatWave : Weather_Base
 
     #endregion
 
-    #region UnityMethods
-
-    private void Start()
-    {
-        weatherName = "HeatWave";
-    }
-
-    #endregion
-
     #region CustomMethods
 
     public override void ApplyEffect(List<Character> characters)

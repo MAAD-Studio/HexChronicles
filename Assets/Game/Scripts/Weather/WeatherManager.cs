@@ -36,9 +36,9 @@ public class WeatherManager : MonoBehaviour
 
     [Header("Weather to Create: ")]
     [SerializeField] private Weather_Base weather;
-    public string WeatherName
+    public WeatherType WeatherType
     {
-        get { return weather.weatherName; }
+        get { return weather.WeatherType; }
     }
 
     private TurnManager turnManager;

@@ -6,8 +6,6 @@ public class Weather_Base : MonoBehaviour
 {
     #region Variables
 
-    [HideInInspector] public string weatherName;
-
     [Header("Weather Details: ")]
     [SerializeField] private WeatherType weatherType;
     public WeatherType WeatherType

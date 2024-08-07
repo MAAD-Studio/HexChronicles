@@ -11,15 +11,6 @@ public class Weather_SporeStorm : Weather_Base
 
     #endregion
 
-    #region UnityMethods
-
-    private void Start()
-    {
-        weatherName = "SporeStorm";
-    }
-
-    #endregion
-
     #region CustomMethods
 
     public override void ApplyEffect(List<Character> characters)
