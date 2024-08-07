@@ -205,7 +205,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void EndTurn()
     {
-        if(turnManager.isTutorial && turnManager.disableEnd)
+        if(turnManager.disableEnd)
         {
             return;
         }

@@ -125,7 +125,6 @@ public class TurnManager : MonoBehaviour
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
 
-        pauseTurns = true;
         StartCoroutine(ConductOpeningCamera());
 
         EventBus.Instance.Publish(new OnNewLevelStart());
@@ -297,9 +296,12 @@ public class TurnManager : MonoBehaviour
 
     public IEnumerator ConductOpeningCamera()
     {
+        pauseTurns = true;
+        mainCameraController.controlEnabled = false;
+        disableEnd = true;
+
         yield return new WaitForSeconds(1f);
 
-        mainCameraController.controlEnabled = false;
         TowersTurn towerTurn = GetComponent<TowersTurn>();
 
         if(towerTurn != null && towerTurn.Towers.Count > 0)
@@ -314,6 +316,7 @@ public class TurnManager : MonoBehaviour
             yield return new WaitForSeconds(2f);
         }
 
+        disableEnd = false;
         mainCameraController.controlEnabled = true;
         pauseTurns = false;
         mainCameraController.MoveToDefault(true);
