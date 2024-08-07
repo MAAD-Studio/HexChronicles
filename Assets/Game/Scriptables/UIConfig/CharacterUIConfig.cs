@@ -51,4 +51,9 @@ public class CharacterUIConfig : ScriptableObject
     [TextArea(3, 10)] public string hasteDetail;
     [TextArea(3, 10)] public string boundDetail;
     [TextArea(3, 10)] public string shieldDetail;
+
+    [Header("Weather Sprites")]
+    public Sprite rain;
+    public Sprite sporeStorm;
+    public Sprite heatWave;
 }
