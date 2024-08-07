@@ -21,11 +21,11 @@ public class TurnIndicator : MonoBehaviour
         }
     }
 
-    public void SetWeatherTurn(int turnsLast)
+    public void SetWeatherTurn(WeatherType weatherType, int turnsLast)
     {
         for (int i = currentTurn; i < currentTurn + turnsLast + 1; i++)
         {
-            turnInfos[i].SetWeatherTurn();
+            turnInfos[i].SetWeatherTurn(weatherType);
         }
     }
     

@@ -6,6 +6,27 @@ public class Config : Singleton<Config>
 {
     public CharacterUIConfig characterUIConfig;
 
+    #region Weather
+    public Sprite GetWeatherSprite(WeatherType weatherType)
+    {
+        if (weatherType == WeatherType.rain)
+        {
+            return characterUIConfig.rain;
+        }
+        else if (weatherType == WeatherType.sporeStorm)
+        {
+            return characterUIConfig.sporeStorm;
+        }
+        else if (weatherType == WeatherType.heatWave)
+        {
+            return characterUIConfig.heatWave;
+        }
+        return null;
+    }
+    #endregion
+
+
+    #region Buff and debuff
     public GameObject GetBuffVFX(ElementType elementType, bool isBig)
     {
         if (elementType == ElementType.Fire)
@@ -55,7 +76,10 @@ public class Config : Singleton<Config>
             return characterUIConfig.shortDebuffVFX;
         }
     }
+    #endregion
 
+
+    #region Stat and element
     public Sprite GetStatSprite(string statType)
     {
         if (statType == "health")
@@ -93,7 +117,10 @@ public class Config : Singleton<Config>
         }
         return null;
     }
+    #endregion
 
+
+    #region Status
     public List<Sprite> GetStatusSprites(Character character)
     {
         if (character.statusList.Count != 0)
@@ -213,4 +240,5 @@ public class Config : Singleton<Config>
 
         return "";
     }
+    #endregion
 }

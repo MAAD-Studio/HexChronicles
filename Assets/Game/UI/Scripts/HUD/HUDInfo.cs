@@ -180,7 +180,7 @@ public class HUDInfo : MonoBehaviour
         weatherWindow.ShowWeather(weatherManager.WeatherType);
         
         int turns = weatherManager.TurnsToStay;
-        turnIndicator.SetWeatherTurn(turns);
+        turnIndicator.SetWeatherTurn(weatherManager.WeatherType, turns);
     }
 
     private void OnEnemyTurn(object obj)
