@@ -125,7 +125,10 @@ public class TurnManager : MonoBehaviour
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
 
-        StartCoroutine(ConductOpeningCamera());
+        if(!isTutorial)
+        {
+            StartCoroutine(ConductOpeningCamera());
+        }
 
         EventBus.Instance.Publish(new OnNewLevelStart());
 

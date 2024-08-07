@@ -167,7 +167,8 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 7:
-                DisplayDialogue(turnOneDialogue, 11);
+                DisplayDialogue(turnOneDialogue, 11, 12);
+                cameraController.controlEnabled = true;
 
                 internalTutorialStep++;
                 break;
@@ -194,7 +195,7 @@ public class Tutorial_One : Tutorial_Base
                 break;
 
             case 9:
-                DisplayDialogue(turnOneDialogue, 12);
+                DisplayDialogue(turnOneDialogue, 13);
 
                 AllowSpecificEnemySelection(enemyOne);
 
@@ -225,7 +226,7 @@ public class Tutorial_One : Tutorial_Base
             case 11:
                 if(turnManager.PlayerTurn.Phase != TurnEnums.PlayerPhase.Execution)
                 {
-                    DisplayDialogue(turnOneDialogue, 13);
+                    DisplayDialogue(turnOneDialogue, 14);
 
                     internalTutorialStep++;
                 }
