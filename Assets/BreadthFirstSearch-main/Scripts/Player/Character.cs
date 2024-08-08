@@ -793,7 +793,7 @@ public class Character : MonoBehaviour
 
     #region Dissolve Material
     IEnumerator DissolveCo () {
-        if(skinnedMaterials.Length > 0) {
+        if(skinnedMaterials != null && skinnedMaterials.Length > 0) {
             float counter = 0;
 
             while(skinnedMaterials[0].GetFloat("_Dissolve_Amount") < 1) {
