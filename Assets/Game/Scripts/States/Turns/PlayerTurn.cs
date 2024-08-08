@@ -36,6 +36,10 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     }
 
     private TileObject selectedTileObject;
+    public TileObject SelectedObject
+    {
+        get { return selectedTileObject; }
+    }
 
     private AttackArea areaPrefab;
 
@@ -70,6 +74,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public Tile desiredAttackTile = null;
     public Character desiredEnemy = null;
     public Character desiredCharacter = null;
+    public TileObject desiredObject = null;
     public bool preventPhaseBackUp = false;
     public bool preventAttack = false;
 
@@ -471,6 +476,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     private void InspectTileObject()
     {
+        if(turnManager.isTutorial && turnManager.disableObjects)
+        {
+            return;
+        }
+
         if(Input.GetMouseButtonDown(0))
         {
             SelectTileObject();
@@ -527,6 +537,11 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void SelectTileObject()
     {
+        if (turnManager.isTutorial && currentTile.objectOnTile != null && currentTile.objectOnTile != desiredObject)
+        {
+            return;
+        }
+
         if (allowSelection)
         {
             if(selectedEnemy != null)

@@ -538,7 +538,7 @@ public class Character : MonoBehaviour
         {
             chosenType = Status.StatusTypes.Burning;
 
-            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin);
+            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin, 2);
 
             List<Character> charactersToHit = new List<Character>();
 

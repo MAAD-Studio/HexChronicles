@@ -187,7 +187,7 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
     public void PreviewAttackAreaTower(Tower tileObj)
     {
-        List<Tile> attackTiles = Pathfinder.Instance.ReturnRange(tileObj.attachedTile);
+        List<Tile> attackTiles = Pathfinder.Instance.ReturnRange(tileObj.attachedTile, tileObj.TileRange);
 
         foreach (Tile tile in attackTiles)
         {

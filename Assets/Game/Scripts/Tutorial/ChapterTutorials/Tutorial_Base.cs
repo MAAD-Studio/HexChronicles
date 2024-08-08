@@ -148,6 +148,12 @@ public class Tutorial_Base : MonoBehaviour
         turnManager.disableEnemies = false;
     }
 
+    protected void AllowSpecificObjectSelection(TileObject tilObj)
+    {
+        turnManager.PlayerTurn.desiredObject = tilObj;
+        turnManager.disableObjects = false;
+    }
+
     protected void ChangeActiveInteractability(Character character, bool enable)
     {
         ChangeActiveInteract activeData = new ChangeActiveInteract();

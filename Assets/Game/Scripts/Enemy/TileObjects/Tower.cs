@@ -37,7 +37,7 @@ public class Tower : Spawner
 
         Debug.Assert(attackAreaPrefab != null, $"{name} doesn't have an AttackArea prefab provided.");
 
-        actualRange = tileRange * 1.75f;
+        actualRange = tileRange * 2f;
     }
 
     #endregion
