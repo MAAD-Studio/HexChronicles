@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(TurnManager))]
 public class PlayerTurn : MonoBehaviour, StateInterface
@@ -233,7 +234,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if(selectedTileObject != null)
         {
             selectedTileObject = null;
-            AttackPreviewer.Instance.ClearAttackAreaTower();
+            AttackPreviewer.Instance.ClearAttackArea();
         }
 
         moveVFXSpawned = false;
@@ -326,13 +327,9 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if (selectedTileObject != null)
         {
-            if(selectedTileObject.objectType == ObjectType.Tower)
-            {
-                selectedTileObject = null;
-                AttackPreviewer.Instance.ClearAttackAreaTower();
-                return;
-            }
             selectedTileObject = null;
+            AttackPreviewer.Instance.ClearAttackArea();
+            return;
         }
 
         if (selectedEnemy != null)
@@ -468,11 +465,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             if (Input.GetMouseButtonDown(0))
             {
                 SelectEnemy(inspectionCharacter);
-                if (selectedTileObject != null)
-                {
-                    selectedTileObject = null;
-                    AttackPreviewer.Instance.ClearAttackAreaTower();
-                }
             }
         }
     }
@@ -504,7 +496,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
         if(allowSelection)
         {
-            if(selectedEnemy == null)
+            if (selectedTileObject != null)
+            {
+                selectedTileObject = null;
+                AttackPreviewer.Instance.ClearAttackArea();
+            }
+
+            if (selectedEnemy == null)
             {
                 GrabEnemy((Enemy_Base)character);
             }
@@ -529,21 +527,27 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void SelectTileObject()
     {
-        if(allowSelection)
+        if (allowSelection)
         {
+            if(selectedEnemy != null)
+            {
+                selectedEnemy = null;
+                AttackPreviewer.Instance.ClearAttackArea();
+            }
+
             if(selectedTileObject == null)
             {
                 GrabTileObject();
             }
             else if(selectedTileObject != currentTile.objectOnTile)
             {
-                AttackPreviewer.Instance.ClearAttackAreaTower();
+                AttackPreviewer.Instance.ClearAttackArea();
                 GrabTileObject();
             }
             else
             {
                 selectedTileObject = null;
-                AttackPreviewer.Instance.ClearAttackAreaTower();
+                AttackPreviewer.Instance.ClearAttackArea();
             }
         }
     }
@@ -685,7 +689,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (selectedTileObject != null)
         {
             selectedTileObject = null;
-            AttackPreviewer.Instance.ClearAttackAreaTower();
+            AttackPreviewer.Instance.ClearAttackArea();
         }
 
         if (potentialMovementTile.tileData.tileType == selectedCharacter.elementType)

@@ -187,46 +187,12 @@ public class AttackPreviewer : Singleton<AttackPreviewer>
 
     public void PreviewAttackAreaTower(Tower tileObj)
     {
-        List<Tile> edgeTiles;
-        List<Tile> nextSet = new List<Tile>();
+        List<Tile> attackTiles = Pathfinder.Instance.ReturnRange(tileObj.attachedTile);
 
-        tileObjCheckedTiles.Add(tileObj.attachedTile);
-        edgeTiles = Pathfinder.Instance.FindAdjacentTiles(tileObj.attachedTile, false);
-
-        for(int i = 0; i < tileObj.TileRange; i++)
+        foreach (Tile tile in attackTiles)
         {
-            foreach(Tile tile in edgeTiles)
-            {
-                Vector3 position = tile.transform.position;
-                position.y = spawnHeight;
-
-                tileObjTileTops.Add(Instantiate(attackTop, position, Quaternion.identity));
-                tileObjCheckedTiles.Add(tile);
-
-                foreach(Tile adjTile in Pathfinder.Instance.FindAdjacentTiles(tile, false))
-                {
-                    if(!tileObjCheckedTiles.Contains(adjTile))
-                    {
-                        nextSet.Add(adjTile);
-                    }
-                }
-            }
-
-            edgeTiles.Clear();
-            edgeTiles = new List<Tile>(nextSet);
-            nextSet.Clear();
+            ProduceEdges(tile, attackTiles, tileTops, attackEdge);
         }
-    }
-
-    public void ClearAttackAreaTower()
-    {
-        foreach (GameObject top in tileObjTileTops)
-        {
-            Destroy(top);
-        }
-
-        tileObjCheckedTiles.Clear();
-        tileObjTileTops.Clear();
     }
 
     public void ProduceEdges(Tile origin, List<Tile> tileList, List<GameObject> listToAddOnto, GameObject edgeObject)
