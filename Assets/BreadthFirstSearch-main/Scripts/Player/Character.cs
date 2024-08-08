@@ -216,13 +216,13 @@ public class Character : MonoBehaviour
         }
         else if (elementType == ElementType.Water)
         {
-            currentHealth += 4;
+            currentHealth += 2;
             if (currentHealth > maxHealth)
             {
                 currentHealth = maxHealth;
             }
             UpdateHealthBar?.Invoke();
-            MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
+            MouseTip.Instance.ShowTip(transform.position, $"Restore two health", false);
 
             if (characterType == TurnEnums.CharacterType.Player)
             {
