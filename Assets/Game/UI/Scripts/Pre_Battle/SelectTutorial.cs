@@ -47,7 +47,7 @@ public class SelectTutorial : MonoBehaviour
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
         GameManager.Instance.IsTutorial = true;
-        SceneLoader.Instance.LoadScene(selectedTutorial);
+        SceneLoader.Instance.LoadBattleScene(selectedTutorial);
         SceneLoader.Instance.UnloadScene(MainMenuScene);
         MenuManager.Instance.HideMenu(MenuManager.Instance.MainMenuClassifier);
     }

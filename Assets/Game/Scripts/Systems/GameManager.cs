@@ -74,6 +74,7 @@ public class GameManager : Singleton<GameManager>
     #region Level Loading
     public void LoadCurrentLevel()
     {
+        SceneLoader.Instance.IsLoadingBattle = true;
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
@@ -88,7 +89,7 @@ public class GameManager : Singleton<GameManager>
 
         // Load CurrentLevel
         SceneReference currentScene = levelDetails[CurrentLevelIndex].levelScene;
-        SceneLoader.Instance.LoadScene(currentScene);
+        SceneLoader.Instance.LoadBattleScene(currentScene);
     }
 
     private void OnSceneLoaded(List<string> list)

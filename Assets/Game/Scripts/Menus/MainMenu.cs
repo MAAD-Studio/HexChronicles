@@ -40,7 +40,7 @@ public class MainMenu : Menu
         SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
         MenuManager.Instance.HideMenu(menuClassifier);
-        SceneLoader.Instance.LoadScene(Map);
+        SceneLoader.Instance.LoadNormalScene(Map);
         SceneLoader.Instance.UnloadScene(MainMenuScene);
     }
 
@@ -55,6 +55,7 @@ public class MainMenu : Menu
     {
         Time.timeScale = 1.0f;
 
+        SceneLoader.Instance.IsLoadingBattle = false;
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.HUDMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.TutorialHUDClassifier);
@@ -68,7 +69,7 @@ public class MainMenu : Menu
         SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
         SceneLoader.Instance.OnSceneLoadedEvent += MainMenuLoaded;
 
-        SceneLoader.Instance.LoadScene(MainMenuScene);
+        SceneLoader.Instance.LoadNormalScene(MainMenuScene);
     }
 
     private void MainMenuLoaded(List<string> list)

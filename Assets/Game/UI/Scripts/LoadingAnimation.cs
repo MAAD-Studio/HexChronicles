@@ -5,18 +5,32 @@ using UnityEngine;
 public class LoadingAnimation : MonoBehaviour
 {
     [SerializeField] private GameObject loadingAnimationParent;
-    [SerializeField] private GameObject[] loadingAnimations;
+    [SerializeField] private Animator[] loadingAnimators;
+    private bool firstCheck = true;
 
     private void OnEnable()
     {
         loadingAnimationParent.SetActive(true);
 
         // Randomly select a loading animation
-        int randomIndex = Random.Range(0, loadingAnimations.Length);
-        for (int i = 0; i < loadingAnimations.Length; i++)
+        int randomIndex = Random.Range(0, loadingAnimators.Length);
+        for (int i = 0; i < loadingAnimators.Length; i++)
         {
-            loadingAnimations[i].SetActive(i == randomIndex);
+            if (i == randomIndex)
+            {
+                loadingAnimators[i].gameObject.SetActive(true);
+                if (!firstCheck)
+                {
+                    if (SceneLoader.Instance.IsLoadingBattle)
+                    {
+                        loadingAnimators[i].SetTrigger("Battle");
+                    }
+                }
+                continue;
+            }
+            loadingAnimators[i].gameObject.SetActive(false);
         }
+        firstCheck = false;
     }
 
     private void OnDisable()

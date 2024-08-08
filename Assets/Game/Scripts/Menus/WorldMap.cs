@@ -64,7 +64,7 @@ public class WorldMap : Menu
         MenuManager.Instance.HideMenu(menuClassifier);
 
         GameManager.Instance.IsTutorial = false;
-        SceneLoader.Instance.LoadScene(levels[levelIndex]);
+        SceneLoader.Instance.LoadBattleScene(levels[levelIndex]);
         SceneLoader.Instance.UnloadScene(worldMap);
     }
 
@@ -84,6 +84,7 @@ public class WorldMap : Menu
 
     public void OnReturnToMap()
     {
+        SceneLoader.Instance.IsLoadingBattle = false;
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.HUDMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.TutorialHUDClassifier);
@@ -128,7 +129,7 @@ public class WorldMap : Menu
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
 
-        SceneLoader.Instance.LoadScene(worldMap);
+        SceneLoader.Instance.LoadNormalScene(worldMap);
 
         // Enable the current level button
         unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
