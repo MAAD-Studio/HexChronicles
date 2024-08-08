@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class MainMenu : Menu
 {
+    public SceneReference MainMenuScene;
     public SceneReference Map;
     public MenuClassifier tutorialHUDClassifier;
     public MenuClassifier mapClassifier;
@@ -36,9 +37,17 @@ public class MainMenu : Menu
 
     public void OnContinueGame()
     {
-        SceneLoader.Instance.LoadScene(Map);
+        SceneLoader.Instance.OnSceneLoadedEvent += OnSceneLoaded;
 
         MenuManager.Instance.HideMenu(menuClassifier);
+        SceneLoader.Instance.LoadScene(Map);
+        SceneLoader.Instance.UnloadScene(MainMenuScene);
+    }
+
+    private void OnSceneLoaded(List<string> list)
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
+
         MenuManager.Instance.ShowMenu(mapClassifier);
     }
 
@@ -57,6 +66,14 @@ public class MainMenu : Menu
     private void AllScenesUnloaded()
     {
         SceneLoader.Instance.OnScenesUnLoadedEvent -= AllScenesUnloaded;
+        SceneLoader.Instance.OnSceneLoadedEvent += MainMenuLoaded;
+
+        SceneLoader.Instance.LoadScene(MainMenuScene);
+    }
+
+    private void MainMenuLoaded(List<string> list)
+    {
+        SceneLoader.Instance.OnSceneLoadedEvent -= MainMenuLoaded;
 
         MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);

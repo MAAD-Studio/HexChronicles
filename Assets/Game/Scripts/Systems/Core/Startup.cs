@@ -2,14 +2,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Startup : MonoBehaviour
 {
     public SceneReference UIScene;
     public SceneReference ActiveScene;
+    public SceneReference MainMenuScene;
+    public float delayTime = 0.5f;
 
     void Start()
     {
+        Scene mainMenuScene = SceneManager.GetSceneByPath(MainMenuScene);
+        if (mainMenuScene.isLoaded == false)
+        {
+            StartCoroutine(BootMainMenuSequence());
+            return;
+        }
+
         Scene uiScene = SceneManager.GetSceneByPath(UIScene);
         if (uiScene.isLoaded == false)
         {
@@ -33,17 +43,26 @@ public class Startup : MonoBehaviour
         SceneLoadedCallback(null);
     }
 
+    IEnumerator BootMainMenuSequence()
+    {
+        yield return new WaitForSeconds(delayTime);
+        SceneLoader.Instance.LoadScene(MainMenuScene, false, false);
+        StartCoroutine(BootUISequence());
+    }
+
     IEnumerator BootUISequence()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(delayTime);
+        SceneLoader.Instance.OnSceneLoadedEvent += SceneLoadedCallback;
+
         SceneLoader.Instance.LoadScene(UIScene, false, false);
         StartCoroutine(BootActiveSequence());
     }
 
     IEnumerator BootActiveSequence()
     {
-        yield return new WaitForSeconds(0.5f);
-        SceneLoader.Instance.OnSceneLoadedEvent += SceneLoadedCallback;
+        yield return new WaitForSeconds(delayTime);
+        //SceneLoader.Instance.OnSceneLoadedEvent += SceneLoadedCallback;
         SceneLoader.Instance.LoadScene(ActiveScene, false, false);
     }
 
@@ -57,7 +76,7 @@ public class Startup : MonoBehaviour
         SceneLoader.Instance.SetActiveScene(activeScene);
 
 #if UNITY_EDITOR
-        if (SceneManager.sceneCount >= 4)
+        if (SceneManager.sceneCount >= 5)
         {
             MenuManager.Instance.HideMenu(MenuManager.Instance.MainMenuClassifier);
             MenuManager.Instance.ShowMenu(MenuManager.Instance.HUDMenuClassifier);

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SelectTutorial : MonoBehaviour
 {
+    public SceneReference MainMenuScene;
     [SerializeField] private GameObject selectPanel;
     [SerializeField] private Button backBtn;
     [SerializeField] private Button startBtn;
@@ -47,6 +48,7 @@ public class SelectTutorial : MonoBehaviour
 
         GameManager.Instance.IsTutorial = true;
         SceneLoader.Instance.LoadScene(selectedTutorial);
+        SceneLoader.Instance.UnloadScene(MainMenuScene);
         MenuManager.Instance.HideMenu(MenuManager.Instance.MainMenuClassifier);
     }
 
