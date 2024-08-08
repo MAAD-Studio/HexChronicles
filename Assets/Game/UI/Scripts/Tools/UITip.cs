@@ -6,16 +6,25 @@ using DG.Tweening;
 
 public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public RectTransform rectTransform;
-    [SerializeField] private bool followMouse = true;
-    [SerializeField] private bool scaleUp = true;
-    [SerializeField] private bool fadeIn = true;
+    public RectTransform rectTransform; // TipObject
+    [SerializeField] protected bool followMouse = true;
 
-    private CanvasGroup canvasGroup;
-    private float fadeTime = 0.2f;
-    private RectTransform thisRect;
+    [Header("Advanced Settings")]
+    [SerializeField] protected bool advancedPanel = false;
+    [SerializeField] protected bool fadeIn = true;
+    [SerializeField] protected bool scale = true;
+    [SerializeField] protected bool slide = false;
+    [SerializeField] protected float fadeInTime = 0.5f;
+    [SerializeField] protected bool fadeAxisX = false;
+    [SerializeField] protected bool fadeAxisY = true;
+    [SerializeField] protected bool axisInvert = false;
 
-    void OnEnable()
+    protected UIPanelItem uiPanelItem;
+    protected CanvasGroup canvasGroup;
+    protected float fadeTime = 0.2f;
+    protected RectTransform thisRect;
+
+    protected virtual void Start()
     {
         Debug.Assert(rectTransform != null, $"{name} couldn't find RectTransform");
         canvasGroup = rectTransform.GetComponent<CanvasGroup>();
@@ -23,9 +32,23 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         rectTransform.gameObject.SetActive(false);
         thisRect = GetComponent<RectTransform>();
+
+        if (advancedPanel)
+        {
+            uiPanelItem = new UIPanelItem(rectTransform);
+            uiPanelItem.canvasGroup = canvasGroup;
+            uiPanelItem.fadeIn = fadeIn;
+            uiPanelItem.scale = scale;
+            uiPanelItem.slide = slide;
+            uiPanelItem.fadeInTime = fadeInTime;
+            uiPanelItem.fadeAxisX = fadeAxisX;
+            uiPanelItem.fadeAxisY = fadeAxisY;
+            uiPanelItem.axisInvert = axisInvert;
+            uiPanelItem.Initialize();
+        }
     }
 
-    private void Update()
+    protected void Update()
     {
         if (followMouse && rectTransform.gameObject.activeSelf)
         {
@@ -39,7 +62,7 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         ShowTooltip();
     }
 
-    public void ShowTooltip()
+    public virtual void ShowTooltip()
     {
         if (followMouse)
         {
@@ -47,24 +70,19 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         rectTransform.gameObject.SetActive(true);
 
-        if (scaleUp)
+        if (advancedPanel)
         {
-            if (!fadeIn)
-            {
-                canvasGroup.alpha = 1;
-            }
+            uiPanelItem.FadeIn();
+        }
+        else
+        {
+            canvasGroup.alpha = 1;
             rectTransform.localScale = Vector3.zero;
             rectTransform.DOScale(Vector3.one, fadeTime);
         }
-        
-        if (fadeIn)
-        {
-            canvasGroup.alpha = 0;
-            canvasGroup.DOFade(1, fadeTime);
-        }
     }
 
-    private void UpdateTooltipPosition(Vector2 position)
+    protected void UpdateTooltipPosition(Vector2 position)
     {
         rectTransform.DOMove(position, 0.1f);
     }
@@ -80,12 +98,22 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         HideTooltip();
     }
 
-    private void HideTooltip()
+    protected virtual void HideTooltip()
     {
-        canvasGroup.DOFade(0, fadeTime).OnComplete(() => rectTransform.gameObject.SetActive(false));
+        if (advancedPanel)
+        {
+            uiPanelItem.FadeOut();
+        }
+        else
+        {
+            canvasGroup.DOFade(0, fadeTime / 2).OnComplete(() => 
+            { 
+                rectTransform.gameObject.SetActive(false);
+            });
+        }
     }
 
-    private bool IsMouseOverThis()
+    protected bool IsMouseOverThis()
     {
         return RectTransformUtility.RectangleContainsScreenPoint(thisRect, Input.mousePosition);
     }

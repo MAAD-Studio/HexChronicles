@@ -10,6 +10,7 @@ public class TabGroup : MonoBehaviour
     [SerializeField] private List<TabPages> tabPages;
     private TabGroupButton selectedTab;
     private TabGroupButton defaultTab;
+    private UIPanel uiPanel;
 
     [SerializeField] private Button previousBtn;
     [SerializeField] private Button nextBtn;
@@ -17,7 +18,8 @@ public class TabGroup : MonoBehaviour
 
     private void Start()
     {
-        closeBtn.onClick.AddListener(() => gameObject.SetActive(false));
+        uiPanel = GetComponent<UIPanel>();
+        closeBtn.onClick.AddListener(() => uiPanel.FadeOut());
         defaultTab = tabButtons[0];
         OnTabSelected(defaultTab);
     }

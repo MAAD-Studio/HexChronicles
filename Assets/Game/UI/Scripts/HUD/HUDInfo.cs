@@ -15,7 +15,7 @@ public class HUDInfo : MonoBehaviour
     private bool showInfos = true;
 
     [Header("Tutorial")]
-    [SerializeField] private TabGroup tutorialSummary;
+    [SerializeField] private UIPanel tutorialSummary;
     [SerializeField] private Button question;
 
     [Header("Turn Info")]
@@ -311,7 +311,7 @@ public class HUDInfo : MonoBehaviour
     {
         playerTurnMessage.gameObject.SetActive(false);
         enemyTurnMessage.gameObject.SetActive(false);
-        tutorialSummary.gameObject.SetActive(false);
+        tutorialSummary.Initialize();
 
         // Create Characters Info:
         foreach (Character character in turnManager.characterList)
@@ -394,7 +394,7 @@ public class HUDInfo : MonoBehaviour
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
         undo.onClick.AddListener(() => playerTurn.UndoAction());
-        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
+        question.onClick.AddListener(() => tutorialSummary.FadeIn());
         
         endTurn.onClick.AddListener(() =>
         {
