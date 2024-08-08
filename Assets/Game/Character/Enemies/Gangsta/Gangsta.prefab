@@ -32,8 +32,8 @@ Transform:
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 4519599796179913642}
   - {fileID: 492960044779003552}
+  - {fileID: 4519599796179913642}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1950335045721294260
@@ -55,8 +55,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2.2361147, z: 1.2080414}
-  m_Center: {x: 0, y: 1.1180574, z: 0.104020506}
+  m_Size: {x: 1.351787, y: 2.5132194, z: 1.2850723}
+  m_Center: {x: 0.000000010129398, y: 1.2566097, z: 0.104020506}
 --- !u!95 &5106053962462946084
 Animator:
   serializedVersion: 5
@@ -115,6 +115,10 @@ MonoBehaviour:
   characterTile: {fileID: 0}
   attackVFX: {fileID: 3781339320553724212, guid: 6596e6744951c48439bd87d4e8a0a5c7, type: 3}
   damagePrefab: {fileID: 6740108802365226543, guid: a0e63a1228446d0479a5c817d2370528, type: 3}
+  VFXGraph: {fileID: 0}
+  skinnedMesh: {fileID: 0}
+  dissolveRate: 0.0125
+  refreshRate: 0.025
   statusList: []
   isHurt: 0
   effectedByWeather: 0
@@ -158,15 +162,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.18553549
+      value: 0.19999999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.18553549
+      value: 0.19999999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.18553549
+      value: 0.19999999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -207,6 +211,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6652725513331149018, guid: 62f1c6073c8299c419470451fa1e854c, type: 3}
       propertyPath: m_Materials.Array.data[0]
