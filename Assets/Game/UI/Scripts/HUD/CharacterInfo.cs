@@ -47,6 +47,9 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Outline attackOutline;
     private Outline skillOutline;
 
+    [Header("UI Tip")]
+    [SerializeField] private CharacterInfoUITip[] characterInfoUITips;
+
     [Header("StartValue")]
     private float startAttack;
     private int startMovement;
@@ -57,6 +60,17 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Start()
     {
         SetDefaultState();
+        StartCoroutine(InitializeUITips());
+    }
+
+    private IEnumerator InitializeUITips()
+    {
+        yield return null;
+
+        foreach (var tip in characterInfoUITips)
+        {
+            tip.Initialize();
+        }
     }
 
     public void InitializeInfo(Hero hero)

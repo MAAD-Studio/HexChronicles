@@ -21,6 +21,7 @@ public class UIPanelItem
     public RectTransform rectTransform;
     public CanvasGroup canvasGroup;
     private Vector3 originalPosition;
+    private Vector3 slidePosition;
 
     public UIPanelItem(RectTransform rectTransform)
     {
@@ -45,7 +46,7 @@ public class UIPanelItem
 
         if (slide)
         {
-            Vector3 slidePosition = originalPosition;
+            slidePosition = originalPosition;
             if (fadeAxisX)
             {
                 slidePosition.x = axisInvert ? 
@@ -117,19 +118,6 @@ public class UIPanelItem
 
         if (slide)
         {
-            Vector3 slidePosition = originalPosition;
-            if (fadeAxisX)
-            {
-                slidePosition.x = axisInvert ?
-                    (slidePosition.x + rectTransform.sizeDelta.x) :
-                    (slidePosition.x - rectTransform.sizeDelta.x);
-            }
-            if (fadeAxisY)
-            {
-                slidePosition.y = axisInvert ?
-                    (slidePosition.y + rectTransform.sizeDelta.y) :
-                    (slidePosition.y - rectTransform.sizeDelta.y);
-            }
             rectTransform.DOMove(slidePosition, fadeInTime / 2);
         }
     }

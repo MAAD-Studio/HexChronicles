@@ -24,7 +24,9 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     protected float fadeTime = 0.2f;
     protected RectTransform thisRect;
 
-    protected virtual void Start()
+    protected bool isLoaded = false;
+
+    public virtual void Initialize()
     {
         Debug.Assert(rectTransform != null, $"{name} couldn't find RectTransform");
         canvasGroup = rectTransform.GetComponent<CanvasGroup>();
@@ -45,6 +47,16 @@ public class UITip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             uiPanelItem.fadeAxisY = fadeAxisY;
             uiPanelItem.axisInvert = axisInvert;
             uiPanelItem.Initialize();
+        }
+
+        isLoaded = true;
+    }
+
+    protected virtual void Start()
+    {
+        if (!isLoaded)
+        {
+            Initialize();
         }
     }
 
