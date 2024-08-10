@@ -13038,9 +13038,8 @@ MonoBehaviour:
   objectStatusPrefab: {fileID: 6512405803852816446, guid: ab565bcd6a68ed342ad31a07fca755da, type: 3}
   objectHoverPrefab: {fileID: 6512405803852816446, guid: f2fb74bd7267b854bbcdcae4fd997e3d, type: 3}
   tileInfoPanel: {fileID: 2026964658}
+  endTurn: {fileID: 1878596041}
   pause: {fileID: 1573336252}
-  endTurn: {fileID: 1878596038}
-  endTurnVFX: {fileID: 246117947}
   undo: {fileID: 684399827}
   fast: {fileID: 1035746815}
 --- !u!1 &478505984
@@ -32232,6 +32231,7 @@ GameObject:
   - component: {fileID: 1307700011}
   - component: {fileID: 1307700010}
   - component: {fileID: 1307700012}
+  - component: {fileID: 1307700013}
   m_Layer: 5
   m_Name: End Turn Button
   m_TagString: Untagged
@@ -32341,6 +32341,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1307700013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307700008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d8655c800e3d046b9355f1e8a68221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endTurnBtn: {fileID: 1307700012}
+  endTurnVFX: {fileID: 1084668342}
+  scaleUpValue: {x: 1.2, y: 1.5, z: 1.2}
+  scaleUpDuration: 0.6
+  scaleBackDuration: 0.3
 --- !u!1 &1310095632
 GameObject:
   m_ObjectHideFlags: 0
@@ -45522,9 +45539,8 @@ MonoBehaviour:
   enemyHoverPanel: {fileID: 1542055501}
   enemyHoverPrefab: {fileID: 6512405803852816446, guid: 1e80e41d83161fe488b5bfd98ac40e11, type: 3}
   tileInfoPanel: {fileID: 437669705}
+  endTurn: {fileID: 1307700013}
   pause: {fileID: 1492928470}
-  endTurn: {fileID: 1307700012}
-  endTurnVFX: {fileID: 1084668342}
 --- !u!1 &1851090264
 GameObject:
   m_ObjectHideFlags: 0
@@ -45723,6 +45739,7 @@ GameObject:
   - component: {fileID: 1878596040}
   - component: {fileID: 1878596039}
   - component: {fileID: 1878596038}
+  - component: {fileID: 1878596041}
   m_Layer: 5
   m_Name: End Turn Button
   m_TagString: Untagged
@@ -45832,6 +45849,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878596036}
   m_CullTransparentMesh: 1
+--- !u!114 &1878596041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878596036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d8655c800e3d046b9355f1e8a68221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endTurnBtn: {fileID: 1878596038}
+  endTurnVFX: {fileID: 246117947}
+  scaleUpValue: {x: 1.2, y: 1.5, z: 1.2}
+  scaleUpDuration: 0.6
+  scaleBackDuration: 0.3
 --- !u!1 &1893576252
 GameObject:
   m_ObjectHideFlags: 0
@@ -47168,8 +47202,8 @@ RectTransform:
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 684399826}
   - {fileID: 246117948}
+  - {fileID: 684399826}
   - {fileID: 1878596037}
   - {fileID: 1035746818}
   m_Father: {fileID: 473275755}
@@ -56359,7 +56393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 92
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_SizeDelta.y
@@ -56367,7 +56401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 90292572584461479, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -56391,7 +56425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 17.333334
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -56519,7 +56553,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 92
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_SizeDelta.y
@@ -56527,7 +56561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9039025917679873484, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y

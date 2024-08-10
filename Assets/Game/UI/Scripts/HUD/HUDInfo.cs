@@ -57,9 +57,8 @@ public class HUDInfo : MonoBehaviour
     private TileInfo tileInfo;
 
     [Header("Buttons")]
+    [SerializeField] private EndTurnButton endTurn;
     [SerializeField] private Button pause;
-    [SerializeField] private Button endTurn;
-    [SerializeField] private GameObject endTurnVFX;
     [SerializeField] private Button undo;
     [SerializeField] private Button fast;
 
@@ -192,8 +191,8 @@ public class HUDInfo : MonoBehaviour
         }
 
         currentTurn.text = "ENEMY TURN";
-        endTurn.interactable = false;
-        
+        endTurn.DisableButton();
+
         foreach (var button in heroButtons)
         {
             button.interactable = false;
@@ -214,7 +213,7 @@ public class HUDInfo : MonoBehaviour
 
         //turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
         currentTurn.text = "PLAYER TURN";
-        endTurn.interactable = true;
+        endTurn.EnableButton();
 
         foreach (var button in heroButtons)
         {
@@ -257,8 +256,7 @@ public class HUDInfo : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
     }
 
@@ -280,13 +278,11 @@ public class HUDInfo : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
         else
         {
-            endTurn.GetComponent<Image>().color = Color.white;
-            endTurnVFX.SetActive(false);
+            endTurn.EndTurnInactive();
         }
     }
 
@@ -396,15 +392,14 @@ public class HUDInfo : MonoBehaviour
         undo.onClick.AddListener(() => playerTurn.UndoAction());
         question.onClick.AddListener(() => tutorialSummary.FadeIn());
         
-        endTurn.onClick.AddListener(() =>
+        endTurn.AddListener(() =>
         {
             if (selectedCharacter != null && !playerTurn.AllowSelection)
             {
                 return;
             }
             playerTurn.EndTurn();
-            endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            endTurnVFX.SetActive(false);
+            endTurn.EndTurnInactive();
         });
 
         fast.onClick.AddListener(() => 
@@ -448,9 +443,8 @@ public class HUDInfo : MonoBehaviour
         pause.onClick.RemoveAllListeners();
         undo.onClick.RemoveAllListeners();
         question.onClick.RemoveAllListeners();
-        endTurn.onClick.RemoveAllListeners();
-        endTurn.GetComponent<Image>().color = Color.white;
-        endTurnVFX.SetActive(false);
+
+        endTurn.Reset();
         fast.onClick.RemoveAllListeners();
 
         turnIndicator.ResetTurn();
