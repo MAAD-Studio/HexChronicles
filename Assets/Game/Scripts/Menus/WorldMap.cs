@@ -130,10 +130,6 @@ public class WorldMap : Menu
         SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
 
         SceneLoader.Instance.LoadNormalScene(worldMap);
-
-        // Enable the current level button
-        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
-        levelButtonsInOrder[unlockedLevelIndex].interactable = true;
     }
 
     private void OnMapLoaded(List<string> list)
@@ -142,6 +138,23 @@ public class WorldMap : Menu
 
         MenuManager.Instance.ShowMenu(menuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+
+        // Enable the current level button
+        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
+
+        if (unlockedLevelIndex < levelButtonsInOrder.Length)
+        {
+            levelButtonsInOrder[unlockedLevelIndex].interactable = true;
+        }
+        else
+        {
+            AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
+            MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
+            mainMenu.OnReturnToMainMenu();
+            MenuManager.Instance.HideMenu(menuClassifier);
+            GameManager.Instance.CleanActiveScene();
+            mainMenu.OnSelectCredits();
+        }
     }
     #endregion
 

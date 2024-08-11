@@ -18,6 +18,7 @@ public class MainMenu : Menu
     [SerializeField] private Transform savedDataContainer;
 
     private SelectTutorial selectTutorial;
+    [SerializeField] private CreditsScreen credits;
 
     protected override void Start()
     {
@@ -33,6 +34,11 @@ public class MainMenu : Menu
     public void OnSelectTutorial()
     {
         selectTutorial.ShowPanel();
+    }
+
+    public void OnSelectCredits()
+    {
+        credits.ShowCredits();
     }
 
     public void OnContinueGame()
