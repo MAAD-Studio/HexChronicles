@@ -993,7 +993,7 @@ public class Character : MonoBehaviour
 
                 foreach(Character enemy in enemiesHit)
                 {
-                    MakeEnemyFaceMe(enemy);
+                    enemy.RotateToFaceCharacter(this);
                 }
             }
             if (attackAreaPrefab.hitsHeroes)
@@ -1010,7 +1010,7 @@ public class Character : MonoBehaviour
 
                 foreach (Character hero in heroesHit)
                 {
-                    MakeEnemyFaceMe(hero);
+                    hero.RotateToFaceCharacter(this);
                 }
             }
 
@@ -1119,7 +1119,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void DragTowards(Tile dragTile, int damage)
+    public void DragTowards(Tile dragTile, int damage, float delay)
     {
         Pathfinder pathFinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
 
@@ -1154,8 +1154,11 @@ public class Character : MonoBehaviour
         characterTile.tileOccupied = false;
         characterTile = null;
 
-        transform.position = currentTile.transform.position + new Vector3(0, 0.2f, 0);
-        FindTile();
+        characterTile = currentTile;
+        characterTile.characterOnTile = this;
+        characterTile.tileOccupied = true;
+
+        StartCoroutine(MoveTowards(currentTile, delay));
 
         TakeDamage(damage, ElementType.Base);
 
@@ -1245,7 +1248,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void MakeEnemyFaceMe(Character character)
+    public void RotateToFaceCharacter(Character character)
     {
         if(!rotating)
         {
@@ -1253,30 +1256,34 @@ public class Character : MonoBehaviour
         }
     }
 
-    public IEnumerator RotateToFace(Character character)
+    private IEnumerator RotateToFace(Character character)
     {
         if(character == null)
         {
             yield break;
         }
 
+        float rotationAttemptTimer = 0f;
         rotating = true;
-        Vector3 targetPos = transform.position - character.transform.position;
+        Vector3 directionToCharacter = character.transform.position - transform.position;
 
-        while (true)
+        while(true)
         {
-            if (character == null)
+            if(character == null)
             {
                 rotating = false;
                 yield break;
             }
 
-            float angle = Vector3.Angle(character.transform.forward, -transform.forward);
-            if (angle > 5)
+            float angle = Vector3.Angle(transform.forward, directionToCharacter);
+            if(angle > 5 && rotationAttemptTimer < 5f)
             {
-                float speed = (angle / 4) * (Time.deltaTime * GameManager.Instance.GameSpeed);
-                Vector3 direction = Vector3.RotateTowards(character.transform.forward, targetPos, speed, 0.0f);
-                character.transform.rotation = Quaternion.LookRotation(direction);
+                float speed = 8 * (Time.deltaTime * GameManager.Instance.GameSpeed);
+                Vector3 direction = Vector3.RotateTowards(transform.forward, directionToCharacter, speed, 0.0f);
+                direction.y = 0;
+                transform.rotation = Quaternion.LookRotation(direction);
+
+                rotationAttemptTimer += Time.deltaTime;
                 yield return null;
             }
             else
@@ -1285,6 +1292,28 @@ public class Character : MonoBehaviour
                 yield break;
             }
         }
+    }
+
+    private IEnumerator MoveTowards(Tile tile, float delay)
+    {
+        if(tile == null)
+        {
+            yield break;
+        }
+
+        yield return new WaitForSeconds(delay / 4);
+
+        Vector3 direction = tile.transform.position - transform.position;
+        direction = Vector3.Normalize(direction);
+
+        float speed = 2f * Time.deltaTime;
+        while(Vector3.Distance(transform.position, tile.transform.position) > 1f && Vector3.Distance(transform.position, tile.transform.position) <= 6f)
+        {
+            transform.position += direction * speed;
+            yield return null;
+        }
+
+        transform.position = tile.transform.position + new Vector3(0, 0.2f, 0);
     }
 
     #endregion

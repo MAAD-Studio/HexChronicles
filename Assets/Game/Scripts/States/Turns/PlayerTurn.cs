@@ -141,6 +141,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
 
     public void EnterState()
     {
+        UndoManager.Instance.ClearData();
+
         foreach (Character character in turnManager.characterList)
         {
             if (character.characterTile != null)
