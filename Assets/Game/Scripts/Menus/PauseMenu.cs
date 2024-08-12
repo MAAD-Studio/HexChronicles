@@ -86,6 +86,7 @@ public class PauseMenu : Menu
         mainMenu.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
         GameManager.Instance.CleanActiveScene();
+        EventBus.Instance.Publish(new OnTutorialEnd());
 
         mainMenu.OnSelectTutorial();
     }

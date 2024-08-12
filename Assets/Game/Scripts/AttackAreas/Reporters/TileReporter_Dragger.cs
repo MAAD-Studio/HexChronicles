@@ -24,13 +24,15 @@ public class TileReporter_Dragger : TileReporter
         pathFinder.PathTilesInRange(currentTile, 0, dragRange, true, false);
         List<Tile> dragTile = new List<Tile>(pathFinder.frontier);
 
+        int delay = 0;
         foreach(Tile tile in dragTile)
         {
             Character character = tile.characterOnTile;
             if(character != null && character.characterType == TurnEnums.CharacterType.Enemy)
             {
                 UndoManager.Instance.StoreEnemy((Enemy_Base)character, false);
-                character.DragTowards(currentTile, damage);
+                character.DragTowards(currentTile, damage, delay);
+                delay++;
             }
         }
     }

@@ -135,16 +135,25 @@ public class Tutorial_One : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     cameraController.MoveToTargetPosition(fireHero.transform.position, true);
-
-                    AttackPreviewer.Instance.ClearAttackArea();
-
                     DisplayDialogue(turnOneDialogue, 10);
-
                     internalTutorialStep++;
                 }
                 break;
 
             case 6:
+                if(dialogueJustEnded)
+                {
+                    cameraController.MoveToTargetPosition(fireHero.transform.position, true);
+
+                    AttackPreviewer.Instance.ClearAttackArea();
+
+                    DisplayDialogue(turnOneDialogue, 11);
+
+                    internalTutorialStep++;
+                }
+                break;
+
+            case 7:
                 if(dialogueJustEnded)
                 {
                     AllowSpecificCharacterSelection(fireHero);
@@ -166,14 +175,14 @@ public class Tutorial_One : Tutorial_Base
                 }
                 break;
 
-            case 7:
-                DisplayDialogue(turnOneDialogue, 11, 12);
+            case 8:
+                DisplayDialogue(turnOneDialogue, 12, 13);
                 cameraController.controlEnabled = true;
 
                 internalTutorialStep++;
                 break;
 
-            case 8:
+            case 9:
                 if(dialogueJustEnded)
                 {
                     AllowSpecificTileSelection(lastTileOfFirstMove);
@@ -194,15 +203,15 @@ public class Tutorial_One : Tutorial_Base
                 }
                 break;
 
-            case 9:
-                DisplayDialogue(turnOneDialogue, 13);
+            case 10:
+                DisplayDialogue(turnOneDialogue, 14);
 
                 AllowSpecificEnemySelection(enemyOne);
 
                 internalTutorialStep++;
                 break;
 
-            case 10:
+            case 11:
                 if(dialogueJustEnded)
                 {
                     turnManager.PlayerTurn.preventAttack = false;
@@ -223,16 +232,16 @@ public class Tutorial_One : Tutorial_Base
                 }
                 break;
 
-            case 11:
+            case 12:
                 if(turnManager.PlayerTurn.Phase != TurnEnums.PlayerPhase.Execution)
                 {
-                    DisplayDialogue(turnOneDialogue, 14);
+                    DisplayDialogue(turnOneDialogue, 15);
 
                     internalTutorialStep++;
                 }
                 break;
 
-            case 12:
+            case 13:
 
                 if(dialogueJustEnded)
                 {

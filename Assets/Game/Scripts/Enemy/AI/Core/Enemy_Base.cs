@@ -104,7 +104,7 @@ public class Enemy_Base : Character, EnemyInterface
 
         foreach (Character character in charactersToCheck)
         {
-            MakeEnemyFaceMe(character);
+            character.RotateToFaceCharacter(this);
         }
 
         foreach (Character character in charactersToCheck)
