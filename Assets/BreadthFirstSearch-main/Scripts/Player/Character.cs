@@ -774,24 +774,32 @@ public class Character : MonoBehaviour
 
         FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
         Time.timeScale = 0.5f;
+
         if (animator != null)
         {
             animator.SetTrigger("died");
         }
+        else
+        {
+            StartDeathVFX();
+            Invoke("Destroy", 1f);
+        }
 
-        //VFX and Shader
-        if (VFXGraph != null) 
+        DestroyTileVFX();
+    }
+
+    #region Dissolve Material
+
+    // Called by death animation event
+    public void StartDeathVFX()
+    {
+        if (VFXGraph != null)
         {
             VFXGraph.Play();
         }
         StartCoroutine(DissolveCo());
-
-
-        DestroyTileVFX();
-        Invoke("Destroy", 1f);
     }
 
-    #region Dissolve Material
     IEnumerator DissolveCo () {
         if(skinnedMaterials != null && skinnedMaterials.Length > 0) {
             float counter = 0;
@@ -808,7 +816,8 @@ public class Character : MonoBehaviour
     }
     #endregion
 
-    private void Destroy()
+    // Called by death animation event
+    public void Destroy()
     {
         FindObjectOfType<CameraController>().MoveToDefault(true);
         Time.timeScale = 1f;
