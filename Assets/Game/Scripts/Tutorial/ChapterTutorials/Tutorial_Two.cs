@@ -269,7 +269,7 @@ public class Tutorial_Two : Tutorial_Base
             case 14:
                 if(dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
+                    turnManager.Victory();
                     internalTutorialStep++;
                 }
                 break;

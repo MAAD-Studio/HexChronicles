@@ -126,6 +126,7 @@ public class HUDInfo : MonoBehaviour
         TurnManager.LevelDefeat.AddListener(OnLevelEnded);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
         Character.movementComplete.AddListener(RestoreShowingInfos);
+        UndoManager.Instance.UndoDataAvailable.AddListener(UpdateUndoButton);
     }
 
     private void UnsubscribeEvents()
@@ -147,6 +148,7 @@ public class HUDInfo : MonoBehaviour
         TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
         Character.movementComplete.RemoveListener(RestoreShowingInfos);
+        UndoManager.Instance.UndoDataAvailable.RemoveListener(UpdateUndoButton);
     }
 
     private void OnNewLevelStart(object obj)
@@ -298,6 +300,19 @@ public class HUDInfo : MonoBehaviour
 
         availableHeroes--;
     }
+
+
+    private void UpdateUndoButton(bool arg0)
+    {
+        if (arg0)
+        {
+            undo.interactable = true;
+        }
+        else
+        {
+            undo.interactable = false;
+        }
+    }
     #endregion
 
 
@@ -442,6 +457,7 @@ public class HUDInfo : MonoBehaviour
 
         pause.onClick.RemoveAllListeners();
         undo.onClick.RemoveAllListeners();
+        undo.interactable = false;
         question.onClick.RemoveAllListeners();
 
         endTurn.Reset();

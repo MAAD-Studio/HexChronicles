@@ -177,7 +177,7 @@ public class Tutorial_Three : Tutorial_Base
             case 8:
                 if(dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
+                    turnManager.Victory();
                     internalTutorialStep++;
                 }
                 break;

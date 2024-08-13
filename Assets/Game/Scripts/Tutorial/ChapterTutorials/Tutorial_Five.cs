@@ -155,7 +155,7 @@ public class Tutorial_Five : Tutorial_Base
             case 9:
                 if (dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
+                    turnManager.Victory();
                     internalTutorialStep++;
                 }
                 break;

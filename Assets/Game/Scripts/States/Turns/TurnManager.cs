@@ -167,7 +167,7 @@ public class TurnManager : MonoBehaviour
 
                 if (turnNumber == objectiveTurnNumber + 1)
                 {
-                    LevelDefeat?.Invoke();
+                    Invoke("Defeat", 1.5f);
                 }
                 break;
 
@@ -211,7 +211,7 @@ public class TurnManager : MonoBehaviour
 
             if (characterList.Count == 0)
             {
-                Invoke("EndLevel", 1.5f);
+                Invoke("Defeat", 1.5f);
             }
         }
         else
@@ -225,7 +225,7 @@ public class TurnManager : MonoBehaviour
 
             if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
-                Invoke("EndLevel", 1.5f);
+                Invoke("Victory", 1.5f);
             }
         }
 
@@ -294,9 +294,14 @@ public class TurnManager : MonoBehaviour
         tileObjectsToDestroy.Clear();
     }
 
-    public void EndLevel()
+    public void Victory()
     {
         LevelVictory?.Invoke();
+    }
+
+    private void Defeat()
+    {
+        LevelDefeat?.Invoke();
     }
 
     public IEnumerator ConductOpeningCamera()

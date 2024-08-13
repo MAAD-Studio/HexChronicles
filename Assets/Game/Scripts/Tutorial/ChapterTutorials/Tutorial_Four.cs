@@ -133,7 +133,7 @@ public class Tutorial_Four : Tutorial_Base
             case 8:
                 if (dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
+                    turnManager.Victory();
                     internalTutorialStep++;
                 }
                 break;
