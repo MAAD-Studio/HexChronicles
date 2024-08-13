@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileReporter_PoisonGenerator :TileReporter_TempObjectMaker
+public class TileReporter_PoisonGenerator : TileReporter_TempObjectMaker
 {
     #region CustomMethods
 

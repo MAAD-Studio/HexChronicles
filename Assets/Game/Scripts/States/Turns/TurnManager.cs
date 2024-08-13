@@ -287,6 +287,8 @@ public class TurnManager : MonoBehaviour
         foreach (TileObject tileObj in tileObjectsToDestroy)
         {
             temporaryTileObjects.Remove(tileObj);
+            tileObj.attachedTile.objectOnTile = null;
+            tileObj.attachedTile.tileHasObject = false;
             Destroy(tileObj.gameObject);
         }
         tileObjectsToDestroy.Clear();

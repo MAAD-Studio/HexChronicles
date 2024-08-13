@@ -221,7 +221,11 @@ public class Config : Singleton<Config>
         }
         else if (status.statusType == Status.StatusTypes.Shield)
         {
-            //return characterUIConfig.shieldVFX;
+            return characterUIConfig.shieldVFX;
+        }
+        else if(status.statusType == Status.StatusTypes.MindControl)
+        {
+            return characterUIConfig.mindControlVFX;
         }
         return null;
     }

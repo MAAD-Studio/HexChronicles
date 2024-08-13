@@ -678,6 +678,11 @@ public class Character : MonoBehaviour
                 break;
 
             case Status.StatusTypes.Shield:
+                vfx = Instantiate(Config.Instance.characterUIConfig.shieldVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.MindControl:
+                vfx = Instantiate(Config.Instance.characterUIConfig.mindControlVFX, transform.position, Quaternion.identity);
                 break;
 
             default:
@@ -1128,7 +1133,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void DragTowards(Tile dragTile, int damage, float delay)
+    public void DragTowards(Tile dragTile, int damage)
     {
         Pathfinder pathFinder = GameObject.Find("MapNavigators").GetComponentInChildren<Pathfinder>();
 
@@ -1167,7 +1172,7 @@ public class Character : MonoBehaviour
         characterTile.characterOnTile = this;
         characterTile.tileOccupied = true;
 
-        StartCoroutine(MoveTowards(currentTile, delay));
+        StartCoroutine(MoveTowards(currentTile));
 
         TakeDamage(damage, ElementType.Base);
 
@@ -1303,14 +1308,12 @@ public class Character : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveTowards(Tile tile, float delay)
+    private IEnumerator MoveTowards(Tile tile)
     {
         if(tile == null)
         {
             yield break;
         }
-
-        yield return new WaitForSeconds(delay / 4);
 
         Vector3 direction = tile.transform.position - transform.position;
         direction = Vector3.Normalize(direction);

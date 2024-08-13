@@ -28,7 +28,8 @@ public class CharacterUIConfig : ScriptableObject
     public GameObject wetVFX;
     //public GameObject hasteVFX;
     public GameObject boundVFX;
-    //public GameObject shieldVFX;
+    public GameObject shieldVFX;
+    public GameObject mindControlVFX;
 
     [Header("Tile Effect VFX")]
     public GameObject fireBuffVFX;
