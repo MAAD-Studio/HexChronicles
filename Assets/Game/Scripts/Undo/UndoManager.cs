@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UndoManager : Singleton<UndoManager>
 {
@@ -40,6 +41,8 @@ public class UndoManager : Singleton<UndoManager>
         get;
         private set;
     }
+
+    public UnityEvent<bool> UndoDataAvailable = new UnityEvent<bool>();
 
     #endregion
 
@@ -85,6 +88,7 @@ public class UndoManager : Singleton<UndoManager>
         }
 
         DataStored = true;
+        UndoDataAvailable?.Invoke(true);
 
         UndoData_Hero heroData = new UndoData_Hero();
         StoreCharacter(heroData, hero);
@@ -106,6 +110,7 @@ public class UndoManager : Singleton<UndoManager>
         }
 
         DataStored = true;
+        UndoDataAvailable?.Invoke(true);
 
         UndoData_Enemies enemyData = new UndoData_Enemies();
         StoreCharacter(enemyData, enemy);
@@ -140,6 +145,7 @@ public class UndoManager : Singleton<UndoManager>
     public void StoreTileObject(TileObject tileObj, bool destroy)
     {
         DataStored = true;
+        UndoDataAvailable?.Invoke(true);
 
         UndoData_TileObject tileObjData = new UndoData_TileObject();
         
@@ -159,6 +165,7 @@ public class UndoManager : Singleton<UndoManager>
     public void StoreTile(Tile newTile, ElementType oldTilesType)
     {
         DataStored = true;
+        UndoDataAvailable?.Invoke(true);
 
         UndoData_Tile tileData = new UndoData_Tile();
 
@@ -177,11 +184,13 @@ public class UndoManager : Singleton<UndoManager>
         tileList.Clear();
 
         DataStored = false;
+        UndoDataAvailable?.Invoke(false);
     }
 
     public void RestoreState()
     {
         DataStored = false;
+        UndoDataAvailable?.Invoke(false);
 
         TurnManager turnManager = FindObjectOfType<TurnManager>();
         Debug.Assert(turnManager != null, "UndoManager couldn't locate a TurnManager for it to restore data into");
