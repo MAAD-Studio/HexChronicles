@@ -245,7 +245,7 @@ public class Tutorial_One : Tutorial_Base
 
                 if(dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
+                    turnManager.Victory();
                     internalTutorialStep++;
                 }
 
