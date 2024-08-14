@@ -36,6 +36,10 @@ public class OptionsMenuUI : MonoBehaviour
         InitializeUIComponents();
         LoadResolutions();
         UpdateUIWithCurrentSettings();
+    }
+
+    public void Initialize()
+    {
         gameObject.SetActive(false);
     }
 

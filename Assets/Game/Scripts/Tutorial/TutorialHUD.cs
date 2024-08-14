@@ -344,15 +344,29 @@ public class TutorialHUD : MonoBehaviour
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
 
-        endTurn.AddListener(() =>
+        endTurn.AddEndTurnBtnListener(() =>
         {
             if (selectedCharacter != null && selectedCharacter.moving)
             {
                 return;
             }
+            if (activeHeroes == 0)
+            {
+                playerTurn.EndTurn();
+                endTurn.EndTurnInactive();
+            }
+            else
+            {
+                endTurn.ShowAskPanel();
+            }
+        });
+
+        endTurn.AddConfirmBtnListener(() =>
+        {
             playerTurn.EndTurn();
             endTurn.EndTurnInactive();
         });
+
         question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
     }
 
@@ -376,7 +390,7 @@ public class TutorialHUD : MonoBehaviour
         characterInfoDict.Clear();
 
         pause.onClick.RemoveAllListeners();
-        endTurn.Reset();
+        endTurn.ResetEndTurn();
         question.onClick.RemoveAllListeners();
 
         availableHeroes = 0;

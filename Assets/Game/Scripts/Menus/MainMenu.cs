@@ -28,6 +28,8 @@ public class MainMenu : Menu
 
         selectTutorial = GetComponent<SelectTutorial>();
         selectTutorial.HidePanel();
+        credits.Initialize();
+        options.Initialize();
 
         HideSavedData();
     }
