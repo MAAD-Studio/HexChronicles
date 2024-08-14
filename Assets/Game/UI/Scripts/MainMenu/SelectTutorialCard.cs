@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,7 +45,7 @@ public class SelectTutorialCard : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         selected = false;
         gameObject.GetComponent<Image>().color = new Color(0.7f, 0.7f, 0.7f);
-        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
     }
 
     public void HoverState()
@@ -55,7 +56,7 @@ public class SelectTutorialCard : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void SelectedState()
     {
         gameObject.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f);
-        transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+        transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.2f).SetEase(Ease.OutBack).From(new Vector3(1.1f, 1.1f, 1.1f));
     }
     #endregion
 }
