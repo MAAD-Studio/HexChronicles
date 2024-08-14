@@ -199,6 +199,9 @@ MonoBehaviour:
   grassTilePrefab: {fileID: 4186787716369015331, guid: f9a3a1a94982b364d971c36a820c6092, type: 3}
   deathTilePrefab: {fileID: 5947859453143795796, guid: d9fe5d13c7dd68d45a1cf49d3fff33b6, type: 3}
   towerPrefab: {fileID: 2867574994839896644, guid: 2adc905ba176cbd419f6d9e8bfb35914, type: 3}
+  UndoDataAvailable:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &142641846
 Transform:
   m_ObjectHideFlags: 0
@@ -459,6 +462,7 @@ GameObject:
   - component: {fileID: 354924612}
   - component: {fileID: 354924611}
   - component: {fileID: 354924613}
+  - component: {fileID: 354924614}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -510,6 +514,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 286b61cf7e4c68542ab8aada8d8bab15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &354924614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354924610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf8853ef837cc945add7ec365e1fb70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allFireSkills:
+  - {fileID: 11400000, guid: 2c4238ac6217ec74f9e7443fbf13f07a, type: 2}
+  - {fileID: 11400000, guid: a07a1f5998a1aa5429290a7e06a765db, type: 2}
+  - {fileID: 11400000, guid: a35ced3ca61c17040ad94bd577f40489, type: 2}
+  allGrassSkills:
+  - {fileID: 11400000, guid: 69ae9e193e95b3a4aa629b1bf424be2f, type: 2}
+  - {fileID: 11400000, guid: f9eacc14ab1de68458543cc1d445be9f, type: 2}
+  - {fileID: 11400000, guid: c0ac4980f238c87419f63369f58b0394, type: 2}
+  allWaterSkills:
+  - {fileID: 11400000, guid: 104efb91358849044bcd7368ec650297, type: 2}
+  - {fileID: 11400000, guid: 5f90ab19f69ac2945a75cd64edf784e5, type: 2}
+  - {fileID: 11400000, guid: 7d59db3dceae63f41a2f0a132d0c4da1, type: 2}
+  playerFireSkills: []
+  playerGrassSkills: []
+  playerWaterSkills: []
+  fireHero: {fileID: 11400000, guid: df0f9560b70b1d3459c04e7916265c39, type: 2}
+  grassHero: {fileID: 11400000, guid: 81e968ec34de0504ba4ffb1c2d54e759, type: 2}
+  waterHero: {fileID: 11400000, guid: 9e664257c18a9894c9a4e611df5deffb, type: 2}
 --- !u!1 &627143517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +1044,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1316527208}
   - component: {fileID: 1316527207}
-  - component: {fileID: 1316527206}
   m_Layer: 0
   m_Name: Config
   m_TagString: Untagged
@@ -1018,33 +1051,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1316527206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1316527205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cf8853ef837cc945add7ec365e1fb70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allFireSkills:
-  - {fileID: 11400000, guid: 2c4238ac6217ec74f9e7443fbf13f07a, type: 2}
-  - {fileID: 11400000, guid: a07a1f5998a1aa5429290a7e06a765db, type: 2}
-  - {fileID: 11400000, guid: a35ced3ca61c17040ad94bd577f40489, type: 2}
-  allGrassSkills:
-  - {fileID: 11400000, guid: 69ae9e193e95b3a4aa629b1bf424be2f, type: 2}
-  - {fileID: 11400000, guid: f9eacc14ab1de68458543cc1d445be9f, type: 2}
-  - {fileID: 11400000, guid: c0ac4980f238c87419f63369f58b0394, type: 2}
-  allWaterSkills:
-  - {fileID: 11400000, guid: 104efb91358849044bcd7368ec650297, type: 2}
-  - {fileID: 11400000, guid: 5f90ab19f69ac2945a75cd64edf784e5, type: 2}
-  - {fileID: 11400000, guid: 7d59db3dceae63f41a2f0a132d0c4da1, type: 2}
-  playerFireSkills: []
-  playerGrassSkills: []
-  playerWaterSkills: []
 --- !u!114 &1316527207
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -620,6 +620,7 @@ MonoBehaviour:
   nameText: {fileID: 7145574954452573902}
   attack: {fileID: 137083369957361498}
   movement: {fileID: 2589571784414794334}
+  health: {fileID: 5209392013166073717}
   heroSO: {fileID: 0}
 --- !u!222 &6141962603198022321
 CanvasRenderer:
@@ -681,10 +682,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.85098046, b: 0.43137258, a: 1}
+    m_PressedColor: {r: 0.90196085, g: 0.7686275, b: 0.6313726, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.9529412, g: 0.85490197, b: 0.7490196, a: 1}
+    m_DisabledColor: {r: 0.90196085, g: 0.7686275, b: 0.6313726, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -973,7 +974,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 24, y: 20}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3545984751552404883
 CanvasRenderer:
@@ -1003,7 +1004,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 5
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

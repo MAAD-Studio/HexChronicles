@@ -14,6 +14,7 @@ public class HeroSkillInfo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI attack;
     [SerializeField] private TextMeshProUGUI movement;
+    [SerializeField] private TextMeshProUGUI health;
 
     [SerializeField] private HeroAttributesSO heroSO;
 
@@ -35,6 +36,7 @@ public class HeroSkillInfo : MonoBehaviour
         nameText.text = heroSO.attributes.name;
         attack.text = heroSO.attributes.attackDamage.ToString();
         movement.text = heroSO.attributes.movementRange.ToString();
+        health.text = heroSO.attributes.health.ToString();
     }
 
     // When this hero is selected, pass the heroSO to the SkillSelectionUI
