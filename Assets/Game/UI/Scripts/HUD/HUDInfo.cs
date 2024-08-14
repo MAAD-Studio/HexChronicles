@@ -406,13 +406,26 @@ public class HUDInfo : MonoBehaviour
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
         undo.onClick.AddListener(() => playerTurn.UndoAction());
         question.onClick.AddListener(() => tutorialSummary.FadeIn());
-        
-        endTurn.AddListener(() =>
+
+        endTurn.AddEndTurnBtnListener(() =>
         {
             if (selectedCharacter != null && !playerTurn.AllowSelection)
             {
                 return;
             }
+            if (activeHeroes == 0)
+            {
+                playerTurn.EndTurn();
+                endTurn.EndTurnInactive();
+            }
+            else
+            {
+                endTurn.ShowAskPanel();
+            }
+        });
+
+        endTurn.AddConfirmBtnListener(() =>
+        {
             playerTurn.EndTurn();
             endTurn.EndTurnInactive();
         });
@@ -460,7 +473,7 @@ public class HUDInfo : MonoBehaviour
         undo.interactable = false;
         question.onClick.RemoveAllListeners();
 
-        endTurn.Reset();
+        endTurn.ResetEndTurn();
         fast.onClick.RemoveAllListeners();
 
         turnIndicator.ResetTurn();

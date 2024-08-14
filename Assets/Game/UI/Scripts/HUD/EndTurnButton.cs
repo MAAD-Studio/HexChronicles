@@ -13,17 +13,34 @@ public class EndTurnButton : MonoBehaviour
     [SerializeField] private float scaleUpDuration = 0.6f;
     [SerializeField] private float scaleBackDuration = 0.3f;
 
+    [SerializeField] private GameObject askPanel;
+    [SerializeField] private Button actualEndTurnBtn;
+    [SerializeField] private Button hidePanelBtn;
+
     private Image image;
     private bool shouldScale = false;
 
     private void Start()
     {
         image = GetComponent<Image>();
+        hidePanelBtn.onClick.AddListener(() => HideAskPanel());
+        askPanel.SetActive(false);
+        actualEndTurnBtn.gameObject.SetActive(false);
+        EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
     }
 
-    public void AddListener(Action action)
+    public void AddEndTurnBtnListener(Action action)
     {
         endTurnBtn.onClick.AddListener(() => action());
+    }
+
+    public void AddConfirmBtnListener(Action action)
+    {
+        actualEndTurnBtn.onClick.AddListener(() =>
+        {
+            action();
+            HideAskPanel();
+        });
     }
 
     public void EnableButton()
@@ -36,17 +53,40 @@ public class EndTurnButton : MonoBehaviour
         endTurnBtn.interactable = false;
     }
 
-    public void Reset()
+    public void ShowAskPanel()
+    {
+        askPanel.SetActive(true);
+        actualEndTurnBtn.gameObject.SetActive(true);
+        askPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0);
+    }
+
+    private void HideAskPanel()
+    {
+        actualEndTurnBtn.gameObject.SetActive(false);
+        askPanel.transform.DOScale(0, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            askPanel.SetActive(false);
+        });
+    }
+
+    private void OnUpdateCharacterDecision(object obj)
+    {
+        HideAskPanel();
+    }
+
+    public void ResetEndTurn()
     {
         if (image == null)
         {
             image = GetComponent<Image>();
         }
         endTurnBtn.onClick.RemoveAllListeners();
+        actualEndTurnBtn.onClick.RemoveAllListeners();
+        hidePanelBtn.onClick.RemoveAllListeners();
         EndTurnInactive();
+        EventBus.Instance.Unsubscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
     }
 
-    
     #region Effects
 
     public void EndTurnActive()
