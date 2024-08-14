@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +46,8 @@ public class OptionsMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
-        ToogelVideoTabVisibility(true);
-        ToogelAudioTabVisibility(false);
+        ToggleVideoTabVisibility(true);
+        ToggleAudioTabVisibility(false);
     }
 
     #endregion
@@ -61,16 +62,16 @@ public class OptionsMenuUI : MonoBehaviour
         videoButton.onClick.AddListener(() =>
         {
             AudioManager.Instance.PlaySound("Click");
-            ToogelVideoTabVisibility(true);
-            ToogelAudioTabVisibility(false);
+            ToggleVideoTabVisibility(true);
+            ToggleAudioTabVisibility(false);
             });
 
         // Audio Button
         audioButton.onClick.AddListener(() =>
         {
             AudioManager.Instance.PlaySound("Click");
-            ToogelVideoTabVisibility(false);
-            ToogelAudioTabVisibility(true);
+            ToggleVideoTabVisibility(false);
+            ToggleAudioTabVisibility(true);
         });
 
         // Back Button
@@ -170,31 +171,35 @@ public class OptionsMenuUI : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    private void ToogelVideoTabVisibility(bool isVisible)
+    private void ToggleVideoTabVisibility(bool isVisible)
     {
         videoTab.SetActive(isVisible);
 
         if (isVisible)
         {
-            videoButton.GetComponentInChildren<TextMeshProUGUI>().color = new Color(0.88f, 0.72f, 0.12f);
+            videoButton.GetComponentInChildren<TextMeshProUGUI>().color = new Color(1, 0.89f, 0f);
+            videoButton.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.2f).SetEase(Ease.OutBack);
         }
         else
         {
             videoButton.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+            videoButton.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
         }
     }
 
-    private void ToogelAudioTabVisibility(bool isVisible)
+    private void ToggleAudioTabVisibility(bool isVisible)
     {
         audioTab.SetActive(isVisible);
 
         if (isVisible)
         {
-            audioButton.GetComponentInChildren<TextMeshProUGUI>().color = new Color(0.88f, 0.72f, 0.12f);
+            audioButton.GetComponentInChildren<TextMeshProUGUI>().color = new Color(1, 0.89f, 0f);
+            audioButton.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.2f).SetEase(Ease.OutBack);
         }
         else
         {
             audioButton.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+            audioButton.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
         }
     }
 
