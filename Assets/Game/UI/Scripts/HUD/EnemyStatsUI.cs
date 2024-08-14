@@ -9,6 +9,12 @@ public class EnemyStatsUI : StatsUI
     [Header("Enemy")]
     public TextMeshProUGUI textRange;
     public TextMeshProUGUI enemyInfo;
+    private RectTransform rectTransform;
+
+    private void Start()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
 
     public void SetEnemyStats(Enemy_Base enemy)
     {
@@ -25,6 +31,7 @@ public class EnemyStatsUI : StatsUI
         textStatus.text = Config.Instance.GetStatusTypes(enemy).ToString();
 
         gameObject.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
     public void SetObjectStats(TileObject tileObject)
@@ -41,6 +48,7 @@ public class EnemyStatsUI : StatsUI
         //textStatus.text = "";
 
         gameObject.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
     public void Hide()
