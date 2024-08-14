@@ -35,16 +35,6 @@ public class VictoryScreen : Menu
 
     public void OnReturnToMap()
     {
-        // Add seleced skill to the player
-        if (reward.SelectedSkill == null)
-        {
-            Debug.LogError("No skill selected");
-        }
-        else
-        {
-            ActiveSkillCollection.Instance.PlayerAddSkill(reward.SelectedSkill);
-        }
-
         // Save level progress
         GameManager.Instance.CurrentLevelIndex++;
         GameManager.Instance.SaveLoadManager.SaveGame();

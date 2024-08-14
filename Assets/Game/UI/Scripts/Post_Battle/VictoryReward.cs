@@ -9,12 +9,14 @@ public class VictoryReward : MonoBehaviour
     [SerializeField] private Transform upgradePanel;
     private List<ActiveSkillSO> rewardSkills = new List<ActiveSkillSO>();
     private List<SkillRewardCard> rewardCards = new List<SkillRewardCard>();
+    [SerializeField] private ContinueConfirmButton continueConfirm;
 
     private ActiveSkillSO selectedSkill;
     public ActiveSkillSO SelectedSkill => selectedSkill;
 
     public void SpawnCards()
     {
+        continueConfirm.Reset();
         ResetCards();
 
         // Spawn 3 upgrade cards
@@ -84,6 +86,11 @@ public class VictoryReward : MonoBehaviour
             {
                 card.OnUnselected();
             }
+        }
+
+        if (continueConfirm.IsConfirmPanelActive)
+        {
+            continueConfirm.HideConfirmPanel();
         }
     }
 
