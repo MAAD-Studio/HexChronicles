@@ -63,7 +63,7 @@ public class Enemy_MasterJelly : Jelly_Base
 
     public override bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)
     {
-        foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(characterTile, true))
+        /*foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(characterTile, true))
         {
             if (!tile.tileOccupied)
             {
@@ -75,11 +75,10 @@ public class Enemy_MasterJelly : Jelly_Base
 
             if (soloJelly != null)
             {
-                soloJelly.CombineJelly(turnManager);
-                CombineJelly(turnManager);
+                soloJelly.CombineJelly(this, true);
                 break;
             }
-        }
+        }*/
 
         return false;
     }
@@ -98,11 +97,12 @@ public class Enemy_MasterJelly : Jelly_Base
     public void CombineJelly(TurnManager turnManager)
     {
         Vector3 spawnPoint = transform.position;
-        spawnPoint.y += 1.1f;
+        spawnPoint.y += 3.2f;
 
         GameObject newObject = Instantiate(kingJellyPrefab, spawnPoint, Quaternion.identity);
         Enemy_KingJelly newKingJelly = newObject.GetComponent<Enemy_KingJelly>();
         newKingJelly.FindTile();
+        newKingJelly.transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
         turnManager.enemyList.Add(newKingJelly);
         DestroySelfEnemy(turnManager);

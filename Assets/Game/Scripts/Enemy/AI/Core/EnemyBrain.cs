@@ -117,6 +117,11 @@ public class EnemyBrain : MonoBehaviour
 
             foreach (Tile tile in usableTiles)
             {
+                if(tile.tileOccupied || tile.tileHasObject)
+                {
+                    continue;
+                }
+
                 int valueOfCombination = enemy_base.CalculateMovementValue(tile, enemy_base, turnManager, currentClosest);
 
                 bool checkAttacks = false;
@@ -254,7 +259,7 @@ public class EnemyBrain : MonoBehaviour
                 enemyAttackArea.DestroySelf();
                 while (enemy_base.FollowUpEffect(enemyAttackArea, turnManager))
                 {
-                    yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);
+                    yield return null;
                 }
 
                 yield return new WaitForSeconds(0.5f / GameManager.Instance.GameSpeed);

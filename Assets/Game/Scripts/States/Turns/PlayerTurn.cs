@@ -78,6 +78,8 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     public bool preventPhaseBackUp = false;
     public bool preventAttack = false;
 
+    private List<Character> selectableCharacters = new List<Character>();
+
     #endregion
 
     #region UnityMethods
@@ -187,6 +189,18 @@ public class PlayerTurn : MonoBehaviour, StateInterface
     #endregion
 
     #region CustomMethods
+
+    private void ConfirmSelectableCharacters()
+    {
+        selectableCharacters.Clear();
+        foreach (Character character in turnManager.characterList)
+        {
+            if (!character.hasMadeDecision)
+            {
+                selectableCharacters.Add(character);
+            }
+        }
+    }
 
     public void UndoAction()
     {
@@ -323,6 +337,34 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             GameManager.Instance.DecreaseGameSpeed();
         }
+
+        if(Input.GetKeyDown(KeyCode.Space) && selectedCharacter != null && allowSelection)
+        {
+            cameraController.MoveToTargetPosition(selectedCharacter.transform.position, true);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Tab) && allowSelection)
+        {
+            ConfirmSelectableCharacters();
+
+            if(selectableCharacters.Count > 0)
+            {
+                if (selectedCharacter == null)
+                {
+                    GrabCharacter(selectableCharacters[0]);
+                }
+                else
+                {
+                    int index = selectableCharacters.FindIndex(i => i == selectedCharacter);
+                    index++;
+                    if (index >= selectableCharacters.Count)
+                    {
+                        index = 0;
+                    }
+                    GrabCharacter(selectableCharacters[index]);
+                }
+            }
+        }
     }
 
     public void MoveBackAPhase()
@@ -350,7 +392,6 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         {
             if (phase == TurnEnums.PlayerPhase.Movement)
             {
-                cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
                 Tile.DestroyTileVFX(selectedCharacter.elementType);
                 if (selectedCharacter.characterTile.tileData.tileType == ElementType.Base)
                 {
@@ -598,12 +639,12 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             {
                 if (selectedCharacter == null)
                 {
-                    GrabCharacter();
+                    GrabCharacter(currentTile.characterOnTile);
                 }
                 else if (character != selectedCharacter)
                 {
                     ResetBoard();
-                    GrabCharacter();
+                    GrabCharacter(currentTile.characterOnTile);
                     phase = TurnEnums.PlayerPhase.Movement;
                     EventBus.Instance.Publish(new OnMovementPhase());
                 }
@@ -615,14 +656,14 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         }
     }
 
-    private void GrabCharacter()
+    private void GrabCharacter(Character character)
     {
         if(turnManager.isTutorial && turnManager.disablePlayers)
         {
             return;
         }
 
-        selectedCharacter = currentTile.characterOnTile;
+        selectedCharacter = character;
         selectedCharacter.characterTile.ChangeTileColor(TileEnums.TileMaterial.selectedChar);
         cameraController.MoveToTargetPosition(selectedCharacter.transform.position, false);
 

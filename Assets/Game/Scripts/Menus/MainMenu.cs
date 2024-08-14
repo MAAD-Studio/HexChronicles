@@ -76,6 +76,7 @@ public class MainMenu : Menu
 
         SceneLoader.Instance.OnScenesUnLoadedEvent += AllScenesUnloaded;
         SceneLoader.Instance.UnLoadAllLoadedScenes();
+
     }
     
     private void AllScenesUnloaded()

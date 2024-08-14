@@ -847,6 +847,10 @@ public class Character : MonoBehaviour
             FinalizeTileChoice(hit.transform.GetComponent<Tile>());
             return;
         }
+        else
+        {
+            Debug.Log("FAILED TO FIND ANY TILE TO STAND ON");
+        }
     }
 
     //Starts the process of Moving and Attacking with the Character
