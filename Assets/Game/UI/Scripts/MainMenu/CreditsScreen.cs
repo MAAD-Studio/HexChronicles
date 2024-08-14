@@ -7,7 +7,7 @@ public class CreditsScreen : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private GameObject[] pages;
 
-    private void Start()
+    public void Initialize()
     {
         gameObject.SetActive(false);
         foreach (GameObject page in pages)
