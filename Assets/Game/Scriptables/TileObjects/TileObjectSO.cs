@@ -11,4 +11,6 @@ public class TileObjectSO : ScriptableObject
     public float health;
     public float defense;
     public GameObject hitMarker;
+
+    public AudioSO SFX;
 }

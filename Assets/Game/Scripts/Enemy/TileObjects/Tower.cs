@@ -129,6 +129,8 @@ public class Tower : Spawner
                 }
             }
 
+            AudioManager.Instance.PlaySound(tileObjectData.SFX);
+
             foreach (Tile tile in tilesToColor)
             {
                 tile.ChangeTileEffect(TileEnums.TileEffects.towerAttack, false);

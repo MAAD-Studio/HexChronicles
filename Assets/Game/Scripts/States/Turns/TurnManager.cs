@@ -296,11 +296,13 @@ public class TurnManager : MonoBehaviour
 
     public void Victory()
     {
+        AudioManager.Instance.PlaySound("Victory");
         LevelVictory?.Invoke();
     }
 
     private void Defeat()
     {
+        AudioManager.Instance.PlaySound("Defeat");
         LevelDefeat?.Invoke();
     }
 
