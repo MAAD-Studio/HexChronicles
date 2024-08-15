@@ -377,6 +377,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (selectedTileObject != null)
         {
             selectedTileObject = null;
+            AudioManager.Instance.PlaySound("DeSelect");
             AttackPreviewer.Instance.ClearAttackArea();
             return;
         }
@@ -384,6 +385,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         if (selectedEnemy != null)
         {
             selectedEnemy = null;
+            AudioManager.Instance.PlaySound("DeSelect");
             AttackPreviewer.Instance.ClearAttackArea();
             return;
         }
@@ -398,6 +400,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     selectedCharacter.DestroyTileVFX();
                 }
                 FullReset();
+                AudioManager.Instance.PlaySound("DeSelect");
             }
             else if (phase == TurnEnums.PlayerPhase.Attack)
             {
@@ -558,15 +561,18 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             if (selectedEnemy == null)
             {
                 GrabEnemy((Enemy_Base)character);
+                AudioManager.Instance.PlaySound("EnemySelect");
             }
             else if(selectedEnemy != character)
             {
                 AttackPreviewer.Instance.ClearAttackArea();
                 GrabEnemy((Enemy_Base)character);
+                AudioManager.Instance.PlaySound("EnemySelect");
             }
             else
             {
                 selectedEnemy = null;
+                AudioManager.Instance.PlaySound("DeSelect");
                 AttackPreviewer.Instance.ClearAttackArea();
             }
         }
@@ -596,15 +602,18 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             if(selectedTileObject == null)
             {
                 GrabTileObject();
+                AudioManager.Instance.PlaySound("EnemySelect");
             }
             else if(selectedTileObject != currentTile.objectOnTile)
             {
                 AttackPreviewer.Instance.ClearAttackArea();
                 GrabTileObject();
+                AudioManager.Instance.PlaySound("EnemySelect");
             }
             else
             {
                 selectedTileObject = null;
+                AudioManager.Instance.PlaySound("DeSelect");
                 AttackPreviewer.Instance.ClearAttackArea();
             }
         }
@@ -640,11 +649,13 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 if (selectedCharacter == null)
                 {
                     GrabCharacter(currentTile.characterOnTile);
+                    AudioManager.Instance.PlaySound("Select");
                 }
                 else if (character != selectedCharacter)
                 {
                     ResetBoard();
                     GrabCharacter(currentTile.characterOnTile);
+                    AudioManager.Instance.PlaySound("Select");
                     phase = TurnEnums.PlayerPhase.Movement;
                     EventBus.Instance.Publish(new OnMovementPhase());
                 }
@@ -652,6 +663,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
             else
             {
                 MouseTip.Instance.ShowTip(Input.mousePosition, "This hero can't move or attack anymore in this turn", true);
+                AudioManager.Instance.PlaySound("DeSelect");
             }
         }
     }

@@ -32,6 +32,7 @@ public class Status
         {
             case StatusTypes.Burning:
                 character.TakeDamage(1 + damageAddOn, ElementType.Poison);
+                AudioManager.Instance.PlaySound("Burn");
                 break;
 
             case StatusTypes.Bound:

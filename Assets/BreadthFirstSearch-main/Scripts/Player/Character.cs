@@ -636,6 +636,19 @@ public class Character : MonoBehaviour
         ShowEffect(status);
         statusList.Add(status);
 
+        if(status.statusType == Status.StatusTypes.Burning)
+        {
+            AudioManager.Instance.PlaySound("Burn");
+        }
+        else if(status.statusType == Status.StatusTypes.Wet)
+        {
+            AudioManager.Instance.PlaySound("Wet");
+        }
+        else if(status.statusType == Status.StatusTypes.Bound)
+        {
+            AudioManager.Instance.PlaySound("Bind");
+        }
+
         UpdateStatus?.Invoke();
     }
 
@@ -737,6 +750,8 @@ public class Character : MonoBehaviour
         DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
         damageText.ShowDamage(damage);
 
+        AudioManager.Instance.PlaySound("Damage");
+
         UpdateHealthBar?.Invoke();
     }
 
@@ -780,6 +795,8 @@ public class Character : MonoBehaviour
             StartDeathVFX();
             Invoke("Destroy", 1f);
         }
+
+        AudioManager.Instance.PlaySound("Death");
 
         DestroyTileVFX();
     }
@@ -1001,7 +1018,7 @@ public class Character : MonoBehaviour
                 {
                     PerformBasicAttack(enemiesHit);
 
-                    if(!audioPlayed)
+                    if(!audioPlayed && enemiesHit.Count > 0)
                     {
                         Hero hero = (Hero)this;
                         AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
@@ -1025,7 +1042,7 @@ public class Character : MonoBehaviour
                 {
                     PerformBasicAttack(heroesHit);
 
-                    if (!audioPlayed)
+                    if (!audioPlayed && heroesHit.Count > 0)
                     {
                         Hero hero = (Hero)this;
                         AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
@@ -1043,7 +1060,7 @@ public class Character : MonoBehaviour
             {
                 PerformBasicAttackObjects(objectsHit);
 
-                if (!audioPlayed)
+                if (!audioPlayed && objectsHit.Count > 0)
                 {
                     Hero hero = (Hero)this;
                     AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);

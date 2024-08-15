@@ -96,6 +96,8 @@ public class Enemy_TNT : Enemy_Base
 
             //TemporaryMarker.GenerateMarker(enemySO.attributes.hitMarker, tile.transform.position, 2f, 0.5f);
         }
+
+        AudioManager.Instance.PlaySound("Explosion");
     }
 
     #endregion

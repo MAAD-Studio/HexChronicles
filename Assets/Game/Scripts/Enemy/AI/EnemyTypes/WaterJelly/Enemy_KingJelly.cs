@@ -91,6 +91,8 @@ public class Enemy_KingJelly : Jelly_Base
             potentialTiles.Remove(potentialTiles[choice]);
         }
 
+        AudioManager.Instance.PlaySound("KingSplit");
+
         base.Died();
     }
 

@@ -13,7 +13,7 @@ public class AudioSO : ScriptableObject
     public AudioClip clip;
 
     [Tooltip("Volume level of the audio clip. Range: 0.0 to 1.0.")]
-    [Range(0f, 2f)]
+    [Range(0f, 100f)]
     public float volume = 1f;
 
     [Tooltip("Pitch level of the audio clip. Range: 0.1 to 3.0.")]
