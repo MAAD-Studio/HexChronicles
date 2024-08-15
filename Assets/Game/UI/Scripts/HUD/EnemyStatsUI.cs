@@ -11,7 +11,7 @@ public class EnemyStatsUI : StatsUI
     public TextMeshProUGUI enemyInfo;
     private RectTransform rectTransform;
 
-    private void Start()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
     }

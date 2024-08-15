@@ -27,7 +27,7 @@ public class TileInfo : MonoBehaviour
     [TextArea(3, 10)]
     [SerializeField] private string sporeStormExplanation;
 
-    private void Start()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
     }
