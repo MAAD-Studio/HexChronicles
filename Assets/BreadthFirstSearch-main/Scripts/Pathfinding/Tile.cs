@@ -100,10 +100,6 @@ public class Tile : MonoBehaviour
                 tileRenderer.material = tileData.baseMaterial;
                 break;
 
-            case TileEnums.TileMaterial.path:
-                tileRenderer.material = tileData.pathMaterial;
-                break;
-
             case TileEnums.TileMaterial.selectedChar:
                 tileRenderer.material = tileData.selectedCharMaterial;
                 break;
@@ -128,6 +124,10 @@ public class Tile : MonoBehaviour
 
                 case TileEnums.TileTops.highlight:
                     topRenderer.material = tileData.highlightMaterial;
+                    break;
+
+                case TileEnums.TileTops.Path:
+                    topRenderer.material = tileData.pathMaterial;
                     break;
             }
         }

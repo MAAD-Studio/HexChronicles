@@ -141,6 +141,8 @@ public class Enemy_Gangsta : Enemy_Base
         Destroy(vfx, 3f);
 
         character.TakeDamage(attackDamage, elementType);
+ 
+        AudioManager.Instance.PlaySound(enemySO.attributes.basicAttackSFX);
 
         TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);
         TemporaryMarker.GenerateMarker(followUpMarker, character.transform.position, 4f, 0.5f);

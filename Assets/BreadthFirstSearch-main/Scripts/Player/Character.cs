@@ -198,18 +198,6 @@ public class Character : MonoBehaviour
                 {
                     charactersToHit.Add(tile.characterOnTile);
                 }
-
-                if(characterType == TurnEnums.CharacterType.Player)
-                {
-                    if(thisHero != null)
-                    {
-                        TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
-                    }
-                    else
-                    {
-                        TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
-                    }
-                }
             }
             ApplyStatusAttackArea(charactersToHit);
             MouseTip.Instance.ShowTip(transform.position, $"AOE Burn damage", false);
@@ -904,7 +892,7 @@ public class Character : MonoBehaviour
 
                 foreach (Tile tile in tilesInPath)
                 {
-                    tile.ChangeTileColor(TileEnums.TileMaterial.path);
+                    tile.ChangeTileTop(TileEnums.TileTops.Path, true);
                 }
 
                 Vector3 nextTilePosition = path[step].transform.position;
@@ -932,7 +920,7 @@ public class Character : MonoBehaviour
                 }
 
                 tilesInPath.Remove(path[step]);
-                path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+                path[step].ChangeTileTop(TileEnums.TileTops.Path, false);
 
                 step++;
 
@@ -951,7 +939,7 @@ public class Character : MonoBehaviour
                 {
                     continue;
                 }
-                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+                tile.ChangeTileTop(TileEnums.TileTops.Path, false);
             }
 
             characterTile = null;
@@ -997,6 +985,8 @@ public class Character : MonoBehaviour
             List<Character> heroesHit = new List<Character>();
             List<TileObject> objectsHit = attackAreaPrefab.ObjectsHit();
 
+            bool audioPlayed = false;
+
             if(attackAreaPrefab.hitsEnemies)
             {
                 enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
@@ -1007,6 +997,13 @@ public class Character : MonoBehaviour
                 else
                 {
                     PerformBasicAttack(enemiesHit);
+
+                    if(!audioPlayed)
+                    {
+                        Hero hero = (Hero)this;
+                        AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                        audioPlayed = true;
+                    }
                 }
 
                 foreach(Character enemy in enemiesHit)
@@ -1024,6 +1021,13 @@ public class Character : MonoBehaviour
                 else
                 {
                     PerformBasicAttack(heroesHit);
+
+                    if (!audioPlayed)
+                    {
+                        Hero hero = (Hero)this;
+                        AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                        audioPlayed = true;
+                    }
                 }
 
                 foreach (Character hero in heroesHit)
@@ -1035,6 +1039,12 @@ public class Character : MonoBehaviour
             if (attackAreaPrefab.hitsTileObjects)
             {
                 PerformBasicAttackObjects(objectsHit);
+
+                if (!audioPlayed)
+                {
+                    Hero hero = (Hero)this;
+                    AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                }
             }
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);

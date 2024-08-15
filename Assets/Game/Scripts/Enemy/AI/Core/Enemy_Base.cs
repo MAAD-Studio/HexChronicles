@@ -95,11 +95,15 @@ public class Enemy_Base : Character, EnemyInterface
         {
             charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Player);
             PerformBasicAttack(charactersToCheck);
+
+            AudioManager.Instance.PlaySound(enemySO.attributes.basicAttackSFX);
         }
         else
         {
             charactersToCheck = attackArea.CharactersHit(TurnEnums.CharacterType.Enemy);
             PerformBasicAttack(charactersToCheck);
+
+            AudioManager.Instance.PlaySound(enemySO.attributes.basicAttackSFX);
         }
 
         foreach (Character character in charactersToCheck)

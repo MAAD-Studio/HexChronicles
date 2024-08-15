@@ -19,4 +19,7 @@ public class ActiveSkillSO : ScriptableObject
     public int skillEffectValue;
 
     public Status status = new Status();
+
+    [Header("SFX")]
+    public AudioSO attackSFK;
 }

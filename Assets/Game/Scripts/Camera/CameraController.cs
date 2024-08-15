@@ -112,10 +112,7 @@ public class CameraController : MonoBehaviour
      */
     private void CheckKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad0))
-        {
-            targetPosition = defaultPosition;
-        }
+        
     }
 
     /*
