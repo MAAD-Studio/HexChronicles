@@ -122,6 +122,9 @@ public class Character : MonoBehaviour
     public virtual void ReleaseActiveSkill(List<Character> targets)
     {
         animator.SetTrigger("skill");
+
+        Hero hero = (Hero)this;
+        AudioManager.Instance.PlaySound(hero.heroSO.activeSkillSO.attackSFK);
     }
 
     public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
