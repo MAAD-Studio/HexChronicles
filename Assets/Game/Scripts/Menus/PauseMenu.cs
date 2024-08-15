@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
+using DG.Tweening;
 
 public class PauseMenu : Menu
 {
     public MenuClassifier hudMenuClassifier;
     [SerializeField] private GameObject normalPanel;
     [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private OptionsMenuUI optionsMenu;
 
     public static UnityEvent EndLevel = new UnityEvent();
 
@@ -26,6 +24,7 @@ public class PauseMenu : Menu
             tutorialPanel.SetActive(false);
             normalPanel.SetActive(true);
         }
+        optionsMenu.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -51,6 +50,11 @@ public class PauseMenu : Menu
 
         EndBattle();
         GameManager.Instance.LoadCurrentLevel();
+    }
+
+    public void ShowOptions()
+    {
+        optionsMenu.gameObject.SetActive(true);
     }
 
     public void OnReturnToMainMenu()
