@@ -144,6 +144,14 @@ public class Config : Singleton<Config>
                 {
                     statusList.Add(characterUIConfig.bound);
                 }
+                else if (status.statusType == Status.StatusTypes.AttackBoost)
+                {
+                    statusList.Add(characterUIConfig.attackBoost);
+                }
+                else if (status.statusType == Status.StatusTypes.MovementReduction)
+                {
+                    statusList.Add(characterUIConfig.movementReduction);
+                }
             }
             return statusList;
         }
@@ -173,6 +181,14 @@ public class Config : Singleton<Config>
         {
             return characterUIConfig.shield;
         }
+        else if (status.statusType == Status.StatusTypes.AttackBoost)
+        {
+            return characterUIConfig.attackBoost;
+        }
+        else if (status.statusType == Status.StatusTypes.MovementReduction)
+        {
+            return characterUIConfig.movementReduction;
+        }
         return null;
     }
 
@@ -197,6 +213,14 @@ public class Config : Singleton<Config>
         else if (status.statusType == Status.StatusTypes.Shield)
         {
             return characterUIConfig.shieldDetail;
+        }
+        else if (status.statusType == Status.StatusTypes.MovementReduction)
+        {
+            return characterUIConfig.movementReductionDetail;
+        }
+        else if (status.statusType == Status.StatusTypes.AttackBoost)
+        {
+            return characterUIConfig.attackBoostDetail;
         }
         return null;
     }
