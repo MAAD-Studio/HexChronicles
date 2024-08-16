@@ -1967,7 +1967,7 @@ MonoBehaviour:
     description: Restores 4 HP
     keywords:
     - keyword: Restores
-      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
+      color: {r: 0.3484336, g: 0.8490566, b: 0.37089747, a: 1}
       bold: 1
       italic: 0
   waterTileDebuff:
@@ -1979,83 +1979,79 @@ MonoBehaviour:
 '
     keywords:
     - keyword: 2 turns
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: Wet
-      color: {r: 0, g: 0.23529412, b: 0.54901963, a: 1}
+      color: {r: 0, g: 0.47993517, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: -1 Movement
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 0
       italic: 0
     - keyword: 3 turns
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: -1 HP
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 0
       italic: 0
     - keyword: -2 Movement
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 0
       italic: 0
   fireTileBuff:
     description: 'AOE applies burn status to enemies within 2 tiles for 2 turns '
     keywords:
     - keyword: AOE
-      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
+      color: {r: 0.3484336, g: 0.8490566, b: 0.37089747, a: 1}
       bold: 1
       italic: 0
     - keyword: burn
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
       italic: 0
     - keyword: 2 turns
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
-      bold: 0
+      color: {r: 1, g: 1, b: 1, a: 1}
+      bold: 1
       italic: 0
   fireTileDebuff:
-    description: 'If on tile for 2 turns: Applies burn effect, -1 HP
+    description: 'If on tile for 2 turns: Applies burn effect of -1 HP per turn
 
-      3 turns:
-      Full burning, -1 HP damage over time for 2 turns'
+      3
+      turns: Full burning, -1 HP damage over time for 2 turns'
     keywords:
     - keyword: 2 turns
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: 'burn '
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
       italic: 0
     - keyword: -1 HP
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 0
       italic: 0
     - keyword: 3 turns
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: -1 HP
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
-      italic: 0
-    - keyword: damage over time
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
-      bold: 0
       italic: 0
   grassTileBuff:
     description: Got a Haste status, increase movement by +2 next turn
     keywords:
     - keyword: increase
-      color: {r: 0, g: 0.6117647, b: 0.02745098, a: 1}
+      color: {r: 0.3484336, g: 0.8490566, b: 0.37089747, a: 1}
       bold: 1
       italic: 0
     - keyword: +2
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
   grassTileDebuff:
@@ -2063,34 +2059,34 @@ MonoBehaviour:
       and takes +2 damage'
     keywords:
     - keyword: more than 1 turn
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
     - keyword: bind
-      color: {r: 0, g: 0.32156864, b: 0.015686275, a: 1}
+      color: {r: 0.3484336, g: 0.8490566, b: 0.37089747, a: 1}
       bold: 1
       italic: 0
     - keyword: can't move
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
       italic: 0
     - keyword: takes +2 damage
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
       italic: 0
   poisonTileDebuff:
     description: Lose 1HP per tile while walking over
     keywords:
     - keyword: Lose 1HP
-      color: {r: 0.6509804, g: 0, b: 0.07450981, a: 1}
+      color: {r: 1, g: 0.14117648, b: 0, a: 1}
       bold: 1
       italic: 0
     - keyword: per tile
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 0
       italic: 0
     - keyword: walking over
-      color: {r: 0.16078432, g: 0.16078432, b: 0.16078432, a: 1}
+      color: {r: 1, g: 1, b: 1, a: 1}
       bold: 1
       italic: 0
 --- !u!1 &7448955105249341362
@@ -3271,10 +3267,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1701042130147638738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1977435378196486738, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3309,18 +3301,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5911664542650538388, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5926423032734491982, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6290651608863566510, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7100042923432756370, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
-      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7608265586771235074, guid: 533f992b591f67540aaf7ae42ead4a32, type: 3}
