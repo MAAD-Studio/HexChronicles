@@ -228,14 +228,32 @@ MonoBehaviour:
   weatherTitle: {fileID: 6730086561307395070}
   weatherExplanation: {fileID: 1078634699744253219}
   rainColor: {r: 0.23529412, g: 0.6039216, b: 0.65882355, a: 1}
-  rainExplanation: Characters in rain will get wet status applied, and will have
-    -1 movement in the next turn
+  rainExplanation: 'Weather affects both characters and tiles
+
+
+    A wet status
+    effect is applied to all grass and fire characters, fire characters also take
+    -1 HP damage
+
+    Water characters gets 1 HP health restored'
   heatWaveColor: {r: 0.68235296, g: 0.30588236, b: 0.15294118, a: 1}
-  heatWaveExplanation: Characters in heat wave will get burn status applied, and
-    will take -1 HP damage in the next turn
+  heatWaveExplanation: 'Weather affects both characters and tiles
+
+
+    A burn status
+    effect is applied to all water and grass characters, grass characters also take
+    -1 HP damage
+
+    Fire characters gets +1 attack boost'
   sporeStormColor: {r: 0.21568628, g: 0.65882355, b: 0.16470589, a: 1}
-  sporeStormExplanation: Characters in spore storm will get bnid status applied and
-    will have -1 movement in the next turn
+  sporeStormExplanation: 'Weather affects both characters and tiles
+
+
+    A bind
+    status effect is applied to all fire and water characters, water characters also
+    take -1 HP damage
+
+    Grass characters gets +1 movement bonus'
   isWeather: 0
 --- !u!114 &4682903680550413316
 MonoBehaviour:

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static TileEnums;
 
 public class TileInfo : MonoBehaviour
 {
@@ -19,13 +20,29 @@ public class TileInfo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI weatherTitle;
     [SerializeField] private TextMeshProUGUI weatherExplanation;
 
-    [Header("Weather Specific")]
-    [TextArea(3, 10)]
-    [SerializeField] private string rainExplanation;
-    [TextArea(3, 10)]
-    [SerializeField] private string heatWaveExplanation;
-    [TextArea(3, 10)]
-    [SerializeField] private string sporeStormExplanation;
+    [Header("Rain Specific")]
+    [TextArea(2, 10)]
+    [SerializeField] private string rainOnFireTile;
+    [TextArea(2, 10)]
+    [SerializeField] private string rainOnGrassTile; 
+    [TextArea(2, 10)]
+    [SerializeField] private string rainOnWaterTile;
+
+    [Header("Heat Wave Specific")]
+    [TextArea(2, 10)]
+    [SerializeField] private string heatWaveOnFireTile;
+    [TextArea(2, 10)]
+    [SerializeField] private string heatWaveOnGrassTile;
+    [TextArea(2, 10)]
+    [SerializeField] private string heatWaveOnWaterTile;
+
+    [Header("Spore Storm Specific")]
+    [TextArea(2, 10)]
+    [SerializeField] private string sporeStormOnFireTile;
+    [TextArea(2, 10)]
+    [SerializeField] private string sporeStormOnGrassTile;
+    [TextArea(2, 10)]
+    [SerializeField] private string sporeStormOnWaterTile;
 
     private void Awake()
     {
@@ -46,7 +63,7 @@ public class TileInfo : MonoBehaviour
 
         if (tile.underWeatherAffect)
         {
-            SetWeatherInfo(tile.weatherOnTile);
+            SetWeatherInfo(tile.weatherOnTile, tile.tileData.tileType);
         }
         else
         {
@@ -56,7 +73,7 @@ public class TileInfo : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
-    private void SetWeatherInfo(WeatherType weatherOnTile)
+    private void SetWeatherInfo(WeatherType weatherOnTile, ElementType tileType)
     {
         weatherPanel.SetActive(true);
         weatherIcon.sprite = Config.Instance.GetWeatherSprite(weatherOnTile);
@@ -64,15 +81,60 @@ public class TileInfo : MonoBehaviour
         {
             case WeatherType.rain:
                 weatherTitle.text = "Raining Here";
-                weatherExplanation.text = rainExplanation;
+                if (tileType == ElementType.Fire)
+                {
+                    weatherExplanation.text = rainOnFireTile;
+                }
+                else if (tileType == ElementType.Grass)
+                {
+                    weatherExplanation.text = rainOnGrassTile;
+                }
+                else if (tileType == ElementType.Water)
+                {
+                    weatherExplanation.text = rainOnWaterTile;
+                }
+                else
+                {
+                    weatherExplanation.text = "";
+                }
                 break;
             case WeatherType.sporeStorm:
                 weatherTitle.text = "Spore Storm Here";
-                weatherExplanation.text = sporeStormExplanation;
+                if (tileType == ElementType.Fire)
+                {
+                    weatherExplanation.text = sporeStormOnFireTile;
+                }
+                else if (tileType == ElementType.Grass)
+                {
+                    weatherExplanation.text = sporeStormOnGrassTile;
+                }
+                else if (tileType == ElementType.Water)
+                {
+                    weatherExplanation.text = sporeStormOnWaterTile;
+                }
+                else
+                {
+                    weatherExplanation.text = "";
+                }
                 break;
             case WeatherType.heatWave:
                 weatherTitle.text = "Heat Wave Here";
-                weatherExplanation.text = heatWaveExplanation;
+                if (tileType == ElementType.Fire)
+                {
+                    weatherExplanation.text = heatWaveOnFireTile;
+                }
+                else if (tileType == ElementType.Grass)
+                {
+                    weatherExplanation.text = heatWaveOnGrassTile;
+                }
+                else if (tileType == ElementType.Water)
+                {
+                    weatherExplanation.text = heatWaveOnWaterTile;
+                }
+                else
+                {
+                    weatherExplanation.text = "";
+                }
                 break;
         }
     }
