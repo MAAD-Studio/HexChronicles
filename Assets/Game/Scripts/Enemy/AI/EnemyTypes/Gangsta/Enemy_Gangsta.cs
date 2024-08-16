@@ -132,6 +132,8 @@ public class Enemy_Gangsta : Enemy_Base
             return;
         }
 
+        TemporaryMarker.GenerateMarker(followUpText, transform.position, 3f, 0.5f);
+
         transform.LookAt(character.transform.position);
         character.RotateToFaceCharacter(character);
 
@@ -144,8 +146,7 @@ public class Enemy_Gangsta : Enemy_Base
  
         AudioManager.Instance.PlaySound(enemySO.attributes.basicAttackSFX);
 
-        TemporaryMarker.GenerateMarker(followUpText, transform.position, 2f, 0.5f);
-        TemporaryMarker.GenerateMarker(followUpMarker, character.transform.position, 4f, 0.5f);
+        TemporaryMarker.GenerateMarker(followUpMarker, character.transform.position, 4.5f, 0.5f);
     }
 
     #endregion
