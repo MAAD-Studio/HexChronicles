@@ -6,7 +6,7 @@ public class TileReporter_VFXSpawner : TileReporter
 {
     #region Variables
 
-    [SerializeField] private GameObject VFX;
+    [SerializeField] protected GameObject VFX;
 
     #endregion
 
