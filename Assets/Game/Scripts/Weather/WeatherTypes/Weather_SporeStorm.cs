@@ -8,6 +8,7 @@ public class Weather_SporeStorm : Weather_Base
 
     [SerializeField] private int healthDebuff = 1;
     [SerializeField] private Tile grassTilePrefab;
+    [SerializeField] private GameObject bindVFX;
 
     #endregion
 
@@ -45,6 +46,10 @@ public class Weather_SporeStorm : Weather_Base
                 if (adjTile.characterOnTile != null)
                 {
                     ApplyStatusToCharacter(adjTile.characterOnTile, Status.StatusTypes.Bound);
+                    if(bindVFX != null)
+                    {
+                        Destroy(Instantiate(bindVFX, tile.transform.position, Quaternion.identity), 2f);
+                    }
                 }
             }
         }

@@ -739,6 +739,7 @@ public class Character : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
+
             Died();
         }
         else
@@ -786,6 +787,15 @@ public class Character : MonoBehaviour
         FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
         Time.timeScale = 0.5f;
 
+        if (characterType == TurnEnums.CharacterType.Player)
+        {
+            turnManager.characterList.Remove((Hero)this);
+        }
+        else
+        {
+            turnManager.enemyList.Remove((Enemy_Base)this);
+        }
+
         if (animator != null)
         {
             animator.SetTrigger("died");
@@ -793,6 +803,7 @@ public class Character : MonoBehaviour
         else
         {
             StartDeathVFX();
+
             Invoke("Destroy", 1f);
         }
 
