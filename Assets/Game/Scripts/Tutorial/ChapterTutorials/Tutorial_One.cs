@@ -33,6 +33,11 @@ public class Tutorial_One : Tutorial_Base
             return;
         }
 
+        if(endTurnButton == null)
+        {
+            return;
+        }
+
         switch (currentTurn)
         {
             case TutorialTurn.TurnOne:
@@ -75,6 +80,7 @@ public class Tutorial_One : Tutorial_Base
                 DisplayDialogue(turnOneDialogue, 0);
 
                 RegainFullControl();
+                endTurnButton.HideEndTurn();
 
                 internalTutorialStep++;
                 break;
@@ -245,6 +251,7 @@ public class Tutorial_One : Tutorial_Base
 
                 if(dialogueJustEnded)
                 {
+                    EventBus.Instance.Publish(new OnTutorialEnd());
                     turnManager.Victory();
                     internalTutorialStep++;
                 }

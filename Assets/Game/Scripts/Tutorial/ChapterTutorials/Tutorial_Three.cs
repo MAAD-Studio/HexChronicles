@@ -28,6 +28,11 @@ public class Tutorial_Three : Tutorial_Base
             return;
         }
 
+        if (endTurnButton == null)
+        {
+            return;
+        }
+
         switch (currentTurn)
         {
             case TutorialTurn.TurnOne:
@@ -68,6 +73,8 @@ public class Tutorial_Three : Tutorial_Base
                 cameraController.MoveToTargetPosition(fireHero.transform.position, true);
                 DisplayDialogue(turnOneDialogue, 0, 1);
                 RegainFullControl();
+
+                endTurnButton.DisableButton();
 
                 enemyToHit.currentHealth += 1;
                 enemyToHit.UpdateHealthBar?.Invoke();
@@ -160,6 +167,7 @@ public class Tutorial_Three : Tutorial_Base
                 {
                     DisplayDialogue(turnOneDialogue, 4);
                     turnManager.disableEnd = false;
+                    endTurnButton.EnableButton();
                     internalTutorialStep++;
                 }
                 break;
@@ -170,6 +178,7 @@ public class Tutorial_Three : Tutorial_Base
                     RegainFullControl();
                     cameraController.MoveToTargetPosition(fireHero.transform.position, true);
                     DisplayDialogue(turnOneDialogue, 5, 6);
+                    endTurnButton.DisableButton();
                     internalTutorialStep++;
                 }
                 break;
@@ -177,6 +186,7 @@ public class Tutorial_Three : Tutorial_Base
             case 8:
                 if(dialogueJustEnded)
                 {
+                    EventBus.Instance.Publish(new OnTutorialEnd());
                     turnManager.Victory();
                     internalTutorialStep++;
                 }

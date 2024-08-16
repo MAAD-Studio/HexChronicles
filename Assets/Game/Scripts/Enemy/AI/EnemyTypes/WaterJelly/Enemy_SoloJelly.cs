@@ -136,7 +136,7 @@ public class Enemy_SoloJelly : Jelly_Base
         selfDestruct = true;
         if(!isMaster)
         {
-            InitiateArch(combineTarget.transform.position, 2f, 2f);
+            InitiateArch(combineTarget.transform.position, 2f, 2f, (Enemy_KingJelly)combineTarget);
         }
         else
         {

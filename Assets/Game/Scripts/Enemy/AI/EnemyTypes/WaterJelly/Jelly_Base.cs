@@ -15,7 +15,8 @@ public class Jelly_Base : Enemy_Base
     protected Tile settleDownTile = null;
 
     protected bool selfDestruct = false;
-    protected Enemy_MasterJelly targetJelly = null;
+    protected Enemy_MasterJelly targetJellyMaster = null;
+    protected Enemy_KingJelly targetJellyKing = null;
     protected bool archFinished = true;
 
     #endregion
@@ -59,9 +60,13 @@ public class Jelly_Base : Enemy_Base
                     DestroySelfEnemy(turnManager);
                 }
 
-                if(targetJelly != null)
+                if(targetJellyMaster != null)
                 {
-                    targetJelly.CombineJelly(turnManager);
+                    targetJellyMaster.CombineJelly(turnManager);
+                }
+                else if(targetJellyKing != null)
+                {
+                    targetJellyKing.CombineJelly();
                 }
 
                 return;
@@ -100,7 +105,14 @@ public class Jelly_Base : Enemy_Base
 
     public void InitiateArch(Vector3 endPos, float launchspeed, float launchHeight, Enemy_MasterJelly target)
     {
-        targetJelly = target;
+        targetJellyMaster = target;
+
+        InitiateArch(endPos, launchspeed, launchHeight);
+    }
+
+    public void InitiateArch(Vector3 endPos, float launchspeed, float launchHeight, Enemy_KingJelly target)
+    {
+        targetJellyKing = target;
 
         InitiateArch(endPos, launchspeed, launchHeight);
     }

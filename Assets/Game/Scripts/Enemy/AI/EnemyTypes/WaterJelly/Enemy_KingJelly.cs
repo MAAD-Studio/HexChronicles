@@ -21,6 +21,19 @@ public class Enemy_KingJelly : Jelly_Base
 
     #endregion
 
+    #region UnityMethods
+
+    private void Update()
+    {
+        if(characterTile != null && !characterTile.tileOccupied)
+        {
+            characterTile.tileOccupied = true;
+            characterTile.characterOnTile = this;
+        }
+    }
+
+    #endregion
+
     #region InterfaceMethods
 
     public override int CalculateMovementValue(Tile tile, Enemy_Base enemy, TurnManager turnManager, Character closestCharacter)

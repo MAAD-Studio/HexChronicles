@@ -26,6 +26,8 @@ public class Tutorial_Base : MonoBehaviour
 
     public static UnityEvent TutorialFullControl = new UnityEvent();
 
+    public EndTurnButton endTurnButton;
+
     #endregion
 
     #region UnityMethods
@@ -46,6 +48,10 @@ public class Tutorial_Base : MonoBehaviour
         Debug.Assert(cameraController != null, "Tutorial failed to locate a CameraController");
 
         mapTiles = tilesParentObject.GetComponentsInChildren<Tile>().ToList();
+
+        endTurnButton = FindObjectOfType<EndTurnButton>();
+
+        EventBus.Instance.Subscribe<OnTutorialEnd>(TutorialEnded);
     }
 
     #endregion
@@ -57,6 +63,11 @@ public class Tutorial_Base : MonoBehaviour
         if (dialogueManager == null)
         {
             dialogueManager = FindObjectOfType<DialogueManager>();
+        }
+
+        if (endTurnButton == null)
+        {
+            endTurnButton = FindObjectOfType<EndTurnButton>();
         }
     }
 
@@ -160,6 +171,17 @@ public class Tutorial_Base : MonoBehaviour
         activeData.character = character;
         activeData.enable =enable;
         EventBus.Instance.Publish(activeData);
+    }
+
+    protected void TutorialEnded(object obj)
+    {
+        EventBus.Instance.Unsubscribe<OnTutorialEnd>(TutorialEnded);
+
+        if (endTurnButton != null)
+        {
+            endTurnButton.ShowEndTurn();
+            endTurnButton.EnableButton();
+        }
     }
 
     #endregion

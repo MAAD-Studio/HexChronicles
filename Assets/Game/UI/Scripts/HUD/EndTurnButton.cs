@@ -70,11 +70,13 @@ public class EndTurnButton : MonoBehaviour
     public void HideEndTurn()
     {
         endTurnBtn.gameObject.SetActive(false);
+        endTurnVFX.gameObject.SetActive(false);
     }
 
     public void ShowEndTurn()
     {
         endTurnBtn.gameObject.SetActive(true);
+        endTurnVFX.gameObject.SetActive(true);
     }
 
     public void ShowAskPanel()
