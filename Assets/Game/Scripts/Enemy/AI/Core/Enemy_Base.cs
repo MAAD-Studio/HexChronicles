@@ -114,14 +114,20 @@ public class Enemy_Base : Character, EnemyInterface
         foreach (Character character in charactersToCheck)
         {
             transform.LookAt(character.transform.position);
-
-            // Spawn attack vfx
-            GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
-            vfx.transform.forward = transform.forward;
-            Destroy(vfx, 3f);
-
-            character.TakeDamage(attackDamage, elementType);
+            StartCoroutine(AttackCoroutine(character));
         }
+    }
+
+    private IEnumerator AttackCoroutine(Character character)
+    {
+        yield return new WaitForSeconds(0.6f);
+
+        // Spawn attack vfx
+        GameObject vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
+        vfx.transform.forward = transform.forward;
+        Destroy(vfx, 3f);
+
+        character.TakeDamage(attackDamage, elementType);
     }
 
     public virtual bool FollowUpEffect(AttackArea attackArea, TurnManager turnManager)

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -151,7 +152,8 @@ public class TutorialHUD : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             enemyTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(enemyTurnMessage));
+            enemyTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(enemyTurnMessage)));
         }
 
         endTurn.DisableButton();
@@ -168,7 +170,8 @@ public class TutorialHUD : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             playerTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(playerTurnMessage));
+            playerTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(playerTurnMessage)));
         }
 
         endTurn.EnableButton();
@@ -183,8 +186,8 @@ public class TutorialHUD : MonoBehaviour
 
     private IEnumerator HideTurnMessage(GameObject turnMessage)
     {
-        yield return new WaitForSeconds(0.5f);
-        turnMessage.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.3f);
+        turnMessage.transform.DOScale(0.5f, 0.3f).SetEase(Ease.InBack).OnComplete(() => turnMessage.SetActive(false));
     }
 
     private void OnAttackPhase(object obj)

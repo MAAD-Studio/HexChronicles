@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -191,7 +192,8 @@ public class HUDInfo : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             enemyTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(enemyTurnMessage));
+            enemyTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() =>StartCoroutine(HideTurnMessage(enemyTurnMessage)));
         }
 
         currentTurn.text = "ENEMY TURN";
@@ -210,7 +212,8 @@ public class HUDInfo : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             playerTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(playerTurnMessage));
+            playerTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(playerTurnMessage)));
         }
 
         turnIndicator.SetCurrentTurn(turnManager.TurnNumber);
@@ -229,8 +232,8 @@ public class HUDInfo : MonoBehaviour
 
     private IEnumerator HideTurnMessage(GameObject turnMessage)
     {
-        yield return new WaitForSeconds(0.5f);
-        turnMessage.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.3f);
+        turnMessage.transform.DOScale(0.5f, 0.3f).SetEase(Ease.InBack).OnComplete(() => turnMessage.SetActive(false));
     }
 
     private void OnAttackPhase(object obj)
