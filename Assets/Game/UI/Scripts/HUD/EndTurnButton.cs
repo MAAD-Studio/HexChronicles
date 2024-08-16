@@ -8,11 +8,14 @@ using System;
 public class EndTurnButton : MonoBehaviour
 {
     public Button endTurnBtn;
+    [Header("Effects")]
     [SerializeField] private GameObject endTurnVFX;
+    [SerializeField] private Color highlightColor;
     [SerializeField] private Vector3 scaleUpValue = new Vector3(1.2f, 1.5f, 1.2f);
     [SerializeField] private float scaleUpDuration = 0.6f;
     [SerializeField] private float scaleBackDuration = 0.3f;
 
+    [Header("Confirm Panel")]
     [SerializeField] private GameObject askPanel;
     [SerializeField] private Button actualEndTurnBtn;
     [SerializeField] private Button hidePanelBtn;
@@ -91,7 +94,7 @@ public class EndTurnButton : MonoBehaviour
 
     public void EndTurnActive()
     {
-        image.color = new Color(1, 0.88f, 0, 1);
+        image.color = highlightColor;
         endTurnVFX.SetActive(true);
         shouldScale = true;
         ScaleUp(endTurnVFX);

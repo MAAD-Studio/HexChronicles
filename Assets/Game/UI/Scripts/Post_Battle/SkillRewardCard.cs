@@ -38,6 +38,8 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         skillshape.sprite = skill.skillshape;
         skillName.text = skill.skillName;
         description.text = skill.description.DisplayKeywordDescription();
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
     }
 
     private void OnSelected()
