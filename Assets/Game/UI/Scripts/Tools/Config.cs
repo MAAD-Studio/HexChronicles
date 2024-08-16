@@ -259,10 +259,17 @@ public class Config : Singleton<Config>
         if (character.statusList.Count != 0)
         {
             string statusList = "";
-            foreach (var status in character.statusList)
+
+            for (int i = 0; i < character.statusList.Count; i++)
             {
-                statusList += status.statusType.ToString() + ", ";
+                statusList += character.statusList[i].statusType.ToString();
+
+                if (i < character.statusList.Count - 1)
+                {
+                    statusList += ", ";
+                }
             }
+            
             return statusList;
         }
 
