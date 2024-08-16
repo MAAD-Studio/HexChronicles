@@ -1069,12 +1069,13 @@ public class Character : MonoBehaviour
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
 
+            yield return new WaitForSeconds(1f);
+
             if (characterTile.tileData.tileType == elementType)
             {
                 ApplyBuffCharacter();
             }
 
-            yield return new WaitForSeconds(0.5f);
             attackAreaPrefab.DestroySelf();
         }
 

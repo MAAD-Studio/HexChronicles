@@ -7,6 +7,9 @@ public class AttackVFX : MonoBehaviour
     protected Character target;
     protected System.Action<Character> onHitCallback;
 
+    protected TileObject objectTarget;
+    protected System.Action<TileObject> onHitObjectCallback;
+
     [Header("Use Collision:")]
     [SerializeField] protected bool needCollision = true;
     [SerializeField] protected float destroyAfterCollide = 0.5f;
@@ -26,6 +29,17 @@ public class AttackVFX : MonoBehaviour
         }
     }
 
+    public void InitializeObjectTarget(TileObject objectTarget, System.Action<TileObject> onHitObjectCallback)
+    {
+        this.objectTarget = objectTarget;
+        this.onHitObjectCallback = onHitObjectCallback;
+
+        if (!needCollision)
+        {
+            StartCoroutine(HitObjectCallback());
+        }
+    }
+
     protected IEnumerator HitCallback()
     {
         yield return new WaitForSeconds(callbackWaitTime);
@@ -34,11 +48,24 @@ public class AttackVFX : MonoBehaviour
         Destroy(gameObject, destroyAfterCollide);
     }
 
+    protected IEnumerator HitObjectCallback()
+    {
+        yield return new WaitForSeconds(callbackWaitTime);
+
+        onHitObjectCallback?.Invoke(objectTarget);
+        Destroy(gameObject, destroyAfterCollide);
+    }
+
     protected virtual void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == target.gameObject)
+        if (target != null && other.gameObject == target.gameObject)
         {
             onHitCallback?.Invoke(target);
+            Destroy(gameObject, destroyAfterCollide);
+        }
+        else if (objectTarget != null && other.gameObject == objectTarget.gameObject)
+        {
+            onHitObjectCallback?.Invoke(objectTarget);
             Destroy(gameObject, destroyAfterCollide);
         }
     }
