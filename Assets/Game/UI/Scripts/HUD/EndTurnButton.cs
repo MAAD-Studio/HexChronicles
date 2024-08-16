@@ -8,6 +8,7 @@ using System;
 public class EndTurnButton : MonoBehaviour
 {
     public Button endTurnBtn;
+
     [Header("Effects")]
     [SerializeField] private GameObject endTurnVFX;
     [SerializeField] private Color highlightColor;
@@ -22,14 +23,22 @@ public class EndTurnButton : MonoBehaviour
 
     private Image image;
     private bool shouldScale = false;
+    private ButtonChangeNotifier notifier;
+
+    private void Awake()
+    {
+        image = GetComponent<Image>();
+        notifier = GetComponent<ButtonChangeNotifier>();
+    }
 
     private void Start()
     {
-        image = GetComponent<Image>();
+        EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
+
         hidePanelBtn.onClick.AddListener(() => HideAskPanel());
+
         askPanel.SetActive(false);
         actualEndTurnBtn.gameObject.SetActive(false);
-        EventBus.Instance.Subscribe<UpdateCharacterDecision>(OnUpdateCharacterDecision);
     }
 
     public void AddEndTurnBtnListener(Action action)
@@ -49,11 +58,23 @@ public class EndTurnButton : MonoBehaviour
     public void EnableButton()
     {
         endTurnBtn.interactable = true;
+        notifier.onButtonChange?.Invoke();
     }
 
     public void DisableButton()
     {
         endTurnBtn.interactable = false;
+        notifier.onButtonChange?.Invoke();
+    }
+
+    public void HideEndTurn()
+    {
+        endTurnBtn.gameObject.SetActive(false);
+    }
+
+    public void ShowEndTurn()
+    {
+        endTurnBtn.gameObject.SetActive(true);
     }
 
     public void ShowAskPanel()

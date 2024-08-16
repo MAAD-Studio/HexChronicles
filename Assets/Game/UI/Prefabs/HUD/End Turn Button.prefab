@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 1442151404352424629}
   - component: {fileID: 8044282098037053513}
   - component: {fileID: 1615619510915113336}
+  - component: {fileID: 8865670048361257311}
   m_Layer: 5
   m_Name: End Turn Button
   m_TagString: Untagged
@@ -364,6 +365,21 @@ MonoBehaviour:
   m_Interactable: 1
   m_TargetGraphic: {fileID: 8044282098037053513}
   m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8865670048361257311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3356558737813333395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431c38f0407b22545b5e3868ba632bc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onButtonChange:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &5263203548665599336
@@ -511,6 +527,7 @@ GameObject:
   - component: {fileID: 4880910754831126934}
   - component: {fileID: 7819102581168960193}
   - component: {fileID: 7216384665147034093}
+  - component: {fileID: 8281889586132179820}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -634,6 +651,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8281889586132179820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6314677883335114425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb3ecd999b10ff458bf042882018e61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notifier: {fileID: 8865670048361257311}
 --- !u!1 &8918938941903816751
 GameObject:
   m_ObjectHideFlags: 0

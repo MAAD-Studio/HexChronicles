@@ -62,6 +62,8 @@ public class HUDInfo : MonoBehaviour
     [SerializeField] private Button undo;
     [SerializeField] private Button fast;
 
+    private ButtonChangeNotifier undoNotifier;
+
     #region Unity Methods
 
     private void Awake()
@@ -312,6 +314,7 @@ public class HUDInfo : MonoBehaviour
         {
             undo.interactable = false;
         }
+        undoNotifier.onButtonChange?.Invoke();
     }
     #endregion
 
@@ -405,6 +408,8 @@ public class HUDInfo : MonoBehaviour
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
         undo.onClick.AddListener(() => playerTurn.UndoAction());
+        undoNotifier = undo.GetComponent<ButtonChangeNotifier>();
+        undoNotifier.onButtonChange?.Invoke();
         question.onClick.AddListener(() => tutorialSummary.FadeIn());
 
         endTurn.AddEndTurnBtnListener(() =>
