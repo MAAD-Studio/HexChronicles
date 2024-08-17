@@ -36,6 +36,9 @@ public class BasicAttributes
     public GameObject fireMarker;
     public GameObject healText;
 
+    [Header("SFX: ")]
+    public AudioSO basicAttackSFX;
+
     /*[Header("Max Upgrade")]
     public float maxHealth = 0;
     public float maxMovementRange = 0;

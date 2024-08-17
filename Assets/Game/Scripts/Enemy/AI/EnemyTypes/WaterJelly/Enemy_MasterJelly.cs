@@ -75,8 +75,7 @@ public class Enemy_MasterJelly : Jelly_Base
 
             if (soloJelly != null)
             {
-                soloJelly.CombineJelly(turnManager);
-                CombineJelly(turnManager);
+                soloJelly.CombineJelly(this, true);
                 break;
             }
         }
@@ -98,17 +97,21 @@ public class Enemy_MasterJelly : Jelly_Base
     public void CombineJelly(TurnManager turnManager)
     {
         Vector3 spawnPoint = transform.position;
-        spawnPoint.y += 1.1f;
+        spawnPoint.y += 3.2f;
 
         GameObject newObject = Instantiate(kingJellyPrefab, spawnPoint, Quaternion.identity);
         Enemy_KingJelly newKingJelly = newObject.GetComponent<Enemy_KingJelly>();
-        newKingJelly.FindTile();
+        newKingJelly.characterTile = characterTile;
+        characterTile.characterOnTile = newKingJelly;
+        newKingJelly.transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
         turnManager.enemyList.Add(newKingJelly);
-        DestroySelfEnemy(turnManager);
 
         Debug.Log("MASTER JELLY HAS COMBINED WITH A SOLO JELLY TO PRODUCE A KING");
         TemporaryMarker.GenerateMarker(combineText, transform.localPosition, 4f, 1f);
+
+        turnManager.enemyList.Remove(this);
+        Destroy(gameObject);
     }
 
     public override Character LikelyTarget()

@@ -26,6 +26,8 @@ public class Tutorial_Base : MonoBehaviour
 
     public static UnityEvent TutorialFullControl = new UnityEvent();
 
+    public EndTurnButton endTurnButton;
+
     #endregion
 
     #region UnityMethods
@@ -41,12 +43,15 @@ public class Tutorial_Base : MonoBehaviour
         Debug.Assert(tutorialManager != null, "Tutorial failed to locate a TutorialManager");
         
         dialogueManager = FindObjectOfType<DialogueManager>();
-        Debug.Assert(dialogueManager != null, "Tutorial failed to locate a DialogueManager");
 
         cameraController = FindObjectOfType<CameraController>();
         Debug.Assert(cameraController != null, "Tutorial failed to locate a CameraController");
 
         mapTiles = tilesParentObject.GetComponentsInChildren<Tile>().ToList();
+
+        endTurnButton = FindObjectOfType<EndTurnButton>();
+
+        EventBus.Instance.Subscribe<OnTutorialEnd>(TutorialEnded);
     }
 
     #endregion
@@ -58,6 +63,11 @@ public class Tutorial_Base : MonoBehaviour
         if (dialogueManager == null)
         {
             dialogueManager = FindObjectOfType<DialogueManager>();
+        }
+
+        if (endTurnButton == null)
+        {
+            endTurnButton = FindObjectOfType<EndTurnButton>();
         }
     }
 
@@ -149,12 +159,29 @@ public class Tutorial_Base : MonoBehaviour
         turnManager.disableEnemies = false;
     }
 
+    protected void AllowSpecificObjectSelection(TileObject tilObj)
+    {
+        turnManager.PlayerTurn.desiredObject = tilObj;
+        turnManager.disableObjects = false;
+    }
+
     protected void ChangeActiveInteractability(Character character, bool enable)
     {
         ChangeActiveInteract activeData = new ChangeActiveInteract();
         activeData.character = character;
         activeData.enable =enable;
         EventBus.Instance.Publish(activeData);
+    }
+
+    protected void TutorialEnded(object obj)
+    {
+        EventBus.Instance.Unsubscribe<OnTutorialEnd>(TutorialEnded);
+
+        if (endTurnButton != null)
+        {
+            endTurnButton.ShowEndTurn();
+            endTurnButton.EnableButton();
+        }
     }
 
     #endregion

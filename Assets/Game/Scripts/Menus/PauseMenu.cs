@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
+using DG.Tweening;
 
 public class PauseMenu : Menu
 {
     public MenuClassifier hudMenuClassifier;
     [SerializeField] private GameObject normalPanel;
     [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private OptionsMenuUI optionsMenu;
 
     public static UnityEvent EndLevel = new UnityEvent();
 
@@ -26,6 +24,7 @@ public class PauseMenu : Menu
             tutorialPanel.SetActive(false);
             normalPanel.SetActive(true);
         }
+        optionsMenu.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -53,9 +52,15 @@ public class PauseMenu : Menu
         GameManager.Instance.LoadCurrentLevel();
     }
 
+    public void ShowOptions()
+    {
+        optionsMenu.gameObject.SetActive(true);
+    }
+
     public void OnReturnToMainMenu()
     {
         Time.timeScale = 1.0f;
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier)?.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -65,6 +70,7 @@ public class PauseMenu : Menu
     public void OnReturnToMap()
     {
         Time.timeScale = 1.0f;
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 
@@ -79,10 +85,12 @@ public class PauseMenu : Menu
 
     public void OnEndTutorial()
     {
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
         mainMenu.OnReturnToMainMenu();
         MenuManager.Instance.HideMenu(menuClassifier);
         GameManager.Instance.CleanActiveScene();
+        EventBus.Instance.Publish(new OnTutorialEnd());
 
         mainMenu.OnSelectTutorial();
     }

@@ -8,6 +8,7 @@ public struct OnEnemyTurn { }
 public struct OnWeatherSpawn { }
 public struct OnWeatherEnded { }
 public struct OnDialogueEnded { }
+public struct OnTutorialEnd { }
 
 public struct ChangeActiveInteract
 {

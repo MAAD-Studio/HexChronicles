@@ -14,8 +14,6 @@ public class Weather_Rain : Weather_Base
 
     private void Start()
     {
-        weatherName = "Rain";
-
         Debug.Assert(waterTilePrefab != null, "Rain Weather hasn't been provided a Water Tile Prefab");
     }
 

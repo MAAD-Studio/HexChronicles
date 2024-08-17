@@ -3,13 +3,13 @@ public class TileEnums
     public enum TileMaterial
     {
         baseMaterial,
-        path,
         selectedChar,
     }
 
     public enum TileTops
     {
         frontier,
+        Path,
         highlight
     }
 

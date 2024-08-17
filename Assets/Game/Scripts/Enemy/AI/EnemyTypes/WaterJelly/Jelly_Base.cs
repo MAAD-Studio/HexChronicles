@@ -14,6 +14,11 @@ public class Jelly_Base : Enemy_Base
     protected bool performLaunch = false;
     protected Tile settleDownTile = null;
 
+    protected bool selfDestruct = false;
+    protected Enemy_MasterJelly targetJellyMaster = null;
+    protected Enemy_KingJelly targetJellyKing = null;
+    protected bool archFinished = true;
+
     #endregion
 
     #region UnityMethods
@@ -41,10 +46,33 @@ public class Jelly_Base : Enemy_Base
                 healthBar.gameObject.SetActive(true);
                 performLaunch = false;
 
+                archFinished = true;
+
+                TurnManager turnManager = FindObjectOfType<TurnManager>();
+                if(turnManager == null)
+                {
+                    Debug.Log("TURNMANAGER NOT FOUND BY ARCH");
+                    return;
+                }
+
+                if (selfDestruct)
+                {
+                    DestroySelfEnemy(turnManager);
+                }
+
+                if(targetJellyMaster != null)
+                {
+                    targetJellyMaster.CombineJelly(turnManager);
+                }
+                else if(targetJellyKing != null)
+                {
+                    targetJellyKing.CombineJelly();
+                }
+
                 return;
             }
 
-            time += speed * Time.deltaTime;
+            time += speed * Time.deltaTime * GameManager.Instance.GameSpeed;
 
             Vector3 startToPeak = Vector3.Lerp(startPosition, archPeak, time);
             Vector3 peakToEnd = Vector3.Lerp(archPeak, endPosition, time);
@@ -71,6 +99,22 @@ public class Jelly_Base : Enemy_Base
         time = 0f;
 
         performLaunch = true;
+
+        archFinished = false;
+    }
+
+    public void InitiateArch(Vector3 endPos, float launchspeed, float launchHeight, Enemy_MasterJelly target)
+    {
+        targetJellyMaster = target;
+
+        InitiateArch(endPos, launchspeed, launchHeight);
+    }
+
+    public void InitiateArch(Vector3 endPos, float launchspeed, float launchHeight, Enemy_KingJelly target)
+    {
+        targetJellyKing = target;
+
+        InitiateArch(endPos, launchspeed, launchHeight);
     }
 
     #endregion

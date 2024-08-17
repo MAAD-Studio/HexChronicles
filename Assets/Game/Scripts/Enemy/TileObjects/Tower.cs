@@ -37,7 +37,7 @@ public class Tower : Spawner
 
         Debug.Assert(attackAreaPrefab != null, $"{name} doesn't have an AttackArea prefab provided.");
 
-        actualRange = tileRange * 1.75f;
+        actualRange = tileRange * 2f;
     }
 
     #endregion
@@ -128,6 +128,8 @@ public class Tower : Spawner
                     newProjectile.Launch(tile.transform.position, archHeight, projectileSpeed);
                 }
             }
+
+            AudioManager.Instance.PlaySound(tileObjectData.SFX);
 
             foreach (Tile tile in tilesToColor)
             {

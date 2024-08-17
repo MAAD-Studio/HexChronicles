@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class HUDInfo : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class HUDInfo : MonoBehaviour
     private bool showInfos = true;
 
     [Header("Tutorial")]
-    [SerializeField] private TabGroup tutorialSummary;
+    [SerializeField] private UIPanel tutorialSummary;
     [SerializeField] private Button question;
 
     [Header("Turn Info")]
@@ -57,11 +58,12 @@ public class HUDInfo : MonoBehaviour
     private TileInfo tileInfo;
 
     [Header("Buttons")]
+    [SerializeField] private EndTurnButton endTurn;
     [SerializeField] private Button pause;
-    [SerializeField] private Button endTurn;
-    [SerializeField] private GameObject endTurnVFX;
     [SerializeField] private Button undo;
     [SerializeField] private Button fast;
+
+    private ButtonChangeNotifier undoNotifier;
 
     #region Unity Methods
 
@@ -127,6 +129,7 @@ public class HUDInfo : MonoBehaviour
         TurnManager.LevelDefeat.AddListener(OnLevelEnded);
         PauseMenu.EndLevel.AddListener(OnLevelEnded);
         Character.movementComplete.AddListener(RestoreShowingInfos);
+        UndoManager.Instance.UndoDataAvailable.AddListener(UpdateUndoButton);
     }
 
     private void UnsubscribeEvents()
@@ -148,6 +151,7 @@ public class HUDInfo : MonoBehaviour
         TurnManager.LevelDefeat.RemoveListener(OnLevelEnded);
         PauseMenu.EndLevel.RemoveListener(OnLevelEnded);
         Character.movementComplete.RemoveListener(RestoreShowingInfos);
+        UndoManager.Instance.UndoDataAvailable.RemoveListener(UpdateUndoButton);
     }
 
     private void OnNewLevelStart(object obj)
@@ -177,10 +181,10 @@ public class HUDInfo : MonoBehaviour
     private void SetWeather(object obj)
     {
         WeatherManager weatherManager = FindObjectOfType<WeatherManager>();
-        weatherWindow.ShowWeather(weatherManager);
+        weatherWindow.ShowWeather(weatherManager.WeatherType);
         
         int turns = weatherManager.TurnsToStay;
-        turnIndicator.SetWeatherTurn(turns);
+        turnIndicator.SetWeatherTurn(weatherManager.WeatherType, turns);
     }
 
     private void OnEnemyTurn(object obj)
@@ -188,12 +192,13 @@ public class HUDInfo : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             enemyTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(enemyTurnMessage));
+            enemyTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() =>StartCoroutine(HideTurnMessage(enemyTurnMessage)));
         }
 
         currentTurn.text = "ENEMY TURN";
-        endTurn.interactable = false;
-        
+        endTurn.DisableButton();
+
         foreach (var button in heroButtons)
         {
             button.interactable = false;
@@ -207,14 +212,15 @@ public class HUDInfo : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             playerTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(playerTurnMessage));
+            playerTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(playerTurnMessage)));
         }
 
         turnIndicator.SetCurrentTurn(turnManager.TurnNumber);
 
         //turnNumber.text = (turnManager.objectiveTurnNumber - turnManager.TurnNumber + 1).ToString();
         currentTurn.text = "PLAYER TURN";
-        endTurn.interactable = true;
+        endTurn.EnableButton();
 
         foreach (var button in heroButtons)
         {
@@ -226,8 +232,8 @@ public class HUDInfo : MonoBehaviour
 
     private IEnumerator HideTurnMessage(GameObject turnMessage)
     {
-        yield return new WaitForSeconds(0.5f);
-        turnMessage.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.3f);
+        turnMessage.transform.DOScale(0.5f, 0.3f).SetEase(Ease.InBack).OnComplete(() => turnMessage.SetActive(false));
     }
 
     private void OnAttackPhase(object obj)
@@ -257,8 +263,7 @@ public class HUDInfo : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
     }
 
@@ -280,13 +285,11 @@ public class HUDInfo : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
         else
         {
-            endTurn.GetComponent<Image>().color = Color.white;
-            endTurnVFX.SetActive(false);
+            endTurn.EndTurnInactive();
         }
     }
 
@@ -302,6 +305,20 @@ public class HUDInfo : MonoBehaviour
 
         availableHeroes--;
     }
+
+
+    private void UpdateUndoButton(bool arg0)
+    {
+        if (arg0)
+        {
+            undo.interactable = true;
+        }
+        else
+        {
+            undo.interactable = false;
+        }
+        undoNotifier.onButtonChange?.Invoke();
+    }
     #endregion
 
 
@@ -311,7 +328,7 @@ public class HUDInfo : MonoBehaviour
     {
         playerTurnMessage.gameObject.SetActive(false);
         enemyTurnMessage.gameObject.SetActive(false);
-        tutorialSummary.gameObject.SetActive(false);
+        tutorialSummary.Initialize();
 
         // Create Characters Info:
         foreach (Character character in turnManager.characterList)
@@ -394,17 +411,31 @@ public class HUDInfo : MonoBehaviour
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
         undo.onClick.AddListener(() => playerTurn.UndoAction());
-        question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
-        
-        endTurn.onClick.AddListener(() =>
+        undoNotifier = undo.GetComponent<ButtonChangeNotifier>();
+        undoNotifier.onButtonChange?.Invoke();
+        question.onClick.AddListener(() => tutorialSummary.FadeIn());
+
+        endTurn.AddEndTurnBtnListener(() =>
         {
             if (selectedCharacter != null && !playerTurn.AllowSelection)
             {
                 return;
             }
+            if (activeHeroes == 0)
+            {
+                playerTurn.EndTurn();
+                endTurn.EndTurnInactive();
+            }
+            else
+            {
+                endTurn.ShowAskPanel();
+            }
+        });
+
+        endTurn.AddConfirmBtnListener(() =>
+        {
             playerTurn.EndTurn();
-            endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            endTurnVFX.SetActive(false);
+            endTurn.EndTurnInactive();
         });
 
         fast.onClick.AddListener(() => 
@@ -447,10 +478,10 @@ public class HUDInfo : MonoBehaviour
 
         pause.onClick.RemoveAllListeners();
         undo.onClick.RemoveAllListeners();
+        undo.interactable = false;
         question.onClick.RemoveAllListeners();
-        endTurn.onClick.RemoveAllListeners();
-        endTurn.GetComponent<Image>().color = Color.white;
-        endTurnVFX.SetActive(false);
+
+        endTurn.ResetEndTurn();
         fast.onClick.RemoveAllListeners();
 
         turnIndicator.ResetTurn();

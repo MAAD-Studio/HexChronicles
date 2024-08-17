@@ -78,37 +78,43 @@ public class Enemy_SoloJelly : Jelly_Base
         Enemy_MasterJelly pickedMaster = null;
         Enemy_KingJelly pickedKing = null;
 
-        foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(characterTile, true))
+        if(archFinished)
         {
-            if(!tile.tileOccupied)
+            foreach (Tile tile in turnManager.pathfinder.FindAdjacentTiles(characterTile, true))
             {
-                continue;
+                if (!tile.tileOccupied)
+                {
+                    continue;
+                }
+
+                Character characterOnTile = tile.characterOnTile;
+                Enemy_MasterJelly masterJelly = characterOnTile.GetComponent<Enemy_MasterJelly>();
+                Enemy_KingJelly kingJelly = characterOnTile.GetComponent<Enemy_KingJelly>();
+
+                if (masterJelly != null)
+                {
+                    pickedMaster = masterJelly;
+                    break;
+                }
+                else if (kingJelly != null)
+                {
+                    pickedKing = kingJelly;
+                }
             }
 
-            Character characterOnTile = tile.characterOnTile;
-            Enemy_MasterJelly masterJelly = characterOnTile.GetComponent<Enemy_MasterJelly>();
-            Enemy_KingJelly kingJelly = characterOnTile.GetComponent<Enemy_KingJelly>();
-
-            if(masterJelly != null)
+            if (pickedMaster != null)
             {
-                pickedMaster = masterJelly;
-                break;
+                CombineJelly(pickedMaster, true);
             }
-            else if(kingJelly != null)
+            else if (pickedKing != null)
             {
-                pickedKing = kingJelly;
+                CombineJelly(pickedKing, false);
             }
         }
 
-        if (pickedMaster != null)
+        while(!archFinished)
         {
-            pickedMaster.CombineJelly(turnManager);
-            DestroySelfEnemy(turnManager);
-        }
-        else if (pickedKing != null)
-        {
-            pickedKing.CombineJelly();
-            DestroySelfEnemy(turnManager);
+            return true;
         }
 
         return false;
@@ -125,9 +131,17 @@ public class Enemy_SoloJelly : Jelly_Base
 
     #region CustomMethods
 
-    public void CombineJelly(TurnManager turnManager)
+    public void CombineJelly(Jelly_Base combineTarget, bool isMaster)
     {
-        DestroySelfEnemy(turnManager);
+        selfDestruct = true;
+        if(!isMaster)
+        {
+            InitiateArch(combineTarget.transform.position, 2f, 2f, (Enemy_KingJelly)combineTarget);
+        }
+        else
+        {
+            InitiateArch(combineTarget.transform.position, 2f, 2f, (Enemy_MasterJelly)combineTarget);
+        }
     }
 
     public override Character LikelyTarget()

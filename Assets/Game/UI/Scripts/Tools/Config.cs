@@ -6,6 +6,27 @@ public class Config : Singleton<Config>
 {
     public CharacterUIConfig characterUIConfig;
 
+    #region Weather
+    public Sprite GetWeatherSprite(WeatherType weatherType)
+    {
+        if (weatherType == WeatherType.rain)
+        {
+            return characterUIConfig.rain;
+        }
+        else if (weatherType == WeatherType.sporeStorm)
+        {
+            return characterUIConfig.sporeStorm;
+        }
+        else if (weatherType == WeatherType.heatWave)
+        {
+            return characterUIConfig.heatWave;
+        }
+        return null;
+    }
+    #endregion
+
+
+    #region Buff and debuff
     public GameObject GetBuffVFX(ElementType elementType, bool isBig)
     {
         if (elementType == ElementType.Fire)
@@ -55,7 +76,10 @@ public class Config : Singleton<Config>
             return characterUIConfig.shortDebuffVFX;
         }
     }
+    #endregion
 
+
+    #region Stat and element
     public Sprite GetStatSprite(string statType)
     {
         if (statType == "health")
@@ -93,7 +117,10 @@ public class Config : Singleton<Config>
         }
         return null;
     }
+    #endregion
 
+
+    #region Status
     public List<Sprite> GetStatusSprites(Character character)
     {
         if (character.statusList.Count != 0)
@@ -116,6 +143,14 @@ public class Config : Singleton<Config>
                 else if (status.statusType == Status.StatusTypes.Bound)
                 {
                     statusList.Add(characterUIConfig.bound);
+                }
+                else if (status.statusType == Status.StatusTypes.AttackBoost)
+                {
+                    statusList.Add(characterUIConfig.attackBoost);
+                }
+                else if (status.statusType == Status.StatusTypes.MovementReduction)
+                {
+                    statusList.Add(characterUIConfig.movementReduction);
                 }
             }
             return statusList;
@@ -146,6 +181,14 @@ public class Config : Singleton<Config>
         {
             return characterUIConfig.shield;
         }
+        else if (status.statusType == Status.StatusTypes.AttackBoost)
+        {
+            return characterUIConfig.attackBoost;
+        }
+        else if (status.statusType == Status.StatusTypes.MovementReduction)
+        {
+            return characterUIConfig.movementReduction;
+        }
         return null;
     }
 
@@ -171,6 +214,14 @@ public class Config : Singleton<Config>
         {
             return characterUIConfig.shieldDetail;
         }
+        else if (status.statusType == Status.StatusTypes.MovementReduction)
+        {
+            return characterUIConfig.movementReductionDetail;
+        }
+        else if (status.statusType == Status.StatusTypes.AttackBoost)
+        {
+            return characterUIConfig.attackBoostDetail;
+        }
         return null;
     }
 
@@ -194,7 +245,11 @@ public class Config : Singleton<Config>
         }
         else if (status.statusType == Status.StatusTypes.Shield)
         {
-            //return characterUIConfig.shieldVFX;
+            return characterUIConfig.shieldVFX;
+        }
+        else if(status.statusType == Status.StatusTypes.MindControl)
+        {
+            return characterUIConfig.mindControlVFX;
         }
         return null;
     }
@@ -204,13 +259,21 @@ public class Config : Singleton<Config>
         if (character.statusList.Count != 0)
         {
             string statusList = "";
-            foreach (var status in character.statusList)
+
+            for (int i = 0; i < character.statusList.Count; i++)
             {
-                statusList += status.statusType.ToString() + ", ";
+                statusList += character.statusList[i].statusType.ToString();
+
+                if (i < character.statusList.Count - 1)
+                {
+                    statusList += ", ";
+                }
             }
+            
             return statusList;
         }
 
         return "";
     }
+    #endregion
 }

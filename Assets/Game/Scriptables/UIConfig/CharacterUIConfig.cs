@@ -22,13 +22,16 @@ public class CharacterUIConfig : ScriptableObject
     public Sprite haste;
     public Sprite bound;
     public Sprite shield;
+    public Sprite attackBoost;
+    public Sprite movementReduction;
 
     [Header("Status VFX")]
     public GameObject burningVFX;
     public GameObject wetVFX;
     //public GameObject hasteVFX;
     public GameObject boundVFX;
-    //public GameObject shieldVFX;
+    public GameObject shieldVFX;
+    public GameObject mindControlVFX;
 
     [Header("Tile Effect VFX")]
     public GameObject fireBuffVFX;
@@ -51,4 +54,11 @@ public class CharacterUIConfig : ScriptableObject
     [TextArea(3, 10)] public string hasteDetail;
     [TextArea(3, 10)] public string boundDetail;
     [TextArea(3, 10)] public string shieldDetail;
+    [TextArea(3, 10)] public string attackBoostDetail;
+    [TextArea(3, 10)] public string movementReductionDetail;
+
+    [Header("Weather Sprites")]
+    public Sprite rain;
+    public Sprite sporeStorm;
+    public Sprite heatWave;
 }

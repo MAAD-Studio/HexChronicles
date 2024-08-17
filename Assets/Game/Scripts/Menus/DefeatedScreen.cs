@@ -44,6 +44,7 @@ public class DefeatedScreen : Menu
 
     public void OnReturnToMap()
     {
+        AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
         MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier)?.OnReturnToMap();
         MenuManager.Instance.HideMenu(menuClassifier);
 

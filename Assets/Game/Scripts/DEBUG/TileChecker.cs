@@ -41,6 +41,11 @@ public class TileChecker : MonoBehaviour
         {
             CompareTile();
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            CheckOccupancy();
+        }
     }
 
     #endregion
@@ -137,6 +142,13 @@ public class TileChecker : MonoBehaviour
 
         Debug.Log("DISTANCE: " + Vector3.Distance(heldTile.transform.position, CheckSpot().transform.position));
         heldTile = null;
+    }
+
+    private void CheckOccupancy()
+    {
+        Tile tile = CheckSpot();
+        Debug.Log("OCCUPANT ON TILE: " + tile.characterOnTile);
+        Debug.Log("IS TILE OCCUPIED: " + tile.tileOccupied);
     }
 
     #endregion

@@ -77,6 +77,9 @@ public class Character : MonoBehaviour
     private GameObject buffPreview;
     private GameObject tileVFX;
     private TurnManager turnManager;
+
+    private bool rotating = false;
+
     #endregion
 
     #region UnityMethods
@@ -119,6 +122,9 @@ public class Character : MonoBehaviour
     public virtual void ReleaseActiveSkill(List<Character> targets)
     {
         animator.SetTrigger("skill");
+
+        Hero hero = (Hero)this;
+        AudioManager.Instance.PlaySound(hero.heroSO.activeSkillSO.attackSFK);
     }
 
     public virtual void PerformBasicAttackObjects(List<TileObject> targets) { }
@@ -195,18 +201,6 @@ public class Character : MonoBehaviour
                 {
                     charactersToHit.Add(tile.characterOnTile);
                 }
-
-                if(characterType == TurnEnums.CharacterType.Player)
-                {
-                    if(thisHero != null)
-                    {
-                        TemporaryMarker.GenerateMarker(thisHero.heroSO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
-                    }
-                    else
-                    {
-                        TemporaryMarker.GenerateMarker(thisEnemy.enemySO.attributes.fireMarker, tile.transform.position, 2f, 0.5f);
-                    }
-                }
             }
             ApplyStatusAttackArea(charactersToHit);
             MouseTip.Instance.ShowTip(transform.position, $"AOE Burn damage", false);
@@ -219,7 +213,7 @@ public class Character : MonoBehaviour
                 currentHealth = maxHealth;
             }
             UpdateHealthBar?.Invoke();
-            MouseTip.Instance.ShowTip(transform.position, $"Restore full health", false);
+            MouseTip.Instance.ShowTip(transform.position, $"Restore 4 health", false);
 
             if (characterType == TurnEnums.CharacterType.Player)
             {
@@ -535,7 +529,7 @@ public class Character : MonoBehaviour
         {
             chosenType = Status.StatusTypes.Burning;
 
-            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin);
+            List<Tile> tiles = Pathfinder.Instance.ReturnRange(origin, 2);
 
             List<Character> charactersToHit = new List<Character>();
 
@@ -642,6 +636,19 @@ public class Character : MonoBehaviour
         ShowEffect(status);
         statusList.Add(status);
 
+        if(status.statusType == Status.StatusTypes.Burning)
+        {
+            AudioManager.Instance.PlaySound("Burn");
+        }
+        else if(status.statusType == Status.StatusTypes.Wet)
+        {
+            AudioManager.Instance.PlaySound("Wet");
+        }
+        else if(status.statusType == Status.StatusTypes.Bound)
+        {
+            AudioManager.Instance.PlaySound("Bind");
+        }
+
         UpdateStatus?.Invoke();
     }
 
@@ -675,6 +682,11 @@ public class Character : MonoBehaviour
                 break;
 
             case Status.StatusTypes.Shield:
+                vfx = Instantiate(Config.Instance.characterUIConfig.shieldVFX, transform.position, Quaternion.identity);
+                break;
+
+            case Status.StatusTypes.MindControl:
+                vfx = Instantiate(Config.Instance.characterUIConfig.mindControlVFX, transform.position, Quaternion.identity);
                 break;
 
             default:
@@ -727,6 +739,7 @@ public class Character : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
+
             Died();
         }
         else
@@ -737,6 +750,8 @@ public class Character : MonoBehaviour
         // Show damage text
         DamageText damageText = Instantiate(damagePrefab, transform.position, Quaternion.identity).GetComponent<DamageText>();
         damageText.ShowDamage(damage);
+
+        AudioManager.Instance.PlaySound("Damage");
 
         UpdateHealthBar?.Invoke();
     }
@@ -771,26 +786,46 @@ public class Character : MonoBehaviour
 
         FindObjectOfType<CameraController>().MoveToDeathPosition(transform, true);
         Time.timeScale = 0.5f;
+
+        if (characterType == TurnEnums.CharacterType.Player)
+        {
+            turnManager.characterList.Remove((Hero)this);
+        }
+        else
+        {
+            turnManager.enemyList.Remove((Enemy_Base)this);
+        }
+
         if (animator != null)
         {
             animator.SetTrigger("died");
         }
+        else
+        {
+            StartDeathVFX();
 
-        //VFX and Shader
-        if (VFXGraph != null) 
+            Invoke("Destroy", 1f);
+        }
+
+        AudioManager.Instance.PlaySound("Death");
+
+        DestroyTileVFX();
+    }
+
+    #region Dissolve Material
+
+    // Called by death animation event
+    public void StartDeathVFX()
+    {
+        if (VFXGraph != null)
         {
             VFXGraph.Play();
         }
         StartCoroutine(DissolveCo());
-
-
-        DestroyTileVFX();
-        Invoke("Destroy", 1f);
     }
 
-    #region Dissolve Material
     IEnumerator DissolveCo () {
-        if(skinnedMaterials.Length > 0) {
+        if(skinnedMaterials != null && skinnedMaterials.Length > 0) {
             float counter = 0;
 
             while(skinnedMaterials[0].GetFloat("_Dissolve_Amount") < 1) {
@@ -805,7 +840,8 @@ public class Character : MonoBehaviour
     }
     #endregion
 
-    private void Destroy()
+    // Called by death animation event
+    public void Destroy()
     {
         FindObjectOfType<CameraController>().MoveToDefault(true);
         Time.timeScale = 1f;
@@ -829,6 +865,10 @@ public class Character : MonoBehaviour
         {
             FinalizeTileChoice(hit.transform.GetComponent<Tile>());
             return;
+        }
+        else
+        {
+            Debug.Log("FAILED TO FIND ANY TILE TO STAND ON");
         }
     }
 
@@ -883,7 +923,7 @@ public class Character : MonoBehaviour
 
                 foreach (Tile tile in tilesInPath)
                 {
-                    tile.ChangeTileColor(TileEnums.TileMaterial.path);
+                    tile.ChangeTileTop(TileEnums.TileTops.Path, true);
                 }
 
                 Vector3 nextTilePosition = path[step].transform.position;
@@ -911,7 +951,7 @@ public class Character : MonoBehaviour
                 }
 
                 tilesInPath.Remove(path[step]);
-                path[step].ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+                path[step].ChangeTileTop(TileEnums.TileTops.Path, false);
 
                 step++;
 
@@ -930,7 +970,7 @@ public class Character : MonoBehaviour
                 {
                     continue;
                 }
-                tile.ChangeTileColor(TileEnums.TileMaterial.baseMaterial);
+                tile.ChangeTileTop(TileEnums.TileTops.Path, false);
             }
 
             characterTile = null;
@@ -976,6 +1016,8 @@ public class Character : MonoBehaviour
             List<Character> heroesHit = new List<Character>();
             List<TileObject> objectsHit = attackAreaPrefab.ObjectsHit();
 
+            bool audioPlayed = false;
+
             if(attackAreaPrefab.hitsEnemies)
             {
                 enemiesHit = attackAreaPrefab.CharactersHit(TurnEnums.CharacterType.Enemy);
@@ -986,6 +1028,18 @@ public class Character : MonoBehaviour
                 else
                 {
                     PerformBasicAttack(enemiesHit);
+
+                    if(!audioPlayed && enemiesHit.Count > 0)
+                    {
+                        Hero hero = (Hero)this;
+                        AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                        audioPlayed = true;
+                    }
+                }
+
+                foreach(Character enemy in enemiesHit)
+                {
+                    enemy.RotateToFaceCharacter(this);
                 }
             }
             if (attackAreaPrefab.hitsHeroes)
@@ -998,22 +1052,41 @@ public class Character : MonoBehaviour
                 else
                 {
                     PerformBasicAttack(heroesHit);
+
+                    if (!audioPlayed && heroesHit.Count > 0)
+                    {
+                        Hero hero = (Hero)this;
+                        AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                        audioPlayed = true;
+                    }
+                }
+
+                foreach (Character hero in heroesHit)
+                {
+                    hero.RotateToFaceCharacter(this);
                 }
             }
 
             if (attackAreaPrefab.hitsTileObjects)
             {
                 PerformBasicAttackObjects(objectsHit);
+
+                if (!audioPlayed && objectsHit.Count > 0)
+                {
+                    Hero hero = (Hero)this;
+                    AudioManager.Instance.PlaySound(hero.heroSO.attributes.basicAttackSFX);
+                }
             }
 
             GenerateHitMarkers(thisHero, enemiesHit, heroesHit, objectsHit);
+
+            yield return new WaitForSeconds(1f);
 
             if (characterTile.tileData.tileType == elementType)
             {
                 ApplyBuffCharacter();
             }
 
-            yield return new WaitForSeconds(0.5f);
             attackAreaPrefab.DestroySelf();
         }
 
@@ -1141,8 +1214,11 @@ public class Character : MonoBehaviour
         characterTile.tileOccupied = false;
         characterTile = null;
 
-        transform.position = currentTile.transform.position + new Vector3(0, 0.2f, 0);
-        FindTile();
+        characterTile = currentTile;
+        characterTile.characterOnTile = this;
+        characterTile.tileOccupied = true;
+
+        StartCoroutine(MoveTowards(currentTile));
 
         TakeDamage(damage, ElementType.Base);
 
@@ -1230,6 +1306,72 @@ public class Character : MonoBehaviour
         {
             Destroy(tileVFX);
         }
+    }
+
+    public void RotateToFaceCharacter(Character character)
+    {
+        if(!rotating)
+        {
+            StartCoroutine(RotateToFace(character));
+        }
+    }
+
+    private IEnumerator RotateToFace(Character character)
+    {
+        if(character == null)
+        {
+            yield break;
+        }
+
+        float rotationAttemptTimer = 0f;
+        rotating = true;
+        Vector3 directionToCharacter = character.transform.position - transform.position;
+
+        while(true)
+        {
+            if(character == null)
+            {
+                rotating = false;
+                yield break;
+            }
+
+            float angle = Vector3.Angle(transform.forward, directionToCharacter);
+            if(angle > 5 && rotationAttemptTimer < 5f)
+            {
+                float speed = 8 * (Time.deltaTime * GameManager.Instance.GameSpeed);
+                Vector3 direction = Vector3.RotateTowards(transform.forward, directionToCharacter, speed, 0.0f);
+                direction.y = 0;
+                transform.rotation = Quaternion.LookRotation(direction);
+
+                rotationAttemptTimer += Time.deltaTime;
+                yield return null;
+            }
+            else
+            {
+                rotating = false;
+                yield break;
+            }
+        }
+    }
+
+    private IEnumerator MoveTowards(Tile tile)
+    {
+        if(tile == null)
+        {
+            yield break;
+        }
+
+        Vector3 direction = tile.transform.position - transform.position;
+        direction = Vector3.Normalize(direction);
+
+        float speed = 2f * Time.deltaTime;
+        while(Vector3.Distance(transform.position, tile.transform.position) > 1f && Vector3.Distance(transform.position, tile.transform.position) <= 6f)
+        {
+            transform.position += direction * speed;
+            yield return null;
+        }
+
+        transform.position = tile.transform.position + new Vector3(0, 0.2f, 0);
     }
 
     #endregion

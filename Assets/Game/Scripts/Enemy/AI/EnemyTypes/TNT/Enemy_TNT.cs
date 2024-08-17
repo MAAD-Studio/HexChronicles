@@ -55,10 +55,10 @@ public class Enemy_TNT : Enemy_Base
 
     public override void Died()
     {
+        base.Died();
+
         GameObject vfx = Instantiate(explodeVFX, transform.position, Quaternion.identity);
         StartCoroutine(Explode(0.5f));
-
-        base.Died();
     }
 
     private IEnumerator Explode(float waitTime)
@@ -96,6 +96,8 @@ public class Enemy_TNT : Enemy_Base
 
             //TemporaryMarker.GenerateMarker(enemySO.attributes.hitMarker, tile.transform.position, 2f, 0.5f);
         }
+
+        AudioManager.Instance.PlaySound("Explosion");
     }
 
     #endregion

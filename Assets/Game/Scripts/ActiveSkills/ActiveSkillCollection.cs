@@ -16,16 +16,25 @@ public class ActiveSkillCollection : Singleton<ActiveSkillCollection>
     private List<ActiveSkillSO> remainGrassSkills;
     private List<ActiveSkillSO> remainWaterSkills;
 
+    [SerializeField] private HeroAttributesSO fireHero;
+    [SerializeField] private HeroAttributesSO grassHero;
+    [SerializeField] private HeroAttributesSO waterHero;
+
     private void Start()
     {
         remainFireSkills = new List<ActiveSkillSO>(allFireSkills);
         remainGrassSkills = new List<ActiveSkillSO>(allGrassSkills);
         remainWaterSkills = new List<ActiveSkillSO>(allWaterSkills);
 
-        // Add the first skills to heroes
+        // Add the first skills to skill list
         PlayerAddSkill(allFireSkills[0]);
         PlayerAddSkill(allGrassSkills[0]);
         PlayerAddSkill(allWaterSkills[0]);
+
+        // Assign to hero
+        fireHero.SetActiveSkill(allFireSkills[0]);
+        grassHero.SetActiveSkill(allGrassSkills[0]);
+        waterHero.SetActiveSkill(allWaterSkills[0]);
     }
 
     public ActiveSkillSO GetRandomSkillReward(ElementType elementType)

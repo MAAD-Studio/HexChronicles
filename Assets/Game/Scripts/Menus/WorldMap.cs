@@ -64,7 +64,7 @@ public class WorldMap : Menu
         MenuManager.Instance.HideMenu(menuClassifier);
 
         GameManager.Instance.IsTutorial = false;
-        SceneLoader.Instance.LoadScene(levels[levelIndex]);
+        SceneLoader.Instance.LoadBattleScene(levels[levelIndex]);
         SceneLoader.Instance.UnloadScene(worldMap);
     }
 
@@ -73,6 +73,7 @@ public class WorldMap : Menu
         SceneLoader.Instance.OnSceneLoadedEvent -= OnSceneLoaded;
 
         MenuManager.Instance.ShowMenu(hudClassifier); // Show HUD after scene is loaded
+        AudioManager.Instance.PlayMusicFadeIn("BattleMusic", 2f);
     }
 
     public void OnReturnToMainMenu()
@@ -83,6 +84,7 @@ public class WorldMap : Menu
 
     public void OnReturnToMap()
     {
+        SceneLoader.Instance.IsLoadingBattle = false;
         MenuManager.Instance.ShowMenu(MenuManager.Instance.LoadingScreenClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.HUDMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.TutorialHUDClassifier);
@@ -127,11 +129,7 @@ public class WorldMap : Menu
     {
         SceneLoader.Instance.OnSceneLoadedEvent += OnMapLoaded;
 
-        SceneLoader.Instance.LoadScene(worldMap);
-
-        // Enable the current level button
-        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
-        levelButtonsInOrder[unlockedLevelIndex].interactable = true;
+        SceneLoader.Instance.LoadNormalScene(worldMap);
     }
 
     private void OnMapLoaded(List<string> list)
@@ -140,6 +138,23 @@ public class WorldMap : Menu
 
         MenuManager.Instance.ShowMenu(menuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
+
+        // Enable the current level button
+        unlockedLevelIndex = GameManager.Instance.CurrentLevelIndex;
+
+        if (unlockedLevelIndex < levelButtonsInOrder.Length)
+        {
+            levelButtonsInOrder[unlockedLevelIndex].interactable = true;
+        }
+        else
+        {
+            AudioManager.Instance.PlayMusicFadeIn("MainTheme", 2);
+            MainMenu mainMenu = MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier);
+            mainMenu.OnReturnToMainMenu();
+            MenuManager.Instance.HideMenu(menuClassifier);
+            GameManager.Instance.CleanActiveScene();
+            mainMenu.OnSelectCredits();
+        }
     }
     #endregion
 

@@ -8,6 +8,7 @@ public class TileReporter_Dragger : TileReporter
 
     [SerializeField] private int dragRange;
     [SerializeField] private int damage;
+    [SerializeField] private GameObject effect;
 
     #endregion
 
@@ -24,6 +25,9 @@ public class TileReporter_Dragger : TileReporter
         pathFinder.PathTilesInRange(currentTile, 0, dragRange, true, false);
         List<Tile> dragTile = new List<Tile>(pathFinder.frontier);
 
+        Destroy(Instantiate(effect, currentTile.transform.position, Quaternion.identity), 2f);
+
+        int delay = 0;
         foreach(Tile tile in dragTile)
         {
             Character character = tile.characterOnTile;
@@ -31,6 +35,7 @@ public class TileReporter_Dragger : TileReporter
             {
                 UndoManager.Instance.StoreEnemy((Enemy_Base)character, false);
                 character.DragTowards(currentTile, damage);
+                delay++;
             }
         }
     }

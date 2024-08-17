@@ -110,6 +110,8 @@ public class WeatherPatch
         foreach (Tile tile in effectedTiles)
         {
             tile.ChangeTileWeather(true, weather.WeatherType);
+            tile.weatherOnTile = weather.WeatherType;
+            tile.underWeatherAffect = true;
         }
     }
 

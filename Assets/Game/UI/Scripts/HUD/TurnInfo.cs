@@ -7,7 +7,6 @@ using TMPro;
 public class TurnInfo : MonoBehaviour
 {
     [SerializeField] private Image bar;
-    [SerializeField] private Image weatherBar;
 
     [SerializeField] private GameObject textIndicator;
     [SerializeField] private TextMeshProUGUI turnText;
@@ -15,7 +14,25 @@ public class TurnInfo : MonoBehaviour
     [SerializeField] private Color overColor;
     [SerializeField] private Color currentColor;
     [SerializeField] private Color comingColor;
+
+    [Header("Info based on Weather")]
+    [SerializeField] private Image weatherBar;
+    [SerializeField] private Image weatherIcon;
+    [SerializeField] private TextMeshProUGUI weatherTitle;
+    [SerializeField] private TextMeshProUGUI weatherExplanation;
+
+    [Header("Weather Specific")]
     [SerializeField] private Color rainColor;
+    [TextArea(3, 10)]
+    [SerializeField] private string rainExplanation;
+
+    [SerializeField] private Color heatWaveColor;
+    [TextArea(3, 10)]
+    [SerializeField] private string heatWaveExplanation;
+
+    [SerializeField] private Color sporeStormColor;
+    [TextArea(3, 10)]
+    [SerializeField] private string sporeStormExplanation;
 
     [HideInInspector] public bool isWeather = false;
     private UITip tip;
@@ -44,17 +61,39 @@ public class TurnInfo : MonoBehaviour
         }
     }
 
-    public void SetWeatherTurn()
+    public void SetWeatherTurn(WeatherType weatherType)
     {
         isWeather = true;
-        bar.color = rainColor;
+
+        weatherIcon.sprite = Config.Instance.GetWeatherSprite(weatherType);
+        switch (weatherType)
+        {
+            case WeatherType.rain:
+                bar.color = rainColor;
+                weatherBar.color = rainColor;
+                weatherTitle.text = "Raining Now";
+                weatherExplanation.text = rainExplanation;
+                break;
+            case WeatherType.sporeStorm:
+                bar.color = sporeStormColor;
+                weatherBar.color = sporeStormColor;
+                weatherTitle.text = "Spore Storm";
+                weatherExplanation.text = sporeStormExplanation;
+                break;
+            case WeatherType.heatWave:
+                bar.color = heatWaveColor;
+                weatherBar.color = heatWaveColor;
+                weatherTitle.text = "Heat Wave";
+                weatherExplanation.text = heatWaveExplanation;
+                break;
+        }
     }
 
     public void EndTurn()
     {
         textIndicator.SetActive(false);
         bar.color = overColor;
-        tip.HideTooltip();
+        tip.rectTransform.gameObject.SetActive(false);
         tip.enabled = false;
 
         if (isWeather)

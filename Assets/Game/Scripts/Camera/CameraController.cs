@@ -112,10 +112,7 @@ public class CameraController : MonoBehaviour
      */
     private void CheckKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad0))
-        {
-            targetPosition = defaultPosition;
-        }
+        
     }
 
     /*
@@ -269,6 +266,14 @@ public class CameraController : MonoBehaviour
         if (useAutoZoomCam || forceMovement)
         {
             targetPosition = target.position + new Vector3(0, 5, -2);
+        }
+    }
+
+    public void MoveToFullCustom(Vector3 position, bool forceMovement)
+    {
+        if(useAutoZoomCam || forceMovement)
+        {
+            targetPosition = position;
         }
     }
 

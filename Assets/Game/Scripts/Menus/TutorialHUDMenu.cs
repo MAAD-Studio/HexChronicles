@@ -53,6 +53,9 @@ public class TutorialHUDMenu : Menu
         MenuManager.Instance.ShowMenu(MenuManager.Instance.VictoryScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
 
+        // Play Victory Music
+        AudioManager.Instance.StopMusic();
+
         UnsubscribeEvents();
     }
 
@@ -68,6 +71,9 @@ public class TutorialHUDMenu : Menu
     {
         MenuManager.Instance.ShowMenu(MenuManager.Instance.DefeatedScreenClassifier);
         MenuManager.Instance.HideMenu(menuClassifier);
+
+        // Play Defeat Music
+        AudioManager.Instance.StopMusic();
 
         UnsubscribeEvents();
     }

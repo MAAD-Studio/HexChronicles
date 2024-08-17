@@ -22,6 +22,7 @@ public class Hero : Character
     public List<BasicUpgrade> upgradeList;
 
     private List<Character> currentTargets;
+    private List<TileObject> currentObjectTargets;
 
     protected override void Start()
     {
@@ -94,6 +95,9 @@ public class Hero : Character
         base.Heal(heal);
     }
 
+    # region BasicAttack and VFX Callback
+
+    // Enemy targets:
     public override void PerformBasicAttack(List<Character> targets)
     {
         if (characterTile.tileData.tileType == elementType)
@@ -116,15 +120,17 @@ public class Hero : Character
 
     private IEnumerator SpawnVFXAndAttack()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f); // Delay for animation
 
         foreach (var target in currentTargets)
         {
-            SpawnAttackVFX(target);
+            Vector3 targetPosition = target.transform.position;
+            AttackVFX attack = SpawnAttackVFX(targetPosition);
+            attack.Initialize(target, ActualBasicAttack);
         }
     }
 
-    private void SpawnAttackVFX(Character target)
+    private AttackVFX SpawnAttackVFX(Vector3 targetPosition)
     {
         GameObject vfx = null;
         if (elementType == ElementType.Fire)
@@ -134,16 +140,16 @@ public class Hero : Character
         }
         else if (elementType == ElementType.Water)
         {
-            vfx = Instantiate(attackVFX, target.transform.position, Quaternion.identity);
+            vfx = Instantiate(attackVFX, targetPosition, Quaternion.identity);
         }
         else if (elementType == ElementType.Grass)
         {
             vfx = Instantiate(attackVFX, transform.position, Quaternion.identity);
-            vfx.transform.LookAt(target.transform.position);
+            vfx.transform.LookAt(targetPosition);
         }
 
         AttackVFX attack = vfx.GetComponent<AttackVFX>();
-        attack.Initialize(target, ActualBasicAttack);
+        return attack;
     }
 
     // Called by AttackVFX when the VFX hits the target
@@ -158,7 +164,41 @@ public class Hero : Character
         target.TakeDamage(actualDamage, elementType);
 
         base.PerformBasicAttack(currentTargets);
+        currentTargets.Clear();
     }
+
+    // TileObject targets:
+    public override void PerformBasicAttackObjects(List<TileObject> targets)
+    {
+        if (targets.Count != 0)
+        {
+            currentObjectTargets = targets;
+            animator.SetTrigger("attack");
+
+            StartCoroutine(SpawnVFXAndAttackObjects());
+        }
+    }
+
+    private IEnumerator SpawnVFXAndAttackObjects()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (var target in currentObjectTargets)
+        {
+            Vector3 targetPosition = target.transform.position;
+            AttackVFX attack = SpawnAttackVFX(targetPosition);
+            attack.InitializeObjectTarget(target, ActualBasicAttackObjects);
+        }
+        currentObjectTargets.Clear();
+    }
+
+    private void ActualBasicAttackObjects(TileObject target)
+    {
+        target.TakeDamage(attackDamage);
+    }
+
+    #endregion
+
 
     public override void ReleaseActiveSkill(List<Character> targets)
     {
@@ -166,15 +206,6 @@ public class Hero : Character
 
         activeSkill.Release(targets);
         currentSkillCD = skillCD;
-    }
-
-    public override void PerformBasicAttackObjects(List<TileObject> targets)
-    {
-        foreach(TileObject target in targets)
-        {
-            target.TakeDamage(attackDamage);
-            target.PreviewDamage(0);
-        }
     }
 
     public void ApplyPassiveSkill()

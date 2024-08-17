@@ -125,6 +125,11 @@ public class TurnManager : MonoBehaviour
         currentTurn = playerTurn;
         turnType = TurnEnums.TurnState.PlayerTurn;
 
+        if(!isTutorial)
+        {
+            StartCoroutine(ConductOpeningCamera());
+        }
+
         EventBus.Instance.Publish(new OnNewLevelStart());
 
         WorldTurnBase.Victory.AddListener(SceneReset);
@@ -162,7 +167,7 @@ public class TurnManager : MonoBehaviour
 
                 if (turnNumber == objectiveTurnNumber + 1)
                 {
-                    LevelDefeat?.Invoke();
+                    Invoke("Defeat", 1.5f);
                 }
                 break;
 
@@ -195,10 +200,10 @@ public class TurnManager : MonoBehaviour
 
         if (character.characterType == TurnEnums.CharacterType.Player)
         {
-            if(!characterList.Contains(character))
+            /*if(!characterList.Contains(character))
             {
                 return;
-            }
+            }*/
 
             characterList.Remove(character);
 
@@ -206,21 +211,21 @@ public class TurnManager : MonoBehaviour
 
             if (characterList.Count == 0)
             {
-                LevelDefeat?.Invoke();
+                Invoke("Defeat", 1.5f);
             }
         }
         else
         {
-            if(!enemyList.Contains((Enemy_Base)character))
+            /*if(!enemyList.Contains((Enemy_Base)character))
             {
                 return;
-            }
+            }*/
 
             enemyList.Remove((Enemy_Base)character);
 
             if (enemyList.Count == 0 && towersTurn.HasTowers == false && !isTutorial)
             {
-                LevelVictory?.Invoke();
+                Invoke("Victory", 1.5f);
             }
         }
 
@@ -282,14 +287,51 @@ public class TurnManager : MonoBehaviour
         foreach (TileObject tileObj in tileObjectsToDestroy)
         {
             temporaryTileObjects.Remove(tileObj);
+            tileObj.attachedTile.objectOnTile = null;
+            tileObj.attachedTile.tileHasObject = false;
             Destroy(tileObj.gameObject);
         }
         tileObjectsToDestroy.Clear();
     }
 
-    public void EndLevel()
+    public void Victory()
     {
+        AudioManager.Instance.PlaySound("Victory");
         LevelVictory?.Invoke();
+    }
+
+    private void Defeat()
+    {
+        AudioManager.Instance.PlaySound("Defeat");
+        LevelDefeat?.Invoke();
+    }
+
+    public IEnumerator ConductOpeningCamera()
+    {
+        pauseTurns = true;
+        mainCameraController.controlEnabled = false;
+        disableEnd = true;
+
+        yield return new WaitForSeconds(1f);
+
+        TowersTurn towerTurn = GetComponent<TowersTurn>();
+
+        if(towerTurn != null && towerTurn.Towers.Count > 0)
+        {
+            mainCameraController.MoveToFullCustom(towerTurn.Towers[0].transform.position + new Vector3(0, 10, -6), true);
+            yield return new WaitForSeconds(2f);
+        }
+
+        if(characterList.Count > 0)
+        {
+            mainCameraController.MoveToFullCustom(characterList[0].transform.position + new Vector3(0, 10, -6), true);
+            yield return new WaitForSeconds(2f);
+        }
+
+        disableEnd = false;
+        mainCameraController.controlEnabled = true;
+        pauseTurns = false;
+        mainCameraController.MoveToDefault(true);
     }
 
     #endregion

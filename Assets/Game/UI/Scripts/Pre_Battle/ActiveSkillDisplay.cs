@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class ActiveSkillDisplay : MonoBehaviour
 {
     public Button button;
+    [SerializeField] private GameObject outline;
     [SerializeField] private Image skillshape;
     [SerializeField] private TextMeshProUGUI skillName;
     [SerializeField] private TextMeshProUGUI description;
@@ -25,6 +26,7 @@ public class ActiveSkillDisplay : MonoBehaviour
         this.skill = skill;
 
         button.onClick.AddListener(OnSelected);
+        outline.SetActive(false);
     }
 
     public void OnSelected()
@@ -32,14 +34,21 @@ public class ActiveSkillDisplay : MonoBehaviour
         heroSkill.SkillSelected(skill);
 
         button.interactable = false;
+        outline.SetActive(true);
 
         // Reset the other skill buttons
         foreach (Transform child in transform.parent)
         {
             if (child != transform)
             {
-                child.GetComponent<ActiveSkillDisplay>().button.interactable = true;
+                child.GetComponent<ActiveSkillDisplay>().Reset();
             }
         }
+    }
+
+    public void Reset()
+    {
+        button.interactable = true;
+        outline.SetActive(false);
     }
 }

@@ -23,6 +23,9 @@ public class SceneLoader : Singleton<SceneLoader>
 
     private List<string> loadedScenes = new List<string>();
 
+    private bool isLoadingBattle = false;
+    public bool IsLoadingBattle { get { return isLoadingBattle; } set { isLoadingBattle = value; } }
+
     // When loading just add a flag for persistence. If true don't add to the loadedScenes
     // Only remove the scenes when you unload
 
@@ -30,6 +33,18 @@ public class SceneLoader : Singleton<SceneLoader>
     {
         activeScene = _scene;
         SceneManager.SetActiveScene(_scene);
+    }
+
+    public void LoadBattleScene(string scene)
+    {
+        isLoadingBattle = true;
+        LoadScene(scene);
+    }
+
+    public void LoadNormalScene(string scene)
+    {
+        isLoadingBattle = false;
+        LoadScene(scene);
     }
 
     public void LoadScene(string scene, bool showLoadingScreen = true, bool cacheScene = true)

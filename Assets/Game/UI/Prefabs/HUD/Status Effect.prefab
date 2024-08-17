@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 6ed09cfa42ddf7449b32fd4954c44317, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.4
 --- !u!114 &323540043845636446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 6
+    m_Left: 8
     m_Right: 6
     m_Top: 6
     m_Bottom: 6
@@ -221,7 +221,6 @@ MonoBehaviour:
   icon: {fileID: 8662719879840045669}
   effectTurns: {fileID: 5916025911669074301}
   effectDetail: {fileID: 6660165775709459710}
-  characterUIConfig: {fileID: 11400000, guid: 2e21759f4f7ee614f95134b0edd79891, type: 2}
 --- !u!114 &5109581676568579480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +233,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8022eff44c9179149aaab0eab3aec138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipObject: {fileID: 7970916622295778991}
+  rectTransform: {fileID: 626105001548819265}
+  followMouse: 1
+  advancedPanel: 0
+  fadeIn: 1
+  scale: 1
+  slide: 0
+  fadeInTime: 0.5
+  fadeAxisX: 0
+  fadeAxisY: 1
+  axisInvert: 0
 --- !u!1 &5690551080098423301
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +278,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 16}
+  m_SizeDelta: {x: 24, y: 20}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3578473233037728064
 CanvasRenderer:
@@ -327,15 +335,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -454,6 +462,7 @@ GameObject:
   m_Component:
   - component: {fileID: 626105001548819265}
   - component: {fileID: 2051719591670978055}
+  - component: {fileID: 8132102346595353418}
   m_Layer: 5
   m_Name: Tip
   m_TagString: Untagged
@@ -501,6 +510,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!225 &8132102346595353418
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970916622295778991}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8583839425348520268
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,8 +596,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281545523
-  m_fontColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -593,15 +614,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

@@ -25,7 +25,10 @@ public class Tutorial_Four : Tutorial_Base
             return;
         }
 
-        Debug.Log("HGEJ");
+        if (endTurnButton == null)
+        {
+            return;
+        }
 
         switch (currentTurn)
         {
@@ -69,6 +72,8 @@ public class Tutorial_Four : Tutorial_Base
                 DisplayDialogue(turnOneDialogue, 0);
                 RegainFullControl();
 
+                endTurnButton.DisableButton();
+
                 internalTutorialStep++;
 
                 break;
@@ -77,6 +82,7 @@ public class Tutorial_Four : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     turnManager.disableEnd = false;
+                    endTurnButton.EnableButton();
                     internalTutorialStep++;
                 }
                 break;
@@ -85,6 +91,7 @@ public class Tutorial_Four : Tutorial_Base
                 if(turnManager.TurnType != TurnEnums.TurnState.PlayerTurn)
                 {
                     internalTutorialStep++;
+                    endTurnButton.DisableButton();
                 }
                 break;
 
@@ -102,6 +109,7 @@ public class Tutorial_Four : Tutorial_Base
                 if (dialogueJustEnded)
                 {
                     turnManager.disableEnd = false;
+                    endTurnButton.EnableButton();
                     internalTutorialStep++;
                 }
                 break;
@@ -110,6 +118,7 @@ public class Tutorial_Four : Tutorial_Base
                 if (turnManager.TurnType != TurnEnums.TurnState.PlayerTurn)
                 {
                     internalTutorialStep++;
+                    endTurnButton.DisableButton();
                 }
                 break;
 
@@ -135,8 +144,9 @@ public class Tutorial_Four : Tutorial_Base
             case 8:
                 if (dialogueJustEnded)
                 {
-                    turnManager.EndLevel();
-                    internalTutorialStep = 0;
+                    EventBus.Instance.Publish(new OnTutorialEnd());
+                    turnManager.Victory();
+                    internalTutorialStep++;
                 }
                 break;
         }

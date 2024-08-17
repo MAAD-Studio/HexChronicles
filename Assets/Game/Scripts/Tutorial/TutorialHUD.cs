@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -45,9 +46,8 @@ public class TutorialHUD : MonoBehaviour
     private TileInfo tileInfo;
 
     [Header("Buttons")]
+    [SerializeField] private EndTurnButton endTurn;
     [SerializeField] private Button pause;
-    [SerializeField] private Button endTurn;
-    [SerializeField] private GameObject endTurnVFX;
 
     #region Unity Methods
 
@@ -152,10 +152,11 @@ public class TutorialHUD : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             enemyTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(enemyTurnMessage));
+            enemyTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(enemyTurnMessage)));
         }
 
-        endTurn.interactable = false;
+        endTurn.DisableButton();
 
         foreach (var button in heroButtons)
         {
@@ -169,10 +170,11 @@ public class TutorialHUD : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             playerTurnMessage.gameObject.SetActive(true);
-            StartCoroutine(HideTurnMessage(playerTurnMessage));
+            playerTurnMessage.transform.DOScale(1, 0.3f).SetEase(Ease.OutBack).From(0.5f).
+                OnComplete(() => StartCoroutine(HideTurnMessage(playerTurnMessage)));
         }
 
-        endTurn.interactable = true;
+        endTurn.EnableButton();
 
         foreach (var button in heroButtons)
         {
@@ -184,8 +186,8 @@ public class TutorialHUD : MonoBehaviour
 
     private IEnumerator HideTurnMessage(GameObject turnMessage)
     {
-        yield return new WaitForSeconds(0.5f);
-        turnMessage.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.3f);
+        turnMessage.transform.DOScale(0.5f, 0.3f).SetEase(Ease.InBack).OnComplete(() => turnMessage.SetActive(false));
     }
 
     private void OnAttackPhase(object obj)
@@ -221,8 +223,7 @@ public class TutorialHUD : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
     }
 
@@ -244,13 +245,11 @@ public class TutorialHUD : MonoBehaviour
 
         if (activeHeroes == 0)
         {
-            endTurn.GetComponent<Image>().color = new Color(1, 0.88f, 0, 1);
-            endTurnVFX.SetActive(true);
+            endTurn.EndTurnActive();
         }
         else
         {
-            endTurn.GetComponent<Image>().color = Color.white;
-            endTurnVFX.SetActive(false);
+            endTurn.EndTurnInactive();
         }
     }
 
@@ -348,16 +347,29 @@ public class TutorialHUD : MonoBehaviour
     {
         pause.onClick.AddListener(() => EventBus.Instance.Publish(new PauseGame()));
 
-        endTurn.onClick.AddListener(() =>
+        endTurn.AddEndTurnBtnListener(() =>
         {
             if (selectedCharacter != null && selectedCharacter.moving)
             {
                 return;
             }
-            playerTurn.EndTurn();
-            endTurn.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            endTurnVFX.SetActive(false);
+            if (activeHeroes == 0)
+            {
+                playerTurn.EndTurn();
+                endTurn.EndTurnInactive();
+            }
+            else
+            {
+                endTurn.ShowAskPanel();
+            }
         });
+
+        endTurn.AddConfirmBtnListener(() =>
+        {
+            playerTurn.EndTurn();
+            endTurn.EndTurnInactive();
+        });
+
         question.onClick.AddListener(() => tutorialSummary.gameObject.SetActive(true));
     }
 
@@ -381,9 +393,7 @@ public class TutorialHUD : MonoBehaviour
         characterInfoDict.Clear();
 
         pause.onClick.RemoveAllListeners();
-        endTurn.onClick.RemoveAllListeners();
-        endTurn.GetComponent<Image>().color = Color.white;
-        endTurnVFX.SetActive(false);
+        endTurn.ResetEndTurn();
         question.onClick.RemoveAllListeners();
 
         availableHeroes = 0;

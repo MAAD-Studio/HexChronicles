@@ -100,10 +100,6 @@ public class Tile : MonoBehaviour
                 tileRenderer.material = tileData.baseMaterial;
                 break;
 
-            case TileEnums.TileMaterial.path:
-                tileRenderer.material = tileData.pathMaterial;
-                break;
-
             case TileEnums.TileMaterial.selectedChar:
                 tileRenderer.material = tileData.selectedCharMaterial;
                 break;
@@ -128,6 +124,10 @@ public class Tile : MonoBehaviour
 
                 case TileEnums.TileTops.highlight:
                     topRenderer.material = tileData.highlightMaterial;
+                    break;
+
+                case TileEnums.TileTops.Path:
+                    topRenderer.material = tileData.pathMaterial;
                     break;
             }
         }
@@ -274,21 +274,20 @@ public class Tile : MonoBehaviour
     //Called when a Character stays on a tile
     public virtual void OnTileStay(Character character)
     {
-        WeatherManager weatherManager = FindObjectOfType<WeatherManager>();
-        if(!underWeatherAffect && !(weatherManager.GetWeatherElementType() == character.elementType))
+        if(tileData.tileType != character.elementType)
         {
-            characterTimeOnTile += 1;
+            characterTimeOnTile = 0;
         }
         else
         {
-            characterTimeOnTile = 0;
+            characterTimeOnTile += 1;
         }
     }
 
     //Called when a Character is leaving a tile
     public virtual void OnTileExit(Character character)
     {
-        characterTimeOnTile = 0;
+        
     }
 
     #endregion
