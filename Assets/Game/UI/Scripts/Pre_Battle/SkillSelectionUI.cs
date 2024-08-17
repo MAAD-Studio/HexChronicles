@@ -9,11 +9,13 @@ public class SkillSelectionUI : MonoBehaviour
     public Transform skillList;
     public GameObject skillDisplayPrefab;
 
+    private List<HeroSkillInfo> heroSkillList;
     private HeroAttributesSO currentHeroSO;
     private HeroSkillInfo currentHeroSkill;
 
     public void Initialize(List<HeroSkillInfo> heroSkillList)
     {
+        this.heroSkillList = heroSkillList;
         foreach (HeroSkillInfo heroSkill in heroSkillList)
         {
             heroSkill.OnHeroSelected += UpdateSkillList;
@@ -25,6 +27,14 @@ public class SkillSelectionUI : MonoBehaviour
     {
         currentHeroSkill = heroSkill;
         currentHeroSO = heroSO;
+
+        foreach (HeroSkillInfo heroSkillInfo in heroSkillList)
+        {
+            if (heroSkillInfo != currentHeroSkill)
+            {
+                heroSkillInfo.Reset();
+            }
+        }
 
         ResetSkillList();
         DisplaySkills(ActiveSkillCollection.Instance.GetPlayerSkills(heroSO.attributes.elementType));
@@ -41,11 +51,12 @@ public class SkillSelectionUI : MonoBehaviour
             ActiveSkillDisplay skillButton = skillDisplay.GetComponent<ActiveSkillDisplay>();
             skillButton.Initialize(skill, currentHeroSkill);
 
-            // Disable the button of the current hero's skill
+            // Select the current hero's skill
             if (currentHeroSO.activeSkillSO == skill)
             {
-                skillButton.button.interactable = false;
+                skillButton.OnSelected();
             }
+
             // Refresh the list panel layout group
             LayoutRebuilder.ForceRebuildLayoutImmediate(skillList.GetComponent<RectTransform>());
         }

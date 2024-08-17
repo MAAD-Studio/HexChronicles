@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class HeroSkillInfo : MonoBehaviour
 {
     [SerializeField] public Button heroSkillBtn;
+    [SerializeField] private GameObject outline;
     [SerializeField] private Image avatar;
     [SerializeField] private Image element;
     [SerializeField] private Image skillShape;
@@ -26,6 +27,7 @@ public class HeroSkillInfo : MonoBehaviour
     {
         SetUIDisplay();
         heroSkillBtn.onClick.AddListener(OnSelected);
+        outline.SetActive(false);
     }
 
     private void SetUIDisplay()
@@ -43,6 +45,7 @@ public class HeroSkillInfo : MonoBehaviour
     public void OnSelected()
     {
         heroSkillBtn.interactable = false;
+        outline.SetActive(true);
 
         // Reset the other hero buttons
         foreach (Transform child in transform.parent)
@@ -61,5 +64,10 @@ public class HeroSkillInfo : MonoBehaviour
         selectedActiveSkill = skill;
         skillShape.sprite = skill.skillshape;
         heroSO.SetActiveSkill(skill);
+    }
+
+    public void Reset()
+    {
+        outline.SetActive(false);
     }
 }
