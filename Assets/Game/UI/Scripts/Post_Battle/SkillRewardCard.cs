@@ -12,6 +12,7 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     public Button button;
 
+    [SerializeField] private GameObject outline;
     [SerializeField] private Image skillshape;
     [SerializeField] private Image element;
     [SerializeField] private TextMeshProUGUI skillName;
@@ -21,12 +22,20 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private VictoryReward victoryReward;
     private ActiveSkillSO skill;
     private bool isSelectable = true;
+    private RectTransform rectTransform;
 
     public ActiveSkillSO Skill => skill;
+
+    private void Awake()
+    {
+        rectTransform = gameObject.GetComponent<RectTransform>();
+    }
 
     private void Start()
     {
         button.onClick.AddListener(() => OnSelected());
+        outline.SetActive(false);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
     public void SetSkillDisplay(ActiveSkillSO skill, VictoryReward victoryReward)
@@ -38,8 +47,7 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
         skillshape.sprite = skill.skillshape;
         skillName.text = skill.skillName;
         description.text = skill.description.DisplayKeywordDescription();
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+        description.ForceMeshUpdate();
     }
 
     private void OnSelected()
@@ -48,13 +56,17 @@ public class SkillRewardCard : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         button.interactable = false;
         isSelectable = false;
-        transform.DOScale(scaledUpSize, 0.2f).SetEase(Ease.OutBack).From(new Vector3(1.15f, 1.15f, 1.15f));
+        outline.SetActive(true);
+
+        transform.DOScale(scaledUpSize, 0.2f).SetEase(Ease.OutBack).From(new Vector3(1.1f, 1.1f, 1.1f));
     }
 
     public void OnUnselected()
     {
         button.interactable = true;
         isSelectable = true;
+        outline.SetActive(false);
+
         transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -361,6 +362,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                     {
                         index = 0;
                     }
+                    ResetBoard();
                     GrabCharacter(selectableCharacters[index]);
                 }
             }
@@ -682,6 +684,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         pathFinder.FindMovementPathsCharacter(selectedCharacter, true);
 
         SpawnSelectMarker();
+        SpawnsInTileVFX();
     }
 
     private void MovementPhase()
@@ -696,19 +699,7 @@ public class PlayerTurn : MonoBehaviour, StateInterface
         //Spawns in Tile VFX
         if (!moveVFXSpawned)
         {
-            Tile.SpawnTileVFX(selectedCharacter.elementType);
-
-            if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
-                && selectedCharacter.elementType == ElementType.Fire)
-            {
-                Tile.HighlightTilesOfType(selectedCharacter.elementType);
-            }
-            else
-            {
-                Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
-            }
-
-            moveVFXSpawned = true;
+            SpawnsInTileVFX();   
         }
 
         if (currentTile.inFrontier || currentTile.characterOnTile == selectedCharacter)
@@ -746,6 +737,23 @@ public class PlayerTurn : MonoBehaviour, StateInterface
                 pathFinder.ClearIllustration();
             }
         }
+    }
+
+    private void SpawnsInTileVFX()
+    {
+        Tile.SpawnTileVFX(selectedCharacter.elementType);
+
+        if (currentTile != null && currentTile.tileData.tileType == selectedCharacter.elementType
+            && selectedCharacter.elementType == ElementType.Fire)
+        {
+            Tile.HighlightTilesOfType(selectedCharacter.elementType);
+        }
+        else
+        {
+            Tile.UnHighlightTilesOfType(selectedCharacter.elementType);
+        }
+
+        moveVFXSpawned = true;
     }
 
     private void AttackPhase()
