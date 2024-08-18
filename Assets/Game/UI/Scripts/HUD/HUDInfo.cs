@@ -37,24 +37,22 @@ public class HUDInfo : MonoBehaviour
     private int activeHeroes;
 
     [Header("Enemy Info")]
-    [SerializeField] private GameObject enemyInfoPanel;
-    [SerializeField] private GameObject enemyDetailPrefab;
+    [SerializeField] private GameObject enemyInfoGO;
     [SerializeField] private GameObject enemyHoverPanel;
     [SerializeField] private GameObject enemyHoverPrefab;
     private Enemy_Base selectedEnemy;
-    private EnemyStatsUI enemyStatus;
+    private EnemyStatsUI enemyStats;
     private EnemyHoverUI enemyHoverUI;
 
     [Header("Tile Object Info")]
-    [SerializeField] private GameObject objectInfoPanel;
-    [SerializeField] private GameObject objectStatusPrefab;
+    [SerializeField] private GameObject objectInfoGO;
     [SerializeField] private GameObject objectHoverPrefab;
     private TileObject selectedObject;
-    private EnemyStatsUI objectStatus;
+    private EnemyStatsUI objectStats;
     private EnemyHoverUI objectHoverUI;
 
     [Header("Tile Info")]
-    [SerializeField] private GameObject tileInfoPanel;
+    [SerializeField] private GameObject tileInfoGO;
     private TileInfo tileInfo;
 
     [Header("Buttons")]
@@ -99,8 +97,8 @@ public class HUDInfo : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             tileInfo.Hide();
-            enemyStatus.Hide();
-            objectStatus.Hide();
+            enemyStats.Hide();
+            objectStats.Hide();
             selectedTile = null;
             selectedEnemy = null;
             selectedObject = null;
@@ -240,8 +238,8 @@ public class HUDInfo : MonoBehaviour
     {
         // Disable some UI elements
         showInfos = false;
-        enemyStatus.Hide();
-        objectStatus.Hide();
+        enemyStats.Hide();
+        objectStats.Hide();
         enemyHoverUI.Hide();
     }
 
@@ -370,21 +368,12 @@ public class HUDInfo : MonoBehaviour
             });
         }
 
-        // Create enemyInfoPrefab:
-        GameObject enemyUI = Instantiate(enemyDetailPrefab);
-        enemyUI.transform.SetParent(enemyInfoPanel.transform);
-        enemyUI.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
-        enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
-        enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
-        enemyStatus.Hide();
+        // Get Enemy Stats Info:
+        enemyStats = enemyInfoGO.GetComponent<EnemyStatsUI>();
+        enemyStats.Hide();
 
-        // Create objectInfoPrefab:
-        GameObject objectUI = Instantiate(objectStatusPrefab);
-        objectUI.transform.SetParent(objectInfoPanel.transform);
-        objectUI.transform.localScale = new Vector3(1, 1, 1); 
-        objectUI.transform.localPosition = new Vector3(0, 0, 0); 
-        objectStatus = objectUI.GetComponent<EnemyStatsUI>();
-        objectStatus.Hide();
+        objectStats = objectInfoGO.GetComponent<EnemyStatsUI>();
+        objectStats.Hide();
 
         // Create enemyHoverPrefab:
         GameObject enemyHover = Instantiate(enemyHoverPrefab);
@@ -403,7 +392,7 @@ public class HUDInfo : MonoBehaviour
         objectHoverUI.Hide();
 
         // Get Tile Info:
-        tileInfo = tileInfoPanel.GetComponent<TileInfo>();
+        tileInfo = tileInfoGO.GetComponent<TileInfo>();
         tileInfo.Hide();
     }
 
@@ -459,15 +448,7 @@ public class HUDInfo : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        foreach (Transform child in enemyInfoPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
         foreach (Transform child in enemyHoverPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-        foreach (Transform child in objectInfoPanel.transform)
         {
             Destroy(child.gameObject);
         }
@@ -572,13 +553,13 @@ public class HUDInfo : MonoBehaviour
             {
                 if (selectedEnemy != enemy)
                 {
-                    enemyStatus.SetEnemyStats(enemy);
-                    objectStatus.Hide();
+                    enemyStats.SetEnemyStats(enemy);
+                    objectStats.Hide();
                     selectedEnemy = enemy;
                 }
                 else
                 {
-                    enemyStatus.Hide();
+                    enemyStats.Hide();
                     selectedEnemy = null;
                 }
             }
@@ -605,13 +586,13 @@ public class HUDInfo : MonoBehaviour
             {
                 if (selectedObject != tileObject)
                 {
-                    objectStatus.SetObjectStats(tileObject);
-                    enemyStatus.Hide();
+                    objectStats.SetObjectStats(tileObject);
+                    enemyStats.Hide();
                     selectedObject = tileObject;
                 }
                 else
                 {
-                    objectStatus.Hide();
+                    objectStats.Hide();
                     selectedObject = null;
                 }
             }
