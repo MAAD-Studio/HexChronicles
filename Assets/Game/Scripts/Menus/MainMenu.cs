@@ -12,11 +12,6 @@ public class MainMenu : Menu
     public MenuClassifier tutorialHUDClassifier;
     public MenuClassifier mapClassifier;
 
-    [Header("UI")]
-    [SerializeField] private GameObject loadGamePanel;
-    [SerializeField] private GameObject savedDataPrefab;
-    [SerializeField] private Transform savedDataContainer;
-
     private SelectTutorial selectTutorial;
     [SerializeField] private CreditsScreen credits;
     [SerializeField] private OptionsMenuUI options;
@@ -30,8 +25,6 @@ public class MainMenu : Menu
         selectTutorial.HidePanel();
         credits.Initialize();
         options.Initialize();
-
-        HideSavedData();
     }
 
     public void OnSelectTutorial()
@@ -94,50 +87,6 @@ public class MainMenu : Menu
         MenuManager.Instance.ShowMenu(MenuManager.Instance.MainMenuClassifier);
         MenuManager.Instance.HideMenu(MenuManager.Instance.LoadingScreenClassifier);
     }
-
-
-    #region Show Save and Load
-    public void ShowSavedData()
-    {
-        loadGamePanel.SetActive(true);
-
-        if (GameManager.Instance.SaveLoadManager.SaveList.Count == 0)
-        {
-            GameObject gameObject = new GameObject("NoSavedData");
-            gameObject.transform.SetParent(savedDataContainer);
-            TextMeshProUGUI text = gameObject.AddComponent<TextMeshProUGUI>();
-            text.text = "No saved data found!";
-            text.fontSize = 22;
-            return;
-        }
-
-        // Add each saved data to the UI panel
-        foreach (var data in GameManager.Instance.SaveLoadManager.SaveList)
-        {
-            GameObject item = Instantiate(savedDataPrefab, savedDataContainer);
-            item.GetComponentInChildren<TextMeshProUGUI>().text = 
-                $"<b>Current Level: {data.CurrentLevel + 1}\nHas Skills: {data.PlayerSkills.Count}</b>\nSaved Time: {data.SaveTime}";
-
-            Button button = item.GetComponent<Button>();
-            button.onClick.AddListener(() =>
-            {
-                GameManager.Instance.SaveLoadManager.ApplySavedData(data);
-                MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier).RefreshLevelButtons();
-                HideSavedData();
-                OnContinueGame();
-            });
-        }
-    }
-
-    public void HideSavedData()
-    {
-        loadGamePanel.SetActive(false);
-        foreach (Transform child in savedDataContainer)
-        {
-            Destroy(child.gameObject);
-        }
-    }
-    #endregion
 
     public void OnQuitGame()
     {

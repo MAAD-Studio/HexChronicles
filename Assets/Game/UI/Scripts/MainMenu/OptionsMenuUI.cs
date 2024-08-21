@@ -12,9 +12,18 @@ public class OptionsMenuUI : MonoBehaviour
     #region Fields
 
     [Header("Panel")]
+    [SerializeField] private Button gameButton;
     [SerializeField] private Button videoButton;
     [SerializeField] private Button audioButton;
     [SerializeField] private Button backButton;
+    
+    [Header("Game")]
+    [SerializeField] private GameObject gameTab;
+    [SerializeField] private Button loadGame;
+    [SerializeField] private GameObject loadGamePanel;
+    [SerializeField] private GameObject savedDataPrefab;
+    [SerializeField] private Transform savedDataContainer;
+    [SerializeField] private Button resetGame;
 
     [Header("Video")]
     [SerializeField] private GameObject videoTab;
@@ -37,6 +46,7 @@ public class OptionsMenuUI : MonoBehaviour
         InitializeUIComponents();
         LoadResolutions();
         UpdateUIWithCurrentSettings();
+        HideSavedData();
     }
 
     public void Initialize()
@@ -46,8 +56,10 @@ public class OptionsMenuUI : MonoBehaviour
 
     private void OnEnable()
     {
-        ToggleVideoTabVisibility(true);
+        ToggleGameTabVisibility(true);
+        ToggleVideoTabVisibility(false);
         ToggleAudioTabVisibility(false);
+        HideSavedData();
     }
 
     #endregion
@@ -58,10 +70,35 @@ public class OptionsMenuUI : MonoBehaviour
     /// </summary>
     private void InitializeUIComponents()
     {
+        // Game Button
+        gameButton.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlaySound("Click");
+
+            ToggleGameTabVisibility(true);
+            ToggleVideoTabVisibility(false);
+            ToggleAudioTabVisibility(false);
+        });
+
+        loadGame.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlaySound("Click");
+            ShowSavedData();
+        });
+
+        resetGame.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlaySound("Click");
+            GameManager.Instance.CurrentLevelIndex = 0;
+            MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier).RefreshLevelButtons();
+            MouseTip.Instance.ShowTip(Input.mousePosition, "Game Reset!", true);
+        });
+
         // Video Button
         videoButton.onClick.AddListener(() =>
         {
             AudioManager.Instance.PlaySound("Click");
+            ToggleGameTabVisibility(false);
             ToggleVideoTabVisibility(true);
             ToggleAudioTabVisibility(false);
             });
@@ -70,6 +107,7 @@ public class OptionsMenuUI : MonoBehaviour
         audioButton.onClick.AddListener(() =>
         {
             AudioManager.Instance.PlaySound("Click");
+            ToggleGameTabVisibility(false);
             ToggleVideoTabVisibility(false);
             ToggleAudioTabVisibility(true);
         });
@@ -171,6 +209,22 @@ public class OptionsMenuUI : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    private void ToggleGameTabVisibility(bool isVisible)
+    {
+        gameTab.SetActive(isVisible);
+
+        if (isVisible)
+        {
+            gameButton.GetComponentInChildren<TextMeshProUGUI>().color = new Color(1, 0.89f, 0f);
+            gameButton.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.2f).SetEase(Ease.OutBack);
+        }
+        else
+        {
+            gameButton.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+            gameButton.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
+        }
+    }
+
     private void ToggleVideoTabVisibility(bool isVisible)
     {
         videoTab.SetActive(isVisible);
@@ -206,6 +260,49 @@ public class OptionsMenuUI : MonoBehaviour
     #endregion
 
     #region UI Methods
+
+    public void ShowSavedData()
+    {
+        loadGamePanel.SetActive(true);
+
+        if (GameManager.Instance.SaveLoadManager.SaveList.Count == 0)
+        {
+            GameObject gameObject = new GameObject("NoSavedData");
+            gameObject.transform.SetParent(savedDataContainer);
+            TextMeshProUGUI text = gameObject.AddComponent<TextMeshProUGUI>();
+            text.text = "No saved data found!";
+            text.fontSize = 22;
+            return;
+        }
+
+        // Add each saved data to the UI panel
+        foreach (var data in GameManager.Instance.SaveLoadManager.SaveList)
+        {
+            GameObject item = Instantiate(savedDataPrefab, savedDataContainer);
+            item.GetComponentInChildren<TextMeshProUGUI>().text =
+                $"<b>Current Level: {data.CurrentLevel + 1}\nHas Skills: {data.PlayerSkills.Count}</b>\nSaved Time: {data.SaveTime}";
+
+            Button button = item.GetComponent<Button>();
+            button.onClick.AddListener(() =>
+            {
+                GameManager.Instance.SaveLoadManager.ApplySavedData(data);
+                MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier).RefreshLevelButtons();
+                HideSavedData();
+                gameObject.SetActive(false);
+                MenuManager.Instance.GetMenu<MainMenu>(MenuManager.Instance.MainMenuClassifier).OnContinueGame();
+            });
+        }
+    }
+
+    public void HideSavedData()
+    {
+        loadGamePanel.SetActive(false);
+        foreach (Transform child in savedDataContainer)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     /// <summary>
     /// Loads and populates the resolution dropdown with available screen resolutions.
     /// </summary>
