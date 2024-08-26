@@ -353,15 +353,15 @@ public class TutorialHUD : MonoBehaviour
             {
                 return;
             }
-            if (activeHeroes == 0)
-            {
+            //if (activeHeroes == 0)
+            //{
                 playerTurn.EndTurn();
                 endTurn.EndTurnInactive();
-            }
-            else
-            {
-                endTurn.ShowAskPanel();
-            }
+            //}
+            //else
+            //{
+            //    endTurn.ShowAskPanel();
+            //}
         });
 
         endTurn.AddConfirmBtnListener(() =>

@@ -180,7 +180,6 @@ public class Tutorial_Base : MonoBehaviour
         if (endTurnButton != null)
         {
             endTurnButton.ShowEndTurn();
-            endTurnButton.EnableButton();
         }
     }
 

@@ -74,7 +74,7 @@ public class Tutorial_Three : Tutorial_Base
                 DisplayDialogue(turnOneDialogue, 0, 1);
                 RegainFullControl();
 
-                endTurnButton.DisableButton();
+                endTurnButton.HideEndTurn();
 
                 enemyToHit.currentHealth += 1;
                 enemyToHit.UpdateHealthBar?.Invoke();
@@ -167,18 +167,24 @@ public class Tutorial_Three : Tutorial_Base
                 {
                     DisplayDialogue(turnOneDialogue, 4);
                     turnManager.disableEnd = false;
-                    endTurnButton.EnableButton();
+                    endTurnButton.ShowEndTurn();
+                    endTurnButton.EndTurnActive();
                     internalTutorialStep++;
                 }
                 break;
 
             case 7:
+                if (endTurnButton.endTurnBtn.interactable == true)
+                {
+                    endTurnButton.KeepActive();
+                }
+
                 if (turnManager.enemyList.Count <= 0)
                 {
                     RegainFullControl();
                     cameraController.MoveToTargetPosition(fireHero.transform.position, true);
                     DisplayDialogue(turnOneDialogue, 5, 6);
-                    endTurnButton.DisableButton();
+                    endTurnButton.HideEndTurn();
                     internalTutorialStep++;
                 }
                 break;
