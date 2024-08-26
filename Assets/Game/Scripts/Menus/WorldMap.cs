@@ -12,6 +12,7 @@ public class WorldMap : Menu
     public MenuClassifier preGameClassifier;
     [SerializeField] private GameObject characterCollection;
     [SerializeField] private Button[] levelButtonsInOrder;
+    [SerializeField] private Button testUnlock;
     private SceneReference[] levels;
     private int levelIndex;
     private int unlockedLevelIndex;
@@ -35,6 +36,7 @@ public class WorldMap : Menu
         }
 
         RefreshLevelButtons();
+        testUnlock.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -42,6 +44,12 @@ public class WorldMap : Menu
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             OnReturnToMainMenu();
+        }
+
+        // Enable and disable the test unlock levels button
+        if (Keyboard.current.backquoteKey.wasPressedThisFrame)
+        {
+            testUnlock.gameObject.SetActive(!testUnlock.gameObject.activeSelf);
         }
     }
 
