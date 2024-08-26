@@ -92,6 +92,8 @@ public class CharacterInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             element.sprite = Config.Instance.GetElementSprite(hero.heroSO.attributes.elementType);
         }
+        UpdateAttributes();
+        UpdateHealthBar();
 
         attackShape.sprite = hero.heroSO.attackShape;
         attackInfo.text = hero.heroSO.attackInfo.DisplayKeywordDescription();

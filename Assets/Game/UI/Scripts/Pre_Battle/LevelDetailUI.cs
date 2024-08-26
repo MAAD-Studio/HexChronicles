@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Cinemachine.DocumentationSortingAttribute;
 
 public class LevelDetailUI : MonoBehaviour
 {
@@ -16,6 +15,7 @@ public class LevelDetailUI : MonoBehaviour
 
     [Header("Enemies")]
     [SerializeField] private GameObject enemiesPanel;
+    [SerializeField] private int enemyImageSize = 64;
     private List<Image> enemies = new List<Image>();
 
     [Header("Level Objective")]
@@ -56,7 +56,7 @@ public class LevelDetailUI : MonoBehaviour
             Image enemyImage = new GameObject("Enemy" + i).AddComponent<Image>();
             enemyImage.transform.SetParent(enemiesPanel.transform);
             enemyImage.rectTransform.localScale = Vector3.one;
-            enemyImage.rectTransform.sizeDelta = new Vector2(64, 64);
+            enemyImage.rectTransform.sizeDelta = new Vector2(enemyImageSize, enemyImageSize);
             enemies.Add(enemyImage);
             enemies[i].sprite = level.enemies[i].attributes.avatar;
         }
