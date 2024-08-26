@@ -72,7 +72,7 @@ public class Tutorial_Four : Tutorial_Base
                 DisplayDialogue(turnOneDialogue, 0);
                 RegainFullControl();
 
-                endTurnButton.DisableButton();
+                endTurnButton.HideEndTurn();
 
                 internalTutorialStep++;
 
@@ -82,7 +82,8 @@ public class Tutorial_Four : Tutorial_Base
                 if(dialogueJustEnded)
                 {
                     turnManager.disableEnd = false;
-                    endTurnButton.EnableButton();
+                    endTurnButton.ShowEndTurn();
+                    endTurnButton.EndTurnActive();
                     internalTutorialStep++;
                 }
                 break;
@@ -91,7 +92,7 @@ public class Tutorial_Four : Tutorial_Base
                 if(turnManager.TurnType != TurnEnums.TurnState.PlayerTurn)
                 {
                     internalTutorialStep++;
-                    endTurnButton.DisableButton();
+                    endTurnButton.HideEndTurn();
                 }
                 break;
 
@@ -109,7 +110,8 @@ public class Tutorial_Four : Tutorial_Base
                 if (dialogueJustEnded)
                 {
                     turnManager.disableEnd = false;
-                    endTurnButton.EnableButton();
+                    endTurnButton.ShowEndTurn();
+                    endTurnButton.EndTurnActive();
                     internalTutorialStep++;
                 }
                 break;
@@ -118,7 +120,7 @@ public class Tutorial_Four : Tutorial_Base
                 if (turnManager.TurnType != TurnEnums.TurnState.PlayerTurn)
                 {
                     internalTutorialStep++;
-                    endTurnButton.DisableButton();
+                    endTurnButton.HideEndTurn();
                 }
                 break;
 

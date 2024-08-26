@@ -33,16 +33,22 @@ public class TutorialHUD : MonoBehaviour
     private int activeHeroes;
 
     [Header("Enemy Info")]
-    [SerializeField] private GameObject enemyInfoPanel;
-    [SerializeField] private GameObject enemyDetailPrefab;
+    [SerializeField] private GameObject enemyInfoGO;
     [SerializeField] private GameObject enemyHoverPanel;
     [SerializeField] private GameObject enemyHoverPrefab;
     private Enemy_Base selectedEnemy;
-    private EnemyStatsUI enemyStatus;
+    private EnemyStatsUI enemyStats;
     private EnemyHoverUI enemyHoverUI;
 
+    [Header("Tile Object Info")]
+    [SerializeField] private GameObject objectInfoGO;
+    [SerializeField] private GameObject objectHoverPrefab;
+    private TileObject selectedObject;
+    private EnemyStatsUI objectStats;
+    private EnemyHoverUI objectHoverUI;
+
     [Header("Tile Info")]
-    [SerializeField] private GameObject tileInfoPanel;
+    [SerializeField] private GameObject tileInfoGO;
     private TileInfo tileInfo;
 
     [Header("Buttons")]
@@ -83,7 +89,7 @@ public class TutorialHUD : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             tileInfo.Hide();
-            enemyStatus.Hide();
+            enemyStats.Hide();
             selectedTile = null;
             selectedEnemy = null;
         }
@@ -194,7 +200,7 @@ public class TutorialHUD : MonoBehaviour
     {
         // Disable some UI elements
         showInfos = false;
-        enemyStatus.Hide();
+        enemyStats.Hide();
         enemyHoverUI.Hide();
     }
 
@@ -322,13 +328,12 @@ public class TutorialHUD : MonoBehaviour
             });
         }
 
-        // Create enemyInfoPrefab:
-        GameObject enemyUI = Instantiate(enemyDetailPrefab);
-        enemyUI.transform.SetParent(enemyInfoPanel.transform);
-        enemyUI.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
-        enemyUI.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
-        enemyStatus = enemyUI.GetComponent<EnemyStatsUI>();
-        enemyStatus.Hide();
+        // Get Enemy Stats Info:
+        enemyStats = enemyInfoGO.GetComponent<EnemyStatsUI>();
+        enemyStats.Hide();
+
+        objectStats = objectInfoGO.GetComponent<EnemyStatsUI>();
+        objectStats.Hide();
 
         // Create enemyHoverPrefab:
         GameObject enemyHover = Instantiate(enemyHoverPrefab);
@@ -338,8 +343,16 @@ public class TutorialHUD : MonoBehaviour
         enemyHoverUI = enemyHover.GetComponent<EnemyHoverUI>();
         enemyHoverUI.Hide();
 
+        // Create objectHoverPrefab:
+        GameObject objectHover = Instantiate(objectHoverPrefab);
+        objectHover.transform.SetParent(enemyHoverPanel.transform);
+        objectHover.transform.localScale = new Vector3(1, 1, 1);  // for fixing scale difference in different resolutions
+        objectHover.transform.localPosition = new Vector3(0, 0, 0); // for fixing position error
+        objectHoverUI = objectHover.GetComponent<EnemyHoverUI>();
+        objectHoverUI.Hide();
+
         // Get Tile Info:
-        tileInfo = tileInfoPanel.GetComponent<TileInfo>();
+        tileInfo = tileInfoGO.GetComponent<TileInfo>();
         tileInfo.Hide();
     }
 
@@ -353,15 +366,15 @@ public class TutorialHUD : MonoBehaviour
             {
                 return;
             }
-            if (activeHeroes == 0)
-            {
+            //if (activeHeroes == 0)
+            //{
                 playerTurn.EndTurn();
                 endTurn.EndTurnInactive();
-            }
-            else
-            {
-                endTurn.ShowAskPanel();
-            }
+            //}
+            //else
+            //{
+            //    endTurn.ShowAskPanel();
+            //}
         });
 
         endTurn.AddConfirmBtnListener(() =>
@@ -376,10 +389,6 @@ public class TutorialHUD : MonoBehaviour
     private void ResetHUD()
     {
         foreach (Transform child in heroListPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-        foreach (Transform child in enemyInfoPanel.transform)
         {
             Destroy(child.gameObject);
         }
@@ -398,8 +407,10 @@ public class TutorialHUD : MonoBehaviour
 
         availableHeroes = 0;
         activeHeroes = 0;
+
         selectedHero = null;
         selectedEnemy = null;
+        selectedObject = null;
         selectedTile = null;
         showInfos = true;
     }
@@ -462,6 +473,7 @@ public class TutorialHUD : MonoBehaviour
             }
         }
 
+
         // Enemy Info:
         if (showInfos && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
         {
@@ -474,17 +486,18 @@ public class TutorialHUD : MonoBehaviour
             float scale = distance * 0.02f;
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
-            // Click to show status panel
+            // Click to show stats panel
             if (Input.GetMouseButtonDown(0))
             {
                 if (selectedEnemy != enemy)
                 {
-                    enemyStatus.SetEnemyStats(enemy);
+                    enemyStats.SetEnemyStats(enemy);
+                    objectStats.Hide();
                     selectedEnemy = enemy;
                 }
                 else
                 {
-                    enemyStatus.Hide();
+                    enemyStats.Hide();
                     selectedEnemy = null;
                 }
             }
@@ -492,6 +505,39 @@ public class TutorialHUD : MonoBehaviour
         else
         {
             enemyHoverUI.Hide();
+        }
+
+        // Object Info:
+        if (showInfos && currentTile.tileHasObject)
+        {
+            TileObject tileObject = currentTile.objectOnTile;
+            objectHoverUI.SetObjectStats(tileObject);
+            objectHoverUI.gameObject.transform.position = Camera.main.WorldToScreenPoint(tileObject.transform.position + new Vector3(0, 3.5f, 0));
+
+            // Scale based on enemy distance from camera, referenced from LookAtCamera
+            float distance = Vector3.Distance(tileObject.transform.position, Camera.main.transform.position);
+            float scale = distance * 0.02f;
+            objectHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
+
+            // Click to show status panel
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (selectedObject != tileObject)
+                {
+                    objectStats.SetObjectStats(tileObject);
+                    enemyStats.Hide();
+                    selectedObject = tileObject;
+                }
+                else
+                {
+                    objectStats.Hide();
+                    selectedObject = null;
+                }
+            }
+        }
+        else
+        {
+            objectHoverUI.Hide();
         }
     }
 

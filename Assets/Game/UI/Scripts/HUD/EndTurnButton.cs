@@ -24,6 +24,8 @@ public class EndTurnButton : MonoBehaviour
     private Image image;
     private bool shouldScale = false;
     private ButtonChangeNotifier notifier;
+    private bool isHide = false;
+    private bool keepActive = false;
 
     private void Awake()
     {
@@ -67,16 +69,28 @@ public class EndTurnButton : MonoBehaviour
         notifier.onButtonChange?.Invoke();
     }
 
+    // Used for Tutorials
     public void HideEndTurn()
     {
         endTurnBtn.gameObject.SetActive(false);
         endTurnVFX.gameObject.SetActive(false);
+        isHide = true;
+        keepActive = false;
     }
 
+    // Used for Tutorials
     public void ShowEndTurn()
     {
         endTurnBtn.gameObject.SetActive(true);
         endTurnVFX.gameObject.SetActive(true);
+        isHide = false;
+        keepActive = false;
+    }
+
+    public void KeepActive()
+    {
+        EndTurnActive();
+        keepActive = true;
     }
 
     public void ShowAskPanel()
@@ -117,10 +131,18 @@ public class EndTurnButton : MonoBehaviour
 
     public void EndTurnActive()
     {
+        if (isHide)
+        {
+            return;
+        }
         image.color = highlightColor;
         endTurnVFX.SetActive(true);
-        shouldScale = true;
-        ScaleUp(endTurnVFX);
+
+        if (!keepActive) // Prevent keep scaling in tutorials
+        {
+            shouldScale = true;
+            ScaleUp(endTurnVFX);
+        }
     }
 
     private void ScaleUp(GameObject gameObject)

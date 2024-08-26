@@ -535,7 +535,6 @@ public class HUDInfo : MonoBehaviour
         }
 
         
-
         // Enemy Info:
         if (showInfos && currentTile.characterOnTile != null && currentTile.characterOnTile is Enemy_Base)
         {
@@ -548,7 +547,7 @@ public class HUDInfo : MonoBehaviour
             float scale = distance * 0.02f;
             enemyHoverUI.gameObject.transform.localScale = Vector3.Lerp(Vector3.one * 2.0f, Vector3.one * 0.3f, scale);
 
-            // Click to show status panel
+            // Click to show stats panel
             if (Input.GetMouseButtonDown(0))
             {
                 if (selectedEnemy != enemy)
