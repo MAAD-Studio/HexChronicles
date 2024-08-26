@@ -90,6 +90,7 @@ public class OptionsMenuUI : MonoBehaviour
         {
             AudioManager.Instance.PlaySound("Click");
             GameManager.Instance.CurrentLevelIndex = 0;
+            GameManager.Instance.DecreaseGameSpeed();
             MenuManager.Instance.GetMenu<WorldMap>(MenuManager.Instance.WorldMapClassifier).RefreshLevelButtons();
             MouseTip.Instance.ShowTip(Input.mousePosition, "Game Reset!", true);
         });
